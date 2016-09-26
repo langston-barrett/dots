@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: tree
+# key: tree
+# --
+\begin{center}
+\begin{tikzpicture}[rounded corners]
+	\graph[tree layout] % node distance = 3cm, math nodes
+	{
+		1 -- { [ fresh nodes ]
+			2 -- { 4, 6 },
+			3 -- { 6, 7 },
+		}
+	};
+\end{tikzpicture}
+\end{center}

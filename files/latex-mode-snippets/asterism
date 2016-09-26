@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: asterism
+# key: asterism
+# --
+snippet asterism
+\begin{center}\Large{ * \hspace{.5em} * \hspace{.5em} * }\end{center}
+endsnippet

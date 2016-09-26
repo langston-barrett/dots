@@ -1,0 +1,24 @@
+library: ~/.config/beets/library.blb
+directory: ~/library/music-beets
+threaded: no
+
+plugins:
+  - embedart
+  - fetchart
+  - fromfilename
+  - lastgenre
+  - lyrics
+  - scrub
+
+duplicate_action: ask
+import:
+  move: yes
+  log: ~/.config/beets/beets.log
+
+ignore: .AppleDouble ._* *~ .DS_Store
+ignore_hidden: yes
+
+paths:
+    default: $albumartist/$album/$track $title
+    singleton: $artist/singles/$title
+    comp: compilations/$album/$track $title

@@ -1,0 +1,95 @@
+---
+- hosts: localhost
+  gather_facts: no
+  #strategy: free
+
+  vars_files:
+    - colorschemes.yml
+
+  vars:
+    become: false
+    colorscheme: "{{ colorscheme_brin }}"
+    username: siddharthist
+    home: "{{ lookup('env', 'HOME') }}"
+    ci: "{{ lookup('env', 'CI') }}" # are we running in Travis?
+    xdg_config_home: "{{ lookup('env', 'XDG_CONFIG_HOME') }}"
+    symlinks:
+      - src: beets.yml
+        dst: "{{ xdg_config_home }}/beets/config.yaml"
+      - src: gtkrc-2.0
+        dst: "{{ home }}/.gtkrc-2.0"
+      - src: gtkrc-3.0.ini
+        dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
+      - src: conkyrc
+        dst: "{{ xdg_config_home }}/conky/conkyrc"
+      - src: compton.conf
+        dst: "{{ xdg_config_home }}/compton.conf"
+      - src: gitconfig
+        dst: "{{ home }}/.gitconfig"
+      - src: gitignore
+        dst: "{{ xdg_config_home }}/gitignore"
+      - src: i3
+        dst: "{{ xdg_config_home }}/i3/config"
+      - src: library.blb
+        dst: "{{ xdg_config_home }}/beets/library.blb"
+      - src: latexmkrc
+        dst: "{{ home }}/.latexmkrc"
+      - src: latex-mode-snippets
+        dst: "{{ home }}/.emacs.d/layers/auto-completion/snippets/latex-mode"
+      - src: nix-channels
+        dst: "{{ home }}/.nix-channels"
+      - src: pre-commit
+        dst: "{{ home }}/.config/git/hooks/pre-commit"
+      - src: spacemacs
+        dst: "{{ home }}/.spacemacs"
+      - src: sxhkdrc
+        dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
+      - src: xinitrc
+        dst: "{{ home }}/.xinitrc"
+
+  tasks:
+    - name: configure nixos
+      become: yes
+      register: nixos
+      file:
+        state: link
+        src: "{{ playbook_dir }}/nixos"
+        path: /etc/nixos
+        owner: siddharthist
+        group: siddharthist
+        mode: 0660
+      when: "{{ (become | bool) and (not (ci | bool)) }}"
+
+    - name: make user symlink dirs
+      file:
+        state: directory
+        path: "{{ item.dst | dirname }}"
+        owner: "{{ item.owner | default('siddharthist') }}"
+        group: "{{ item.group | default('siddharthist') }}"
+        mode: "{{ item.mode | default('0775') }}"
+      with_items: "{{ symlinks }}"
+
+    - name: make user symlinks
+      file:
+        state: link
+        src: "{{ playbook_dir }}/files/{{ item.src }}"
+        path: "{{ item.dst }}"
+        owner: "{{ item.owner | default('siddharthist') }}"
+        group: "{{ item.group | default('siddharthist') }}"
+        mode: "{{ item.mode | default('0664') }}"
+      with_items: "{{ symlinks }}"
+
+    - name: render user templates
+      template:
+        src: "{{ playbook_dir }}/templates/{{ item.src }}.j2"
+        dest: "{{ item.dst }}"
+        owner: "{{ item.owner | default('siddharthist') }}"
+        group: "{{ item.group | default('siddharthist') }}"
+        mode: "{{ item.mode | default('0664') }}"
+      with_items:
+        - src: Xresources
+          dst: "{{ home }}/.Xresources"
+
+    - name: handle xrdb changes
+      command: xrdb -merge $HOME/.Xresources
+      when: "{{ not (ci | bool) }}"

@@ -1,0 +1,8 @@
+---
+dependencies:
+  - role: handlers
+  - role: x11
+  - role: packages
+    pacman_packages:
+      - dunst
+    aura_packages: []

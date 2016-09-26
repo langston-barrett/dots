@@ -1,0 +1,74 @@
+---
+- name: create dunst configuration directory
+  become: yes
+  file:
+    state: directory
+    path: "{{ xdg_config_home }}/dunst"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0770
+
+- name: render dunst configuration
+  become: yes
+  template:
+    src: dunstrc.j2
+    dest: "{{ xdg_config_home }}/dunst/dunstrc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0660
+  notify:
+    - restart dunst
+  tags:
+    - dunst
+
+- name: create scripts directory in user's home
+  become: yes
+  file:
+    dest: "{{ xdg_config_home }}/bin"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+
+- name: copy battery checking script
+  copy:
+    src: battery-check.sh
+    dest: "{{ xdg_config_home }}/bin/battery-check"
+    mode: 0777
+
+- name: copy dunst systemd user service, battery timer
+  become: yes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0660
+  notify:
+    - reload systemd daemon
+  with_items:
+    - src: dunst.service
+      dest: "{{ xdg_config_home }}/systemd/user/dunst.service"
+    - src: battery-check.service
+      dest: "{{ xdg_config_home }}/systemd/user/battery-check.service"
+    - src: battery-check.timer
+      dest: "{{ xdg_config_home }}/systemd/user/battery-check.timer"
+
+- name: enable dunst systemd user service, battery timer
+  become: yes
+  become_user: "{{ username }}"
+  become_method: su
+  command: systemctl --user enable "{{ item }}"
+  with_items:
+    - dunst
+    - battery-check.service
+    - battery-check.timer
+
+- name: start dunst systemd user service, battery timer
+  become: yes
+  become_user: "{{ username }}"
+  become_method: su
+  command: systemctl --user start "{{ item }}"
+  with_items:
+    - dunst
+    - battery-check.service
+    - battery-check.timer

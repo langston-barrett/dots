@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: barchart
+# key: barchart
+# --
+\begin{bchart}[step=1,max=10] % width=5cm, scale=0.7
+    \bcbar[label=A1,text=A2,value=$x$]{6}
+        \smallskip % \midskip, \bigskip, \bcskip{1cm}
+    \bcbar[label=B1,text=B2,value=$y$]{4}
+    \bcxlabel{$x$ axis label}
+\end{bchart}

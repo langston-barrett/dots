@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: double-integral
+# key: int2
+# --
+\int_{${1:a}}^{${2:b}}\int_{${3:c}}^{${4:d}} $0 \dd ${5:x}\dd ${6:y}

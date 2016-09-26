@@ -1,0 +1,27 @@
+# Brightness
+# notify-send "light: $(light -G | egrep -o '[0-9]{1,2}' | head -n 1)"
+XF86MonBrightnessDown
+    light -U 5 &> /dev/null
+XF86MonBrightnessUp
+    light -A 5 &> /dev/null
+
+# Volume
+# notify-send $(amixer -D pulse sget Master | egrep -m 1 -o '[0-9]{1,2}%')
+XF86AudioLowerVolume
+    amixer sset Master 5%- &> /dev/null
+XF86AudioRaiseVolume
+    amixer sset Master 5%+ &> /dev/null
+
+super + d
+    nohup rofi -show run &> /dev/null &
+
+super + e
+    emacsclient --create-frame ~/Dropbox/todo/todo.txt
+
+# Conky
+super + f
+    pkill conky || conky --config=$XDG_CONFIG_HOME/conky/conkyrc &> /dev/null
+
+# Kill the X session
+super + shift + q
+    pkill Xorg

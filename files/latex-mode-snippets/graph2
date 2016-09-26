@@ -1,0 +1,23 @@
+# -*- mode: snippet -*-
+# name: graph2
+# key: graph2
+# --
+\begin{center}
+\begin{tikzpicture}[auto, thick, node distance=2cm] % use -> for directed
+    % Styles of nodes
+    \tikzstyle{default}   = [circle, minimum width=16pt, draw, inner sep=0pt]
+    \tikzstyle{alternate} = [circle, minimum width=16pt, fill, inner sep=0pt]
+
+    % List of nodes
+    \node[default, label=below:x] (1)                {1};
+    \node[alternate]              (2) [right=  of 1] {2};
+    \node[default]                (3) [below =    1] {3};
+
+    \path[]
+    (1) edge [bend left] node [midway, above]       {$1\rightarrow 2$} (2);
+    \path[->]
+    (2) edge [bend left] node [midway, below right] {$2\rightarrow 3$} (3);
+    \draw (2) -- (3) node [midway]       {};
+    \draw (1) -- (3) node [midway, left] {$1\rightarrow 3$};
+\end{tikzpicture}
+\end{center}

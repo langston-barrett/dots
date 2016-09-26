@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: partial22
+# key: part22
+# --
+\frac\{\partial^2 ${1}}\{\partial ${2} \partial ${3}}

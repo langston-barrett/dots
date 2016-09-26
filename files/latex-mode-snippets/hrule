@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: hrule
+# key: hrule
+# --
+\vspace\{1em}\hrule\vspace\{1em}

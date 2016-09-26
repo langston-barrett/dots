@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: partial
+# key: part
+# --
+\frac{\partial $1}{\partial $2}$0

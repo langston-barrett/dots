@@ -1,0 +1,104 @@
+colorscheme_brin:
+  no color: "#c0c5ce" # none
+  red:      "#bf616a" # red
+  green:    "#a3be8c" # green
+  yellow:   "#d08770" # orange
+  blue:     "#8fa1b3" # none-alt
+  magenta:  "#8fa1b3" # none-alt
+  cyan:     "#8fa1b3" # none-alt
+  gray:     "#8fa1b3" # none-alt
+
+  light black:   "#ffffff" # white
+  light red:     "#bf616a" # red
+  light green:   "#a3be8c" # green
+  light yellow:  "#d08770" # orange
+  light blue:    "#ffffff" # white
+  light magenta: "#ffffff" # white
+  light cyan:    "#ffffff" # white
+  light gray:    "#ffffff" # white
+
+  text:           "#c0c5ce" # none
+  background:     "#2b303b"
+  background-alt: "#343d46"
+  selected:       "#ffffff" # white
+
+# based on https://github.com/nashamri/spacemacs-theme/blob/master/spacemacs-common.el
+colorscheme_spacemacs:
+  no color: "#b2b2b2"
+  red: "#e0211d"
+  green: "#67b11d"
+  yellow: "#292b2e"
+  blue: "#827591"
+  magenta: "#5d4d7a"
+  cyan: "#2aa1ae"
+  gray: "#545557"
+  light black: "#292b2e"
+  light red: "#dc752f"
+  light green: "#2d9574"
+  light yellow: "#9a9aba"
+  light blue: "#4f97d7"
+  light magenta: "#c56ec3"
+  light cyan: "#ce537a"
+  light gray: "#e3dedd"
+
+  text: "#b2b2b2"
+  selected: "#c56ec3"
+  urgent: "#e0211d"
+  background: "#545557"
+  background-alt: "#292b2e"
+  foreground: "#b2b2b2"
+
+# Solarized dark colorscheme
+colorscheme_solarized:
+  no color: "#073642"
+  red: "#DC322F"
+  green: "#859900"
+  yellow: "#B58900"
+  blue: "#268BD2"
+  magenta: "#D33682"
+  cyan: "#2AA198"
+  gray: "#EEE8D5"
+  light black: "#CB4B16"
+  light red: "#002B36"
+  light green: "#586E75"
+  light yellow: "#657B83"
+  light blue: "#839496"
+  light magenta: "#6C71C4"
+  light cyan: "#93A1A1"
+  light gray: "#FDF6E3"
+
+  text: "#EEE8D5" # gray
+  selected: "#268BD2" # blue
+  urgent: "#DC322F" # red
+  background-alt: "#002B36" # light red
+  # From https://github.com/altercation/solarized/blob/master/xresources/solarized
+  background: "#002B36"
+  foreground: "#839496"
+
+# New Arc-derived colorscheme
+colorscheme_arc:             # ansi code, ansi name, program
+  no color:       "#5C616C" # 0,  no color,     text in terminal
+  red:            "#E28952" # 1,  red,          booleans in vim
+  green:          "#65E252" # 2,  green,        ???
+  yellow:         "#E1E252" # 3,  yellow,       ???
+  blue:           "#5294E2" # 4,  blue,         selected line in rofi
+  magenta:        "#DA52E2" # 5,  magenta,      ???
+  cyan:           "#52E2D7" # 6,  cyan,         ???
+  gray:           "#FFFFFF" # 7,  gray,         background in terminal
+  light black:    "#353945" # 8,  light black,  ???
+  light red:      "#EDB592" # 9,  light red,    ???
+  light green:    "#9EED92" # 10, light green,  ???
+  light yellow:   "#EDED92" # 11, light yellow, ???
+  light blue:     "#92BBED" # 12, light blue,   ???
+  light magenta:  "#E892ED" # 13, light purple, ???
+  light cyan:     "#92EDE5" # 14, light cyan,   ???
+  light gray:     "#F5F6F7" # 15, light gray,   ???
+
+  text:       "#5C616C" # no color
+  selected:   "#5294E2" # blue
+  urgent:     "#E28952" # red
+
+  background-alt: "#F5F6F7" # gray
+  # From https://github.com/altercation/solarized/blob/master/xresources/solarized
+  background: "#F5F6F7"
+  foreground: "#5C616C"

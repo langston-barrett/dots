@@ -1,0 +1,23 @@
+[user]
+    name = Langston Barrett
+    email = langston.barrett@gmail.com
+[core]
+    autocrlf = input
+    excludesfile = /home/siddharthist/.config/gitignore
+# Copy pre-commit hook for gofmt
+[init]
+    templatedir = /home/siddharthist/.config/git
+[color]
+    ui = auto
+[push]
+    default = simple
+[credential "https://github.com"]
+    username = siddharthist
+[credential "http://github.com"]
+    username = siddharthist
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+# [siddharthist]
+# 	signingkey = AADA4241
+# [commit]
+# 	gpgsign = true

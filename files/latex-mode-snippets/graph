@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# name: graph
+# key: graph
+# --
+\begin{center}
+  \begin{tikzpicture}[rounded corners]
+    % options: put node text on incoming edges, math nodes,
+    % layered layout, level distance = 1cm, sibling distance = 1cm
+    \graph[spring layout, node distance=1.5cm, nodes={draw, circle, fill=white}]
+    {
+      "a" -- "\textbf{e}"[white, fill=black],
+      b [circle] ->[edge label=l, bend right] c,
+      c [circle, dashed] ->[edge label=k, dashed] a,
+      a ->[bend left, thick] d, % ->
+      d ->[loop above] d,
+    };
+  \end{tikzpicture}
+\end{center}

@@ -1,0 +1,39 @@
+#!/bin/sh
+
+if [ -d /etc/X11/xinit/xinitrc.d ]; then
+  for f in /etc/X11/xinit/xinitrc.d/*; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+# screen dpi
+xrandr --output eDP1 --dpi 192
+# correct X settings
+xrdb -merge ~/.Xresources
+
+# Set up wallpaper rotation
+rotate_wallpaper() {
+  wallpaper_dir="$1"
+  while true; do
+    # assign a random background from wallpaper dir
+    random=$(find "$wallpaper_dir" -type f \( -name '*.jpg' -o -name '*.png' \) -print0 | shuf -n1 -z)
+    feh --bg-fill "$random"
+    sleep 15m
+  done
+}
+rotate_wallpaper "$HOME/.wallpapers" &
+
+# Start some useful graphical background processes
+systemctl --user start compton
+systemctl --user start conky
+systemctl --user start dropbox
+#systemctl --user start dunst
+systemctl --user start emacs
+systemctl --user start redshift
+systemctl --user start sxhkd
+
+# So i3 knows where to find the socket.
+export RXVT_SOCKET=/run/user/1000/urxvtd-socket
+
+# execute version build with cabal sandbox
+exec ~/.xmonad/dist/build/siddharthist-xmonad/siddharthist-xmonad

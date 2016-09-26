@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: figuret
+# key: figt
+# --
+\begin{figure}[ht]
+  \centering
+  \begin\{tabular}\{${1:c}}
+    $0
+  \end\{tabular}
+  \caption{\label{fig:${2:label}}}
+\end{figure}
