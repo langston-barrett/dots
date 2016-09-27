@@ -11,8 +11,8 @@
     colorscheme: "{{ colorscheme_brin }}"
     username: siddharthist
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
-    home: "{% playbook_dir if ci else lookup('env', 'HOME') %}"
-    xdg_config_home: "{% playbook_dir if ci else lookup('env', 'XDG_CONFIG_HOME') %}"
+    home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
+    xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
     symlinks:
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
