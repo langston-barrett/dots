@@ -10,9 +10,9 @@
     become: false
     colorscheme: "{{ colorscheme_brin }}"
     username: siddharthist
-    home: "{{ lookup('env', 'HOME') }}"
-    ci: "{{ lookup('env', 'CI') }}" # are we running in Travis?
-    xdg_config_home: "{{ lookup('env', 'XDG_CONFIG_HOME') }}"
+    ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
+    home: "{% playbook_dir if ci else lookup('env', 'HOME') %}"
+    xdg_config_home: "{% playbook_dir if ci else lookup('env', 'XDG_CONFIG_HOME') %}"
     symlinks:
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
@@ -58,7 +58,7 @@
         owner: siddharthist
         group: siddharthist
         mode: 0660
-      when: "{{ (become | bool) and (not (ci | bool)) }}"
+      when: "{{ (become | bool) and (not ci) }}"
 
     - name: make user symlink dirs
       file:
@@ -92,4 +92,4 @@
 
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
-      when: "{{ not (ci | bool) }}"
+      when: "{{ not ci }}"
