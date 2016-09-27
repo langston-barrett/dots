@@ -9,8 +9,8 @@
   vars:
     become: false
     colorscheme: "{{ colorscheme_brin }}"
-    username: siddharthist
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
+    username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
     symlinks:
