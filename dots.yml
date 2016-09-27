@@ -55,8 +55,8 @@
         state: link
         src: "{{ playbook_dir }}/nixos"
         path: /etc/nixos
-        owner: siddharthist
-        group: siddharthist
+        owner: "{{ username }}"
+        group: "{{ username }}"
         mode: 0660
       when: "{{ (become | bool) and (not ci) }}"
 
@@ -64,8 +64,8 @@
       file:
         state: directory
         path: "{{ item.dst | dirname }}"
-        owner: "{{ item.owner | default('siddharthist') }}"
-        group: "{{ item.group | default('siddharthist') }}"
+        owner: "{{ item.owner | default(username) }}"
+        group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0775') }}"
       with_items: "{{ symlinks }}"
 
@@ -74,8 +74,8 @@
         state: link
         src: "{{ playbook_dir }}/files/{{ item.src }}"
         path: "{{ item.dst }}"
-        owner: "{{ item.owner | default('siddharthist') }}"
-        group: "{{ item.group | default('siddharthist') }}"
+        owner: "{{ item.owner | default(username) }}"
+        group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0664') }}"
       with_items: "{{ symlinks }}"
 
@@ -83,8 +83,8 @@
       template:
         src: "{{ playbook_dir }}/templates/{{ item.src }}.j2"
         dest: "{{ item.dst }}"
-        owner: "{{ item.owner | default('siddharthist') }}"
-        group: "{{ item.group | default('siddharthist') }}"
+        owner: "{{ item.owner | default(username) }}"
+        group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0664') }}"
       with_items:
         - src: Xresources
