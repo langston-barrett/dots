@@ -22,15 +22,14 @@ values."
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t)
      emoji
-     git
-     org
+     fasd ; SPC f a s
+     git  ; SPC g
      (shell :variables
             shell-default-height 30
             shell-default-shell 'ansi-term
             shell-default-position 'right)
-                                        ; spell-checking
+     spell-checking
      syntax-checking
-     ranger
      vagrant
      version-control
      vinegar ; improve dired
