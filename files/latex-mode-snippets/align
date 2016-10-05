@@ -3,5 +3,6 @@
 # key: ali
 # --
 \begin{align}
-	$0
+	${0:x} &= \\\\
+	${1:y} &= \\\\
 \end{align}

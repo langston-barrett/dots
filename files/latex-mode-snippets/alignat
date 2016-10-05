@@ -3,6 +3,6 @@
 # key: alignat
 # --
 \begin{alignat*}{3}
-  & a &&= b &&= c \\
-  & x &&= y &&= z \\
+  & a &&= b &&= c \\\\
+  & x &&= y &&= z \\\\
 \end{alignat*}
