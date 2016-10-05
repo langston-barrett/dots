@@ -10,10 +10,9 @@ for symlinking and mild templating.
 Anything complex or involving services/packages is upstreamed to nixpkgs.
 
 TODO:
- - [ ] dunst
+ - [ ] dunst (see [nixpkgs#19183](https://github.com/NixOS/nixpkgs/pull/19183), [nixpkgs#11167(https://github.com/NixOS/nixpkgs/pull/11167))
  - [ ] gpg + agent
  - [ ] photo management via lychee
  - [ ] secure/ for ssh, gpg keys, network passwords
  - [ ] acpid - handle power events
  - When it hits 1.0 - https://github.com/shockone/black-screen
- - https://github.com/tldr-pages/tldr
