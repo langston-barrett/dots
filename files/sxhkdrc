@@ -15,8 +15,10 @@ XF86AudioRaiseVolume
 super + d
     nohup rofi -show run &> /dev/null &
 
+# Will open an emacs client on the scratch buffer
 super + e
-    emacsclient --create-frame ~/Dropbox/todo/todo.txt
+    LD_LIBRARY_PATH=/nix/store/q1ayxyg7b3dba9wbyy4s4c2wqb60alql-emacs-24.5/share/emacs/24.5 emacs
+    #emacsclient --create-frame
 
 # Conky
 super + f

@@ -49,7 +49,6 @@ values."
      markdown
      nixos
      python
-     ; terraform
      yaml
      )
    ;; List of additional packages that will be installed without being
@@ -298,13 +297,39 @@ you should place your code here."
     (interactive)
     (spacemacs/cabal-run-tests ""))
 
+  ; TODO: open zathura at corresponding PDF
+
   ; (set-fontset-font t 'unicode "Symbola" nil 'prepend)
 
   ; (add-hook 'haskell-mode-hook 'turn-on-haskell-unicode-input-method)
 
   (setq require-final-newline t)
   (global-hl-line-mode 0)
+
+  ;; Automatically format asm code
+  ; TODO add to nixpkgs
+  ;; (defun asm-mode-setup ()
+  ;;   (set (make-local-variable 'gofmt-command) "asmfmt")
+  ;;   (add-hook 'before-save-hook 'gofmt nil t)
+  ;;   )
+
+  ;; (add-hook 'asm-mode-hook 'asm-mode-setup)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (eyebrowse helm-flyspell fasd grizzl auto-dictionary yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe vagrant-tramp vagrant use-package toml-mode toc-org spacemacs-theme spaceline smooth-scrolling smeargle shm shell-pop restart-emacs ranger rainbow-delimiters quelpa pyvenv pytest pyenv-mode py-yapf popwin pip-requirements persp-mode pcre2el paradox page-break-lines orgit org-repo-todo org-present org-pomodoro org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text monochrome-theme mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum linum-relative leuven-theme info+ indent-guide idris-mode ido-vertical-mode hy-mode hungry-delete htmlize hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-nixos-options helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery expand-region exec-path-from-shell evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-args evil-anzu eval-sexp-fu eshell-prompt-extras esh-help emoji-cheat-sheet-plus elisp-slime-nav dockerfile-mode disaster diff-hl define-word cython-mode company-statistics company-quickhelp company-nixos-options company-go company-ghc company-emoji company-cabal company-c-headers company-auctex company-anaconda cmm-mode cmake-mode clean-aindent-mode clang-format buffer-move bracketed-paste auto-yasnippet auto-highlight-symbol auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
