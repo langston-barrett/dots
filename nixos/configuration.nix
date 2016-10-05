@@ -56,10 +56,25 @@
   hardware.bluetooth.enable = true;
   services.chrony.enable = true;
 
-  services.printing = {
+  services.syncthing = {
     enable = true;
-    drivers = [ pkgs.hplipWithPlugin ];
+    group = "siddharthist";
+    user = "siddharthist";
+    useInotify = true;
   };
+
+  # services.printing = {
+  #   enable = true;
+  #   drivers = [ pkgs.hplipWithPlugin ];
+  # };
+
+  # services.dunst = {
+  #   enable = true;
+  #   global = {
+  #     alignment = "right";
+  #     font = "Monospace 20";
+  #   };
+  # };
 
   environment.systemPackages = with pkgs; [
     texlive.combined.scheme-full # lualatex, etc.
