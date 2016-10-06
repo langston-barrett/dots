@@ -3,8 +3,8 @@
 # key: deriv
 # --
 \begin{derivation}
-  1 & 1 & $P\to P$         & S \\
-  1 & 2 & $P$              & $\lor I \\
-  1 & 3 & $\lnot P$        & $\land$ E \\
+  1 & 1 & $P\to P$         & S \\\\
+  1 & 2 & $P$              & $\lor$ I \\\\
+  1 & 3 & $\lnot P$        & $\land$ E \\\\
   $\emptyset$ & 4 & $P$    & 12, 3, RAA
 \end{derivation}
