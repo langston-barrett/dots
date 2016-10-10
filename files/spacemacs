@@ -35,7 +35,6 @@ values."
      vinegar ; improve dired
 
      ;; Languages
-     ; ansible
      (c-c++ :variables c-c++-enable-clang-support t)
      dockerfile
      (go :variables gofmt-command "goimports")
