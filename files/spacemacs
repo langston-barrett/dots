@@ -35,6 +35,7 @@ values."
      vinegar ; improve dired
 
      ;; Languages
+     asm
      (c-c++ :variables c-c++-enable-clang-support t)
      dockerfile
      (go :variables gofmt-command "goimports")
