@@ -3,6 +3,6 @@
 # key: item
 # --
 \begin{itemize}
-  \itemsep0em
-  \item $0
+  %\itemsep0em
+  \item $1
 \end{itemize}

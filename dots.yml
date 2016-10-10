@@ -35,7 +35,7 @@
       - src: latexmkrc
         dst: "{{ home }}/.latexmkrc"
       - src: latex-mode-snippets
-        dst: "{{ home }}/.emacs.d/layers/auto-completion/snippets/latex-mode"
+        dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
       - src: nix-channels
         dst: "{{ home }}/.nix-channels"
       - src: pre-commit

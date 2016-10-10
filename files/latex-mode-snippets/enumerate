@@ -3,6 +3,6 @@
 # key: enum
 # --
 \begin{enumerate}%[label=\Alph*.]
-  \itemsep0em
-  \item $0
+  %\itemsep0em
+  \item $1
 \end{enumerate}
