@@ -6,5 +6,5 @@ $pdf_update_method = 0;
 $pdflatex = '([[ ! "%T" =~ \.Rtex$ ]] || R --no-save --no-restore -e "'.
 'require(knitr);' .
 'knit(\'%B.Rtex\');"' .
-') && lualatex -file-line-error %O %B'
+') && lualatex -file-line-error %O %B' 
 ;
