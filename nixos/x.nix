@@ -4,7 +4,7 @@
   imports = [];
 
   environment.systemPackages = with pkgs; [
-    arc-gtk-theme
+    arc-theme
     numix-icon-theme-circle
   ];
 
@@ -48,14 +48,14 @@
 
   environment.variables = {
     # GTK themes: Arc Dark
-    #GTK_THEME = "Arc-Dark";
-    #GTK_PATH = "$GTK_PATH:${pkgs.arc-gtk-theme}/lib/gtk-2.0:${pkgs.arc-gtk-theme}/lib/gtk-3.0";
+    GTK_THEME = "Arc-Dark";
+    GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
     #GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc-Dark/gtk-2.0/gtkrc";
 
     # GTK themes: Arc Light
-    GTK_THEME = "Arc";
-    GTK_PATH = "$GTK_PATH:${pkgs.arc-gtk-theme}/lib/gtk-2.0:${pkgs.arc-gtk-theme}/lib/gtk-3.0";
-    GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc/gtk-2.0/gtkrc";
+    #GTK_THEME = "Arc";
+    #GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
+    #GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc/gtk-2.0/gtkrc";
   };
 
   services.xbanish.enable = true;

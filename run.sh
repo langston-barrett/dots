@@ -4,3 +4,5 @@ nix-shell default.nix --run \
                             -i inventory \
                             -e ansible_python_interpreter=$(which python) \
                             dots.yml'
+sudo chown -R siddharthist:siddharthist files
+sudo chmod 755 files/latex-mode-snippets

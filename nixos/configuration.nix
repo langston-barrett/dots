@@ -63,11 +63,6 @@
     useInotify = true;
   };
 
-  # services.printing = {
-  #   enable = true;
-  #   drivers = [ pkgs.hplipWithPlugin ];
-  # };
-
   # services.dunst = {
   #   enable = true;
   #   global = {
@@ -75,11 +70,6 @@
   #     font = "Monospace 20";
   #   };
   # };
-
-  environment.systemPackages = with pkgs; [
-    texlive.combined.scheme-full # lualatex, etc.
-    zathura
-  ];
 
   nix = {
     maxJobs = 4;

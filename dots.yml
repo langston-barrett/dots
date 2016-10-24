@@ -52,6 +52,7 @@
       become: yes
       register: nixos
       file:
+        follow: true
         state: link
         src: "{{ playbook_dir }}/nixos"
         path: /etc/nixos
@@ -62,6 +63,7 @@
 
     - name: make user symlink dirs
       file:
+        follow: true
         state: directory
         path: "{{ item.dst | dirname }}"
         owner: "{{ item.owner | default(username) }}"
@@ -71,6 +73,7 @@
 
     - name: make user symlinks
       file:
+        follow: true
         state: link
         src: "{{ playbook_dir }}/files/{{ item.src }}"
         path: "{{ item.dst }}"

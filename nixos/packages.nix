@@ -15,11 +15,16 @@
     git
     gnupg
     google-chrome
-    haskellPackages.idris #
     mpw
+    R #
     su
     vim
     unzip
     zip
+
+    texlive.combined.scheme-full # lualatex, etc.
+    zathura
+
+    haskellPackages.Agda
   ];
 }

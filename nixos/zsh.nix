@@ -25,6 +25,7 @@
       screenshot = "import -window root ~/Downloads/screenshot.jpg";
       conky = "conky --config=$XDG_CONFIG_HOME/conky/conkyrc";
       nixpkgs-pr-review = "export TRAVIS_BUILD_DIR=$PWD && ./maintainers/scripts/travis-nox-review-pr.sh nixpkgs-verify nixpkgs-manual nixpkgs-tarball && ./maintainers/scripts/travis-nox-review-pr.sh nixos-options nixos-manual";
+      nix-shell = "nix-shell --pure";
 
       # Git
       ga = "git add";
