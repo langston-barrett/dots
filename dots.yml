@@ -44,8 +44,8 @@
         dst: "{{ home }}/.spacemacs"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
-      - src: xinitrc
-        dst: "{{ home }}/.xinitrc"
+      - src: xsession
+        dst: "{{ home }}/.xsession"
 
   tasks:
     - name: configure nixos

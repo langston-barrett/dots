@@ -1,0 +1,16 @@
+# screen dpi
+xrandr --output eDP1 --dpi 192
+# correct X settings
+xrdb -merge ~/.Xresources
+
+# Start some useful graphical background processes
+systemctl --user start compton
+systemctl --user start conky
+systemctl --user start dunst
+systemctl --user start emacs
+systemctl --user start redshift
+systemctl --user start sxhkd
+systemctl --user start urxvtd
+
+# So i3 knows where to find the socket.
+export RXVT_SOCKET=/run/user/$(id -u)/urxvtd-socket
