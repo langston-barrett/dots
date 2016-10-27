@@ -13,11 +13,11 @@ XF86AudioRaiseVolume
     amixer sset Master 5%+ &> /dev/null
 
 super + d
-    nohup rofi -show run &> /dev/null &
+    LD_LIBRARY_PATH= nohup rofi -show run &> /dev/null &
 
 # Will open an emacs client on the scratch buffer
 super + e
-    LD_LIBRARY_PATH=/nix/store/q1ayxyg7b3dba9wbyy4s4c2wqb60alql-emacs-24.5/share/emacs/24.5 emacs
+    LD_LIBRARY_PATH= emacs
     #emacsclient --create-frame
 
 # Conky

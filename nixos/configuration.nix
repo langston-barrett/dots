@@ -14,16 +14,9 @@
   ];
 
   # Use the gummiboot efi boot loader.
-  boot = {
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-  };
-
-  fileSystems."/archroot" = {
-    device = "/dev/disk/by-label/arch";
-    fsType = "btrfs";
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
   };
 
   i18n = {
@@ -36,9 +29,7 @@
   # Set your time zone.
   time.timeZone = "USA/Los_Angeles";
 
-  nixpkgs.config = {
-    allowUnfree = true;
-  };
+  nixpkgs.config.allowUnfree = true;
 
   fonts = {
     enableFontDir = true;
@@ -53,7 +44,7 @@
     ];
   };
 
-  hardware.bluetooth.enable = true;
+  #hardware.bluetooth.enable = true;
   services.chrony.enable = true;
 
   services.syncthing = {
@@ -77,7 +68,6 @@
     gc.automatic = true;
     useSandbox = true;
     # Use a local clone of nixpkgs at /etc/nixpkgs
-    nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/etc" ];
+    nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
   };
-
 }

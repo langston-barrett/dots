@@ -8,7 +8,8 @@ font pango:Open Sans 2
 
 # Mouse+mod floats & drags
 floating_modifier $mod
-bindsym $mod+Return exec urxvtc
+#bindsym $mod+Return exec urxvtc
+bindsym $mod+Return exec gnome-terminal
 bindsym $mod+Shift+c kill
 
 # change focus
@@ -81,12 +82,12 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-## Looks
+## Looks - i3gaps
 
-smart_gaps on
-gaps inner 20
-gaps outer 0
-smart_borders on
+#smart_gaps on
+#gaps inner 20
+#gaps outer 0
+#smart_borders on
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #555555 #555555 #555555 #555555   #555555

@@ -24,7 +24,5 @@
 
     texlive.combined.scheme-full # lualatex, etc.
     zathura
-
-    haskellPackages.Agda
   ];
 }

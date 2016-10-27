@@ -7,10 +7,6 @@
 {
   imports = [];
 
-  environment.systemPackages = with pkgs; [
-    sudo
-  ];
-
   # List services that you want to enable:
   security.sudo = {
     enable = true;
@@ -26,7 +22,7 @@
   };
 
   users = {
-    defaultUserShell = "/run/current-system/sw/bin/zsh";
+    defaultUserShell = "/nix/var/nix/profiles/default/bin/zsh";
     groups = {
       siddharthist = {
         gid = 1000;

@@ -6,6 +6,7 @@
   environment.systemPackages = with pkgs; [
     arc-theme
     numix-icon-theme-circle
+    vanilla-dmz # cursor theme
   ];
 
   services.xserver = {
@@ -24,16 +25,11 @@
       '';
     };
 
-    displayManager = {
-      slim = {
-        enable = true;
-        defaultUser = "siddharthist";
-      };
-    };
-
-    # multitouch.enable = true;
-
+    #multitouch.enable = true;
+    displayManager.slim.enable = true;
+    #displayManager.slim.defaultUser = "siddharthist";
     windowManager.i3-gaps.enable = true;
+    windowManager.i3-gaps.configFile = "/home/siddharthist/.config/i3/config";
     monitorSection = ''
       DisplaySize   294 166
     '';

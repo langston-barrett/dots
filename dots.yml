@@ -18,8 +18,8 @@
         dst: "{{ xdg_config_home }}/beets/config.yaml"
       - src: gtkrc-2.0
         dst: "{{ home }}/.gtkrc-2.0"
-      - src: gtkrc-3.0.ini
-        dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
+      #- src: gtkrc-3.0.ini
+        #dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
       - src: conkyrc
         dst: "{{ xdg_config_home }}/conky/conkyrc"
       - src: compton.conf
@@ -36,12 +36,19 @@
         dst: "{{ home }}/.latexmkrc"
       - src: latex-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
-      - src: nix-channels
-        dst: "{{ home }}/.nix-channels"
+        mode: "0775"
+      #- src: nix-channels
+        #dst: "{{ home }}/.nix-channels"
       - src: pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
+      # Currently breaks GNOME on Fedora
+      # - src: profile
+      #   dst: "{{ home }}/.profile"
+      #   mode: "0775"
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
+      - src: spacemacs.desktop
+        dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
       - src: xsession
