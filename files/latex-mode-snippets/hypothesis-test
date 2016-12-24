@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
-# name: align*
-# key: ali*
+# name: hypotheses
+# key: hyp
 # --
 \begin{align*}
-	$0 &= \\\\
-	 &= \\\\
+	$0 &= \\ \\
+	$1 &= \\ \\
 \end{align*}

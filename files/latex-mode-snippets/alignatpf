@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: alignatpf
+# key: alignatpf
+# --
+\begin{alignat*}{3}
+	$1 &= &&\quad\text{By } \\\\
+	   &= &&\quad\text{By } \\\\
+\end{alignat*}

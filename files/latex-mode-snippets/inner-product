@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: inner-product
+# key: inner
+# --
+langle \vec{u},\vec{v} \rangle

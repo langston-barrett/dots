@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Anki
+Comment=Flashcards
+Exec=anki
+Icon=/home/siddharthist/code/dots/files/anki.png
+Type=Application
+Terminal=false
+StartupWMClass=Anki
