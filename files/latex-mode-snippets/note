@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: note
+# key: note
+# --
+\begin{note}
+  \begin{field}
+    $1
+  \end{field}
+
+  \begin{field}
+  \end{field}
+\end{note}
