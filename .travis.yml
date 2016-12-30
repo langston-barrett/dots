@@ -1,2 +1,2 @@
 language: nix
-script: nix-shell -A dots --command "sh run.sh"
+script: nix-shell --run "sh run.sh"
