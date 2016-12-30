@@ -61,7 +61,7 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    enableSyntaxHighlighting = true;
+    #enableSyntaxHighlighting = true;
 
     # custom prompt: "code > "
     promptInit = ''

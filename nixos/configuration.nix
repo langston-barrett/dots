@@ -7,6 +7,7 @@
       ./networking.nix
       ./packages.nix
       ./ssh.nix
+      ./steam.nix
       ./systemd.nix
       ./users.nix
       ./x.nix
@@ -44,23 +45,8 @@
     ];
   };
 
-  #hardware.bluetooth.enable = true;
+  hardware.bluetooth.enable = true;
   services.chrony.enable = true;
-
-  services.syncthing = {
-    enable = true;
-    group = "siddharthist";
-    user = "siddharthist";
-    useInotify = true;
-  };
-
-  # services.dunst = {
-  #   enable = true;
-  #   global = {
-  #     alignment = "right";
-  #     font = "Monospace 20";
-  #   };
-  # };
 
   nix = {
     maxJobs = 4;
@@ -68,6 +54,6 @@
     gc.automatic = true;
     useSandbox = true;
     # Use a local clone of nixpkgs at /etc/nixpkgs
-    nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
+    #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
   };
 }

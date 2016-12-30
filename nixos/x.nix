@@ -5,7 +5,7 @@
 
   environment.systemPackages = with pkgs; [
     arc-theme
-    numix-icon-theme-circle
+    moka-icon-theme
     vanilla-dmz # cursor theme
   ];
 
@@ -14,7 +14,7 @@
     layout = "us";
 
     synaptics = {
-      enable = true;
+      #enable = true;
       # OSX-like "Natural" two-finger scrolling
       twoFingerScroll = true;
       horizTwoFingerScroll = true;
@@ -25,11 +25,8 @@
       '';
     };
 
-    #multitouch.enable = true;
-    displayManager.slim.enable = true;
-    #displayManager.slim.defaultUser = "siddharthist";
-    windowManager.i3-gaps.enable = true;
-    windowManager.i3-gaps.configFile = "/home/siddharthist/.config/i3/config";
+    displayManager.gdm.enable = true;
+    desktopManager.gnome3.enable = true;
     monitorSection = ''
       DisplaySize   294 166
     '';
@@ -43,18 +40,13 @@
   };
 
   environment.variables = {
-    # GTK themes: Arc Dark
-    GTK_THEME = "Arc-Dark";
-    GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
-    #GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc-Dark/gtk-2.0/gtkrc";
-
     # GTK themes: Arc Light
-    #GTK_THEME = "Arc";
-    #GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
-    #GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc/gtk-2.0/gtkrc";
+    GTK_THEME = "Arc";
+    GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
+    GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc/gtk-2.0/gtkrc";
   };
 
   services.xbanish.enable = true;
-  services.urxvtd.enable = true;
-  programs.light.enable = true;
+  #services.urxvtd.enable = true;
+  #programs.light.enable = true;
 }
