@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: ifthen
+# key: ifthen
+# --
+\begin{theorem}[$1]
+  If
+  \begin{premises}
+    \item ${2}
+  \end{premises}
+  then
+  \begin{conclusion}
+    \item 
+  \end{conclusion}
+\end{theorem}

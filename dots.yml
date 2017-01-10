@@ -37,8 +37,6 @@
       - src: latex-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
         mode: "0775"
-      #- src: nix-channels
-        #dst: "{{ home }}/.nix-channels"
       - src: pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       # Currently breaks GNOME on Fedora
@@ -51,8 +49,8 @@
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
-      - src: xsession
-        dst: "{{ home }}/.xsession"
+      - src: xmodmap
+        dst: "{{ home }}/.xmodmap"
 
   tasks:
     - name: configure nixos

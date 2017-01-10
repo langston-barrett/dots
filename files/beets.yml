@@ -1,5 +1,5 @@
 library: ~/.config/beets/library.blb
-directory: ~/library/music-beets
+directory: ~/library/music
 threaded: no
 
 plugins:

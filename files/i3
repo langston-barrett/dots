@@ -1,15 +1,15 @@
 # dest: $XDG_CONFIG_HOME/i3/config
 
 # Super. Alt is Mod1.
-set $mod Mod4
+set $mod Mod1
 
 # Window titles
 font pango:Open Sans 2
 
 # Mouse+mod floats & drags
 floating_modifier $mod
-#bindsym $mod+Return exec urxvtc
-bindsym $mod+Return exec gnome-terminal
+bindsym $mod+d exec rofi -show run
+bindsym $mod+Return exec urxvt
 bindsym $mod+Shift+c kill
 
 # change focus
@@ -26,6 +26,16 @@ bindsym $mod+Shift+l move right
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
+
+# brightness, volume, etc
+bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
+bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
+bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86MonBrightnessUp exec light -A 5
+
+# These also work for pulse
+#bindsym XF86AudioLowerVolume exec /usr/bin/pactl set-sink-volume 0 -- '-5%'
+#bindsym XF86AudioRaiseVolume exec /usr/bin/pactl set-sink-volume 0 -- '+5%'
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+t layout stacking

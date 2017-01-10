@@ -6,6 +6,8 @@
   environment.systemPackages = with pkgs; [
     arc-theme
     moka-icon-theme
+    # TODO
+    #xmodmap # swap l-ctrl and caps lock
     vanilla-dmz # cursor theme
   ];
 
@@ -25,8 +27,22 @@
       '';
     };
 
-    displayManager.gdm.enable = true;
+    displayManager = {
+      gdm.enable = true;
+      # these replace .xsession
+      #export DISPLAY=:0.0
+      # screen dpi
+      #xrandr --output eDP1 --dpi 192
+      # correct X settings
+      # So urxvt knows where to find the socket.
+      #export RXVT_SOCKET=/run/user/$(id -u)/urxvtd-socket
+      sessionCommands = ''
+        xrdb -merge ~/.Xresources
+        xmodmap ~/.xmodmap
+      '';
+    };
     desktopManager.gnome3.enable = true;
+    windowManager.i3.enable = true;
     monitorSection = ''
       DisplaySize   294 166
     '';
