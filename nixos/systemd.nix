@@ -54,25 +54,14 @@
             RestartSec = "5s";
           };
         };
-
-        compton = {
-          description = "A small X compositing manager";
-          after = [ "display-manager.service" ];
-          partOf = [ "display-manager.service" ];
-          wantedBy = [ "graphical.target" ];
-          serviceConfig = {
-            ExecStart = "${pkgs.compton}/bin/compton";
-            Restart = "on-failure";
-            RestartSec = "5s";
-          };
-        };
       };
     };
     # Actually enable them
     services = {
       conky.enable = true;
-      emacs.enable = true;
-      sxhkd.enable = true;
+      compton.enable = true;
+      emacs.enable = false;
+      sxhkd.enable = false;
     };
   };
 }

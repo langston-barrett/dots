@@ -15,9 +15,12 @@
   ];
 
   # Use the gummiboot efi boot loader.
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
+  boot = {
+    supportedFilesystems = ["exfat" "btrfs" "ntfs" "vfat"];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+    };
   };
 
   i18n = {
@@ -39,9 +42,8 @@
       fira-code
       # noto-fonts-emoji-git
       opensans-ttf
-      # TODO: get Monoid in nixpkgs
-      # TODO: update this package in nixpkgs
-      # symbola
+      oxygenfonts
+      helvetica-neue-lt-std
     ];
   };
 

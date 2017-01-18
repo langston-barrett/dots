@@ -8,7 +8,7 @@
 
   vars:
     become: false
-    colorscheme: "{{ colorscheme_brin }}"
+    colorscheme: "{{ colorscheme_zenburn }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
     username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
@@ -16,8 +16,8 @@
     symlinks:
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
-      - src: gtkrc-2.0
-        dst: "{{ home }}/.gtkrc-2.0"
+      # - src: gtkrc-2.0
+      #   dst: "{{ home }}/.gtkrc-2.0"
       #- src: gtkrc-3.0.ini
         #dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
       - src: conkyrc

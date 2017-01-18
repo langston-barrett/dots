@@ -4,6 +4,7 @@
   imports = [];
 
   environment.systemPackages = with pkgs; [
+    flac
     pavucontrol
     ncmpcpp
     gst_ffmpeg
@@ -27,12 +28,12 @@
   #   enable = true;
   #   configuration = ''
   #     [local]
-  #     media_dir = /var/lib/mopidy/music
+  #     media_dir = /home/siddharthist/library/music
   #     scan_follow_symlinks = true
 
   #     [file]
   #     enabled = true
-  #     media_dirs = /var/lib/mopidy/music
+  #     media_dir = /home/siddharthist/library/music
   #     follow_symlinks = true
 
   #     [soundcloud]
@@ -40,6 +41,7 @@
   #   '';
   #   extensionPackages = with pkgs; [
   #     # TODO: upstream mopidy-podcast
+  #     mopidy-moped
   #     mopidy-musicbox-webclient
   #     mopidy-soundcloud
   #     mopidy-youtube
@@ -48,21 +50,21 @@
 
   #services.ympd.enable = true;
 
-  services.mpd = {
-    enable = true;
-    user = "siddharthist";
-    group = "siddharthist";
-    musicDirectory = "/home/siddharthist/library/music-beets";
-    dataDir = "/home/siddharthist/library/mpd-data";
-    # use aplay -l to find hw:card,device tuple
-    extraConfig = ''
-      audio_output {
-        type "alsa"
-        name "usb sound card"
-        device "hw:2,0"
-      }
-    '';
-  };
+  # services.mpd = {
+  #   enable = true;
+  #   user = "siddharthist";
+  #   group = "siddharthist";
+  #   musicDirectory = "/home/siddharthist/library/music";
+  #   dataDir = "/home/siddharthist/library/mpd-data";
+  #   # use aplay -l to find hw:card,device tuple
+  #   extraConfig = ''
+  #     audio_output {
+  #       type "alsa"
+  #       name "usb sound card"
+  #       device "hw:2,0"
+  #     }
+  #   '';
+  # };
 
   # sound.enableMediaKeys = true; # sxhkd takes care of this
   hardware.pulseaudio = {

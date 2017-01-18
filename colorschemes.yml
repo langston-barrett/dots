@@ -22,32 +22,6 @@ colorscheme_brin:
   background-alt: "#343d46"
   selected:       "#ffffff" # white
 
-# based on https://github.com/nashamri/spacemacs-theme/blob/master/spacemacs-common.el
-colorscheme_spacemacs:
-  no color: "#b2b2b2"
-  red: "#e0211d"
-  green: "#67b11d"
-  yellow: "#292b2e"
-  blue: "#827591"
-  magenta: "#5d4d7a"
-  cyan: "#2aa1ae"
-  gray: "#545557"
-  light black: "#292b2e"
-  light red: "#dc752f"
-  light green: "#2d9574"
-  light yellow: "#9a9aba"
-  light blue: "#4f97d7"
-  light magenta: "#c56ec3"
-  light cyan: "#ce537a"
-  light gray: "#e3dedd"
-
-  text: "#b2b2b2"
-  selected: "#c56ec3"
-  urgent: "#e0211d"
-  background: "#545557"
-  background-alt: "#292b2e"
-  foreground: "#b2b2b2"
-
 # Solarized dark colorscheme
 colorscheme_solarized:
   no color: "#073642"
@@ -102,3 +76,31 @@ colorscheme_arc:             # ansi code, ansi name, program
   # From https://github.com/altercation/solarized/blob/master/xresources/solarized
   background: "#F5F6F7"
   foreground: "#5C616C"
+
+# https://gist.github.com/cqpx/1436584
+colorscheme_zenburn:
+  no color:       "#DCDCCC" # 0,  no color,     text in terminal
+  red:            "#BC8383" # 1,  red,          booleans in vim
+  green:          "#5F7F5F" # 2,  green,        ???
+  yellow:         "#E0CF9F" # 3,  yellow,       ???
+  blue:           "#7CB8BB" # 4,  blue,         selected line in rofi
+  magenta:        "#DC8CC3" # 5,  magenta,      ???
+  cyan:           "#93E0E3" # 6,  cyan,         ???
+  gray:           "#DCDCCC" # 7,  gray,         background in terminal
+  light black:    "#5F5F5F" # 8,  light black,  ???
+  light red:      "#CC9393" # 9,  light red,    ???
+  light green:    "#7F9F7F" # 10, light green,  ???
+  light yellow:   "#F0DFAF" # 11, light yellow, ???
+  light blue:     "#8CD0D3" # 12, light blue,   ???
+  light magenta:  "#DC8CC3" # 13, light purple, ???
+  light cyan:     "#93E0E3" # 14, light cyan,   ???
+  light gray:     "#FFFFFF" # 15, light gray,   ???
+
+  text:       "#DCDCCC" # no color
+  selected:   "#BC8383" # 
+  urgent:     "#BC8383" # 
+
+  background-alt: "#3F3F3F" # gray
+  # From https://github.com/altercation/solarized/blob/master/xresources/solarized
+  background: "#3F3F3F"
+  foreground: "#DCDCCC"

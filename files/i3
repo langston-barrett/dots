@@ -1,3 +1,4 @@
+#-*- mode: conf -*-
 # dest: $XDG_CONFIG_HOME/i3/config
 
 # Super. Alt is Mod1.
@@ -6,9 +7,14 @@ set $mod Mod1
 # Window titles
 font pango:Open Sans 2
 
+# setup
+exec dropbox start
+exec feh --bg-scale ~/Dropbox/langston/fondos-de-pantalla/misty-forest.jpg
+exec compton # Works well with no config file
+
 # Mouse+mod floats & drags
 floating_modifier $mod
-bindsym $mod+d exec rofi -show run
+bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 1100 -opacity 55 -bw 0 -font "Oxygen-Sans 32"
 bindsym $mod+Return exec urxvt
 bindsym $mod+Shift+c kill
 
@@ -94,10 +100,10 @@ bindsym $mod+r mode "resize"
 
 ## Looks - i3gaps
 
-#smart_gaps on
-#gaps inner 20
-#gaps outer 0
-#smart_borders on
+smart_gaps on
+gaps inner 20
+gaps outer 0
+smart_borders on
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #555555 #555555 #555555 #555555   #555555

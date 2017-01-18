@@ -2,7 +2,7 @@ conky.config = {
     alignment="top_left",
     background=false,
     use_xft=true,
-    font="Fira Code:size=18";
+    font="Oxygen-Sans:size=18";
     override_utf8_locale=true;
     update_interval=1,
     total_run_times=0,
@@ -19,7 +19,7 @@ conky.config = {
     minimum_width=3200,
     maximum_width=3200,
     default_color="#F5F6F7",
-    default_outline_color="#5294E2",
+    default_outline_color="#999",
 
     -- TEXT
     draw_borders=false,
@@ -41,8 +41,8 @@ conky.config = {
 -- # Volume 🔈
 
 conky.text = [[
-    ${font Fira Code:normal:size=40}${tztime America/Los_Angeles %H:%M}
-    ${font Fira Code:normal:size=16}
+    ${font Oxygen-Sans:normal:size=80}${tztime America/Chicago %H:%M}
+    ${font Oxygen-Sans:normal:size=16}
     ${voffset -80}${tztime America/Los_Angeles %Y // %m // %d}
     mem: ${memperc}
     bat: ${battery_percent BAT1} ${if_match "${acpiacadapter}" == "on-line"}(+)${endif}
