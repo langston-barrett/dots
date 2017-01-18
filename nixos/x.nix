@@ -69,7 +69,6 @@
   };
 
   services.xbanish.enable = true;
-  services.physlock.enable = true;
   #services.urxvtd.enable = true;
   programs.light.enable = true;
 }

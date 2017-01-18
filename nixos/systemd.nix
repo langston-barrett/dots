@@ -16,30 +16,15 @@
     user = {
 
       services = {
-        sxhkd = {
-          description = "Simple X hotkey daemon";
-          # documentation = "man:sxhkd(1)";
 
-          after = [ "display-manager.service" ];
-          partOf = [ "display-manager.service" ];
-          wantedBy = [ "graphical.target" ];
-
+        i3lock = {
+          enable = true;
+          description = "Automatically lock screen before going to sleep";
+          wantedBy = [ "default.target" ];
+          path = with pkgs; [ xss-lock i3lock-fancy ];
           serviceConfig = {
-            ExecStart = "${pkgs.sxhkd}/bin/sxhkd";
-            Restart = "on-failure";
-            RestartSec = "5s";
-          };
-        };
-
-        conky = {
-          description = "Advanced, highly configurable system monitor based on torsmo";
-          after = [ "display-manager.service" ];
-          partOf = [ "display-manager.service" ];
-          wantedBy = [ "graphical.target" ];
-          serviceConfig = {
-            ExecStart = "${pkgs.conky}/bin/conky --config=/home/siddharthist/.config/conky/conkyrc";
-            Restart = "on-failure";
-            RestartSec = "5s";
+            Restart = "always";
+            ExecStart = "${pkgs.xss-lock}/bin/xss-lock ${pkgs.i3lock-fancy}/bin/i3lock-fancy";
           };
         };
 
@@ -56,12 +41,11 @@
         };
       };
     };
+
     # Actually enable them
     services = {
-      conky.enable = true;
-      compton.enable = true;
-      emacs.enable = false;
-      sxhkd.enable = false;
+      i3lock.enable = true;
+      feh.enable = true;
     };
   };
 }
