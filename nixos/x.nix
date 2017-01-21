@@ -13,6 +13,18 @@
     vanilla-dmz # cursor theme
   ];
 
+  fonts = {
+    enableFontDir = true;
+    enableGhostscriptFonts = true;
+    fonts = with pkgs; [
+      fira-code
+      # noto-fonts-emoji-git
+      opensans-ttf
+      oxygenfonts
+      helvetica-neue-lt-std
+    ];
+  };
+
   services.xserver = {
     enable = true;
     layout = "us";

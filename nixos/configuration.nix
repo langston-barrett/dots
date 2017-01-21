@@ -30,25 +30,19 @@
     defaultLocale = "en_US.UTF-8";
   };
 
-  # Set your time zone.
-  time.timeZone = "USA/Los_Angeles";
-
-  nixpkgs.config.allowUnfree = true;
-
-  fonts = {
-    enableFontDir = true;
-    enableGhostscriptFonts = true;
-    fonts = with pkgs; [
-      fira-code
-      # noto-fonts-emoji-git
-      opensans-ttf
-      oxygenfonts
-      helvetica-neue-lt-std
-    ];
-  };
-
   hardware.bluetooth.enable = true;
+  nixpkgs.config.allowUnfree = true;
   services.chrony.enable = true;
+  time.timeZone = "USA/Los_Angeles";
+  services.physlock.enable = true;
+
+  security = {
+    hideProcessInformation = true;
+    grsecurity.enable = true;
+    # TODO: test this
+    #grsecurity.disableEfiRuntimeServices = true;
+    #grsecurity.lockTunables = true;
+  };
 
   nix = {
     maxJobs = 4;

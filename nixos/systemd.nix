@@ -44,7 +44,7 @@
 
     # Actually enable them
     services = {
-      i3lock.enable = true;
+      #i3lock.enable = true;
       feh.enable = true;
     };
   };
