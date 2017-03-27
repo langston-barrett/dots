@@ -31,17 +31,15 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     ansible
-     helm
+     helm ; full-featured auto-completion
      emacs-lisp
 
      ;; Features
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-complete-with-key-sequence "ff")
-     ;; fasd ; SPC f a s
      git  ; SPC g m
-     helm ; full-featured auto-completion
+     gnus ; SPC a g
      (shell :variables
             shell-default-shell 'ansi-term
             shell-default-position 'bottom)
@@ -50,12 +48,12 @@ values."
 
      ;; Languages
      ;; asm
-     (c-c++ :variables c-c++-enable-clang-support t)
-     ;; coq
+     ;; (c-c++ :variables c-c++-enable-clang-support t)
+     coq
      ;; (go :variables gofmt-command "goimports")
      emacs-lisp
-     ess ; R
-     haskell
+     ;; ess ; R
+     (haskell :variables haskell-enable-hindent-style "fundamental")
      ;; TODO: set viewer to zathura
      (latex :variables
             latex-build-command "LatexMk"
@@ -63,7 +61,7 @@ values."
      markdown
      nixos
      python
-     shell-scripts ; enable shellcheck linting. TODO requires shellcheck. 
+     shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
      )
    ;; List of additional packages that will be installed without being
@@ -152,8 +150,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   ;dotspacemacs-default-font '("Fira Code"
-   dotspacemacs-default-font '("Fira Code"
+   dotspacemacs-default-font '("Hack"
                                :size 30
                                :weight normal
                                :width normal
@@ -321,63 +318,70 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; Disable prettified Coq printing: use unicode!
+  (with-eval-after-load 'company-coq
+     (add-to-list 'company-coq-disabled-features 'prettify-symbols))
+
   ;; Ctrl-] will act just like right arrow in insert mode
   (define-key evil-insert-state-map (kbd "C-]") 'forward-char)
 
   ;; Set escape keybinding to "jk"
   (setq-default evil-escape-key-sequence "jk")
 
-  ;; Call a formatting program on the current buffer
-  ;; TODO: replace current buffer instead of inserting
-  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Deletion.html
-  (defun siddharthist//format-buffer (program)
-    (call-process program (buffer-file-name) t))
-
-  (defun siddharthist/sh-mode ()
-    "My own personal preferences for `sh-mode'"
-    (setq sh-basic-offset 2
-          sh-indentation 2))
-  (add-hook 'sh-mode-hook 'siddharthist/sh-mode)
-
-  (defun spacemacs//cabal-run-tests (args)
-    (interactive)
-    (save-selected-window
-      (projectile-run-async-shell-command-in-root
-       (concat "cabal test " args))))
-
-  (defun spacemacs/cabal-run-package-tests ()
-    (interactive)
-    (spacemacs/cabal-run-tests ""))
-
+  (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
+                                            sh-indentation 2)))
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
   (setq require-final-newline t)
-  ;(setq TeX-view-program-selection '((output-pdf "Zathura")))
-  (setq TeX-view-program-selection '((output-pdf "Evince")))
-  ;; Automatically format asm code
-                                        ; TODO add to nixpkgs
-  ;; (defun asm-mode-setup ()
-  ;;   (set (make-local-variable 'gofmt-command) "asmfmt")
-  ;;   (add-hook 'before-save-hook 'gofmt nil t)
-  ;;   )
 
-  ; CPDT
-  (setq coq-load-path '("/home/siddharthist/Dropbox/jim/math-classes" "MathClasses")))
+  ;; make backslash easier in TeX
+  ;; TODO: make backslash semicolon
+  (add-hook 'TeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
+  (setq TeX-view-program-selection '((output-pdf "Zathura")))
 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS
+  ;; ;; Get email, and store in nnml
+  ;; (setq gnus-secondary-select-methods
+  ;;       '(
+  ;;         (nnimap "gmail"
+  ;;                 (nnimap-address
+  ;;                  "imap.gmail.com")
+  ;;                 (nnimap-server-port 993)
+  ;;                 (nnimap-stream ssl))
+  ;;         ))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (yapfify yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org spaceline powerline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox spinner orgit org org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint intero insert-shebang info+ indent-guide ido-vertical-mode hydra hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-nixos-options helm-mode-manager helm-make projectile helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight ess-smart-equals ess-R-object-popup ess-R-data-view ctable ess julia-mode eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump disaster diminish define-word cython-mode company-statistics company-shell company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company column-enforce-mode cmm-mode cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed auctex-latexmk auctex anaconda-mode pythonic f dash s aggressive-indent spacemacs-theme quelpa adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+  ;; ;; Send email via Gmail:
+  ;; (setq message-send-mail-function 'smtpmail-send-it
+  ;;       smtpmail-default-smtp-server "smtp.gmail.com")
+
+  ;; ;; Archive outgoing email in Sent folder on imap.gmail.com:
+  ;; (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+  ;;       gnus-message-archive-group "[Gmail]/Sent Mail")
+
+  ;; ;; set return email address based on incoming email address
+  ;; (setq gnus-posting-styles
+  ;;       '(((header "to" "bbarrett909@gmail.com")
+  ;;          (address "bbarrett909@gmail.com"))
+  ;;         ((header "to" "langston.barret@gmail.com")
+  ;;          (address "langston.barret@gmail.com"))
+  ;;         ((header "to" "brbarrett@reed.edu")
+  ;;          (address "brbarrett@reed.edu"))))
+
+  ;; ;; store email in ~/gmail directory
+  ;; (setq nnml-directory "~/Dropbox/langston/mail")
+  ;; (setq message-directory "~/Dropbox/langston/mail")
+
+  ;; ;; Show unread messages with "o"
+  ;; (defun my-gnus-group-list-subscribed-groups ()
+  ;;   "List all subscribed groups with or without un-read messages"
+  ;;   (interactive)
+  ;;   (gnus-group-list-all-groups 5))
+
+  ;; ;; list all groups even they contain zero un-read messages
+  ;; (define-key gnus-group-mode-map
+  ;;   (kbd "o") 'my-gnus-group-list-subscribed-groups)
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS
+  )
+
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -390,7 +394,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (jinja2-mode company-ansible ansible-doc ansible yapfify yaml-mode xterm-color ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org spaceline powerline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox spinner orgit org org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text mmm-mode markdown-toc markdown-mode magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint intero insert-shebang info+ indent-guide ido-vertical-mode hydra hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-projectile helm-nixos-options helm-mode-manager helm-make projectile helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight ess-smart-equals ess-R-object-popup ess-R-data-view ctable ess julia-mode eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump disaster diminish define-word cython-mode company-statistics company-shell company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company-c-headers company-auctex company-anaconda company column-enforce-mode cmm-mode cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed auctex-latexmk auctex anaconda-mode pythonic f dash s aggressive-indent spacemacs-theme quelpa adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (anaconda-mode evil yasnippet company helm helm-core magit magit-popup git-commit async imenu-list proof-general company-coq company-math math-symbol-lists zenburn-theme yapfify yaml-mode xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint intero insert-shebang info+ indent-guide hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag hc-zenburn-theme haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word cython-mode company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-auctex company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

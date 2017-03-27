@@ -34,14 +34,14 @@ bindsym $mod+Shift+l move right
 bindsym $mod+f fullscreen toggle
 
 # brightness, volume, etc
-bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
-bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
+# bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
+# bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
 bindsym XF86MonBrightnessDown exec light -U 5
 bindsym XF86MonBrightnessUp exec light -A 5
 
 # These also work for pulse
-#bindsym XF86AudioLowerVolume exec /usr/bin/pactl set-sink-volume 0 -- '-5%'
-#bindsym XF86AudioRaiseVolume exec /usr/bin/pactl set-sink-volume 0 -- '+5%'
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 1 "-5%"
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 1 +5%
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+t layout stacking
@@ -100,10 +100,10 @@ bindsym $mod+r mode "resize"
 
 ## Looks - i3gaps
 
-smart_gaps on
-gaps inner 20
-gaps outer 0
-smart_borders on
+# smart_gaps on
+# gaps inner 20
+# gaps outer 0
+# smart_borders on
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #555555 #555555 #555555 #555555   #555555

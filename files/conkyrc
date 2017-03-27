@@ -41,9 +41,9 @@ conky.config = {
 -- # Volume 🔈
 
 conky.text = [[
-    ${font Oxygen-Sans:normal:size=80}${tztime America/Chicago %H:%M}
+    ${font Oxygen-Sans:normal:size=80}${tztime America/Los_Angeles %H:%M}
     ${font Oxygen-Sans:normal:size=16}
-    ${voffset -80}${tztime America/Los_Angeles %Y // %m // %d}
+    ${voffset -200}${tztime America/Los_Angeles %Y // %m // %d}
     mem: ${memperc}
     bat: ${battery_percent BAT1} ${if_match "${acpiacadapter}" == "on-line"}(+)${endif}
     fs: ${fs_used_perc /}
