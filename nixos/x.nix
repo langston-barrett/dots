@@ -1,5 +1,12 @@
 { config, pkgs, ... }:
 
+let
+  portland = {
+    latitude = "45.480";
+    longitude = "-122.63";
+  };
+  location = portland;
+in
 {
   imports = [];
 
@@ -17,9 +24,12 @@
     enableFontDir = true;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
-      fira-code
-      # noto-fonts-emoji-git
+      # fira-code
+      noto-fonts-emoji
+      hack-font
+      #ubuntu-font-family
       opensans-ttf
+      overpass
       oxygenfonts
       helvetica-neue-lt-std
     ];
@@ -43,11 +53,6 @@
 
     displayManager = {
       lightdm.enable = true;
-      # these replace .xsession
-      #export DISPLAY=:0.0
-      # screen dpi
-      #xrandr --output eDP1 --dpi 192
-      # correct X settings
       # So urxvt knows where to find the socket.
       #export RXVT_SOCKET=/run/user/$(id -u)/urxvtd-socket
       sessionCommands = ''
@@ -55,22 +60,22 @@
         xmodmap ~/.xmodmap
       '';
     };
-    #desktopManager.kde5.enable = true;
-    desktopManager.gnome3.enable = true;
     desktopManager.xfce.enable = true;
-    desktopManager.lxqt.enable = true;
     windowManager.i3.enable = true;
     windowManager.i3.package = pkgs.i3-gaps;
     monitorSection = ''
       DisplaySize   294 166
     '';
+
+    # TODO: get rid of ~/.xmodmap and see if this works
+    xkbOptions = "ctrl:swapcaps";
   };
 
   services.redshift = {
     enable = true;
     # Portland
-    latitude = "45.480";
-    longitude = "-122.63";
+    latitude = location.latitude;
+    longitude = location.longitude;
   };
 
   environment.variables = {

@@ -17,18 +17,18 @@
 
       services = {
 
-        i3lock = {
-          enable = true;
-          description = "Automatically lock screen before going to sleep";
-          wantedBy = [ "default.target" ];
-          path = with pkgs; [ xss-lock i3lock-fancy ];
-          serviceConfig = {
-            Restart = "always";
-            ExecStart = "${pkgs.xss-lock}/bin/xss-lock ${pkgs.i3lock-fancy}/bin/i3lock-fancy";
-          };
-        };
+        #i3lock = {
+          #description = "Automatically lock screen before going to sleep";
+          #wantedBy = [ "default.target" ];
+          #path = with pkgs; [ xss-lock i3lock-fancy ];
+          #serviceConfig = {
+            #Restart = "always";
+            #ExecStart = "${pkgs.xss-lock}/bin/xss-lock ${pkgs.i3lock-fancy}/bin/i3lock-fancy";
+          #};
+        #};
 
         feh = {
+          enable = true;
           description = "Use feh image viewer to set the wallpaper";
           after = [ "display-manager.service" ];
           partOf = [ "display-manager.service" ];
@@ -40,12 +40,6 @@
           };
         };
       };
-    };
-
-    # Actually enable them
-    services = {
-      #i3lock.enable = true;
-      feh.enable = true;
     };
   };
 }

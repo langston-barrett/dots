@@ -8,18 +8,7 @@
   imports = [];
 
   # List services that you want to enable:
-  security.sudo = {
-    enable = true;
-    extraConfig = ''
-      Cmnd_Alias SUSPEND = /run/current-system/sw/bin/systemctl suspend
-      Cmnd_Alias SHUTDOWN = /run/current-system/sw/bin/systemctl poweroff
-      Cmnd_Alias REBOOT = /run/current-system/sw/bin/systemctl reboot
-      Cmnd_Alias STATUS = /run/current-system/sw/bin/systemctl status
-      Cmnd_Alias RFKILL = /run/current-system/sw/bin/rfkill unblock
-      Cmnd_Alias WPA_SUPPLICANT = /run/current-system/sw/bin/systemctl restart wpa_supplicant.service
-      siddharthist ALL=NOPASSWD: SUSPEND, SHUTDOWN, REBOOT, STATUS, RFKILL, WPA_SUPPLICANT
-    '';
-  };
+  security.sudo.enable = true;
 
   users = {
     defaultUserShell = "/nix/var/nix/profiles/default/bin/zsh";

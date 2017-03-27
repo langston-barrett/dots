@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       ./networking.nix
       ./packages.nix
+      ./security.nix
       ./ssh.nix
       ./steam.nix
       ./systemd.nix
@@ -30,19 +31,15 @@
     defaultLocale = "en_US.UTF-8";
   };
 
+  services.printing = {
+    enable = true;
+    drivers = [ pkgs.hplipWithPlugin ];
+  };
+
   hardware.bluetooth.enable = true;
   nixpkgs.config.allowUnfree = true;
-  services.chrony.enable = true;
+  #services.chrony.enable = true;
   time.timeZone = "USA/Los_Angeles";
-  services.physlock.enable = true;
-
-  security = {
-    hideProcessInformation = true;
-    grsecurity.enable = true;
-    # TODO: test this
-    #grsecurity.disableEfiRuntimeServices = true;
-    #grsecurity.lockTunables = true;
-  };
 
   nix = {
     maxJobs = 4;
