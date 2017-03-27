@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: proof
-# key: pf
+# key: proof
 # --
 \begin{proof}
 	$0

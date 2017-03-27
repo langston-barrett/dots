@@ -3,6 +3,7 @@
 # key: ali*
 # --
 \begin{align*}
-	$0 &= \\\\
-	 &= \\\\
+  x
+  &= y
+  &&\quad\text{} \\\\
 \end{align*}
