@@ -2,9 +2,6 @@ $pdf_mode = 1;
 $pdf_previewer = "zathura";
 $pdf_update_method = 0;
 
-@default_files = ("*.Rtex");
-$pdflatex = '([[ ! "%T" =~ \.Rtex$ ]] || R --no-save --no-restore -e "'.
-'require(knitr);' .
-'knit(\'%B.Rtex\');"' .
-') && lualatex -file-line-error %O %B' 
-;
+@default_files = ("*.tex", "*.Rtex", "*.Vtex");
+
+$pdflatex = 'if [[ -x latexmk.sh ]]; then ./latexmk.sh %T %B "%O"; else lualatex --halt-on-error %O %B; fi';
