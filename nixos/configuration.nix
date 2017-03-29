@@ -4,6 +4,7 @@
   imports = [
       ./audio.nix
       ./hardware-configuration.nix
+      ./mail.nix
       ./networking.nix
       ./packages.nix
       ./security.nix
@@ -31,10 +32,7 @@
     defaultLocale = "en_US.UTF-8";
   };
 
-  services.printing = {
-    enable = true;
-    drivers = [ pkgs.hplipWithPlugin ];
-  };
+  services.emacs.enable = true;
 
   hardware.bluetooth.enable = true;
   nixpkgs.config.allowUnfree = true;

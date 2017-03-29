@@ -6,7 +6,6 @@
   imports = [];
 
   environment.systemPackages = with pkgs; [
-    conky
     feh
     rxvt_unicode-with-plugins
     sxhkd

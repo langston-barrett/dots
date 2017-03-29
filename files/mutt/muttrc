@@ -1,23 +1,27 @@
 # -*- mode: conf -*-
 #### general
-set from           =  "Langston Barrett <langston.barrett@gmail.com>"
+set realname       = "Langston Barrett"
+set from           = "Langston Barrett <langston.barrett@gmail.com>"
 set text_flowed    = yes # better handling of line breaks
 set editor         = emacs
-set signature      = ~/.mutt/signature
+set sig_dashes           # dashes before signature
+set edit_headers         # show headers in compose
+set reverse_name         # reply as whomever it was to
 
 # configured with
+# http://stevelosh.com/blog/2012/10/the-homely-mutt/
 # https://smalldata.tech/blog/2016/09/10/gmail-with-mutt
 
-#### basics
-set imap_user        = "bbarrett909@gmail.com"
-set imap_keepalive   = 30
-unset imap_passive   # allow mutt to open new imap connection automatically
-set folder           = "imaps://imap.gmail.com"
-set spoolfile        = "+INBOX"
-set postponed        = "+[Gmail]/Drafts"
-set header_cache     = ~/Dropbox/langston/mail/headers
-set message_cachedir = ~/Dropbox/langston/mail/bodies
-set certificate_file = ~/Dropbox/langston/mail/certificates
+# Paths ----------------------------------------------
+set folder           = ~/Dropbox/langston/mail # mailbox location
+set alias_file       = ~/.mutt/alias           # where to store aliases
+set header_cache     = ~/.mutt/cache/headers   # where to store headers
+set message_cachedir = ~/.mutt/cache/bodies    # where to store bodies
+set certificate_file = ~/.mutt/certificates    # where to store certs
+set signature        = ~/.mutt/signature
+
+# Basics ----------------------------------------------
+set mbox_type        = Maildir
 set smtp_url         = "smtp://bbarrett909@smtp.gmail.com:587/"
 set move             = no
 set sort             = threads                     # like gmail
@@ -59,9 +63,17 @@ folder-hook +INBOX 'macro index,pager y "=[Gmail]/All Mail" "Archive conversatio
 folder-hook +[Gmail]/Trash macro index,pager y =INBOX "Move to inbox"
 folder-hook +[Gmail]/Starred bind  index,pager y flag-message #"Toggle star"
 
-# networking --------------------------------------
-set timeout      = 60  # idle time before scanning
-set mail_check   = 60  # minimum time between scans
+# Account Settings -----------------------------------
+set spoolfile = "+INBOX"  # Default inbox.
+set mbox      = "archive" # Other special folders.
+set postponed = "drafts"
+
+# Header Options -------------------------------------
+ignore *                                # ignore all headers
+unignore from: to: cc: date: subject:   # show only these
+unhdr_order *                           # some distros order things by default
+hdr_order from: to: cc: date: subject:  # and in this order
+
 source ~/.config/mutt/passwords # get passwords
 
 # html email --------------------------------------

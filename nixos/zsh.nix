@@ -32,27 +32,27 @@
         cd ~/Dropbox/langston/tex/math332; \
           zathura dummit.djvu & disown; \
           zathura notes/tex/1-ring-theory.pdf & disown; \
-          ${pkgs.emacs}/bin/emacs & disown; \
+          ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
           sleep 1; exit 0
       '';
       work-topology = ''
         cd ~/Dropbox/langston/tex/math342; \
           zathura lee.pdf & disown; \
           zathura notes/tex/4-6.pdf & disown; \
-          ${pkgs.emacs}/bin/emacs & disown; \
+          ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
           sleep 1; exit 0
       '';
       work-crypto = ''
         cd ~/Dropbox/langston/tex/math388; \
           zathura katz.pdf & disown; \
           zathura notes/tex/public-key-cryptography.pdf & disown; \
-          ${pkgs.emacs}/bin/emacs & disown; \
+          ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
           sleep 1; exit 0
       '';
       work-sf = ''
         cd ~/code/software-foundations; \
           firefox toc.html & disown; \
-          nix-shell --run "${pkgs.emacs}/bin/emacs & disown"; \
+          nix-shell --run "${pkgs.emacs}/bin/emacsclient --create-frame & disown"; \
           sleep 1; exit 0
       '';
 

@@ -1,0 +1,40 @@
+# -*- mode: conf -*-
+[general]
+ui             = TTY.TTYUI
+accounts       = bbarrett909
+fsync          = False
+pythonfile     = ~/.mutt/offlineimap.py
+
+[Account bbarrett909]
+localrepository  = bbarrett909-Local
+remoterepository = bbarrett909-Remote
+status_backend   = sqlite
+#postsynchook     = notmuch new
+
+[Repository bbarrett909-Local]
+type = Maildir
+localfolders = ~/Dropbox/langston/mail
+nametrans = lambda folder: {'drafts':  '[Gmail]/Drafts',
+                            'sent':    '[Gmail]/Sent Mail',
+                            'flagged': '[Gmail]/Starred',
+                            'trash':   '[Gmail]/Trash',
+                            'archive': '[Gmail]/All Mail',
+                            }.get(folder, folder)
+
+[Repository bbarrett909-Remote]
+maxconnections = 1
+type = Gmail
+sslcacertfile = /etc/pki/tls/certs/ca-bundle.crt
+remoteuser = bbarrett909@gmail.com
+remotepasseval = passwd()
+realdelete = no
+nametrans = lambda folder: {'[Gmail]/Drafts':    'drafts',
+                            '[Gmail]/Sent Mail': 'sent',
+                            '[Gmail]/Starred':   'flagged',
+                            '[Gmail]/Trash':     'trash',
+                            '[Gmail]/All Mail':  'archive',
+                            }.get(folder, folder)
+folderfilter = lambda folder: folder not in ['[Gmail]/Trash',
+                                             '[Gmail]/Important',
+                                             '[Gmail]/Spam',
+                                             ]

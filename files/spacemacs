@@ -338,48 +338,9 @@ you should place your code here."
   (add-hook 'TeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS
-  ;; ;; Get email, and store in nnml
-  ;; (setq gnus-secondary-select-methods
-  ;;       '(
-  ;;         (nnimap "gmail"
-  ;;                 (nnimap-address
-  ;;                  "imap.gmail.com")
-  ;;                 (nnimap-server-port 993)
-  ;;                 (nnimap-stream ssl))
-  ;;         ))
 
-  ;; ;; Send email via Gmail:
-  ;; (setq message-send-mail-function 'smtpmail-send-it
-  ;;       smtpmail-default-smtp-server "smtp.gmail.com")
-
-  ;; ;; Archive outgoing email in Sent folder on imap.gmail.com:
-  ;; (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
-  ;;       gnus-message-archive-group "[Gmail]/Sent Mail")
-
-  ;; ;; set return email address based on incoming email address
-  ;; (setq gnus-posting-styles
-  ;;       '(((header "to" "bbarrett909@gmail.com")
-  ;;          (address "bbarrett909@gmail.com"))
-  ;;         ((header "to" "langston.barret@gmail.com")
-  ;;          (address "langston.barret@gmail.com"))
-  ;;         ((header "to" "brbarrett@reed.edu")
-  ;;          (address "brbarrett@reed.edu"))))
-
-  ;; ;; store email in ~/gmail directory
-  ;; (setq nnml-directory "~/Dropbox/langston/mail")
-  ;; (setq message-directory "~/Dropbox/langston/mail")
-
-  ;; ;; Show unread messages with "o"
-  ;; (defun my-gnus-group-list-subscribed-groups ()
-  ;;   "List all subscribed groups with or without un-read messages"
-  ;;   (interactive)
-  ;;   (gnus-group-list-all-groups 5))
-
-  ;; ;; list all groups even they contain zero un-read messages
-  ;; (define-key gnus-group-mode-map
-  ;;   (kbd "o") 'my-gnus-group-list-subscribed-groups)
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GNUS
+  ;; Mutt support.
+  (setq auto-mode-alist (append '(("/tmp/mutt.*" . mail-mode)) auto-mode-alist))
   )
 
 (defun dotspacemacs/emacs-custom-settings ()
