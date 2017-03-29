@@ -37,6 +37,12 @@
       - src: latex-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
         mode: "0775"
+      - src: mutt/muttrc
+        dst: "{{ home }}/.mutt/muttrc"
+      - src: mutt/mailcap
+        dst: "{{ home }}/.mutt/mailcap"
+      - src: mutt/signature
+        dst: "{{ home }}/.mutt/signature"
       - src: pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       # Currently breaks GNOME on Fedora
@@ -49,12 +55,15 @@
         dst: "{{ xdg_config_home }}/ranger/rc.conf"
       - src: ranger/scope.sh
         dst: "{{ xdg_config_home }}/ranger/scope.sh"
+        mode: "0775"
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
+      - src: urlview
+        dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
 

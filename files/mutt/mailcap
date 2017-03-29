@@ -1,0 +1,7 @@
+##this is used when (v)iewing a text/html attachment:
+##allowing you to browse and "click" links
+##order matters the first entry which passes the test is used
+#gui browser if $DISPLAY is set
+text/html; firefox %s; test=test -n "$DISPLAY"; nametemplate=%s.html
+#text browser otherwise
+text/html; w3m -v -F -T text/html %s; nametemplate=%s.html; needsterminal
