@@ -14,6 +14,8 @@
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
     symlinks:
+      - src: aspell-dict
+        dst: "{{ home }}/.aspell.en.pws"
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
       # - src: gtkrc-2.0
@@ -28,6 +30,9 @@
         dst: "{{ home }}/.gitconfig"
       - src: gitignore
         dst: "{{ xdg_config_home }}/gitignore"
+      - src: gourmet
+        dst: "{{ home }}/.gourmet"
+        mode: "0775"
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
       - src: library.blb
@@ -39,10 +44,17 @@
         mode: "0775"
       - src: mutt/muttrc
         dst: "{{ home }}/.mutt/muttrc"
+      - src: mutt/muttrc.zenburn
+        dst: "{{ home }}/.mutt/muttrc.zenburn"
       - src: mutt/mailcap
         dst: "{{ home }}/.mutt/mailcap"
       - src: mutt/signature
         dst: "{{ home }}/.mutt/signature"
+      - src: mutt/offlineimap.py
+        dst: "{{ home }}/.mutt/offlineimap.py"
+        mode: "0775"
+      - src: offlineimaprc
+        dst: "{{ home }}/.offlineimaprc"
       - src: pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       # Currently breaks GNOME on Fedora
@@ -78,7 +90,7 @@
         path: /etc/nixos
         owner: "{{ username }}"
         group: "{{ username }}"
-        mode: 0660
+        mode: "0660"
       when: "{{ (become | bool) and (not ci) }}"
 
     - name: make user symlink dirs
