@@ -1,7 +1,9 @@
 ##this is used when (v)iewing a text/html attachment:
+text/html;  /usr/bin/firefox %s >/dev/null 2>&1; needsterminal
+
 ##allowing you to browse and "click" links
 ##order matters the first entry which passes the test is used
 #gui browser if $DISPLAY is set
-text/html; firefox %s; test=test -n "$DISPLAY"; nametemplate=%s.html
+#text/html; firefox %s; test=test -n "$DISPLAY"; nametemplate=%s.html
 #text browser otherwise
-text/html; w3m -v -F -T text/html %s; nametemplate=%s.html; needsterminal
+#text/html; w3m -v -F -T text/html %s; nametemplate=%s.html; needsterminal

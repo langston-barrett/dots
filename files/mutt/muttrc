@@ -1,16 +1,20 @@
 # -*- mode: conf -*-
-#### general
-set realname       = "Langston Barrett"
-set from           = "Langston Barrett <langston.barrett@gmail.com>"
-set text_flowed    = yes # better handling of line breaks
-set editor         = emacs
-set sig_dashes           # dashes before signature
-set edit_headers         # show headers in compose
-set reverse_name         # reply as whomever it was to
-
 # configured with
 # http://stevelosh.com/blog/2012/10/the-homely-mutt/
 # https://smalldata.tech/blog/2016/09/10/gmail-with-mutt
+
+# General ----------------------------------------------
+set realname       = "Langston Barrett"
+set from           = "Langston Barrett <langston.barrett@gmail.com>"
+set text_flowed    = yes # better handling of line breaks
+set editor         = "emacsclient --create-frame"
+set pager_context  = 10  # show 10 context lines
+set pager_stop     = yes # don't scroll to next email
+set fast_reply     = yes # always reply to the sender
+set include        = yes # always include previous message
+set sig_dashes           # dashes before signature
+set edit_headers         # show headers in compose
+set reverse_name         # reply as whomever it was to
 
 # Paths ----------------------------------------------
 set folder           = ~/Dropbox/langston/mail # mailbox location
@@ -28,40 +32,44 @@ set sort             = threads                     # like gmail
 set sort_aux         = reverse-last-date-received  # like gmail
 
 # Key Bindings ---------------------------------
-# index --------------
-bind index gg       first-entry
-bind index G        last-entry
-bind index R        group-reply
-bind index <tab>    sync-mailbox
-bind index <space>  collapse-thread
-# gmail --------------
-bind index,pager c  mail          # compose
-bind generic     x  tag-entry     # Select Conversation
-bind index       x  tag-thread    # Select Conversation
-bind pager       x  tag-message   # Select Conversation
-bind index,pager s  flag-message  # Star a message
-bind index,pager a  group-reply   # Reply all
-bind index,pager \# delete-thread # Delete
-bind index,pager l  copy-message  # Label
-bind index,pager v  save-message  # Move to
+# postponing --------------
+bind  compose     p        postpone-message
+bind  index       p        recall-message
+# vim --------------
+bind  index,pager N        search-opposite # navigate backwards in search
+bind  index       gg       first-entry
+bind  index       G        last-entry
+bind  pager       gg       top
+bind  pager       G        bottom
+macro index       ul       "<limit>all\n" "Undo limit (show all messages)"
+# bind  pager <shift><space> previous-page
 
-#### gmail interaction
+# other --------------
+bind  index       R        group-reply
+bind  index       <tab>    sync-mailbox
+bind  index       <space>  collapse-thread
+# gmail --------------
+bind  index,pager c  mail          # compose
+bind  generic     x  tag-entry     # Select Conversation
+bind  index       x  tag-thread    # Select Conversation
+bind  pager       x  tag-message   # Select Conversation
+bind  index,pager s  flag-message  # Star a message
+bind  index,pager a  group-reply   # Reply all
+# bind index,pager \# delete-thread # Delete
+bind index,pager v  save-message  # Move to
+# gmail/orgainlization ---------------------------------
 bind editor <space> noop
-macro index,pager e "<save-message>=[Gmail]/All Mail<enter><enter>" "Archive"
-macro index,pager d "<save-message>=[Gmail]/Trash<enter><enter>" "Trash"
+folder-hook +INBOX 'macro index,pager e "<save-message>=archive<enter><enter>" "Archive conversation"'
+folder-hook +[Gmail]/Trash macro index,pager e =INBOX "Move to inbox"
+folder-hook +[Gmail]/Starred bind  index,pager e flag-message #"Toggle star"
+macro index,pager d "<save-message>=trash<enter><enter>" "Trash"
 macro index,pager gi "<change-folder>=INBOX<enter>" "Go to inbox"
-macro index,pager gt "<change-folder>=[Gmail]/Sent Mail<enter>" "Go to 'Sent Mail'"
-macro index,pager ga "<change-folder>=[Gmail]/All Mail<enter>" "Go to all mail"
-macro index,pager gs "<change-folder>=[Gmail]/Starred<enter>" "Go to starred messages"
-macro index,pager gd "<change-folder>=[Gmail]/Drafts<enter>" "Go to drafts"
-macro index,pager I  O  "Mark as read"
-macro index,pager U  O  "Mark as unread"
-macro index,pager gl ?       "Go to 'Label'"
-macro index,pager +  =[Gmail]/Important "Mark as important"
-macro index,pager !  =[Gmail]/Spam "Report spam"
-folder-hook +INBOX 'macro index,pager y "=[Gmail]/All Mail" "Archive conversation"'
-folder-hook +[Gmail]/Trash macro index,pager y =INBOX "Move to inbox"
-folder-hook +[Gmail]/Starred bind  index,pager y flag-message #"Toggle star"
+macro index,pager gt "<change-folder>=sent<enter>" "Go to 'Sent Mail'"
+macro index,pager ga "<change-folder>=archive<enter>" "Go to all mail"
+macro index,pager gs "<change-folder>=flagged<enter>" "Go to starred messages"
+macro index,pager gd "<change-folder>=postponed<enter>" "Go to drafts"
+macro index O "<sync-mailbox><shell-escape>offlineimap<enter><sync-mailbox>"           "offlineimap: sync all"
+macro index o "<shell-escape>offlineimap -qf INBOX<enter>" "offlineimap: sync inbox"
 
 # Account Settings -----------------------------------
 set spoolfile = "+INBOX"  # Default inbox.
@@ -70,16 +78,17 @@ set postponed = "drafts"
 
 # Header Options -------------------------------------
 ignore *                                # ignore all headers
+unhdr_order *                           # no default order
 unignore from: to: cc: date: subject:   # show only these
-unhdr_order *                           # some distros order things by default
-hdr_order from: to: cc: date: subject:  # and in this order
-
-source ~/.config/mutt/passwords # get passwords
+hdr_order from: to: cc: date: subject:  # in this order
+source ~/.config/mutt/passwords # get SMTP passwords
 
 # html email --------------------------------------
 
 auto_view text/html                    # if there is only html dump that
-alternative_order text/plain text/html # helps with multipart messages
+alternative_order text/plain text/html # prefer plaintext
+
+source ~/.mutt/muttrc.zenburn
 
 # Sidebar Patch --------------------------------------
 # set sidebar_visible = yes
