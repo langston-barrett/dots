@@ -19,6 +19,7 @@ in
   environment.systemPackages = with pkgs; [
     blueman #
     curl
+    google-chrome-beta
     emacs
     # TODO: nixos won't rebuild with this :'(
     #dropbox_nixpkgs.dropbox

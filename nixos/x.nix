@@ -25,13 +25,17 @@ in
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       # fira-code
-      noto-fonts-emoji
-      hack-font
       #ubuntu-font-family
+      eb-garamond
+      # freefont-ttf          # use freeserif for TeX
+      hack-font             # great monospaced font
+      helvetica-neue-lt-std # classic
+      lato
+      libre-caslon
+      noto-fonts-emoji      # emoji
       opensans-ttf
       overpass
-      oxygenfonts
-      helvetica-neue-lt-std
+      oxygenfonts           # UI
     ];
   };
 

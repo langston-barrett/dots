@@ -10,7 +10,7 @@ font pango:Open Sans 2
 # setup
 exec dropbox start
 exec feh --bg-scale ~/Dropbox/langston/fondos-de-pantalla/misty-forest.jpg
-exec compton # Works well with no config file
+exec xmodmap ~/.xmodmap
 
 # Mouse+mod floats & drags
 floating_modifier $mod

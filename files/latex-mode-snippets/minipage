@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: minipage
+# key: minipage
+# --
+\begin{minipage}[b]{0.45\linewidth}
+  \centering
+  \includegraphics[width=\textwidth]{filename2}
+\end{minipage}
+\begin{minipage}[b]{0.45\linewidth}
+  \centering
+  \begin{tabular}{ c c }
+    \hline
+  \end{tabular}
+\end{minipage}

@@ -11,5 +11,7 @@
   services.offlineimap = {
     enable  = true;
     install = true;
+    # every ten minutes
+    onCalendar = "*:0/10";
   };
 }

@@ -2,6 +2,6 @@
 # name: definition
 # key: def
 # --
-\begin{definition}
-	$0
+\begin{definition}[$0]
+	$1
 \end{definition}

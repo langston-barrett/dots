@@ -47,4 +47,13 @@
     # Use a local clone of nixpkgs at /etc/nixpkgs
     #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
   };
+
+  system.autoUpgrade = {
+    enable = true;
+    channel = https://nixos.org/channels/nixos-17.03;
+  }
+
+  programs.virtualbox.guest.enable = true;
+  # virtualisation.virtualbox.enableHardening = true;
+  virtualisation.virtualbox.host.enable = true;
 }

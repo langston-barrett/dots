@@ -5,3 +5,11 @@ $pdf_update_method = 0;
 @default_files = ("*.tex", "*.Rtex", "*.Vtex");
 
 $pdflatex = 'if [[ -x latexmk.sh ]]; then ./latexmk.sh %T %B "%O"; else lualatex --halt-on-error %O %B; fi';
+
+# An example latexmk.sh for working with knitr:
+# #!/usr/bin/env bash
+# Rscript -e "library(knitr); knit('$1')"
+# lualatex --halt-on-error \
+#          --file-line-error \
+#          --interaction=nonstop
+#          --synctex=1 "$2"

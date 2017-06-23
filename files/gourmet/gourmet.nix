@@ -1,4 +1,3 @@
-# { stdenv, fetchFromGitHub, python2Packages, intltool }:
 { pkgs ? import <nixpkgs> { } }:
 
 let
@@ -33,13 +32,17 @@ in with pinned_pkgs; python2Packages.buildPythonApplication rec {
     intltool
   ];
 
-  # Optional requirements for plugins: pygst, gtkspell, beautifulsoup, ipython
   propagatedBuildInputs = with python2Packages; [
-    pygtk
-    pygobject3
-    sqlalchemy
-    pillow
     elib_intl
+    pillow
+    pygobject3
+    pygtk
+    sqlalchemy
+    # Optional
+    beautifulsoup
+    # pygst
+    # gtkspell
+    # ipython
   ];
 
   postInstall = ''

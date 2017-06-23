@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: defunition
+# key: defun
+# --
+\begin{align*}
+	f:X\longrightarrow Y
+  &&
+  x\xlongmapsto{f} y
+\end{align*}
