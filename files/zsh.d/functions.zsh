@@ -40,12 +40,5 @@ to_ogg() {
     # array now holds the names of all flac files
   for flac in $array; do oggenc -q 7 "$flac" && rm -f "$flac"; done
 }
-# Delete all merged git branches. Use caution, and only use on master.
-# http://goo.gl/r9Bos0
-clean_merged() {
-  git branch --merged | grep -v "\*" \
-                      | grep -v master \
-                      | xargs -n 1 git branch -d
-}
 # Recursively find and replace
 sed_recurse() { ag -g '.*' -0 | xargs -0 sed -i "$1" }
