@@ -8,14 +8,14 @@
 
   vars:
     become: false
-    colorscheme: "{{ colorscheme_zenburn }}"
+    colorscheme: "{{ colorscheme_tao_yang }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
     username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
     symlinks:
-      - src: aspell-dict
-        dst: "{{ home }}/.aspell.en.pws"
+      # - src: aspell-dict
+      #   dst: "{{ home }}/.aspell.en.pws"
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
       # - src: gtkrc-2.0
@@ -30,9 +30,6 @@
         dst: "{{ home }}/.gitconfig"
       - src: gitignore
         dst: "{{ xdg_config_home }}/gitignore"
-      - src: gourmet
-        dst: "{{ home }}/.gourmet"
-        mode: "0775"
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
       - src: library.blb
@@ -128,3 +125,35 @@
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
       when: "{{ not ci }}"
+
+    - name: create blank background
+      command: convert -size 3200x1800 xc:#F6F6F6 ~/.config/wallpaper-blank.png
+
+    - name: get nix logo
+      get_url:
+        url: https://raw.githubusercontent.com/NixOS/nixos-artwork/511e15e58471907c090d685f1bc7fc241260cc36/logo/nix-snowflake.svg
+        dest: "{{ playbook_dir }}/files/nix-snowflake.svg"
+        mode: 0660
+
+    - name: convert nix logo to png
+      command: >-
+        inkscape -z -e ~/code/dots/files/nix-snowflake.png
+        -w 1024 -h 1024
+        ~/code/dots/files/nix-snowflake.svg
+
+    # I manually edit this to create nix-snowflake-black
+    - name: make transparent nix logo
+      command: >-
+        convert ~/code/dots/files/nix-snowflake.png
+        -alpha set -channel RGBA -fill none -opaque white
+        ~/code/dots/files/nix-snowflake-transparent.png
+
+    - name: overlay nix logo
+      command: >-
+        convert ~/.config/wallpaper-blank.png
+        ~/code/dots/files/nix-snowflake-black.png
+        -gravity center -composite -background transparent -quality 100
+        ~/.config/wallpaper.png
+
+    - name: set new background
+      command: feh --bg-scale ~/.config/wallpaper.png

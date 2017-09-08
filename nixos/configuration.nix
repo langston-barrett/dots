@@ -33,6 +33,7 @@
   };
 
   services.emacs.enable = true;
+  virtualisation.docker.enable = true;
 
   hardware.bluetooth.enable = true;
   nixpkgs.config.allowUnfree = true;
@@ -48,11 +49,7 @@
     #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
   };
 
-  system.autoUpgrade = {
-    enable = true;
-    channel = https://nixos.org/channels/nixos-17.03;
-  }
-
+  system.autoUpgrade.enable = true;
   programs.virtualbox.guest.enable = true;
   # virtualisation.virtualbox.enableHardening = true;
   virtualisation.virtualbox.host.enable = true;

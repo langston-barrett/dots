@@ -21,3 +21,6 @@
 # 	signingkey = AADA4241
 # [commit]
 # 	gpgsign = true
+
+prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
+undo = reset HEAD~1 --mixed

@@ -17,6 +17,7 @@ in
   # This includes packages we don't always need, but we'd hate to rebuild. These
   # are marked by #.
   environment.systemPackages = with pkgs; [
+    atool # "compress" command in ranger
     blueman #
     curl
     google-chrome-beta

@@ -8,6 +8,12 @@ clean_merged() {
     | xargs -n 1 git branch -d
 }
 
+edit_markdown() {
+  emacsclient --create-frame "$1" & disown
+  grip "$1" localhost:8199 & disown
+  firefox localhost:8199
+}
+
 ## Git
 alias ga='git add'
 alias gb='git branch'
@@ -27,6 +33,8 @@ alias gri='git rebase -i'
 alias gs='git status'
 
 ## Nix
+alias nb='nix-build'
+alias nba='nix-build -A'
 alias ns='nix-shell'
 alias nsr='nix-shell --run'
 alias nsrzsh='nix-shell --run "exec zsh"'

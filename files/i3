@@ -9,7 +9,7 @@ font pango:Open Sans 2
 
 # setup
 exec dropbox start
-exec feh --bg-scale ~/Dropbox/langston/fondos-de-pantalla/misty-forest.jpg
+exec feh --bg-scale ~/.config/wallpaper.png
 exec xmodmap ~/.xmodmap
 
 # Mouse+mod floats & drags
