@@ -103,6 +103,36 @@ colorscheme_zenburn:
   background: "#3F3F3F"
   foreground: "#DCDCCC"
 
+colorscheme_tao_yin:
+  # These are scraped from the emacs screen using kcolorchooser
+
+  no color:       "#D8D8D8" # 0,  no color,     text in terminal
+  red:            "#FCFCFC" # 1,  red,          booleans in vim
+  green:          "#F6F6F6" # 2,  green,        ???
+  yellow:         "#F1F1F1" # 3,  yellow,       ???
+  blue:           "#E8E8E8" # 4,  blue,         selected line in rofi
+  magenta:        "#DADADA" # 5,  magenta,      ???
+  cyan:           "#FCFCFC" # 6,  cyan,         ???
+  gray:           "#F6F6F6" # 7,  gray,         background in terminal
+  light black:    "#F1F1F1" # copied from above
+  light red:      "#E8E8E8"
+  light green:    "#DADADA"
+  light yellow:   "#FCFCFC"
+  light blue:     "#F6F6F6"
+  light magenta:  "#F1F1F1"
+  light cyan:     "#E8E8E8"
+  light gray:     "#DADADA"
+
+  text:       "#D8D8D8" # no color
+  selected:   "#FAFAFA" # blue, taken from Arc
+  urgent:     "#E28952" # red, taken from arc
+
+  background-alt: "#3C3C3C" # gray
+  background: "#171717"
+  foreground: "#D8D8D8"
+
+  wallpaper: "wallpapers/tao-yin.png"
+
 colorscheme_tao_yang:
   # Default tao-theme-scale-fn is tao-theme-golden-scale, and produce following colors:
   # #FCFCFC #FAFAFA #F6F6F6 #F1F1F1 #E8E8E8 #DADADA #C3C3C3 #9E9E9E #616161 #3C3C3C #252525 #171717 #0E0E0E #090909 #050505
@@ -125,9 +155,11 @@ colorscheme_tao_yang:
   light gray:     "#252525"
 
   text:       "#090909" # no color
-  selected:   "#3C3C3C" # blue, taken from Arc
+  selected:   "#9E9E9E" # blue, taken from Arc
   urgent:     "#E28952" # red, taken from arc
 
   background-alt: "#F6F6F6" # gray
   background: "#F1F1F1"
   foreground: "#090909"
+
+  wallpaper: "wallpapers/tao-yang.png"

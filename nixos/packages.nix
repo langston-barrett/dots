@@ -17,23 +17,28 @@ in
   # This includes packages we don't always need, but we'd hate to rebuild. These
   # are marked by #.
   environment.systemPackages = with pkgs; [
+    # TODO: nixos won't rebuild with this :'(
+    #dropbox_nixpkgs.dropbox
+    aspell
     atool # "compress" command in ranger
     blueman #
     curl
-    google-chrome-beta
     emacs
-    # TODO: nixos won't rebuild with this :'(
-    #dropbox_nixpkgs.dropbox
+    exfat
     file
     firefox
     gcc #
     ghc #
     git
     gnupg
+    google-chrome-beta
     imagemagick
+    kcolorchooser
     mpw
+    p7zip
     ranger
     su
+    sudo
     unzip
     vim
     zip

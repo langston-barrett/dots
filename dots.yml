@@ -8,7 +8,7 @@
 
   vars:
     become: false
-    colorscheme: "{{ colorscheme_tao_yang }}"
+    colorscheme: "{{ colorscheme_tao_yin }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
     username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
@@ -75,6 +75,8 @@
         dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
+      - src: "{{ colorscheme['wallpaper'] | default(False) }}"
+        dst: "{{ xdg_config_home }}/wallpaper.png"
 
   tasks:
     - name: configure nixos
@@ -109,6 +111,7 @@
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0664') }}"
+      when: "{{ item.src != False }}"
       with_items: "{{ symlinks }}"
 
     - name: render user templates
@@ -126,34 +129,5 @@
       command: xrdb -merge $HOME/.Xresources
       when: "{{ not ci }}"
 
-    - name: create blank background
-      command: convert -size 3200x1800 xc:#F6F6F6 ~/.config/wallpaper-blank.png
-
-    - name: get nix logo
-      get_url:
-        url: https://raw.githubusercontent.com/NixOS/nixos-artwork/511e15e58471907c090d685f1bc7fc241260cc36/logo/nix-snowflake.svg
-        dest: "{{ playbook_dir }}/files/nix-snowflake.svg"
-        mode: 0660
-
-    - name: convert nix logo to png
-      command: >-
-        inkscape -z -e ~/code/dots/files/nix-snowflake.png
-        -w 1024 -h 1024
-        ~/code/dots/files/nix-snowflake.svg
-
-    # I manually edit this to create nix-snowflake-black
-    - name: make transparent nix logo
-      command: >-
-        convert ~/code/dots/files/nix-snowflake.png
-        -alpha set -channel RGBA -fill none -opaque white
-        ~/code/dots/files/nix-snowflake-transparent.png
-
-    - name: overlay nix logo
-      command: >-
-        convert ~/.config/wallpaper-blank.png
-        ~/code/dots/files/nix-snowflake-black.png
-        -gravity center -composite -background transparent -quality 100
-        ~/.config/wallpaper.png
-
     - name: set new background
-      command: feh --bg-scale ~/.config/wallpaper.png
+      command: "feh --bg-scale {{ xdg_config_home }}/wallpaper.png"
