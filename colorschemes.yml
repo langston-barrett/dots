@@ -132,7 +132,7 @@ colorscheme_tao_yin:
   foreground: "#D8D8D8"
 
   nix_snowflake_wallpaper: True
-  wallpaper: "wallpapers/tao-yin.png"
+  conkyrc: conkyrc.tao-yin
 
 colorscheme_tao_yang:
   # Default tao-theme-scale-fn is tao-theme-golden-scale, and produce following colors:
@@ -164,4 +164,4 @@ colorscheme_tao_yang:
   foreground: "#090909"
 
   nix_snowflake_wallpaper: True
-  # wallpaper: "wallpapers/tao-yang.png"
+  conkyrc: conkyrc.tao-yang

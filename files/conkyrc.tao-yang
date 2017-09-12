@@ -1,5 +1,5 @@
 conky.config = {
-    alignment="top_left",
+    alignment="bottom_middle",
     background=false,
     use_xft=true,
     font="Oxygen-Sans:size=18";
@@ -12,14 +12,12 @@ conky.config = {
     -- WINDOW
     own_window=true,
     own_window_type="override",
-    own_window_transparent=true,
-    own_window_argb_visual=true,
-    own_window_argb_value=0;
+    own_window_transparent=false,
+    own_window_colour="F1F1F1",
     own_window_hints="undecorated,skip_taskbar,skip_pager,sticky,below",
     minimum_width=3200,
     maximum_width=3200,
-    default_color="#F5F6F7",
-    default_outline_color="#999",
+    default_color="#090909",
 
     -- TEXT
     draw_borders=false,
@@ -41,11 +39,5 @@ conky.config = {
 -- # Volume 🔈
 
 conky.text = [[
-    ${font Oxygen-Sans:normal:size=80}${tztime America/Los_Angeles %H:%M}
-    ${font Oxygen-Sans:normal:size=16}
-    ${voffset -200}${tztime America/Los_Angeles %Y // %m // %d}
-    mem: ${memperc}
-    bat: ${battery_percent BAT1} ${if_match "${acpiacadapter}" == "on-line"}(+)${endif}
-    fs: ${fs_used_perc /}
-    cpu: ${cpu cpu0}
+    ${font Noto Emoji:normal:size=16}${offset 925}🐏${font Open Sans:normal:size=16}  ${memperc} ${font Noto Emoji:normal:size=16}${offset 200}⚡${font Open Sans:normal:size=16}  ${battery_percent BAT1}${if_match "${acpiacadapter}" == "on-line"}(+)${endif} ${font Noto Emoji:normal:size=16}${offset 200}💿${font Open Sans:normal:size=16}  ${fs_used_perc /} ${font Noto Emoji:normal:size=16}${offset 200}💪${font Open Sans:normal:size=16}  ${cpu cpu0}
 ]]

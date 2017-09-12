@@ -22,8 +22,6 @@
       #   dst: "{{ home }}/.gtkrc-2.0"
       #- src: gtkrc-3.0.ini
         #dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
-      - src: conkyrc
-        dst: "{{ xdg_config_home }}/conky/conkyrc"
       - src: compton.conf
         dst: "{{ xdg_config_home }}/compton.conf"
       - src: gitconfig
@@ -75,8 +73,12 @@
         dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
+
+      # Themed items
       - src: "{{ colorscheme['wallpaper'] | default(False) }}"
         dst: "{{ xdg_config_home }}/wallpaper.png"
+      - src: "{{ colorscheme['conkyrc'] | default(False) }}"
+        dst: "{{ xdg_config_home }}/conky/conkyrc"
 
   tasks:
     - name: configure nixos
@@ -128,6 +130,13 @@
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
       when: "{{ not ci }}"
+
+    - name: create new nix snowflake wallpaper (step 0 - delete old wallpaper)
+      file:
+        follow: true
+        state: absent
+        path: "{{ xdg_config_home }}/wallpaper.png"
+      when: "{{ colorscheme['nix_snowflake_wallpaper'] | default(False) }}"
 
     - name: create new nix snowflake wallpaper (step 1 - foreground)
       command: >-

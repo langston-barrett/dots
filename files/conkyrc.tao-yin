@@ -1,0 +1,43 @@
+conky.config = {
+    alignment="bottom_middle",
+    background=false,
+    use_xft=true,
+    font="Oxygen-Sans:size=18";
+    override_utf8_locale=true;
+    update_interval=1,
+    total_run_times=0,
+    -- this doesn't work with argb
+    -- double_buffer=true,
+
+    -- WINDOW
+    own_window=true,
+    own_window_type="override",
+    own_window_transparent=false,
+    own_window_colour="171717",
+    own_window_hints="undecorated,skip_taskbar,skip_pager,sticky,below",
+    minimum_width=3200,
+    maximum_width=3200,
+    default_color="#D8D8D8",
+
+    -- TEXT
+    draw_borders=false,
+    draw_outline=false,
+    draw_shades=false,
+
+    -- cpu_avg_samples=2,
+    -- net_avg_samples=2,
+
+    -- lua_load="~/.config/conky/rings-v1.2.2.lua",
+    -- lua_draw_hook_pre="conky_ring_stats",
+}
+
+-- # ${font Noto Emoji:normal:size=20}
+-- # CPU 💪
+-- # Memory 🐏
+-- # Battery ⚡
+-- # Disk 💿
+-- # Volume 🔈
+
+conky.text = [[
+    ${font Noto Emoji:normal:size=16}${offset 925}🐏${font Open Sans:normal:size=16}  ${memperc} ${font Noto Emoji:normal:size=16}${offset 200}⚡${font Open Sans:normal:size=16}  ${battery_percent BAT1}${if_match "${acpiacadapter}" == "on-line"}(+)${endif} ${font Noto Emoji:normal:size=16}${offset 200}💿${font Open Sans:normal:size=16}  ${fs_used_perc /} ${font Noto Emoji:normal:size=16}${offset 200}💪${font Open Sans:normal:size=16}  ${cpu cpu0}
+]]

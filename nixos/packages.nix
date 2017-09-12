@@ -22,6 +22,7 @@ in
     aspell
     atool # "compress" command in ranger
     blueman #
+    conky
     curl
     emacs
     exfat
