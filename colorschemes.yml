@@ -131,6 +131,7 @@ colorscheme_tao_yin:
   background: "#171717"
   foreground: "#D8D8D8"
 
+  nix_snowflake_wallpaper: True
   wallpaper: "wallpapers/tao-yin.png"
 
 colorscheme_tao_yang:
@@ -162,4 +163,5 @@ colorscheme_tao_yang:
   background: "#F1F1F1"
   foreground: "#090909"
 
-  wallpaper: "wallpapers/tao-yang.png"
+  nix_snowflake_wallpaper: True
+  # wallpaper: "wallpapers/tao-yang.png"

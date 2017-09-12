@@ -129,5 +129,19 @@
       command: xrdb -merge $HOME/.Xresources
       when: "{{ not ci }}"
 
+    - name: create new nix snowflake wallpaper (step 1 - foreground)
+      command: >-
+        convert {{ playbook_dir }}/files/nix-snowflake-wallpaper.png
+        -fill {{ colorscheme["foreground"] }} -opaque white
+        {{ xdg_config_home }}/wallpaper.png
+      when: "{{ colorscheme['nix_snowflake_wallpaper'] | default(False) }}"
+
+    - name: create new nix snowflake wallpaper (step 2 - background)
+      command: >-
+        convert {{ xdg_config_home }}/wallpaper.png
+        -fill {{ colorscheme["background"] }} -opaque black
+        {{ xdg_config_home }}/wallpaper.png
+      when: "{{ colorscheme['nix_snowflake_wallpaper'] | default(False) }}"
+
     - name: set new background
       command: "feh --bg-scale {{ xdg_config_home }}/wallpaper.png"
