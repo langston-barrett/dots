@@ -39,5 +39,5 @@ conky.config = {
 -- # Volume 🔈
 
 conky.text = [[
-    ${font Noto Emoji:normal:size=16}${offset 925}🐏${font Open Sans:normal:size=16}  ${memperc} ${font Noto Emoji:normal:size=16}${offset 200}⚡${font Open Sans:normal:size=16}  ${battery_percent BAT1}${if_match "${acpiacadapter}" == "on-line"}(+)${endif} ${font Noto Emoji:normal:size=16}${offset 200}💿${font Open Sans:normal:size=16}  ${fs_used_perc /} ${font Noto Emoji:normal:size=16}${offset 200}💪${font Open Sans:normal:size=16}  ${cpu cpu0}
+    ${font Noto Emoji:normal:size=16}${offset 950}🐏${font Open Sans:normal:size=16}  ${memperc} ${font Noto Emoji:normal:size=16}${offset 200}⚡${font Open Sans:normal:size=16}  ${battery_percent BAT1}${if_match "${acpiacadapter}" == "on-line"}(+)${endif} ${font Noto Emoji:normal:size=16}${offset 200}💿${font Open Sans:normal:size=16}  ${fs_used_perc /} ${font Noto Emoji:normal:size=16}${offset 200}💪${font Open Sans:normal:size=16}  ${cpu cpu0}
 ]]

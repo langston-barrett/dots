@@ -21,13 +21,13 @@ in
   ];
 
   fonts = {
-    enableFontDir = true;
+    enableFontDir = false;
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       # fira-code
-      #ubuntu-font-family
+      # freefont-ttf        # use freeserif for TeX
+      # ubuntu-font-family
       eb-garamond
-      # freefont-ttf          # use freeserif for TeX
       hack-font             # great monospaced font
       helvetica-neue-lt-std # classic
       lato

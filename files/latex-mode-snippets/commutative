@@ -2,13 +2,13 @@
 # name: commutative
 # key: commutative
 # --
-\begin{tikzcd}
+\begin{tikzcd}[sep=large, row sep=large, column sep=large]
   T
   \arrow[drr, bend left, "x"]
-  \arrow[ddr, bend right, "y"]
-  \arrow[dr, dotted, "{(x,y)}" description] & & \\
-    & X \times_Z Y \arrow[r, "p"] \arrow[d, "q"]
-      & X \arrow[d, "f"] \\
+  \arrow[ddr, <->, tail, two heads, bend right, "y"]
+  \arrow[dr, dotted, "{(x,y)}" description] & & \\\\
+    & X \times_Z Y \arrow[r, "p"] \arrow[d, "q", swap]
+      & X \arrow[d, "f"] \\\\
     & Y \arrow[r, "g"]
       & Z
 \end{tikzcd}

@@ -6,6 +6,8 @@ $pdf_update_method = 0;
 
 $pdflatex = 'if [[ -x latexmk.sh ]]; then ./latexmk.sh %T %B "%O"; else lualatex --halt-on-error %O %B; fi';
 
+$clean_ext = 'aux bbl dvi fdb fdb_latexmk fls log out run.xml synctex.gz toc';
+
 # An example latexmk.sh for working with knitr:
 # #!/usr/bin/env bash
 # Rscript -e "library(knitr); knit('$1')"

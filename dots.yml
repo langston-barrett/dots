@@ -8,7 +8,7 @@
 
   vars:
     become: false
-    colorscheme: "{{ colorscheme_tao_yin }}"
+    colorscheme: "{{ colorscheme_tao_yang}}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
     username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
