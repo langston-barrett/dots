@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: remark
-# key: rmk
+# key: remark
 # --
 \begin{remark}
 	$0

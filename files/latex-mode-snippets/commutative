@@ -2,7 +2,8 @@
 # name: commutative
 # key: commutative
 # --
-\begin{tikzcd}[sep=large, row sep=large, column sep=large]
+\begin{center}
+\begin{tikzcd}%[sep=large, row sep=large, column sep=large]
   T
   \arrow[drr, bend left, "x"]
   \arrow[ddr, <->, tail, two heads, bend right, "y"]
@@ -12,3 +13,4 @@
     & Y \arrow[r, "g"]
       & Z
 \end{tikzcd}
+\end{center}
