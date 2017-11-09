@@ -26,6 +26,7 @@ in
     curl
     emacs
     exfat
+    # fd # "find" replacement
     file
     firefox
     gcc #

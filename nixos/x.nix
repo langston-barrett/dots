@@ -6,6 +6,12 @@ let
     longitude = "-122.63";
   };
   location = portland;
+  new_pkgs = import (pkgs.fetchFromGitHub {
+    owner  = "NixOS";
+    repo   = "nixpkgs";
+    rev    = "89720d851aafe7be2aafc129fd729941a4db18af";
+    sha256 = "110p73q2afgx4bfikfy8gvh3cwnk88q725k3i7fw5kf01q21kw9p";
+  }) { };
 in
 {
   imports = [];
@@ -23,19 +29,25 @@ in
   fonts = {
     enableFontDir = false;
     enableGhostscriptFonts = true;
-    fonts = with pkgs; [
-      # fira-code
-      # freefont-ttf        # use freeserif for TeX
-      # ubuntu-font-family
+    fonts = with new_pkgs; [
+      # fira-code, freefont-ttf, ubuntu-font-family
+
+      # These actually require the new package set
+      tex-gyre-bonum-math   # latex math font
+      tex-gyre-schola-math  # latex math font
+      latinmodern-math      # latex math font
+
+      # These don't
       eb-garamond
       hack-font             # great monospaced font
-      helvetica-neue-lt-std # classic
+      #helvetica-neue-lt-std # classic
       lato
       libre-caslon
       noto-fonts-emoji      # emoji
       opensans-ttf
-      overpass
+      overpass              # header
       oxygenfonts           # UI
+      stix-otf              # latex math font
     ];
   };
 
