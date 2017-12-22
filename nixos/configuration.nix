@@ -35,7 +35,10 @@
   services.emacs.enable = true;
   virtualisation.docker.enable = true;
 
-  hardware.bluetooth.enable = true;
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+  };
   nixpkgs.config.allowUnfree = true;
   #services.chrony.enable = true;
   time.timeZone = "USA/Los_Angeles";
