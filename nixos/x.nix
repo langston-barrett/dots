@@ -18,12 +18,13 @@ in
 
   environment.systemPackages = with pkgs; [
     arc-theme
+    i3status
+    moka-icon-theme
     paper-gtk-theme
     paper-icon-theme
-    moka-icon-theme
-    # TODO
-    #xmodmap # swap l-ctrl and caps lock
     vanilla-dmz # cursor theme
+    xfce.xfce4_power_manager_gtk3
+    xorg.xmodmap     # swap l-ctrl and caps lock
   ];
 
   fonts = {
@@ -56,7 +57,7 @@ in
     layout = "us";
 
     synaptics = {
-      #enable = true;
+      enable = true;
       # OSX-like "Natural" two-finger scrolling
       twoFingerScroll = true;
       horizTwoFingerScroll = true;
@@ -76,7 +77,7 @@ in
         xmodmap ~/.xmodmap
       '';
     };
-    desktopManager.xfce.enable = true;
+    # desktopManager.xfce.enable = true;
     windowManager.i3.enable = true;
     windowManager.i3.package = pkgs.i3-gaps;
     monitorSection = ''

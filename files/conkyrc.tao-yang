@@ -2,8 +2,8 @@ conky.config = {
     alignment="bottom_middle",
     background=false,
     use_xft=true,
-    font="Oxygen-Sans:size=18";
-    override_utf8_locale=true;
+    font="Oxygen-Sans:size=18",
+    override_utf8_locale=true,
     update_interval=1,
     total_run_times=0,
     -- this doesn't work with argb

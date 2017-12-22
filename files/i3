@@ -5,14 +5,15 @@
 set $mod Mod1
 
 # Window titles
-font pango:Open Sans 2
+font pango:Open Sans 3
 
 # setup
 exec dropbox start
-exec conky --config=$XDG_CONFIG_HOME/conky/conkyrc
-exec feh --bg-scale ~/.config/wallpaper.png
+# exec conky --config=$XDG_CONFIG_HOME/conky/conkyrc
+exec feh --bg-fill ~/.config/wallpaper.png
 exec xmodmap ~/.xmodmap
-exec startxfce4
+# Warnings on low battery
+exec xfce4-power-manager
 
 # Mouse+mod floats & drags
 floating_modifier $mod
@@ -108,7 +109,7 @@ bindsym $mod+r mode "resize"
 # smart_borders on
 
 # class                 border  backgr. text    indicator child_border
-client.focused          #555555 #555555 #555555 #555555   #555555
+client.focused          #9E9E9E #9E9E9E #9E9E9E #9E9E9E   #9E9E9E
 client.focused_inactive #000000 #000000 #000000 #000000   #000000
 client.unfocused        #000000 #000000 #000000 #000000   #000000
 client.urgent           #000000 #000000 #000000 #000000   #000000
@@ -116,7 +117,23 @@ client.placeholder      #000000 #000000 #000000 #000000   #000000
 
 client.background       #ffffff
 
-# bar {
-#   font pango:Hack, Icons 8
-#   position top
-# }
+bar {
+  font pango:Hack, Icons 24
+  status_command conky --config=$HOME/code/dots/files/conkyrc.i3
+  position top
+
+  colors {
+    # tao-yin
+    background    #171717
+    statusline    #D8D8D8
+
+    # tao-yang
+    # background    #F1F1F1
+    # statusline    #090909
+
+    focused_workspace  #4c7899 #285577 #ffffff
+    active_workspace   #333333 #5f676a #ffffff
+    inactive_workspace #333333 #222222 #888888
+    urgent_workspace   #2f343a #900000 #ffffff
+  }
+}

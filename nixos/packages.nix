@@ -33,7 +33,8 @@ in
     ghc #
     git
     gnupg
-    google-chrome-beta
+    #TODO: this fails to build
+    #google-chrome-beta
     imagemagick
     kcolorchooser
     mpw
