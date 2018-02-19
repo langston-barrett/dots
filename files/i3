@@ -9,16 +9,16 @@ font pango:Open Sans 3
 
 # setup
 exec dropbox start
-# exec conky --config=$XDG_CONFIG_HOME/conky/conkyrc
+exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec xmodmap ~/.xmodmap
-# Warnings on low battery
-exec xfce4-power-manager
+# exec dunst
 
 # Mouse+mod floats & drags
 floating_modifier $mod
 bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 1100 -opacity 55 -bw 0 -font "Open Sans 32"
 bindsym $mod+Return exec urxvt
+bindsym $mod+Shift+u exec ~/code/dots/files/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
 
 # change focus
@@ -118,8 +118,8 @@ client.placeholder      #000000 #000000 #000000 #000000   #000000
 client.background       #ffffff
 
 bar {
-  font pango:Hack, Icons 24
-  status_command conky --config=$HOME/code/dots/files/conkyrc.i3
+  font pango:Hack, Icons 8
+  status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
   position top
 
   colors {

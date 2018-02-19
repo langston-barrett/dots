@@ -30,9 +30,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-     csv
-     emacs-lisp
+   '(emacs-lisp
      helm ; full-featured auto-completion
      html
      javascript
@@ -51,6 +49,7 @@ values."
 
      ;; Languages
      ;; (c-c++ :variables c-c++-enable-clang-support t)
+     agda
      coq
      ;; (go :variables gofmt-command "goimports")
      (haskell :variables haskell-enable-hindent-style "fundamental")
@@ -340,10 +339,12 @@ you should place your code here."
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
   (setq require-final-newline t)
 
-  ;; make backslash easier in TeX
+  ;; make backslash easier in TeX, use Agda input mode
   ;; TODO: make backslash semicolon
   (add-hook 'TeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
+  (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
+  ; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
 
   ;; Mutt support.
   (defun msg-mode ()
@@ -371,7 +372,119 @@ This function is called at the very end of Spacemacs initialization."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (math-symbols web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data csv-mode web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode flycheck-elm elm-mode powerline spinner markdown-mode hydra parent-mode projectile request gitignore-mode flyspell-correct pos-tip flycheck pkg-info epl flx with-editor smartparens iedit anzu goto-chg undo-tree highlight diminish nixos-options ghc haskell-mode bind-map bind-key packed auctex f dash s avy auto-complete popup symon string-inflection window-purpose pythonic todotxt anaconda-mode evil yasnippet company helm helm-core magit magit-popup git-commit async imenu-list proof-general company-coq company-math math-symbol-lists zenburn-theme yapfify yaml-mode xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint intero insert-shebang info+ indent-guide hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag hc-zenburn-theme haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word cython-mode company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-auctex company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (math-symbols web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data csv-mode web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc company-tern dash-functional tern coffee-mode flycheck-elm elm-mode powerline spinner markdown-mode hydra parent-mode projectile request gitignore-mode flyspell-correct pos-tip flycheck pkg-info epl flx with-editor smartparens iedit anzu goto-chg undo-tree highlight diminish nixos-options ghc haskell-mode bind-map bind-key packed auctex f dash s avy auto-complete popup symon string-inflection window-purpose pythonic todotxt anaconda-mode evil yasnippet company helm helm-core magit magit-popup git-commit async imenu-list proof-general company-coq company-math math-symbol-lists zenburn-theme yapfify yaml-mode xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme spaceline smeargle shell-pop restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el paradox orgit org-plus-contrib org-bullets open-junk-file nix-mode neotree multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint intero insert-shebang info+ indent-guide hy-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag hc-zenburn-theme haskell-snippets google-translate golden-ratio gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flycheck-pos-tip flycheck-haskell flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help elisp-slime-nav dumb-jump define-word cython-mode company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-auctex company-anaconda column-enforce-mode color-theme-sanityinc-tomorrow cmm-mode clean-aindent-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(safe-local-variable-values
+   (quote
+    ((eval let
+           ((topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "thesis"))))
+           (setq fill-column 80)
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat topdir "thesis/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))
+     (eval let
+           ((topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "thesis"))))
+           (setq fill-column 80)
+           (make-local-variable
+            (quote before-save-hook))
+           (add-hook
+            (quote before-save-hook)
+            (quote delete-trailing-whitespace))
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat topdir "thesis/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))
+     (eval let
+           ((unimath-topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "UniMath"))))
+           (setq fill-column 100)
+           (make-local-variable
+            (quote coq-use-project-file))
+           (setq coq-use-project-file nil)
+           (make-local-variable
+            (quote coq-prog-args))
+           (setq coq-prog-args
+                 (\`
+                  ("-emacs" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
+                   (\,
+                    (concat unimath-topdir "UniMath"))
+                   "UniMath")))
+           (make-local-variable
+            (quote coq-prog-name))
+           (setq coq-prog-name
+                 (concat unimath-topdir "sub/coq/bin/coqtop"))
+           (make-local-variable
+            (quote before-save-hook))
+           (add-hook
+            (quote before-save-hook)
+            (quote delete-trailing-whitespace))
+           (modify-syntax-entry 39 "w")
+           (modify-syntax-entry 95 "w")
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat unimath-topdir "emacs/agda/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("chimney" "╝"))
+                        agda-input-user-translations))
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
