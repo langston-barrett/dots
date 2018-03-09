@@ -6,12 +6,7 @@ let
     longitude = "-122.63";
   };
   location = portland;
-  new_pkgs = import (pkgs.fetchFromGitHub {
-    owner  = "NixOS";
-    repo   = "nixpkgs";
-    rev    = "89720d851aafe7be2aafc129fd729941a4db18af";
-    sha256 = "110p73q2afgx4bfikfy8gvh3cwnk88q725k3i7fw5kf01q21kw9p";
-  }) { };
+  eighteen03 = (import ./pinned-pkgs.nix { pkgs = pkgs; }).eighteen03;
 in
 {
   imports = [];
@@ -30,12 +25,13 @@ in
   fonts = {
     enableFontDir = false;
     enableGhostscriptFonts = true;
-    fonts = with new_pkgs; [
+    fonts = with eighteen03; [
       # fira-code, freefont-ttf, ubuntu-font-family
 
       # These actually require the new package set
       tex-gyre-bonum-math   # latex math font
       tex-gyre-schola-math  # latex math font
+      tex-gyre-pagella-math  # latex math font
       latinmodern-math      # latex math font
 
       # These don't

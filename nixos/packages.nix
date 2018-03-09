@@ -1,14 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  # Dropbox crashed with PaX before this commit
-  dropbox_nixpkgs = import (pkgs.fetchFromGitHub {
-    owner  = "ttuegel";
-    repo   = "nixpkgs";
-    # This is the commit that included the dropbox patch
-    rev    = "d486fb053b3f148e5989d6cd3e07a69eaf75d0bf";
-    sha256 = "14s283bwh77266zslc96gr7zqaijq5b9k4wp272ry27j5q8l3h4i";
-  }) {};
+  eighteen03 = (import ./pinned-pkgs.nix { pkgs = pkgs; }).eighteen03;
 in
 {
   # Dropbox
@@ -28,7 +21,6 @@ in
     exfat
     # fd # "find" replacement
     file
-    firefox
     gcc #
     ghc #
     git
@@ -36,17 +28,20 @@ in
     #TODO: this fails to build
     #google-chrome-beta
     imagemagick
-    kcolorchooser
     mpw
     p7zip
     ranger
     su
     sudo
     unzip
-    vim
     zip
 
     texlive.combined.scheme-full # lualatex, etc.
+
+    # Graphical
+    firefox
+    kcolorchooser
+    eighteen03.zotero
     zathura
   ];
 }
