@@ -5,7 +5,7 @@
   eighteen03 = import (pkgs.fetchFromGitHub {
     owner    = "NixOS";
     repo     = "nixpkgs";
-    rev      = "18.03-beta";
-    sha256   = "00gd96p7yz3rgpjjkizp397y2syfc272yvwxqixbjd1qdshbizmj";
-  }) { };
+    rev      = "18.03";
+    sha256   = "0hk4y2vkgm1qadpsm4b0q1vxq889jhxzjx3ragybrlwwg54mzp4f";
+  }) { }
 }
