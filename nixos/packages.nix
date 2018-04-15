@@ -22,7 +22,17 @@ in
     # fd # "find" replacement
     file
     gcc #
-    ghc #
+    # Try: nix-env -qaA nixos.haskellPackages
+    (haskellPackages.ghcWithPackages (pkgs: with pkgs; [
+      cabal-install
+      hoogle
+      HUnit
+      QuickCheck
+      tasty
+      tasty-hunit
+      tasty-quickcheck
+      text
+    ])) #
     git
     gnupg
     #TODO: this fails to build
@@ -42,6 +52,7 @@ in
     firefox
     kcolorchooser
     eighteen03.zotero
+    xpdf
     zathura
   ];
 }

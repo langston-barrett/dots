@@ -36,44 +36,12 @@
           ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
           sleep 1; exit 0
       '';
-      work-topology = ''
-        cd ~/Dropbox/langston/tex/math342; \
-          zathura lee.pdf & disown; \
-          zathura notes/tex/4-6.pdf & disown; \
-          ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
-          sleep 1; exit 0
-      '';
-      work-crypto = ''
-        cd ~/Dropbox/langston/tex/math388; \
-          zathura katz.pdf & disown; \
-          zathura notes/tex/public-key-cryptography.pdf & disown; \
-          ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
-          sleep 1; exit 0
-      '';
       work-sf = ''
         cd ~/code/software-foundations; \
           firefox toc.html & disown; \
           nix-shell --run "${pkgs.emacs}/bin/emacsclient --create-frame & disown"; \
           sleep 1; exit 0
       '';
-
-      # Git
-      ga = "git add";
-      gb = "git branch";
-      gc = "git checkout";
-      gcl = "git clone --depth 20";
-      gcm = "git commit -m";
-      gd = "git diff";
-      gdc = "git diff --cached";
-      gdm = "git diff master";
-      gf = "git fetch";
-      gm = "git merge";
-      gp = "git checkout master && git pull && git checkout -";
-      gpo = "git push origin";
-      gr = "git reset";
-      grhm = "git reset --hard origin/master";
-      gri = "git rebase -i";
-      gs = "git status";
     };
 
     variables = {
