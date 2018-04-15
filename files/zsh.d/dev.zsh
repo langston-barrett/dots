@@ -8,6 +8,17 @@ clean_merged() {
     | xargs -n 1 git branch -d
 }
 
+# Commit staged changes to a new branch and push it
+# Args:
+# 1. Base branch
+# 2. Message
+commit_to_new_branch() {
+  rand=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+  git checkout -b "$rand" "$1"
+  git commit -m "$2"
+  git push
+}
+
 edit_markdown() {
   emacsclient --create-frame "$1" & disown
   grip "$1" localhost:8199 & disown
