@@ -6,7 +6,6 @@ let
     longitude = "-122.63";
   };
   location = portland;
-  eighteen03 = (import ./pinned-pkgs.nix { pkgs = pkgs; }).eighteen03;
 in
 {
   imports = [];
@@ -25,7 +24,8 @@ in
   fonts = {
     enableFontDir = false;
     enableGhostscriptFonts = true;
-    fonts = with eighteen03; [
+    fontconfig.dpi = 192;
+    fonts = with pkgs; [
       # fira-code, freefont-ttf, ubuntu-font-family
 
       # These actually require the new package set
@@ -49,6 +49,7 @@ in
   };
 
   services.xserver = {
+    dpi = 192;
     enable = true;
     layout = "us";
 
