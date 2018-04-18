@@ -51,7 +51,7 @@ in
     # Graphical
     firefox
     kcolorchooser
-    eighteen03.zotero
+    zotero
     xpdf
     zathura
   ];

@@ -66,6 +66,7 @@
       autoload -U promptinit && promptinit
       autoload -U colors && colors
       PROMPT="%{$fg_bold[0]%}%2~%  >%{$reset_color%} "
+      RPROMPT="(%D{%K:%M})"
     '';
 
     # zshrc
@@ -84,15 +85,19 @@
       fi
       source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "$f"; done; unset f;}
       source_all $HOME/.zsh.d
+
+      # http://www.zsh.org/mla/users/2007/msg00944.html
+      # https://goo.gl/CsT6cQ
+      # TMOUT=30
+      # TRAPALRM () {
+      #   zle reset-prompt
+      # }
     '';
   };
 
-  # programs.bash = {
-  #   interactiveShellInit = ''
-  #     if [[ -z $IN_NIX_SHELL ]]; then
-  #       eval "$(direnv hook bash)"
-  #     fi
-  #     zsh; exit
-  #   '';
-  # };
+  programs.bash = {
+    interactiveShellInit = ''
+      exec zsh
+    '';
+  };
 }

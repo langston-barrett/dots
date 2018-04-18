@@ -40,8 +40,12 @@
     powerOnBoot = false;
   };
   nixpkgs.config.allowUnfree = true;
+
+  # Time
   #services.chrony.enable = true;
-  time.timeZone = "USA/Los_Angeles";
+  time.timeZone = "America/Los_Angeles";
+  services.localtime.enable = true;
+  # services.tzupdate.enable = true;
 
   nix = {
     maxJobs = 4;
