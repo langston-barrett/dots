@@ -35,8 +35,7 @@ in
     ])) #
     git
     gnupg
-    #TODO: this fails to build
-    #google-chrome-beta
+    google-chrome-beta
     imagemagick
     mpw
     p7zip
@@ -51,6 +50,7 @@ in
     # Graphical
     firefox
     kcolorchooser
+    ksshaskpass # for mpw
     zotero
     xpdf
     zathura
