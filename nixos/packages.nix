@@ -1,8 +1,8 @@
 { config, pkgs, ... }:
 
-let
-  eighteen03 = (import ./pinned-pkgs.nix { pkgs = pkgs; }).eighteen03;
-in
+# let
+#   eighteen03 = (import ./pinned-pkgs.nix { pkgs = pkgs; }).eighteen03;
+# in
 {
   # Dropbox
   nixpkgs.config.allowUnfree = true;
@@ -11,10 +11,10 @@ in
   # are marked by #.
   environment.systemPackages = with pkgs; [
     # TODO: nixos won't rebuild with this :'(
-    #dropbox_nixpkgs.dropbox
     aspell
     atool # "compress" command in ranger
     blueman #
+    dropbox
     conky
     curl
     emacs

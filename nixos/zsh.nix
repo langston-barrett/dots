@@ -25,8 +25,6 @@
       conky = "conky --config=$XDG_CONFIG_HOME/conky/conkyrc";
       nixpkgs-pr-review = "export TRAVIS_BUILD_DIR=$PWD && ./maintainers/scripts/travis-nox-review-pr.sh nixpkgs-verify nixpkgs-manual nixpkgs-tarball && ./maintainers/scripts/travis-nox-review-pr.sh nixos-options nixos-manual";
 
-      #nix-shell = "nix-shell --pure";
-
       # Convenience
       # TODO: nix function
       work-algebra = ''
@@ -34,12 +32,6 @@
           zathura dummit.djvu & disown; \
           zathura notes/tex/1-ring-theory.pdf & disown; \
           ${pkgs.emacs}/bin/emacsclient --create-frame & disown; \
-          sleep 1; exit 0
-      '';
-      work-sf = ''
-        cd ~/code/software-foundations; \
-          firefox toc.html & disown; \
-          nix-shell --run "${pkgs.emacs}/bin/emacsclient --create-frame & disown"; \
           sleep 1; exit 0
       '';
     };
@@ -52,7 +44,6 @@
       # masterpassword
       MP_FULLNAME = "Langston Barrett";
       MP_SITETYPE = "x";
-
     };
   };
 
@@ -66,7 +57,7 @@
       autoload -U promptinit && promptinit
       autoload -U colors && colors
       PROMPT="%{$fg_bold[0]%}%2~%  >%{$reset_color%} "
-      RPROMPT="(%D{%K:%M})"
+      #RPROMPT="(%D{%K:%M})"
     '';
 
     # zshrc

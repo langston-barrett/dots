@@ -1,10 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [];
-
   networking = {
-    hostName = "nova-nixos";
     nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
     # wicd.enable = true;

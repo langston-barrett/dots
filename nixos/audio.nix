@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [];
-
   environment.systemPackages = with pkgs; [
     flac
     pavucontrol
@@ -14,12 +12,7 @@
     gst_plugins_ugly
   ];
 
-  fileSystems."/home/siddharthist/library" =
-    { device = "/dev/disk/by-uuid/3babbf74-417f-45a9-876b-e8f6ef880798";
-      options = [ "defaults" "rw" "user" "noauto" ];
-    };
-
-  # fileSystems."/var/lib/mopidy" =
+  # fileSystems."/home/siddharthist/library" =
   #   { device = "/dev/disk/by-uuid/3babbf74-417f-45a9-876b-e8f6ef880798";
   #     options = [ "defaults" "rw" "user" "noauto" ];
   #   };

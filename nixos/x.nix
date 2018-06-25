@@ -6,16 +6,16 @@ let
     longitude = "-122.63";
   };
   location = portland;
-in
-{
-  imports = [];
-
+in {
   environment.systemPackages = with pkgs; [
     arc-theme
+    conky
+    feh
     i3status
     moka-icon-theme
     paper-gtk-theme
     paper-icon-theme
+    rxvt_unicode-with-plugins
     vanilla-dmz # cursor theme
     xfce.xfce4_power_manager_gtk3
     xorg.xmodmap     # swap l-ctrl and caps lock
@@ -53,18 +53,6 @@ in
     enable = true;
     layout = "us";
 
-    synaptics = {
-      enable = true;
-      # OSX-like "Natural" two-finger scrolling
-      twoFingerScroll = true;
-      horizTwoFingerScroll = true;
-      horizEdgeScroll = false;
-      additionalOptions = ''
-        Option "VertScrollDelta"  "-75"
-        Option "HorizScrollDelta" "-75"
-      '';
-    };
-
     displayManager = {
       lightdm.enable = true;
       # So urxvt knows where to find the socket.
@@ -101,5 +89,19 @@ in
 
   services.xbanish.enable = true;
   #services.urxvtd.enable = true;
-  programs.light.enable = true;
+
+  systemd.user.services = {
+    feh = {
+      enable = true;
+      description = "Use feh image viewer to set the wallpaper";
+      after = [ "display-manager.service" ];
+      partOf = [ "display-manager.service" ];
+      wantedBy = [ "graphical.target" ];
+      serviceConfig = {
+        ExecStart = "${pkgs.feh}/bin/feh --no-fehbg --bg-fill /home/siddharthist/.config/wallpaper.jpg";
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
+    };
+  };
 }
