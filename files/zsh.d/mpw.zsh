@@ -1,7 +1,6 @@
 #!/usr/bin/env zsh
-export MPW_FULLNAME='Langston Barrett'
-export MPW_SITETYPE=x
-export MPW_ASKPASS=ksshaskpass
+export MP_FULLNAME='Langston Barrett'
+export MP_SITETYPE=x
 
 # https://github.com/Lyndir/MasterPassword/blob/master/platform-independent/cli-c/mpw.bashrc
 

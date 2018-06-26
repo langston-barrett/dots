@@ -12,11 +12,12 @@ exec dropbox start
 exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec xmodmap ~/.xmodmap
+exec --no-startup-id nm-applet
 # exec dunst
 
 # Mouse+mod floats & drags
 floating_modifier $mod
-bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 1100 -opacity 55 -bw 0 -font "Open Sans 32"
+bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 100 -padding 100 -opacity 55 -bw 0 -font "Open Sans 32"
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Return exec urxvt
 bindsym $mod+Shift+Return exec hyper
@@ -121,7 +122,11 @@ client.background       #ffffff
 
 bar {
   font pango:Hack, Icons 11
-  status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
+ 
+  tray_output primary
+  status_command i3status
+  # status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
+
   position top
 
   colors {
