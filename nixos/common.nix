@@ -38,4 +38,19 @@
     #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
   };
   system.autoUpgrade.enable = true;
+
+  environment.systemPackages = with pkgs; [
+    aspell
+    curl
+    exfat
+    file
+    git
+    imagemagick
+    mpw
+    ranger
+    silver-searcher # ag
+    sudo
+    unzip
+    zip
+  ];
 }
