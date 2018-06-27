@@ -56,6 +56,8 @@
     promptInit = ''
       autoload -U promptinit && promptinit
       autoload -U colors && colors
+
+      # TODO: indicate being in a nix shell
       PROMPT="%{$fg_bold[0]%}%2~%  >%{$reset_color%} "
       #RPROMPT="(%D{%K:%M})"
     '';

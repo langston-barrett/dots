@@ -8,6 +8,7 @@ let
   location = portland;
 in {
   environment.systemPackages = with pkgs; [
+    # Having to do with X/i3 functionality
     arc-theme
     conky
     feh
@@ -15,10 +16,17 @@ in {
     moka-icon-theme
     paper-gtk-theme
     paper-icon-theme
+    rofi
     rxvt_unicode-with-plugins
     vanilla-dmz # cursor theme
     xfce.xfce4_power_manager_gtk3
     xorg.xmodmap     # swap l-ctrl and caps lock
+
+    # General graphical packages
+    firefox
+    kcolorchooser
+    xpdf
+    zathura
   ];
 
   fonts = {

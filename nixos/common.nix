@@ -40,17 +40,40 @@
   system.autoUpgrade.enable = true;
 
   environment.systemPackages = with pkgs; [
-    aspell
+    aspell # TODO: english dict?
+    atool # "compress" command in ranger
     curl
+    emacs
     exfat
     file
     git
+    gnumake
+    gnupg
     imagemagick
     mpw
+    p7zip
     ranger
     silver-searcher # ag
     sudo
+    tldr
     unzip
+    xsel
     zip
   ];
+
+  # Other common ones:
+  # gcc #
+  # python
+  # openssl
+  # # Try: nix-env -qaA nixos.haskellPackages
+  # (haskellPackages.ghcWithPackages (pkgs: with pkgs; [
+  #   cabal-install
+  #   hoogle
+  #   HUnit
+  #   QuickCheck
+  #   tasty
+  #   tasty-hunit
+  #   tasty-quickcheck
+  #   text
+  # ])) #
 }

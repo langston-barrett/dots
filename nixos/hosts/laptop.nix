@@ -11,6 +11,7 @@
   ];
 
   networking.hostName = "langston-nixos"; # Define your hostname.
+  networking.networkmanager.enable = true;
 
   services.xserver = {
     synaptics = {
@@ -49,6 +50,29 @@
     enable = true;
     powerOnBoot = false;
   };
+
+  environment.systemPackages = with pkgs; [
+    anki
+    beets
+    calibre
+    chromium
+    comfortaa
+    dropbox
+    gimp
+    htop
+    lxappearance
+    maim
+    mu
+    oxygenfonts
+    redshift
+    spotify
+    tmux
+    transgui
+    transmission
+    vlc
+    ympd
+    zotero
+  ];
 
   # virtualisation.virtualbox.enableHardening = true;
   virtualisation.virtualbox.host.enable = true;
