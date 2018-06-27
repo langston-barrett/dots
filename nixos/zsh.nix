@@ -42,8 +42,8 @@
       EDITOR = "emacs";
 
       # masterpassword
-      MP_FULLNAME = "Langston Barrett";
-      MP_SITETYPE = "x";
+      MPW_FULLNAME = "Langston Barrett";
+      MPW_SITETYPE = "x";
     };
   };
 

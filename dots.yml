@@ -73,6 +73,8 @@
         dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
+      - src: zsh.d
+        dst: "{{ home }}/.zsh.d"
 
       # Themed items
       # - src: "{{ colorscheme['wallpaper'] | default(False) }}"
