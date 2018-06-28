@@ -67,6 +67,8 @@
         dst: "{{ home }}/.spacemacs"
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
+      - src: ssh
+        dst: "{{ home }}/.ssh/config"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
       - src: urlview
@@ -93,7 +95,7 @@
         path: /etc/nixos
         owner: "{{ username }}"
         group: "{{ username }}"
-        mode: "0660"
+        mode: "0440"
       when: "(become | bool) and (not ci)"
 
     - name: make user symlink dirs
@@ -114,7 +116,7 @@
         path: "{{ item.dst }}"
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
-        mode: "{{ item.mode | default('0664') }}"
+        mode: "{{ item.mode | default('0440') }}"
       when: "item.src != False"
       with_items: "{{ symlinks }}"
 

@@ -51,12 +51,14 @@
     gnupg
     imagemagick
     mpw
+    pass
     p7zip
     ranger
     silver-searcher # ag
     sudo
     tldr
     unzip
+    xclip # for pass
     xsel
     zip
   ];

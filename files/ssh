@@ -1,0 +1,19 @@
+# ~/.ssh/config
+
+# options that should never be overridden
+StrictHostKeyChecking ask
+UsePrivilegedPort no
+
+# options applied for Galois hosts
+Host *.galois.com
+  ForwardAgent yes
+  ForwardX11 yes
+  ForwardX11Trusted yes
+  PreferredAuthentications publickey,keyboard-interactive,password
+  VerifyHostKeyDNS ask
+
+# fall-through default options applied to all hosts
+Host *
+  CheckHostIP yes
+  Ciphers aes128-ctr,aes192-ctr
+  MACs hmac-sha1,hmac-ripemd160,hmac-md5
