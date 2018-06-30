@@ -12,8 +12,6 @@ Host *.galois.com
   PreferredAuthentications publickey,keyboard-interactive,password
   VerifyHostKeyDNS ask
 
-# fall-through default options applied to all hosts
-Host *
-  CheckHostIP yes
-  Ciphers aes128-ctr,aes192-ctr
-  MACs hmac-sha1,hmac-ripemd160,hmac-md5
+Host sosite
+  User langston
+  Hostname 192.168.52.117
