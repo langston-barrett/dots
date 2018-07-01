@@ -40,14 +40,15 @@ bindsym $mod+Shift+l move right
 bindsym $mod+f fullscreen toggle
 
 # brightness, volume, etc
+# use nixos.xorg.xev to find the keycodes
 # bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
 # bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
 bindsym XF86MonBrightnessDown exec light -U 5
 bindsym XF86MonBrightnessUp exec light -A 5
 
 # These also work for pulse
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 1 "-5%"
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 1 +5%
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 "-5%"
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+t layout stacking
@@ -123,6 +124,7 @@ client.background       #ffffff
 bar {
   font pango:Hack, Icons 11
  
+  output primary
   tray_output primary
   status_command i3status
   # status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
