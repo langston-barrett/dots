@@ -47,8 +47,8 @@ bindsym XF86MonBrightnessDown exec light -U 5
 bindsym XF86MonBrightnessUp exec light -A 5
 
 # These also work for pulse
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 0 "-5%"
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 0 +5%
+bindsym XF86AudioLowerVolume exec bash -c "pactl set-sink-volume 0 '-5%' && pactl set-sink-volume 1 '-5%' || true"
+bindsym XF86AudioRaiseVolume exec bash -c "pactl set-sink-volume 0 '+5%' && pactl set-sink-volume 1 '+5%' || true"
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+t layout stacking
@@ -107,9 +107,9 @@ bindsym $mod+r mode "resize"
 
 ## Looks - i3gaps
 
-# smart_gaps on
-# gaps inner 20
-# gaps outer 0
+smart_gaps on
+gaps inner 15
+gaps outer 0
 # smart_borders on
 
 # class                 border  backgr. text    indicator child_border
