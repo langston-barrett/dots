@@ -4,13 +4,7 @@
 
 ! https://unix.stackexchange.com/questions/137844/per-screen-font-config#210792
 
-#if SCREEN_NUM == 0
-Xft.dpi: 192
-#endif
-
-#if SCREEN_NUM == 1
 Xft.dpi:  100
-#endif
 
 ! From https://wiki.archlinux.org/index.php/Infinality#Usage
 Xft.antialias:  true
@@ -38,15 +32,8 @@ URxvt.lineSpace: 0
 
 ! Fonts
 
-#if SCREEN_NUM == 0
-URxvt*font: xft:Hack:pixelsize=28
-URxvt*boldFont: xft:Hack:pixelsize=28
-#endif
-
-#if SCREEN_NUM == 1
-URxvt*font: xft:Hack:pixelsize=18
-URxvt*boldFont: xft:Hack:pixelsize=18
-#endif
+URxvt*font: xft:Hack:size=18
+URxvt*boldFont: xft:Hack:size=18
 
 URxvt.allow_bold: true
 ! Fix font space
