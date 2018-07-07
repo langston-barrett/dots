@@ -89,8 +89,6 @@
   };
 
   programs.bash = {
-    interactiveShellInit = ''
-      exec zsh
-    '';
+    enableCompletion = true;
   };
 }

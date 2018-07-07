@@ -1,3 +1,4 @@
+# -*- mode: nix -*-
 { config, pkgs, ... }:
 
 {
@@ -10,8 +11,22 @@
     ../x.nix
   ];
 
+  # Use the systemd-boot EFI boot loader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  # Crypto!!
+  boot.initrd.luks.devices = [
+    {
+      name = "root";
+      device = "/dev/disk/by-uuid/445eed41-be61-44fa-9cd0-ffea26dea921";
+      preLVM = true;
+      allowDiscards = true;
+    }
+  ];
+
   networking.hostName = "langston-nixos"; # Define your hostname.
-  networking.networkmanager.enable = true;
+  # networking.networkmanager.enable = true;
 
   services.xserver = {
     synaptics = {
@@ -29,23 +44,6 @@
 
   programs.light.enable = true;
 
-  # This value determines the NixOS release with which your system is to be
-  # compatible, in order to avoid breaking some software such as database
-  # servers. You should change this only after NixOS release notes say you
-  # should.
-  system.stateVersion = "18.03"; # Did you read the comment?
-
-  # Use the gummiboot efi boot loader.
-  boot = {
-    supportedFilesystems = ["exfat" "btrfs" "ntfs" "vfat"];
-    loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-  };
-
-  virtualisation.docker.enable = true;
-
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = false;
@@ -60,6 +58,7 @@
     dropbox
     gimp
     htop
+    kdeconnect
     lxappearance
     maim
     mu
@@ -79,5 +78,11 @@
   services.physlock.enable = true;
 
   # Can't be enabled in virtual guests
-  rngd.enable = true; # feed hardware randomness to kernel when possible
+  #rngd.enable = true; # feed hardware randomness to kernel when possible
+
+  # This value determines the NixOS release with which your system is to be
+  # compatible, in order to avoid breaking some software such as database
+  # servers. You should change this only after NixOS release notes say you
+  # should.
+  system.stateVersion = "18.03"; # Did you read the comment?
 }

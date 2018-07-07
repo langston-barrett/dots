@@ -10,6 +10,7 @@ in {
   environment.systemPackages = with pkgs; [
     # Having to do with X/i3 functionality
     arc-theme
+    arandr
     conky
     feh
     i3status

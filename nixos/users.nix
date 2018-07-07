@@ -6,8 +6,6 @@
 
   users = {
 
-    #defaultUserShell = "/nix/var/nix/profiles/default/bin/zsh";
-
     groups = {
       siddharthist = {
         gid = 1000;
@@ -16,15 +14,17 @@
 
     # Remember to set the password with `passwd`
     users = {
+
+      # Personal
       siddharthist = {
         isNormalUser = true;
         home = "/home/siddharthist";
+        shell = pkgs.zsh;
         createHome = true;
         description = "Langston Barrett";
         uid = 1000;
         group = "siddharthist";
         extraGroups = [ "wheel" "networkmanager" ];
-        #shell = "/run/current-system/sw/bin/zsh";
       };
     };
   };

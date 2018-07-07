@@ -12,52 +12,56 @@
     gst_plugins_ugly
   ];
 
-  # fileSystems."/home/siddharthist/library" =
-  #   { device = "/dev/disk/by-uuid/3babbf74-417f-45a9-876b-e8f6ef880798";
-  #     options = [ "defaults" "rw" "user" "noauto" ];
-  #   };
+  services.mopidy = {
+    enable = false;
+    # user = "siddharthist";
+    # group = "siddharthist";
+    configuration = ''
+      [local]
+      media_dir = /home/siddharthist/Dropbox/langston/music
+      scan_follow_symlinks = true
 
-  # services.mopidy = {
-  #   enable = true;
-  #   configuration = ''
-  #     [local]
-  #     media_dir = /home/siddharthist/library/music
-  #     scan_follow_symlinks = true
+      [file]
+      enabled = true
+      media_dir = /home/siddharthist/Dropbox/langston/music
+      follow_symlinks = true
 
-  #     [file]
-  #     enabled = true
-  #     media_dir = /home/siddharthist/library/music
-  #     follow_symlinks = true
+      [soundcloud]
+      auth_token = 1-35204-13055450-d7e88a776b7aaf8
+    '';
+    extensionPackages = with pkgs; [
+      # TODO: upstream mopidy-podcast
+      mopidy-moped
+      mopidy-musicbox-webclient
+      mopidy-soundcloud
+      mopidy-youtube
+    ];
+  };
 
-  #     [soundcloud]
-  #     auth_token = 1-35204-13055450-d7e88a776b7aaf8
-  #   '';
-  #   extensionPackages = with pkgs; [
-  #     # TODO: upstream mopidy-podcast
-  #     mopidy-moped
-  #     mopidy-musicbox-webclient
-  #     mopidy-soundcloud
-  #     mopidy-youtube
-  #   ];
-  # };
+  services.ympd = {
+    enable = false;
+    mpd.port = 6700;
+    webPort = "6601";
+  };
 
-  #services.ympd.enable = true;
+  services.mpd = {
+    enable = false;
+    user = "siddharthist";
+    group = "siddharthist";
+    musicDirectory = "/home/siddharthist/Dropbox/langston/music";
+    dataDir = "/home/siddharthist/Dropbox/langston/archive/backup/mpd";
 
-  # services.mpd = {
-  #   enable = true;
-  #   user = "siddharthist";
-  #   group = "siddharthist";
-  #   musicDirectory = "/home/siddharthist/library/music";
-  #   dataDir = "/home/siddharthist/library/mpd-data";
-  #   # use aplay -l to find hw:card,device tuple
-  #   extraConfig = ''
-  #     audio_output {
-  #       type "alsa"
-  #       name "usb sound card"
-  #       device "hw:2,0"
-  #     }
-  #   '';
-  # };
+    network.port = 6700;
+
+    # use aplay -l to find hw:card,device tuple
+    extraConfig = ''
+      audio_output {
+        type "alsa"
+        name "usb sound card"
+        device "hw:0,0"
+      }
+    '';
+  };
 
   # sound.enableMediaKeys = true; # sxhkd takes care of this
   hardware.pulseaudio = {

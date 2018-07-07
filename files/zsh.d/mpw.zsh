@@ -23,5 +23,5 @@ mpw() {
   :| _copy 2>/dev/null
 
   # Start Master Password and copy the output.
-  printf %s "$(command mpw "$@")" | _copy
+  printf %s "$(command mpw -t x "$@")" | _copy
 }

@@ -63,6 +63,8 @@
     zip
   ];
 
+  virtualisation.docker.enable = true;
+
   # Other common ones:
   # gcc #
   # python
