@@ -69,6 +69,8 @@
       - src: ranger/scope.sh
         dst: "{{ xdg_config_home }}/ranger/scope.sh"
         mode: "0750"
+      - src: rofi.rasi
+        dst: "{{ xdg_config_home }}/rofi/config.rasi"
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
       - src: spacemacs.desktop

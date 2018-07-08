@@ -17,7 +17,7 @@ exec kdeconnect-indicator
 
 # Mouse+mod floats & drags
 floating_modifier $mod
-bindsym $mod+d exec rofi -show run -lines 5 -eh 2 -width 50 -padding 100 -opacity 55 -bw 0 -font "Open Sans 32"
+bindsym $mod+d exec rofi -show drun
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Return exec urxvt
 bindsym $mod+Shift+Return exec hyper
