@@ -21,10 +21,10 @@ Xcursor.theme:  Vanilla-DMZ
 ! URxvt settings
 !-------------------------------------------------------------------------------
 
-URxvt.transparent: false
-! URxvt.tintColor: {{ colorscheme["background"] }}
+URxvt.transparent: {{ colorscheme["urxvt transparent"] | default(False) }}
+URxvt.tintColor: {{ colorscheme["background"] }}
 ! 0 to 99 darkens, 101 to 200 lightens
-! URxvt*.shading: 100
+URxvt*.shading: {{ colorscheme["urxvt shading"] | default(185) }}
 URxvt.loginShell: true
 URxvt.saveLines: 10000
 URxvt.internalBorder: 3
@@ -58,6 +58,7 @@ URxvt.cursorUnderline: false
 
 *foreground: {{ colorscheme["text"] }}
 *background: {{ colorscheme["background"] }}
+URxvt.background: {{ colorscheme["background"] }}
 *cursorColor: {{ colorscheme["selected"] }}
 *pointerColorForeground: {{ colorscheme["selected"] }}
 

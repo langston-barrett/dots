@@ -1,6 +1,14 @@
 { config, pkgs, ... }:
 
-{
+let mkGraphicalService = attrs: {
+    enable = true;
+    user = "siddharthist";
+    environment = { DISPLAY = ":0"; };
+    after = [ "display-manager.service" ];
+    partOf = [ "display-manager.service" ];
+    wantedBy = [ "graphical.target" ];
+  } // attrs;
+in {
   imports = [ ./graphical.nix ];
 
   environment.systemPackages = with pkgs; [
@@ -36,5 +44,25 @@
 
     # TODO: get rid of ~/.xmodmap and see if this works
     xkbOptions = "ctrl:swapcaps";
+  };
+
+  systemd.user.services = {
+    xcompmgr = mkGraphicalService {
+      description = "Use xcompmgr compositor";
+      serviceConfig = {
+        ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr -c";
+        Restart = "always";
+        RestartSec = "5s";
+      };
+    };
+
+    kdeconnect = mkGraphicalService {
+      description = "kdeconnect";
+      serviceConfig = {
+        ExecStart = "${pkgs.kdeconnect}/bin/kdeconnect-indicator";
+        Restart = "always";
+        RestartSec = "5s";
+      };
+    };
   };
 }

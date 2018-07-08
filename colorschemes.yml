@@ -163,5 +163,8 @@ colorscheme_tao_yang:
   background: "#F1F1F1"
   foreground: "#090909"
 
-  nix_snowflake_wallpaper: True
+  nix_snowflake_wallpaper: False
   conkyrc: conkyrc.tao-yang
+
+  urxvt transparent: True
+  urxvt shading: 185

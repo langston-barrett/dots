@@ -13,7 +13,8 @@ exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec xmodmap ~/.xmodmap
 exec --no-startup-id nm-applet
-exec kdeconnect-indicator
+exec systemctl --user start xcompmgr
+exec systemctl --user start kdeconnect
 
 # Mouse+mod floats & drags
 floating_modifier $mod
