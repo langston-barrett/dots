@@ -39,6 +39,10 @@
       - src: latex-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
         mode: "0750"
+      - src: monitor/at-desk.sh
+        dst: "{{ xdg_config_home }}/i3/scripts/at-desk.sh"
+      - src: monitor/not-at-desk.sh
+        dst: "{{ xdg_config_home }}/i3/scripts/not-at-desk.sh"
       - src: mutt/muttrc
         dst: "{{ home }}/.mutt/muttrc"
       - src: mutt/muttrc.zenburn
@@ -71,6 +75,8 @@
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
       - src: ssh
         dst: "{{ home }}/.ssh/config"
+      - src: sway
+        dst: "{{ xdg_config_home }}/sway/config"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
       - src: urlview

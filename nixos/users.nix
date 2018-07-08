@@ -24,7 +24,7 @@
         description = "Langston Barrett";
         uid = 1000;
         group = "siddharthist";
-        extraGroups = [ "wheel" "networkmanager" ];
+        extraGroups = [ "networkmanager" "sway" "wheel" ];
       };
     };
   };

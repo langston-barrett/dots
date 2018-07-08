@@ -9,6 +9,7 @@
 
     ../audio.nix
     ../x.nix
+    # ../wayland.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
