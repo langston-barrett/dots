@@ -171,7 +171,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
-                               :size 16
+                               :size 18
                                :weight normal
                                :width normal)
 
@@ -445,6 +445,32 @@ you should place your code here."
     )
   (add-hook 'message-mode-hook 'msg-mode)
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
+
+  ;; Use C-r for backwards terminal search, even in evil mode
+  (defun bb/setup-term-mode ()
+    (evil-local-set-key 'insert (kbd "C-r") 'bb/send-C-r))
+
+  (defun bb/send-C-r ()
+    (interactive)
+    (term-send-raw-string "\C-r"))
+
+  (add-hook 'term-mode-hook 'bb/setup-term-mode)
+
+  ;; Transparency
+  ;; https://www.emacswiki.org/emacs/TransparentEmacs
+  ;; (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
+  ;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
+  ;; (defun toggle-transparency ()
+  ;;   (interactive)
+  ;;   (let ((alpha (frame-parameter nil 'alpha)))
+  ;;     (set-frame-parameter
+  ;;      nil 'alpha
+  ;;      (if (eql (cond ((numberp alpha) alpha)
+  ;;                     ((numberp (cdr alpha)) (cdr alpha))
+  ;;                     ;; Also handle undocumented (<active> <inactive>) form.
+  ;;                     ((numberp (cadr alpha)) (cadr alpha)))
+  ;;               100)
+  ;;          '(85 . 85) '(100 . 100)))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -461,7 +487,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-gtags godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc ggtags flycheck-gometalinter counsel-gtags company-go go-mode yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons all-the-icons memoize spaceline powerline smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox spinner overseer org-bullets open-junk-file nix-mode neotree nameless multi-term move-text mmm-mode math-symbols markdown-toc markdown-mode magit-svn magit-gitflow macrostep lorem-ipsum livid-mode skewer-mode live-py-mode linum-relative link-hint less-css-mode json-navigator hierarchy json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide importmagic epc ctable concurrent deferred impatient-mode htmlize simple-httpd hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose window-purpose imenu-list helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets haml-mode google-translate golden-ratio gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck-bashate flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub let-alist with-editor evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump define-word dante lcr flycheck cython-mode counsel-projectile projectile counsel swiper ivy pkg-info epl company-web web-completion-data company-tern dash-functional tern company-statistics company-shell company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-coq company-math math-symbol-lists company-cabal company-auctex company-anaconda company column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode auto-yasnippet yasnippet auto-highlight-symbol auto-dictionary auto-compile packed auctex-latexmk auctex anaconda-mode pythonic f dash s aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core ac-ispell auto-complete popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async))))
+    (evil-ediff yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general popwin pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer org-plus-contrib org-bullets open-junk-file nix-mode neotree nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
