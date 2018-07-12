@@ -1,0 +1,41 @@
+# -*- mode: conf -*-
+# Old-school GPG config was taken from the following docs. I'm preserving these
+# links here just in case I need to configure an old version of mutt & gnupg in
+# the future without gpgme.
+#   * /usr/share/docs/mutt/gpg.rc
+#   * http://codesorcery.net/old/mutt/mutt-gnupg-howto
+#   * http://dev.mutt.org/trac/wiki/MuttGuide/UseGPG
+#
+# Mutt now has solid support for GPGME, which not only makes config much
+# simpler and eliminates the need to fork gpg processes & parse their output -
+# it also makes working with gpg-agent, kwallet, gnome-keyring etc. a doddle
+# (i.e.  automatic)
+#
+# This does of course all assume that gnupg is configured correctly, so check
+# ~/.gnupg/gpg.conf and make sure commands like `gpg --list-secret-keys` and
+# `gpg --search-keys 0xBE0E47FC` work as expected.
+#
+# Mutt needs to be built with gpgme support for this to work:
+#     mutt -v | grep -i gpgme
+set crypt_use_gpgme=yes
+
+# Automatically sign all outgoing messages
+# set crypt_autosign=no
+
+# Automatically verify the sig of a message when opened
+set crypt_verify_sig=yes
+
+# Automatically sign replies to messages which are signed
+# Automatically encrypt replies to messages which are encrypted
+# Automatically sign replies to messages which are encrypted
+set crypt_replysign=yes
+set crypt_replyencrypt=yes
+set crypt_replysignencrypted=yes
+
+# This enables the new PKA method of key validation via DNS. It's currently
+# very rare, but doesn't hurt to enable & test it. See the following links for
+# more details:
+#   http://lists.gnupg.org/pipermail/gnupg-devel/2005-August/022254.html
+#   https://www.df7cb.de/blog/2007/openpgp-dns.html
+#   http://www.g10code.de/docs/pka-intro.de.pdf (German PDF)
+set crypt_use_pka=yes

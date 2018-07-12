@@ -3,9 +3,31 @@
 # http://stevelosh.com/blog/2012/10/the-homely-mutt/
 # https://smalldata.tech/blog/2016/09/10/gmail-with-mutt
 
+source ~/.mutt/muttrc.zenburn
+source ~/.mutt/muttrc.keybindings
+
+# GPG ----------------------------------------------
+
+# https://gist.github.com/miguelmota/9456162
+# https://henrytodd.org/notes/2014/simpler-gnupg-mutt-config-with-gpgme/
+source ~/.mutt/gpgme.rc
+# source ~/.mutt/gpg.rc
+
+# Accounts ----------------------------------------------
+folder-hook 'account.com.gmail.personal' 'source ~/.mutt/account.com.gmail.personal'
+folder-hook 'account.com.gmail.galois' 'source ~/.mutt/account.com.gmail.galois'
+
+# Default account 
+source ~/.mutt/account.com.gmail.galois
+
+# Change accounts
+macro index <f2> '<sync-mailbox><enter-command>source ~/.mutt/account.com.gmail.personal<enter><change-folder>!<enter>'
+macro index <f3> '<sync-mailbox><enter-command>source ~/.mutt/account.com.gmail.galois<enter><change-folder>!<enter>'
+
+
 # General ----------------------------------------------
 set realname       = "Langston Barrett"
-set from           = "Langston Barrett <langston.barrett@gmail.com>"
+# set from           = "Langston Barrett <langston.barrett@gmail.com>"
 set text_flowed    = yes # better handling of line breaks
 set editor         = "emacsclient --create-frame"
 set pager_context  = 10  # show 10 context lines
@@ -20,75 +42,30 @@ set reverse_name         # reply as whomever it was to
 set folder           = ~/Dropbox/langston/mail # mailbox location
 set alias_file       = ~/.mutt/alias           # where to store aliases
 set header_cache     = ~/.mutt/cache/headers   # where to store headers
-set message_cachedir = ~/.mutt/cache/bodies    # where to store bodies
+# Don't cache plaintext!
+# set message_cachedir = ~/.mutt/cache/bodies    # where to store bodies
 set certificate_file = ~/.mutt/certificates    # where to store certs
 set signature        = ~/.mutt/signature
 
 # Basics ----------------------------------------------
 set mbox_type        = Maildir
-set smtp_url         = "smtp://bbarrett909@smtp.gmail.com:587/"
 set move             = no
 set sort             = threads                     # like gmail
 set sort_aux         = reverse-last-date-received  # like gmail
 
-# Key Bindings ---------------------------------
-# postponing --------------
-bind  compose     p        postpone-message
-bind  index       p        recall-message
-# vim --------------
-bind  index,pager N        search-opposite # navigate backwards in search
-bind  index       gg       first-entry
-bind  index       G        last-entry
-bind  pager       gg       top
-bind  pager       G        bottom
-macro index       ul       "<limit>all\n" "Undo limit (show all messages)"
-# bind  pager <shift><space> previous-page
-
-# other --------------
-bind  index       R        group-reply
-bind  index       <tab>    sync-mailbox
-bind  index       <space>  collapse-thread
-# gmail --------------
-bind  index,pager c  mail          # compose
-bind  generic     x  tag-entry     # Select Conversation
-bind  index       x  tag-thread    # Select Conversation
-bind  pager       x  tag-message   # Select Conversation
-bind  index,pager s  flag-message  # Star a message
-bind  index,pager a  group-reply   # Reply all
-# bind index,pager \# delete-thread # Delete
-bind index,pager v  save-message  # Move to
-# gmail/orgainlization ---------------------------------
-bind editor <space> noop
-folder-hook +INBOX 'macro index,pager e "<save-message>=archive<enter><enter>" "Archive conversation"'
-folder-hook +[Gmail]/Trash macro index,pager e =INBOX "Move to inbox"
-folder-hook +[Gmail]/Starred bind  index,pager e flag-message #"Toggle star"
-macro index,pager d "<save-message>=trash<enter><enter>" "Trash"
-macro index,pager gi "<change-folder>=INBOX<enter>" "Go to inbox"
-macro index,pager gt "<change-folder>=sent<enter>" "Go to 'Sent Mail'"
-macro index,pager ga "<change-folder>=archive<enter>" "Go to all mail"
-macro index,pager gs "<change-folder>=flagged<enter>" "Go to starred messages"
-macro index,pager gd "<change-folder>=postponed<enter>" "Go to drafts"
-macro index O "<sync-mailbox><shell-escape>offlineimap<enter><sync-mailbox>"           "offlineimap: sync all"
-macro index o "<shell-escape>offlineimap -qf INBOX<enter>" "offlineimap: sync inbox"
-
 # Account Settings -----------------------------------
-set spoolfile = "+INBOX"  # Default inbox.
 set mbox      = "archive" # Other special folders.
-set postponed = "drafts"
 
 # Header Options -------------------------------------
 ignore *                                # ignore all headers
 unhdr_order *                           # no default order
 unignore from: to: cc: date: subject:   # show only these
 hdr_order from: to: cc: date: subject:  # in this order
-source ~/.config/mutt/passwords # get SMTP passwords
 
 # html email --------------------------------------
 
 auto_view text/html                    # if there is only html dump that
 alternative_order text/plain text/html # prefer plaintext
-
-source ~/.mutt/muttrc.zenburn
 
 # Sidebar Patch --------------------------------------
 # set sidebar_visible = yes
@@ -99,4 +76,21 @@ source ~/.mutt/muttrc.zenburn
 #           "+[Gmail]/Drafts" \
 #           "+[Gmail]/All Mail" \
 #           "+[Gmail]/Starred" \
-#           "+[Gmail]/Trash" 
+
+# SSL hardening --------------------------------------
+set ssl_force_tls=yes
+set ssl_starttls=yes
+set ssl_use_sslv2=no
+set ssl_use_sslv3=no
+set ssl_use_tlsv1=no
+set ssl_use_tlsv1_1=no
+set ssl_use_tlsv1_2=yes
+set ssl_verify_dates=yes
+set ssl_verify_host=yes
+# On some configurations this option is not recognised. It should
+# default to "" anyway. If this is a valid option, uncomment this.
+# unset ssl_ca_certificates_file
+# Don't trust the system.
+unset ssl_usesystemcerts
+# This isn't encrypted, but I don't want it picked up by git
+set certificate_file=~/.mutt/gmailcerts.gpg

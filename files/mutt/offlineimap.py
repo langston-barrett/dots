@@ -1,6 +1,11 @@
 #!/usr/bin/env python
-# -*- mode: text -*-
+# -*- mode: python -*-
+
+# def passwd():
+#   with open('/home/siddharthist/.mutt/password') as f:
+#     return f.read()
+
+from subprocess import check_output
 
 def passwd():
-  with open('/home/siddharthist/.mutt/password') as f:
-    return f.read()
+    return check_output("gpg -dq ~/.mutt/offlineimappass.gpg", shell=True).strip("\n")
