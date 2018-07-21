@@ -40,7 +40,7 @@
   system.autoUpgrade.enable = true;
 
   environment.systemPackages = with pkgs; [
-    aspell # TODO: english dict?
+    (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
     curl
     emacs
@@ -51,6 +51,7 @@
     gnupg
     imagemagick
     mpw
+    nix-prefetch-git
     pass
     p7zip
     ranger

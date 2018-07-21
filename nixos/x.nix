@@ -2,7 +2,7 @@
 
 let mkGraphicalService = attrs: {
     enable = true;
-    user = "siddharthist";
+    # user = "siddharthist";
     environment = { DISPLAY = ":0"; };
     after = [ "display-manager.service" ];
     partOf = [ "display-manager.service" ];
