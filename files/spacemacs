@@ -29,8 +29,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(go
-     emacs-lisp
+   '(emacs-lisp
      helm ; full-featured auto-completion
      html
      javascript
@@ -51,8 +50,10 @@ This function should only modify configuration layer settings."
      ;; (c-c++ :variables c-c++-enable-clang-support t)
      agda
      coq
-     ;; (go :variables gofmt-command "goimports")
-     (haskell :variables haskell-enable-hindent-style "fundamental")
+     (go :variables go-tab-width 4)
+     (haskell :variables haskell-enable-hindent-style "fundamental"
+                         haskell-completion-backend 'dante)
+     (java :variables java-backend 'ensime)
      (latex :variables
             latex-build-command "LatexMk"
             latex-enable-auto-fill t)
@@ -65,11 +66,13 @@ This function should only modify configuration layer settings."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(math-symbols) ; '(toml-mode)
+   dotspacemacs-additional-packages '(magit-todos
+                                      math-symbols) ; '(toml-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   ;; https://github.com/syl20bnr/spacemacs/issues/2294
+   dotspacemacs-excluded-packages '(exec-path-from-shell)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and deletes any unused
@@ -171,7 +174,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
-                               :size 18
+ :size 28
                                :weight normal
                                :width normal)
 
@@ -298,7 +301,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non nil show the color guide hint for transient state keys. (default t)
    dotspacemacs-show-transient-state-color-guide t
    ;; If non nil unicode symbols are displayed in the mode line. (default t)
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols nil ; https://github.com/syl20bnr/spacemacs/issues/8462
    ;; If non nil smooth scrolling (native-scrolling) is enabled. Smooth
    ;; scrolling overrides the default behavior of Emacs which recenters point
    ;; when it reaches the top or bottom of the screen. (default t)
@@ -334,7 +337,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-highlight-delimiters 'all
 
    ;; If non-nil, start an Emacs server if one is not already running.
-   dotspacemacs-enable-server t
+   dotspacemacs-enable-server nil ; https://github.com/syl20bnr/spacemacs/issues/8462
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
@@ -391,6 +394,7 @@ It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ; Coq layer defines abbreviations on *single letters*, so by default typing
   ; one letter and pressing ESC will expand the letter, which prevents typing
+  ; https://github.com/syl20bnr/spacemacs/issues/8853
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   )
 
@@ -402,23 +406,73 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;;
-  ;; (custom-set-variables '(markdown-css-path "/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-css-paths '("/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-command "pandoc -f markdown+smart -t html --css ~/Dropbox/langston/notes/css.css --self-contained")
+  ;; ;; GENERAL
 
-  ;; Disable prettified Coq printing: use unicode!
-  (with-eval-after-load 'company-coq
-     (add-to-list 'company-coq-disabled-features 'prettify-symbols))
-
-  ;; Ctrl-] will act just like right arrow in insert mode
-  (define-key evil-insert-state-map (kbd "C-]") 'forward-char)
+  (setq-default tab-width 4)
 
   ;; Set escape keybinding to "jk"
   (setq-default evil-escape-key-sequence "jk")
 
+  ;; Use C-r for backwards terminal search, even in evil mode
+  (defun siddharthist/setup-term-mode ()
+    (evil-local-set-key 'insert (kbd "C-r") 'siddharthist/send-C-r))
+
+  (defun siddharthist/send-C-r ()
+    (interactive)
+    (term-send-raw-string "\C-r"))
+
+  (add-hook 'term-mode-hook 'siddharthist/setup-term-mode)
+
+  (defun siddharthist/ansi-term-zsh ()
+    (interactive)
+    (ansi-term "/run/current-system/sw/bin/zsh"))
+
+  (defun siddharthist/ansi-term-nix-shell ()
+    (interactive)
+    (ansi-term "nix-shell --run 'exec zsh'"))
+
+  ;; ;; MARKDOWN
+
+  ;; (custom-set-variables '(markdown-css-path "/home/siddharthist/Dropbox/langston/notes/css.css"))
+  (setq markdown-css-paths '("/home/siddharthist/Dropbox/langston/notes/css.css"))
+  (setq markdown-command "pandoc -f markdown+smart -t html --css ~/Dropbox/langston/notes/css.css --self-contained")
+
+  ;; ;; COQ
+
+  ;; (with-eval-after-load 'company-coq
+  ;;    (add-to-list 'company-coq-disabled-features 'prettify-symbols))
+
+  ;; Coq key bindings:
+  ;; - Use SPC-m-SPC instead of SPC-m-. for less pinky strain
+  ;; - Use SPC-gE to process to the end of the file. Good for finding out where one left off.
+  (spacemacs/set-leader-keys-for-major-mode 'coq-mode
+    "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
+    "SPC" 'proof-goto-point)
+
+  ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
+  (setq undo-tree-enable-undo-in-region nil)
+
+  ;; Cobbled together from:
+  ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
+  ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
+  ; TODO: n is void?
+  (defun siddharthist/coq-compile-projectile ()
+    (interactive)
+    (require 'projectile)
+    (let ((makefile (concat (projectile-project-root) "/Makefile"))
+          (n (buffer-name))
+          (l (string-match ".v" n)))
+      (if (not makefile)
+          (error "No build file found for project %s" (projectile-project-root)))
+      (compile (concat "make " (substring n 0 l) ".vo"))))
+
+  ;; ;; SHELL
+
   (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
                                             sh-indentation 2)))
+
+  ;; ;; LATEX
+
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
   (setq require-final-newline t)
 
@@ -429,13 +483,9 @@ you should place your code here."
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
   ; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
 
+  ;; ;; MUTT
 
-  ;; Coq
-  ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
-  (setq undo-tree-enable-undo-in-region nil)
-
-  ;; Mutt support.
-  (defun msg-mode ()
+  (defun siddharthist/msg-mode ()
     ;; Map j/k to move visual lines.
     (define-key evil-motion-state-map "j" 'evil-next-visual-line)
     (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
@@ -446,31 +496,6 @@ you should place your code here."
   (add-hook 'message-mode-hook 'msg-mode)
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
 
-  ;; Use C-r for backwards terminal search, even in evil mode
-  (defun bb/setup-term-mode ()
-    (evil-local-set-key 'insert (kbd "C-r") 'bb/send-C-r))
-
-  (defun bb/send-C-r ()
-    (interactive)
-    (term-send-raw-string "\C-r"))
-
-  (add-hook 'term-mode-hook 'bb/setup-term-mode)
-
-  ;; Transparency
-  ;; https://www.emacswiki.org/emacs/TransparentEmacs
-  ;; (set-frame-parameter (selected-frame) 'alpha '(85 . 85))
-  ;; (add-to-list 'default-frame-alist '(alpha . (85 . 85)))
-  ;; (defun toggle-transparency ()
-  ;;   (interactive)
-  ;;   (let ((alpha (frame-parameter nil 'alpha)))
-  ;;     (set-frame-parameter
-  ;;      nil 'alpha
-  ;;      (if (eql (cond ((numberp alpha) alpha)
-  ;;                     ((numberp (cdr alpha)) (cdr alpha))
-  ;;                     ;; Also handle undocumented (<active> <inactive>) form.
-  ;;                     ((numberp (cadr alpha)) (cadr alpha)))
-  ;;               100)
-  ;;          '(85 . 85) '(100 . 100)))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -487,7 +512,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil-ediff yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general popwin pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer org-plus-contrib org-bullets open-junk-file nix-mode neotree nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode ensime sbt-mode scala-mode company-emacs-eclim eclim yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer org-plus-contrib org-bullets open-junk-file nix-mode neotree nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
