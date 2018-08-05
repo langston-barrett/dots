@@ -1,4 +1,7 @@
-{ config, pkgs, ... }:
+{ config
+, pkgs
+, dpi ? 92
+, ... }:
 
 let mkGraphicalService = attrs: {
     enable = true;
@@ -22,7 +25,8 @@ in {
   ];
 
   services.xserver = {
-    dpi = 192;
+    inherit dpi;
+
     enable = true;
     layout = "us";
 

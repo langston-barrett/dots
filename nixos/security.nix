@@ -40,7 +40,6 @@
         in [
           (writeDenyProfile pkgs.feh "feh")
           (writeDenyProfile pkgs.file "file")
-          (writeDenyProfile pkgs.gnupg "gpg")
           (writeDenyProfile pkgs.imagemagick "convert")
           (writeDenyProfile pkgs.mpw "mpw")
           (writeDenyProfile pkgs.p7zip "7z")

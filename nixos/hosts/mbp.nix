@@ -4,12 +4,11 @@
 {
   imports = [
     # Include the results of the hardware scan.
-    ./hardware-configuration-laptop.nix
+    ./hardware-configuration-mbp.nix
     ../common.nix
 
     ../audio.nix
     ../mail.nix
-    ../networking.nix
     ../x.nix
     # ../wayland.nix
   ];
@@ -17,19 +16,11 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  nixpkgs.config.allowUnfree = true; # broadcom_sta
 
-  # Crypto!!
-  boot.initrd.luks.devices = [
-    {
-      name = "root";
-      device = "/dev/disk/by-uuid/445eed41-be61-44fa-9cd0-ffea26dea921";
-      preLVM = true;
-      allowDiscards = true;
-    }
-  ];
-
-  networking.hostName = "langston-nixos"; # Define your hostname.
+  networking.hostName = "langston-mbp-nixos"; # Define your hostname.
   # networking.networkmanager.enable = true;
+  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   services.xserver = {
     synaptics = {
@@ -79,9 +70,6 @@
   # virtualisation.virtualbox.enableHardening = true;
   virtualisation.virtualbox.host.enable = true;
   services.physlock.enable = true;
-
-  # Can't be enabled in virtual guests
-  #rngd.enable = true; # feed hardware randomness to kernel when possible
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

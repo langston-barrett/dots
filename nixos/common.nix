@@ -6,7 +6,6 @@
 
 {
   imports = [
-    ./networking.nix
     ./security.nix
     ./users.nix
     ./zsh.nix
