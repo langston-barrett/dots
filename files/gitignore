@@ -1,3 +1,6 @@
+result
+*.gpg
+
 # Compiled source #
 # *.com # Breaks on golang's github.com paths
 *.class

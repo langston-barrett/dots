@@ -41,18 +41,12 @@
         mode: "0750"
       - src: monitor/at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/at-desk.sh"
+        mode: "0750"
       - src: monitor/not-at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/not-at-desk.sh"
-      - src: mutt/muttrc
-        dst: "{{ home }}/.mutt/muttrc"
-      - src: mutt/muttrc.zenburn
-        dst: "{{ home }}/.mutt/muttrc.zenburn"
-      - src: mutt/mailcap
-        dst: "{{ home }}/.mutt/mailcap"
-      - src: mutt/signature
-        dst: "{{ home }}/.mutt/signature"
-      - src: mutt/offlineimap.py
-        dst: "{{ home }}/.mutt/offlineimap.py"
+        mode: "0750"
+      - src: mutt
+        dst: "{{ home }}/.mutt"
         mode: "0750"
       - src: offlineimaprc
         dst: "{{ home }}/.offlineimaprc"
@@ -71,8 +65,8 @@
         mode: "0750"
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
-      # - src: spacemacs
-      #   dst: "{{ home }}/.spacemacs"
+      - src: spacemacs
+        dst: "{{ home }}/.spacemacs"
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
       - src: ssh

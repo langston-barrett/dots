@@ -10,8 +10,4 @@ sed -i 's/\([[:space:]]\)\+:size 18/\1:size 28/'    ~/code/dots/files/spacemacs
 sed -i 's/xft:Hack:size=../xft:Hack:size=12/'       ~/.Xresources
 sed -i 's/Xft.dpi:        160/Xft.dpi:        192/' ~/.Xresources
 
-xrdb -merge ~/.Xresources
-feh --bg-fill ~/.config/wallpaper.jpg
-
-echo "Remember to set about:config.pixelsperpx"
-echo "and restart X"
+bash $HOME/.config/i3/scripts/post.sh

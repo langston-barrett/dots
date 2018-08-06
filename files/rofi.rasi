@@ -4,7 +4,7 @@ configuration {
 	width: 50;
 	lines: 5;
 	columns: 1;
-	font: "Open Sans 32";
+	font: "Open Sans 24";
 /*	bw: 1;*/
 /*	location: 0;*/
 	padding: 25;

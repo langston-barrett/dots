@@ -131,8 +131,11 @@ colorscheme_tao_yin:
   background: "#171717"
   foreground: "#D8D8D8"
 
-  nix_snowflake_wallpaper: True
-  conkyrc: conkyrc.tao-yin
+  nix_snowflake_wallpaper: False
+  conkyrc: conkyrc.tao-yim
+
+  urxvt transparent: true
+  urxvt shading: 100
 
 colorscheme_tao_yang:
   # Default tao-theme-scale-fn is tao-theme-golden-scale, and produce following colors:
@@ -166,5 +169,5 @@ colorscheme_tao_yang:
   nix_snowflake_wallpaper: False
   conkyrc: conkyrc.tao-yang
 
-  urxvt transparent: True
+  urxvt transparent: true
   urxvt shading: 185

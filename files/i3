@@ -140,7 +140,8 @@ mode $displayMode {
 # i3bar
 
 bar {
-  font pango:Hack, Icons 11
+  i3bar_command i3bar -t
+  font pango:Hack, Icons 8
  
   output primary
   tray_output primary
@@ -150,17 +151,22 @@ bar {
   position top
 
   colors {
-    # tao-yin
-    background    #171717
-    statusline    #D8D8D8
-
-    # tao-yang
-    # background    #F1F1F1
-    # statusline    #090909
-
-    focused_workspace  #4c7899 #285577 #ffffff
-    active_workspace   #333333 #5f676a #ffffff
-    inactive_workspace #333333 #222222 #888888
-    urgent_workspace   #2f343a #900000 #ffffff
+    background    #17171788
+    statusline    #D8D8D8FF
   }
+
+  # colors {
+  #   # tao-yin
+  #   background    #171717
+  #   statusline    #D8D8D8
+
+  #   # tao-yang
+  #   # background    #F1F1F1
+  #   # statusline    #090909
+
+  #   focused_workspace  #4c7899 #285577 #ffffff
+  #   active_workspace   #333333 #5f676a #ffffff
+  #   inactive_workspace #333333 #222222 #888888
+  #   urgent_workspace   #2f343a #900000 #ffffff
+  # }
 }

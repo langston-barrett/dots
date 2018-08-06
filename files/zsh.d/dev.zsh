@@ -48,6 +48,8 @@ alias nb='nix-build'
 alias nba='nix-build -A'
 alias ns='nix-shell'
 alias nsr='nix-shell --run'
+alias nsp='nix-shell --pure'
+alias nspr='nix-shell --pure --run'
 alias nsrzsh='nix-shell --run "exec zsh"'
 
 ## Generic
