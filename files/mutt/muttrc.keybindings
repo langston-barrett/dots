@@ -4,16 +4,20 @@
 #bind  compose     p        postpone-message
 #bind  index       p        recall-message
 # vim --------------
+# https://github.com/ulfalizer/Configuration-files/blob/master/mutt
 bind  index,pager N        search-opposite # navigate backwards in search
-bind index g noop
+bind  index,pager n        search-next
+bind  index       g        noop
 bind  index       gg       first-entry
 bind  index       G        last-entry
-bind pager g noop
+bind  pager       g        noop
 bind  pager       gg       top
 bind  pager       G        bottom
+bind  pager       x  delete-message
 # bind  pager <shift><space> previous-page
 
 # other --------------
+bind  index       r        reply
 bind  index       R        group-reply
 bind  index       <tab>    sync-mailbox
 bind  index       <space>  collapse-thread
@@ -21,10 +25,10 @@ bind  index       <space>  collapse-thread
 bind  index,pager c  mail          # compose
 bind  generic     x  tag-entry     # Select Conversation
 bind  index       x  tag-thread    # Select Conversation
-bind  pager       x  tag-message   # Select Conversation
 bind  index,pager s  flag-message  # Star a message
 bind  index,pager a  group-reply   # Reply all
 # bind index,pager \# delete-thread # Delete
+macro index,pager e "<save-message>=archive<enter><enter>"
 bind index,pager v  save-message  # Move to
 # gmail/orgainlization ---------------------------------
 bind editor <space> noop
