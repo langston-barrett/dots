@@ -18,7 +18,7 @@ exec systemctl --user start kdeconnect
 
 # Mouse+mod floats & drags
 floating_modifier $mod
-bindsym $mod+d exec rofi -show drun
+bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Return exec urxvt
 bindsym $mod+Shift+Return exec hyper
@@ -60,7 +60,7 @@ bindsym $mod+s layout toggle split
 bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
-bindsym $mod+space focus mode_toggle
+bindsym $mod+u focus mode_toggle
 
 #bindsym $mod+a focus parent # focus the parent container
 #bindsym $mod+d focus child  # focus the child container
