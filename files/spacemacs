@@ -448,6 +448,8 @@ you should place your code here."
   (spacemacs/set-leader-keys-for-major-mode 'coq-mode
     "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
     "SPC" 'proof-goto-point)
+  (setq coq-one-command-per-line nil) ; https://github.com/ProofGeneral/PG/issues/53
+  (setq proof-electric-terminator-enable t) ; https://github.com/ProofGeneral/PG/issues/53
 
   ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
   (setq undo-tree-enable-undo-in-region nil)
@@ -465,6 +467,15 @@ you should place your code here."
       (if (not makefile)
           (error "No build file found for project %s" (projectile-project-root)))
       (compile (concat "make " (substring n 0 l) ".vo"))))
+
+  (defun siddharthist/coq-helm-hypothesis ()
+    (interactive)
+    (require 'company-coq)
+    (require 'helm)
+    (helm :sources (helm-build-sync-source "test"
+                     :candidates company-coq--hyp-names
+                     :action (helm-make-actions "Insert" (lambda (x) (insert x))))
+          :buffer "*helm blah*"))
 
   ;; ;; SHELL
 
