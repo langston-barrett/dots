@@ -13,6 +13,12 @@
     username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
+    # Per-host configuration
+    dpi: 92
+    cursor_size: 32
+    urxvt_font_size: 6
+    wallpaper: sarah-dorweiler-105888-unsplash.jpg
+
     symlinks:
       # - src: aspell-dict
       #   dst: "{{ home }}/.aspell.en.pws"
@@ -77,6 +83,8 @@
         dst: "{{ xdg_config_home }}/sway/config"
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
+      - src: "unsplash/{{ wallpaper }}"
+        dst: "{{ xdg_config_home }}/wallpaper.jpg"
       - src: urlview
         dst: "{{ home }}/.urlview"
       - src: xmodmap
