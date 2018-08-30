@@ -26,10 +26,14 @@
         dst: "{{ xdg_config_home }}/compton.conf"
       - src: config.nix
         dst: "{{ xdg_config_home }}/nixpkgs/config.nix"
-      - src: gitconfig
+      - src: git/gitconfig
         dst: "{{ home }}/.gitconfig"
-      - src: gitignore
-        dst: "{{ xdg_config_home }}/gitignore"
+      - src: git/galois.gitconfig
+        dst: "{{ xdg_config_home }}/git/galois.gitconfig"
+      - src: git/gitignore
+        dst: "{{ xdg_config_home }}/git/gitignore"
+      - src: git/pre-commit
+        dst: "{{ home }}/.config/git/hooks/pre-commit"
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
       - src: i3status.conf
@@ -52,8 +56,6 @@
         mode: "0750"
       - src: offlineimaprc
         dst: "{{ home }}/.offlineimaprc"
-      - src: pre-commit
-        dst: "{{ home }}/.config/git/hooks/pre-commit"
       # Currently breaks GNOME on Fedora
       # - src: profile
       #   dst: "{{ home }}/.profile"
