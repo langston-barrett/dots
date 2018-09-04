@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
-{
+let
+  mpd_mopidy = "mpd";
+  mpd_port   = 6600;
+  music_dir  = "/home/siddharthist/Dropbox/langston/music";
+in {
   environment.systemPackages = with pkgs; [
     flac
     pavucontrol
@@ -13,21 +17,31 @@
   ];
 
   services.mopidy = {
-    enable = false;
+    enable = if mpd_mopidy == "mopidy" then true else false;
     # user = "siddharthist";
     # group = "siddharthist";
     configuration = ''
       [local]
-      media_dir = /home/siddharthist/Dropbox/langston/music
+      media_dir = ${music_dir}
       scan_follow_symlinks = true
 
       [file]
       enabled = true
-      media_dir = /home/siddharthist/Dropbox/langston/music
+      media_dir = ${music_dir}
       follow_symlinks = true
 
       [soundcloud]
       auth_token = 1-35204-13055450-d7e88a776b7aaf8
+
+      [mpd]
+      enabled = true
+      hostname = 127.0.0.1
+      port = ${builtins.toString mpd_port}
+      max_connections = 5
+      connection_timeout = 60
+      zeroconf = Mopidy MPD server on $hostname
+      command_blacklist = listall,listallinfo
+      default_playlist_scheme = m3u
     '';
     extensionPackages = with pkgs; [
       # TODO: upstream mopidy-podcast
@@ -39,28 +53,29 @@
   };
 
   services.ympd = {
-    enable = false;
-    mpd.port = 6700;
+    enable = true;
+    mpd.port = mpd_port;
     webPort = "6601";
   };
 
   services.mpd = {
-    enable = false;
+    enable = if mpd_mopidy == "mpd" then true else false;
     user = "siddharthist";
     group = "siddharthist";
-    musicDirectory = "/home/siddharthist/Dropbox/langston/music";
+    musicDirectory = music_dir;
     dataDir = "/home/siddharthist/Dropbox/langston/archive/backup/mpd";
 
-    network.port = 6700;
+    network.port = mpd_port;
 
-    # use aplay -l to find hw:card,device tuple
-    extraConfig = ''
-      audio_output {
-        type "alsa"
-        name "usb sound card"
-        device "hw:0,0"
-      }
-    '';
+    # use this to find hw:card,device tuple:
+    # nix-shell -p alsaUtils --pure --run "aplay -l"
+    # extraConfig = ''
+    #   audio_output {
+    #     type "alsa"
+    #     name "usb sound card"
+    #     device "hw:1,0"
+    #   }
+    # '';
   };
 
   # sound.enableMediaKeys = true; # sxhkd takes care of this
