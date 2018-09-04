@@ -29,7 +29,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(emacs-lisp
+   '(ruby
+     emacs-lisp
      helm ; full-featured auto-completion
      html
      javascript
@@ -58,6 +59,9 @@ This function should only modify configuration layer settings."
             latex-build-command "LatexMk"
             latex-enable-auto-fill t)
      markdown
+     org
+     restructuredtext
+     ; saw-script
      nixos
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
@@ -67,7 +71,18 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(magit-todos
-                                      math-symbols) ; '(toml-mode)
+                                      direnv
+                                      math-symbols
+                                      prop-menu ; needed for saw-script-mode
+                                      ;; (recipe
+                                      ;;  :location (recipe :fetcher github
+                                      ;;                    :repo "GaloisInc/saw-script"
+                                      ;;                    :files '("saw-script.el")))
+                                      ;; (recipe
+                                      ;;  :location (recipe :fetcher github
+                                      ;;                    :repo "google/google-java-format"
+                                      ;;                    :files '("core/src/main/scripts/google-java-format.el")))
+                                      ) ; '(toml-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -415,6 +430,8 @@ you should place your code here."
 
   ;; Use C-r for backwards terminal search, even in evil mode
   (defun siddharthist/setup-term-mode ()
+    (evil-local-set-key 'normal (kbd "<prior>") 'scroll-up)
+    (evil-local-set-key 'normal (kbd "<next>") 'scroll-down)
     (evil-local-set-key 'insert (kbd "C-r") 'siddharthist/send-C-r))
 
   (defun siddharthist/send-C-r ()
@@ -431,11 +448,9 @@ you should place your code here."
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
 
-  ;; ;; MARKDOWN
+  ;; ;; HASKELL
 
-  ;; (custom-set-variables '(markdown-css-path "/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-css-paths '("/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-command "pandoc -f markdown+smart -t html --css ~/Dropbox/langston/notes/css.css --self-contained")
+  (setq dante-repl-command-line '("nix-shell" "--pure" "--run" "cabal repl --builddir=dist/dante"))
 
   ;; ;; COQ
 
@@ -482,6 +497,12 @@ you should place your code here."
   (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
                                             sh-indentation 2)))
 
+  ;; ;; MARKDOWN
+
+  ;; (custom-set-variables '(markdown-css-path "/home/siddharthist/Dropbox/langston/notes/css.css"))
+  (setq markdown-css-paths '("/home/siddharthist/Dropbox/langston/notes/css.css"))
+  (setq markdown-command "pandoc -f markdown+smart -t html --css ~/Dropbox/langston/notes/css.css --self-contained")
+
   ;; ;; LATEX
 
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
@@ -523,7 +544,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (mvn meghanada maven-test-mode groovy-mode groovy-imports pcache gradle-mode ensime sbt-mode scala-mode company-emacs-eclim eclim yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer org-plus-contrib org-bullets open-junk-file nix-mode neotree nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe rbenv rake minitest helm-gtags ggtags enh-ruby-mode counsel-gtags chruby bundler inf-ruby paradox company-auctex auctex-latexmk evil goto-chg yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smartparens slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hydra hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-unimpaired evil-numbers evil-nerd-commenter eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode bind-map auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

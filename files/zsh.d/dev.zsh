@@ -71,3 +71,6 @@ proj_test () {
     $test_cmd
   fi
 }
+
+GPG_TTY=$(tty)
+export GPG_TTY
