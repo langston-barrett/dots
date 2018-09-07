@@ -53,7 +53,7 @@ This function should only modify configuration layer settings."
      coq
      (go :variables go-tab-width 4)
      (haskell :variables haskell-enable-hindent-style "fundamental"
-                         haskell-completion-backend 'dante)
+              haskell-completion-backend 'dante)
      (java :variables java-backend 'ensime)
      (latex :variables
             latex-build-command "LatexMk"
@@ -61,7 +61,7 @@ This function should only modify configuration layer settings."
      markdown
      org
      restructuredtext
-     ; saw-script
+                                        ; saw-script
      nixos
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
@@ -71,6 +71,7 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(magit-todos
+                                      mmm-mode
                                       direnv
                                       math-symbols
                                       hasky-extensions
@@ -192,7 +193,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
- :size 28
+                               :size 28
                                :weight normal
                                :width normal)
 
@@ -410,9 +411,9 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-  ; Coq layer defines abbreviations on *single letters*, so by default typing
-  ; one letter and pressing ESC will expand the letter, which prevents typing
-  ; https://github.com/syl20bnr/spacemacs/issues/8853
+                                        ; Coq layer defines abbreviations on *single letters*, so by default typing
+                                        ; one letter and pressing ESC will expand the letter, which prevents typing
+                                        ; https://github.com/syl20bnr/spacemacs/issues/8853
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   )
 
@@ -453,8 +454,26 @@ you should place your code here."
 
   ;; ;; ORG
 
+  (setq org-brain-path "~/Dropbox/langston/org")
+
   (add-hook 'org-mode-hook
-            (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
+            (lambda () (progn
+                                        ; Multi-mode support
+                         ;; (mmm-add-classes
+                         ;;   '((literate-haskell-latex
+                         ;;     :submode haskell-mode
+                         ;;     :front "^\\\\begin{code}\n"
+                         ;;     :back "^\\\\end{code}"
+                         ;;     )
+                         ;;     (literate-java-org
+                         ;;     :submode java-mode
+                         ;;     :front "^#\+begin_src language java\n"
+                         ;;     :back  "^#\+end_src\n"
+                         ;;     )))
+
+                         (add-hook 'org-babel-post-tangle-hook
+                                   '(lambda () (indent-region (point-min) (point-max))))
+                         (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
 
   (with-eval-after-load 'org
     (setq org-confirm-babel-evaluate nil
