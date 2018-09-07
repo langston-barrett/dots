@@ -1,0 +1,65 @@
+######## General
+
+[user]
+    name = Langston Barrett
+    email = langston.barrett@gmail.com
+    signingkey = 5608B8E7A68F0445
+[core]
+    excludesfile = /home/siddharthist/.config/git/gitignore
+[grep]
+    extendedRegexp = true
+[color]
+    ui = auto
+[push]
+    default = simple
+
+######## Pre-commit hooks
+
+# TODO: whitespace too
+[init]
+    templatedir = /home/siddharthist/.config/git
+
+######## Credentials and URLs
+
+[credential "https://github.com"]
+    username = siddharthist
+[credential "http://github.com"]
+    username = siddharthist
+[credential "https://gitlab.com"]
+    username = siddharthist
+[credential "http://gitlab.com"]
+    username = siddharthist
+[url "ssh://git@github.com/"]
+    insteadOf = https://github.com/
+
+#### Galois Gitlab
+
+[url "ssh://git@gitlab-int.galois.com/"]
+    insteadOf = https://gitlab-int.galois.com/
+[url "ssh://git@gitlab-ext.galois.com/"]
+    insteadOf = https://gitlab-ext.galois.com/
+
+#### Apogee Gitlab
+
+[url "ssh://git@sosite-git.apogee-research.com:16222"]
+    insteadOf = https://sosite-git.apogee-research.com:16443
+[credential "ssh://git@sosite-git.apogee-research.com:16222"]
+    email     = langston@galois.com
+[credential "https://sosite-git.apogee-research.com:16443"]
+    username = siddharthist
+    email    = langston@galois.com
+
+######## Aliases
+
+[alias]
+	pushf = push --force-with-lease
+    prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
+    undo = reset HEAD~1 --mixed
+
+######## Conditional includes
+
+[includeIf "gitdir:~/code/sosite"]
+    path = ~/.config/git/galois
+
+[includeIf "gitdir:~/code/v2v"]
+    path = ~/.config/git/galois

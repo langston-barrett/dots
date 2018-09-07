@@ -1,0 +1,18 @@
+* NixOS configuration
+
+** Structure
+
+Host-specific information is in [[file:hosts/][the hosts folder]].
+
+[[Common][Common configuration]] is stored in the top-level.
+
+** Common
+
+ - [[file:common.nix][Configuration common to all hosts]]
+ - [[file:x.nix][X11 setup]]
+ - Others...
+
+** Hosts
+
+ - [[file:hosts/mbp.nix][Personal laptop (2011 Macbook Pro)]]
+ - [[file:hosts/laptop.nix][Work laptop (2018 System76)]]

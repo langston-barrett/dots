@@ -25,7 +25,7 @@ in {
   ];
 
   services.xserver = {
-    inherit dpi;
+    # inherit dpi;
 
     enable = true;
     layout = "us";

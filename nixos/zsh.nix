@@ -12,11 +12,6 @@
 
     shellAliases = {
       amiconnected = "while true; do if curl google.com &> /dev/null; then echo \"$(date +%H:%M) ~~~GOOD~~~\"; else echo \"$(date +%H:%M) ---BAD---\"; fi; sleep 5; done";
-      docker-gc = "sudo docker ps -a -q -f status=exited | xargs --no-run-if-empty sudo docker rm";
-      docker-gc-images = "docker images -q | xargs --no-run-if-empty docker rmi || true";
-      sys = "sudo systemctl";
-      sysu = "systemctl --user";
-      pastebin = "curl -F \"clbin=<-\" https://clbin.com";
       test-ssh = "ssh -T git@github.com";
       ls1 = "ls -1";
       reload = "source /etc/zshrc";
@@ -24,6 +19,21 @@
       screenshot = "import -window root ~/Downloads/screenshot.jpg";
       conky = "conky --config=$XDG_CONFIG_HOME/conky/conkyrc";
       nixpkgs-pr-review = "export TRAVIS_BUILD_DIR=$PWD && ./maintainers/scripts/travis-nox-review-pr.sh nixpkgs-verify nixpkgs-manual nixpkgs-tarball && ./maintainers/scripts/travis-nox-review-pr.sh nixos-options nixos-manual";
+
+      # Pipe stuff to this command and get a URL back
+      pastebin = "curl -F \"clbin=<-\" https://clbin.com";
+
+      # Docker
+      docker-gc = "sudo docker ps -a -q -f status=exited | xargs --no-run-if-empty sudo docker rm";
+      docker-gc-images = "docker images -q | xargs --no-run-if-empty docker rmi || true";
+
+      # systemd
+      sys   = "sudo systemctl";
+      syss  = "sudo systemctl status";
+      sysr  = "sudo systemctl restart";
+      sysu  = "systemctl --user";
+      sysus = "systemctl --user status";
+      sysur = "systemctl --user restart";
 
       # Convenience
       # TODO: nix function
@@ -38,8 +48,8 @@
 
     variables = {
       XDG_CONFIG_HOME = "$HOME/.config";
-      PATH = "$PATH:$XDG_CONFIG_HOME/bin";
-      EDITOR = "emacs";
+      EDITOR           = "emacs";
+      #PATH            = "$PATH:$XDG_CONFIG_HOME/bin";
 
       # masterpassword
       MPW_FULLNAME = "Langston Barrett";
