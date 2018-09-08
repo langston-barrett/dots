@@ -453,11 +453,43 @@ you should place your code here."
     (ansi-term "nix-shell --run 'exec zsh'"))
 
   ;; org-wiki and saw-script
-  (add-to-list 'load-path "~/.emacs.d/private/load")
+  (add-to-list 'load-path "~/.emacs.d/private/local")
 
   ;; ;; ORG
 
+  (setq org-wiki-location "~/Dropbox/langston/org"))
+  (require 'org-wiki)
   (setq org-brain-path "~/Dropbox/langston/org")
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode
+    ;; org-wiki
+    "wI"  'org-wiki-index
+    "wil" 'org-wiki-insert-link
+    "win" 'org-wiki-insert-new
+    "wn"  'org-wiki-nav
+    "wf"  'org-wiki-helm
+    "wh"  'org-wiki-panel
+    "ws"  'org-wiki-switch-root
+
+    ;; org-brain
+    "mA"  'org-brain-agenda
+    "mp"  'org-brain-pin
+    "mR"  'org-brain-refile
+    "mx"  'org-brain-delete-entry
+
+    ;; org-brain: navigation
+    "gp"  'org-brain-goto-parent
+    "gc"  'org-brain-goto-child
+    "gf"  'org-brain-goto-friend
+
+    ;; org-brain: relationships
+    "mac" 'org-brain-add-child
+    "map"  'org-brain-add-parent
+    "maf"  'org-brain-add-friendship
+    "mrc"  'org-brain-add-child
+    "mrp"  'org-brain-add-parent
+    "mrf"  'org-brain-add-friendship
+    )
+
   (add-hook 'org-mode-hook
             (lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace)))
 
@@ -475,7 +507,7 @@ you should place your code here."
        (java       . t)
        (python     . t)
        (sh         . t)
-       )))
+       ))
 
   ;; ;; HASKELL
 
