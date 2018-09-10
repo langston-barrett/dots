@@ -44,6 +44,7 @@ This function should only modify configuration layer settings."
      (shell :variables
             shell-default-shell 'ansi-term
             shell-default-position 'bottom)
+     ranger
      spell-checking ; requires aspell
      syntax-checking
 
@@ -76,8 +77,11 @@ This function should only modify configuration layer settings."
                                       math-symbols
                                       hasky-extensions
                                       prop-menu ; needed for saw-script-mode
+                                      ;; ORG
                                       ox-gfm    ; github markdown export for org
                                       helm-org-rifle
+                                      link-hint
+                                      ascii-art-to-unicode
                                       ;; (recipe
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "GaloisInc/saw-script"
@@ -452,9 +456,46 @@ you should place your code here."
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
 
+  ;; org-wiki and saw-script
+  (add-to-list 'load-path "~/.emacs.d/private/local")
+
   ;; ;; ORG
 
   (setq org-brain-path "~/Dropbox/langston/org")
+  (spacemacs/set-leader-keys-for-major-mode 'org-mode
+    ;; org-wiki
+    "wI"  'org-wiki-index
+    "wil" 'org-wiki-insert-link
+    "win" 'org-wiki-insert-new
+    "wn"  'org-wiki-nav
+    "wf"  'org-wiki-helm
+    "wh"  'org-wiki-panel
+    "ws"  'org-wiki-switch-root
+
+    ;; org-brain
+    "mA"  'org-brain-agenda
+    "mp"  'org-brain-pin
+    "mR"  'org-brain-refile
+    "mx"  'org-brain-delete-entry
+
+    ;; org-brain: navigation
+    "gp"  'org-brain-goto-parent
+    "gc"  'org-brain-goto-child
+    "gf"  'org-brain-goto-friend
+
+    ;; org-brain: relationships
+    "mac" 'org-brain-add-child
+    "map"  'org-brain-add-parent
+    "maf"  'org-brain-add-friendship
+    "mrc"  'org-brain-add-child
+    "mrp"  'org-brain-add-parent
+    "mrf"  'org-brain-add-friendship
+
+    ;; helm-org-rifle
+    "rr"   'helm-org-rifle
+    "rd"   'helm-org-rifle-directories
+    "rf"   'helm-org-rifle-files
+    )
 
   (add-hook 'org-mode-hook
             (lambda () (progn
@@ -476,6 +517,15 @@ you should place your code here."
                          (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
 
   (with-eval-after-load 'org
+    (require 'org-wiki)
+    (setq org-wiki-location "~/Dropbox/langston/org")
+    (setq org-brain-path    "~/Dropbox/langston/org")
+    (setq org-agenda-files  '("~/Dropbox/langston/org"))
+
+    ;; Nicer org-brain
+    (defun aa2u-buffer () (aa2u (point-min) (point-max)))
+    (add-hook 'org-brain-after-visualize-hook #'aa2u-buffer)
+
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively t
           org-src-tab-acts-natively t)
@@ -560,12 +610,6 @@ you should place your code here."
   ;;   (completing-read prompt candidates nil t)
   ;;   "gt"  '(lambda () (interactive) (helm-ag-this-file)))
 
-  ;; ;; MARKDOWN
-
-  ;; (custom-set-variables '(markdown-css-path "/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-css-paths '("/home/siddharthist/Dropbox/langston/notes/css.css"))
-  (setq markdown-command "pandoc -f markdown+smart -t html --css ~/Dropbox/langston/notes/css.css --self-contained")
-
   ;; ;; LATEX
 
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
@@ -607,7 +651,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-plus-contrib yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (ascii-art-to-unicode yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
