@@ -49,13 +49,14 @@ This function should only modify configuration layer settings."
      syntax-checking
 
      ;; Languages
-     ;; (c-c++ :variables c-c++-enable-clang-support t)
+     (c-c++ :variables c-c++-enable-clang-support t)
      agda
      coq
      (go :variables go-tab-width 4)
      (haskell :variables haskell-enable-hindent-style "fundamental"
               haskell-completion-backend 'dante)
-     (java :variables java-backend 'ensime)
+     ;; (java :variables java-backend 'meghanada)
+     java ; meghanada backend by default
      (latex :variables
             latex-build-command "LatexMk"
             latex-enable-auto-fill t)
@@ -197,7 +198,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
-                               :size 28
+ :size 28
                                :weight normal
                                :width normal)
 
@@ -456,12 +457,24 @@ you should place your code here."
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
 
+  ;; Find good functions to put here with (list-command-history)
+  (spacemacs/set-leader-keys
+    ;; 'o' is the "user key"
+    ;; 'e' for 'elisp'
+    "oev"  'eval-region
+    "oeb"  'eval-current-buffer)
+
   ;; org-wiki and saw-script
   (add-to-list 'load-path "~/.emacs.d/private/local")
 
   ;; ;; ORG
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode
+
+    ;; dynamic blocks
+    "Du"  'org-dblock-update
+    "Da"  'org-update-all-dblocks
+
     ;; org-wiki
     "wI"  'org-wiki-index
     "wil" 'org-wiki-insert-link
@@ -491,9 +504,13 @@ you should place your code here."
     "mrf"  'org-brain-add-friendship
 
     ;; helm-org-rifle
-    ;; "rr"   'helm-org-rifle
-    ;; "rd"   'helm-org-rifle-directories
-    ;; "rf"   'helm-org-rifle-files
+    "r"   'helm-org-rifle
+
+    ;; org-subtree
+    "sc"   'org-cut-subtree
+    "sy"   'org-copy-subtree
+    "sp"   'org-paste-subtree
+    "sm"   'org-mark-subtree
     )
 
   (add-hook 'org-mode-hook
@@ -502,15 +519,15 @@ you should place your code here."
                            '(lambda () (progn (org-babel-tangle)
                               (message "%s tangled" buffer-file-name))))
 
-                         (add-hook 'org-babel-post-tangle-hook
-                                   '(lambda () (indent-region (point-min) (point-max))))
+                         ;; (add-hook 'org-babel-post-tangle-hook
+                         ;;           '(lambda () (indent-region (point-min) (point-max))))
                          (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
 
   (with-eval-after-load 'org
     (require 'org-wiki)
-    (setq org-wiki-location "~/Dropbox/langston/org")
-    (setq org-brain-path    "~/Dropbox/langston/org")
-    (setq org-agenda-files  '("~/Dropbox/langston/org"))
+    (setq org-wiki-location "~/Dropbox/langston/org"
+          org-brain-path    "~/Dropbox/langston/org"
+          org-agenda-files  '("~/Dropbox/langston/org"))
 
     ;; Nicer org-brain
     (defun aa2u-buffer () (aa2u (point-min) (point-max)))
@@ -519,6 +536,19 @@ you should place your code here."
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively t
           org-src-tab-acts-natively t)
+
+    ;; Clock
+    (setq org-clock-persist t)
+    (setq org-clock-history-length 20)
+    (setq org-agenda-clock-consistency-checks
+          (quote (:max-duration "4:00"
+                                :min-duration 0
+                                :max-gap 0
+                                :gap-ok-around ("4:00"))))
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "ACTIVE(a!)" "WAIT(w@/!)" "|" "DONE(@)")
+            (sequence "|" "CANCELLED(c@/!)")))
+
 
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -531,6 +561,23 @@ you should place your code here."
        (sh         . t)
        (shell      . t)
        )))
+
+  ;; ;; C
+
+  ;; https://bit.ly/2QqJLvw
+
+  (defun siddharthist/clang-format-buffer-smart ()
+    "Reformat buffer if .clang-format exists in the projectile root."
+    (interactive)
+    (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+      (clang-format-buffer)))
+
+  (defun siddharthist/clang-format-buffer-smart-on-save ()
+    "Add auto-save hook for clang-format-buffer-smart."
+    (add-hook 'before-save-hook 'siddharthist/clang-format-buffer-smart nil t))
+
+  (spacemacs/add-to-hooks 'clang-format-buffer-smart-on-save
+                          '(c-mode-hook c++-mode-hook))
 
   ;; ;; HASKELL
 
@@ -642,7 +689,17 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (ranger ascii-art-to-unicode yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (helm-rtags google-c-style flycheck-rtags disaster company-rtags rtags company-c-headers clang-format yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(safe-local-variable-values
+   (quote
+    ((org-src-preserve-indentation . t)
+     (org-log-into-drawer . t)
+     (org-enforce-todo-dependencies . t)
+     (org-enforce-todo-checkbox-dependencies . t)
+     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
+     (c-c++-enable-clang-format-on-save . t)
+     (javascript-backend . tern)
+     (javascript-backend . lsp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

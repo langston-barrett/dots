@@ -43,3 +43,4 @@ __*__
 # editor files
 .#*
 .projectile
+org-clock-save.el
