@@ -80,9 +80,12 @@ This function should only modify configuration layer settings."
                                       prop-menu ; needed for saw-script-mode
                                       ;; ORG
                                       ox-gfm    ; github markdown export for org
+                                      org-board ; link archiving
                                       helm-org-rifle
                                       link-hint
                                       ascii-art-to-unicode
+                                      ;; Haskell
+                                      w3m ; browse haddocks
                                       ;; (recipe
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "GaloisInc/saw-script"
@@ -462,80 +465,41 @@ you should place your code here."
     ;; 'o' is the "user key"
     ;; 'e' for 'elisp'
     "oev"  'eval-region
-    "oeb"  'eval-current-buffer)
+    "oeb"  'eval-buffer)
 
   ;; org-wiki and saw-script
-  (add-to-list 'load-path "~/.emacs.d/private/local")
+  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
 
   ;; ;; ORG
 
-  (spacemacs/set-leader-keys-for-major-mode 'org-mode
-
-    ;; dynamic blocks
-    "Du"  'org-dblock-update
-    "Da"  'org-update-all-dblocks
-
-    ;; org-wiki
-    "wI"  'org-wiki-index
-    "wil" 'org-wiki-insert-link
-    "win" 'org-wiki-insert-new
-    "wn"  'org-wiki-nav
-    "wf"  'org-wiki-helm
-    "wh"  'org-wiki-panel
-    "ws"  'org-wiki-switch-root
-
-    ;; org-brain
-    "mA"  'org-brain-agenda
-    "mp"  'org-brain-pin
-    "mR"  'org-brain-refile
-    "mx"  'org-brain-delete-entry
-
-    ;; org-brain: navigation
-    "gp"  'org-brain-goto-parent
-    "gc"  'org-brain-goto-child
-    "gf"  'org-brain-goto-friend
-
-    ;; org-brain: relationships
-    "mac" 'org-brain-add-child
-    "map"  'org-brain-add-parent
-    "maf"  'org-brain-add-friendship
-    "mrc"  'org-brain-add-child
-    "mrp"  'org-brain-add-parent
-    "mrf"  'org-brain-add-friendship
-
-    ;; helm-org-rifle
-    "r"   'helm-org-rifle
-
-    ;; org-subtree
-    "sc"   'org-cut-subtree
-    "sy"   'org-copy-subtree
-    "sp"   'org-paste-subtree
-    "sm"   'org-mark-subtree
-    )
-
-  (add-hook 'org-mode-hook
-            (lambda () (progn
-                         (add-hook 'after-save-hook
-                           '(lambda () (progn (org-babel-tangle)
-                              (message "%s tangled" buffer-file-name))))
-
-                         ;; (add-hook 'org-babel-post-tangle-hook
-                         ;;           '(lambda () (indent-region (point-min) (point-max))))
-                         (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
-
   (with-eval-after-load 'org
+
+    (add-hook 'org-mode-hook
+              (lambda () (progn
+                           (add-hook 'after-save-hook
+                                     '(lambda () (progn (org-babel-tangle)
+                                                        (message "%s tangled" buffer-file-name))))
+
+                           ;; (add-hook 'org-babel-post-tangle-hook
+                           ;;           '(lambda () (indent-region (point-min) (point-max))))
+
+                           (defun aa2u-buffer () (aa2u (point-min) (point-max)))
+                           (add-hook 'org-brain-after-visualize-hook #'aa2u-buffer)
+
+                           (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
+
     (require 'org-wiki)
-    (setq org-wiki-location "~/Dropbox/langston/org"
-          org-brain-path    "~/Dropbox/langston/org"
-          org-agenda-files  '("~/Dropbox/langston/org"))
+    (setq org-directory          "~/Dropbox/langston/org")
+    (setq org-wiki-location      "~/Dropbox/langston/org"
+          org-brain-path         "~/Dropbox/langston/org"
+          org-agenda-files       '("~/Dropbox/langston/org")
+          org-default-notes-file (concat org-directory "/capture.org"))
 
     ;; Nicer org-brain
-    (defun aa2u-buffer () (aa2u (point-min) (point-max)))
-    (add-hook 'org-brain-after-visualize-hook #'aa2u-buffer)
 
     (setq org-confirm-babel-evaluate nil
-          org-src-fontify-natively t
-          org-src-tab-acts-natively t)
+          org-src-fontify-natively   t
+          org-src-tab-acts-natively  t)
 
     ;; Clock
     (setq org-clock-persist t)
@@ -543,12 +507,28 @@ you should place your code here."
     (setq org-agenda-clock-consistency-checks
           (quote (:max-duration "4:00"
                                 :min-duration 0
-                                :max-gap 0
+                                :max-gap 2
                                 :gap-ok-around ("4:00"))))
     (setq org-todo-keywords
           '((sequence "TODO(t)" "ACTIVE(a!)" "WAIT(w@/!)" "|" "DONE(@)")
             (sequence "|" "CANCELLED(c@/!)")))
 
+    ;; Add CREATED property (https://bit.ly/2OyePrR)
+    (defvar org-created-property-name "CREATED"
+      "The name of the org-mode property that stores the creation date of the entry")
+
+    (defun org-set-created-property (&optional active NAME)
+      "Set a property on the entry giving the creation time.
+
+By default the property is called CREATED. If given the `NAME'
+argument will be used instead. If the property already exists, it
+will not be modified."
+      (interactive)
+      (let* ((created (or NAME org-created-property-name))
+             (fmt (if active "<%s>" "[%s]"))
+             (now  (format fmt (format-time-string "%Y-%m-%d %a %H:%M"))))
+        (unless (org-entry-get (point) created nil)
+          (org-set-property created now))))
 
     (org-babel-do-load-languages
      'org-babel-load-languages
@@ -560,7 +540,58 @@ you should place your code here."
        (python     . t)
        (sh         . t)
        (shell      . t)
-       )))
+       ))
+
+    (spacemacs/set-leader-keys-for-major-mode 'org-mode
+
+      ;; dynamic blocks
+      "Du"  'org-dblock-update
+      "Da"  'org-update-all-dblocks
+
+      ;; org-wiki
+      "wI"  'org-wiki-index
+      "wil" 'org-wiki-insert-link
+      "win" 'org-wiki-insert-new
+      "wn"  'org-wiki-nav
+      "wf"  'org-wiki-helm
+      "wh"  'org-wiki-panel
+      "ws"  'org-wiki-switch-root
+
+      ;; org-time-stamp
+      "oTi" 'org-time-stamp
+      "oTI" 'org-time-stamp-inactive
+
+      ;; CREATED property
+      "iPC" 'org-set-created-property
+
+      ;; org-brain
+      "mA"  'org-brain-agenda
+      "mp"  'org-brain-pin
+      "mR"  'org-brain-refile
+      "mx"  'org-brain-delete-entry
+
+      ;; org-brain: navigation
+      "gp"  'org-brain-goto-parent
+      "gc"  'org-brain-goto-child
+      "gf"  'org-brain-goto-friend
+
+      ;; org-brain: relationships
+      "mac" 'org-brain-add-child
+      "map"  'org-brain-add-parent
+      "maf"  'org-brain-add-friendship
+      "mrc"  'org-brain-add-child
+      "mrp"  'org-brain-add-parent
+      "mrf"  'org-brain-add-friendship
+
+      ;; helm-org-rifle
+      "r"   'helm-org-rifle
+
+      ;; org-subtree
+      "sc"   'org-cut-subtree
+      "sy"   'org-copy-subtree
+      "sp"   'org-paste-subtree
+      "sm"   'org-mark-subtree
+      ))
 
   ;; ;; C
 
@@ -595,6 +626,15 @@ you should place your code here."
                 (group (one-or-more "\*"))
                 (* space)))))
   (add-hook 'haskell-mode-hook 'siddharthist/haskell-mode-outline-hook)
+  (add-hook 'haskell-mode-hook '(lambda () (require 'w3m-haddock)))
+  (add-hook 'haskell-mode-hook
+            '(lambda () (progn (require 'haskell-pragma)
+                               (haskell-pragma-mode))))
+  (add-hook 'haskell-pragma-mode-hook
+            '(lambda () (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+                          "ip"  'haskell-pragma-add-other-extension
+                          )))
+  (add-hook 'w3m-display-hook 'w3m-haddock-display)
 
   ;; ;; COQ
 
@@ -606,9 +646,19 @@ you should place your code here."
   ;; - Use SPC-gE to process to the end of the file. Good for finding out where one left off.
   (spacemacs/set-leader-keys-for-major-mode 'coq-mode
     "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
-    "SPC" 'proof-goto-point)
+    "SPC" 'proof-goto-point
+    "miH" 'siddharthist-surround-region-hide)
   (setq coq-one-command-per-line nil) ; https://github.com/ProofGeneral/PG/issues/53
   (setq proof-electric-terminator-enable t) ; https://github.com/ProofGeneral/PG/issues/53
+
+  ;; surround a region with a hide command for coqdoc
+  (defun siddharthist/surround-region-hide ()
+    (interactive)
+    (progn
+      (goto-char (region-end))
+      (insert "(* end hide *)")
+      (goto-char (region-beginning))
+      (insert "(* begin hide *)\n")))
 
   ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
   (setq undo-tree-enable-undo-in-region nil)
@@ -689,15 +739,21 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-rtags google-c-style flycheck-rtags disaster company-rtags rtags company-c-headers clang-format yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (org-board yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode disaster direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((org-src-preserve-indentation . t)
+    ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante crucible-llvm-tests")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante crucible-llvm-tests")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
+     (org-src-preserve-indentation . t)
+     (org-ascii-text-width . 999999999)
      (org-log-into-drawer . t)
      (org-enforce-todo-dependencies . t)
      (org-enforce-todo-checkbox-dependencies . t)
      (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
-     (c-c++-enable-clang-format-on-save . t)
      (javascript-backend . tern)
      (javascript-backend . lsp)))))
 (custom-set-faces

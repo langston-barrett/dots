@@ -10,9 +10,3 @@ source ~/.zsh.d/*.zsh
 if [[ $SHELL == "/bin/bash" ]]; then
   chsh -s /bin/zsh
 fi
-
-# prompt: from zsh.nix
-autoload -U promptinit && promptinit
-autoload -U colors && colors
-PROMPT="%{$fg_bold[0]%}%2~%  >%{$reset_color%} "
-RPROMPT="(%D{%K:%M})"

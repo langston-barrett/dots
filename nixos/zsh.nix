@@ -62,15 +62,8 @@
     enableCompletion = true;
     #enableSyntaxHighlighting = true;
 
-    # custom prompt: "code > "
-    promptInit = ''
-      autoload -U promptinit && promptinit
-      autoload -U colors && colors
-
-      # TODO: indicate being in a nix shell
-      PROMPT="%{$fg_bold[0]%}%2~%  >%{$reset_color%} "
-      #RPROMPT="(%D{%K:%M})"
-    '';
+    # prompt now set in ../files/zsh.d/prompt.zsh
+    #promptInit = '' '';
 
     # zshrc
     interactiveShellInit = ''
