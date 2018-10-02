@@ -63,7 +63,7 @@
     #enableSyntaxHighlighting = true;
 
     # prompt now set in ../files/zsh.d/prompt.zsh
-    #promptInit = '' '';
+    promptInit = "";
 
     # zshrc
     interactiveShellInit = ''
