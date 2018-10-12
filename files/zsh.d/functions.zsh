@@ -1,4 +1,5 @@
 #!/usr/bin/env zsh
+
 # Delete all files with the given extensions (list as string, separated by " ")
 function remove_exts() {
   setopt shwordsplit # Split on " "
@@ -25,6 +26,7 @@ function up() {
   [ -z "$1" ] && 1="1"
   cd $(repeat_string "../" $1)
 }
+
 # mount encrypted disks
 mount_encrypted() {
   labels=$(ls --color=never /dev/disk/by-label)
@@ -32,6 +34,7 @@ mount_encrypted() {
   sudo mkdir -p /mnt/$labels
   sudo mount /dev/mapper/encrypted /mnt/$labels
 }
+
 # Convert all flac files in a directory to ogg
 to_ogg() {
   array=()
@@ -40,5 +43,16 @@ to_ogg() {
     # array now holds the names of all flac files
   for flac in $array; do oggenc -q 7 "$flac" && rm -f "$flac"; done
 }
+
 # Recursively find and replace
-sed_recurse() { ag -g '.*' -0 | xargs -0 sed -i "$1" }
+sed_recurse() { ag -g '.*' -0 | xargs -0 sed -i "$1"; }
+
+# https://bit.ly/2ydBgfQ
+in_interactive_session() {
+  [[ $- == *i* ]]
+}
+
+# https://github.com/andreafrancia/trash-cli
+alias tp='trash-put'
+alias tl='trash-list'
+alias rm='echo Use \rm or tp (=trash-put)'

@@ -57,6 +57,7 @@
     silver-searcher # ag
     sudo
     tldr
+    trash-cli
     unzip
     xclip # for pass
     xsel
