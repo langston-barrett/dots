@@ -46,6 +46,7 @@
   };
 
   programs.light.enable = true;
+  programs.java.enable = true;
 
   hardware.bluetooth = {
     enable = true;
@@ -53,7 +54,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    anki
     beets
     calibre
     chromium
@@ -62,18 +62,17 @@
     gimp
     htop
     kdeconnect
-    lxappearance
     maim
     mu
     oxygenfonts
     redshift
     spotify
     tmux
-    transgui
-    transmission
     vlc
     ympd
-    zotero
+
+    # extra development
+    clang
   ];
 
   # virtualisation.virtualbox.enableHardening = true;
@@ -82,6 +81,12 @@
 
   # Can't be enabled in virtual guests
   #rngd.enable = true; # feed hardware randomness to kernel when possible
+
+  # Printing
+  services.printing = {
+    enable  = true;
+    drivers = [ pkgs.hplip ];
+  };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

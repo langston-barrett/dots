@@ -34,15 +34,15 @@ in {
     fonts = with pkgs; [
       # fira-code, freefont-ttf, ubuntu-font-family
 
-      # These actually require the new package set
       tex-gyre-bonum-math   # latex math font
       tex-gyre-schola-math  # latex math font
-      tex-gyre-pagella-math  # latex math font
+      tex-gyre-pagella-math # latex math font
       latinmodern-math      # latex math font
 
-      # These don't
+      carlito               # calibri compatible, for office
       eb-garamond
-      hack-font             # great monospaced font
+      powerline-fonts
+      #hack-font             # great monospaced font
       #helvetica-neue-lt-std # classic
       lato
       libre-caslon
