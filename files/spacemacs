@@ -45,6 +45,7 @@ This function should only modify configuration layer settings."
             shell-default-shell 'ansi-term
             shell-default-position 'bottom)
      ranger
+     imenu-list ; SPC b i
      spell-checking ; requires aspell
      syntax-checking
 
@@ -72,20 +73,21 @@ This function should only modify configuration layer settings."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(magit-todos
-                                      mmm-mode
-                                      direnv
-                                      math-symbols
-                                      hasky-extensions
-                                      prop-menu ; needed for saw-script-mode
+   dotspacemacs-additional-packages '(all-the-icons
+                                      mmm-mode     ; markdown multi-mode
+                                      direnv       ; direnv + nix
+                                      math-symbols ; easily insert unicode latex macros
+                                      prop-menu    ; needed for saw-script-mode
                                       ;; ORG
-                                      ox-gfm    ; github markdown export for org
-                                      org-board ; link archiving
+                                      outorg
+                                      outshine
+                                      ox-gfm       ; github markdown export for org
+                                      org-board    ; link archiving
                                       helm-org-rifle
                                       link-hint
-                                      ascii-art-to-unicode
+                                      ascii-art-to-unicode ; nicer org-brain
                                       ;; Haskell
-                                      w3m ; browse haddocks
+                                      attrap
                                       ;; (recipe
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "GaloisInc/saw-script"
@@ -402,7 +404,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'changed
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -465,17 +467,67 @@ you should place your code here."
     ;; 'o' is the "user key"
     ;; 'e' for 'elisp'
     "oev"  'eval-region
-    "oeb"  'eval-buffer)
+    "oeb"  'eval-buffer
+
+    ;; 'i' for insert
+    "ois"  'math-symbols-insert
+
+    ;; fonts
+    "oFd"  'spacemacs/scale-down-font
+    "oFu"  'spacemacs/scale-up-font
+
+    ;; outshine/outorg/navi
+    "ooe"  'outorg-edit-as-org
+    "ooq"  'outorg-copy-edits-and-exit
+    "ooc"  'outline-cycle ; prefer TAB
+    "oon"  'outshine-navi ; prefer ji/jI/mr
+    "oogu" 'outline-up-heading)
 
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
 
   ;; ;; ORG
 
+  ;; Outshine/outorg
+
+  (when (require 'org-link-minor-mode nil 'noerror)
+        (add-hook 'prog-mode-hook         'org-link-minor-mode))
+
+  (when (require 'outshine nil 'noerror)
+    (progn
+      (defvar outline-minor-mode-prefix "\C-o") ;; TODO change
+      (setq outorg-edit-buffer-persistent-message nil)
+      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+      (add-hook 'prog-mode-hook          'outline-minor-mode)
+      (add-hook 'haskell-mode-hook
+                '(lambda () (progn (setq outshine-preserve-delimiter-whitespace t
+                                          outshine-regexp-base-char "@")))))
+      (defun my/outline-level-faces ()
+        (interactive)
+        (dolist (pair (list (cons 'outline-1 'org-level-1)
+                            (cons 'outline-2 'org-level-2)
+                            (cons 'outline-3 'org-level-3)
+                            (cons 'outline-4 'org-level-4)
+                            (cons 'outline-5 'org-level-5)
+                            (cons 'outline-6 'org-level-6)
+                            (cons 'outline-7 'org-level-7)
+                            (cons 'outline-8 'org-level-8)))
+          (set-face-attribute (car pair) nil :height (face-attribute (cdr pair) :height)))))
+      ;; (set-face-attribute (car pair) nil :height (float (- 2 (/ (cdr pair) 8))))))
+
+  (add-hook 'outline-minor-mode-hook 'my/outline-level-faces)
+
+  (setq org-directory          "~/Dropbox/langston/org")
+  (setq org-wiki-location      "~/Dropbox/langston/org"
+        org-brain-path         "~/Dropbox/langston/org"
+        org-agenda-files       '("~/Dropbox/langston/org")
+        org-default-notes-file (concat org-directory "/capture.org"))
+
   (with-eval-after-load 'org
 
     (add-hook 'org-mode-hook
               (lambda () (progn
+                           (when (require 'agda-input nil 'noerror) (set-input-method "Agda"))
                            (add-hook 'after-save-hook
                                      '(lambda () (progn (org-babel-tangle)
                                                         (message "%s tangled" buffer-file-name))))
@@ -488,15 +540,10 @@ you should place your code here."
 
                            (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
 
-    (require 'org-wiki)
-    (setq org-directory          "~/Dropbox/langston/org")
-    (setq org-wiki-location      "~/Dropbox/langston/org"
-          org-brain-path         "~/Dropbox/langston/org"
-          org-agenda-files       '("~/Dropbox/langston/org")
-          org-default-notes-file (concat org-directory "/capture.org"))
 
     ;; Nicer org-brain
 
+    (require 'org-wiki nil 'noerror)
     (setq org-confirm-babel-evaluate nil
           org-src-fontify-natively   t
           org-src-tab-acts-natively  t)
@@ -505,7 +552,7 @@ you should place your code here."
     (setq org-clock-persist t)
     (setq org-clock-history-length 20)
     (setq org-agenda-clock-consistency-checks
-          (quote (:max-duration "4:00"
+          (quote (:max-duration "6:00"
                                 :min-duration 0
                                 :max-gap 2
                                 :gap-ok-around ("4:00"))))
@@ -583,8 +630,8 @@ will not be modified."
       "mrp"  'org-brain-add-parent
       "mrf"  'org-brain-add-friendship
 
-      ;; helm-org-rifle
-      "r"   'helm-org-rifle
+      ;; helm-org-rifle (added upstream)
+      ;; "r"   'helm-org-rifle
 
       ;; org-board
       "Ba"   'org-board-archive
@@ -617,6 +664,9 @@ will not be modified."
   ;; ;; HASKELL
 
   (setq dante-repl-command-line '("nix-shell" "--pure" "--run" "cabal repl --builddir=dist/dante"))
+  (add-hook 'dante-mode-hook
+            '(lambda () (flycheck-add-next-checker 'haskell-dante
+                                                   '(warning . haskell-hlint))))
 
   ; Set the Haskell mode outline header syntax to be "-- *"
   ; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
@@ -630,10 +680,9 @@ will not be modified."
                 (group (one-or-more "\*"))
                 (* space)))))
   (add-hook 'haskell-mode-hook 'siddharthist/haskell-mode-outline-hook)
-  (add-hook 'haskell-mode-hook '(lambda () (require 'w3m-haddock)))
   (add-hook 'haskell-mode-hook
-            '(lambda () (progn (require 'haskell-pragma)
-                               (haskell-pragma-mode))))
+            '(lambda () (when (require 'haskell-pragma nil 'noerror)
+                              (haskell-pragma-mode))))
   (add-hook 'haskell-pragma-mode-hook
             '(lambda () (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
                           "ip"  'haskell-pragma-add-other-extension
@@ -652,7 +701,7 @@ will not be modified."
     "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
     "SPC" 'proof-goto-point
     "miH" 'siddharthist-surround-region-hide)
-  (setq coq-one-command-per-line nil) ; https://github.com/ProofGeneral/PG/issues/53
+  (setq coq-one-command-per-line nil)       ; https://github.com/ProofGeneral/PG/issues/53
   (setq proof-electric-terminator-enable t) ; https://github.com/ProofGeneral/PG/issues/53
 
   ;; surround a region with a hide command for coqdoc
@@ -709,7 +758,8 @@ will not be modified."
 
   ;; make backslash easier in TeX, use Agda input mode
   ;; TODO: make backslash semicolon
-  (add-hook 'TeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
+  (add-hook 'org-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
+  (add-hook 'TeX-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
   (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
   ; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
@@ -729,8 +779,6 @@ will not be modified."
 
   )
 
-;; Do not write anything past this comment. This is where Emacs will
-;; auto-generate custom variable definitions.
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -741,28 +789,117 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (org-board yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator paradox overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag hasky-extensions haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode disaster direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format chruby centered-cursor-mode bundler auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
     ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:patch-experiment --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl exe:patch-experiment --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante crucible-llvm-tests")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante crucible-llvm-tests")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
-     (org-src-preserve-indentation . t)
-     (org-ascii-text-width . 999999999)
+     (outshine-regexp-base-char . "@")
+     (eval let
+           ((unimath-topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "UniMath"))))
+           (setq fill-column 100)
+           (make-local-variable
+            (quote coq-use-project-file))
+           (setq coq-use-project-file nil)
+           (make-local-variable
+            (quote coq-prog-args))
+           (setq coq-prog-args
+                 (\`
+                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
+                   (\,
+                    (concat unimath-topdir "UniMath"))
+                   "UniMath")))
+           (make-local-variable
+            (quote before-save-hook))
+           (add-hook
+            (quote before-save-hook)
+            (quote delete-trailing-whitespace))
+           (modify-syntax-entry 39 "w")
+           (modify-syntax-entry 95 "w")
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat unimath-topdir "emacs/agda/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("chimney" "╝"))
+                        agda-input-user-translations))
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))
+     (eval let
+           ((unimath-topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "UniMath"))))
+           (setq fill-column 100)
+           (make-local-variable
+            (quote coq-use-project-file))
+           (setq coq-use-project-file nil)
+           (make-local-variable
+            (quote coq-prog-args))
+           (setq coq-prog-args
+                 (\`
+                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
+                   (\,
+                    (concat unimath-topdir "UniMath"))
+                   "UniMath")))
+           (setq outline-regexp "(\\** [*]\\{1,8\\} ")
+           (make-local-variable
+            (quote before-save-hook))
+           (add-hook
+            (quote before-save-hook)
+            (quote delete-trailing-whitespace))
+           (modify-syntax-entry 39 "w")
+           (modify-syntax-entry 95 "w")
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat unimath-topdir "emacs/agda/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("chimney" "╝"))
+                        agda-input-user-translations))
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))
      (org-log-into-drawer . t)
      (org-enforce-todo-dependencies . t)
      (org-enforce-todo-checkbox-dependencies . t)
      (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
      (javascript-backend . tern)
-     (javascript-backend . lsp)))))
+     (javascript-backend . lsp)
+     (go-backend . go-mode)
+     (go-backend . lsp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
