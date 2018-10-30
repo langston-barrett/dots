@@ -501,7 +501,8 @@ you should place your code here."
       (add-hook 'prog-mode-hook          'outline-minor-mode)
       (add-hook 'haskell-mode-hook
                 '(lambda () (progn (setq outshine-preserve-delimiter-whitespace t
-                                          outshine-regexp-base-char "@")))))
+                                         outshine-regexp-base-char "@")))))
+
       (defun my/outline-level-faces ()
         (interactive)
         (dolist (pair (list (cons 'outline-1 'org-level-1)
@@ -689,6 +690,26 @@ will not be modified."
                           )))
   (add-hook 'w3m-display-hook 'w3m-haddock-display)
 
+  ;; More align rules for Haskell
+  ;; https://bit.ly/2Rn92GA
+  ;; https://bit.ly/2Oh0lvt
+  (with-eval-after-load 'align
+    ;; Align EOL comments
+    (add-to-list 'align-rules-list
+                 '(haskell-eol-comment
+                   (regexp . "\\(\\s-+\\)--\\s-+")
+                   (modes . haskell-modes)))
+    ;; Align arrow operators
+    (add-to-list 'align-rules-list
+                 '(haskell-eol-comment
+                   (regexp . "\\(\\s-+\\)\\(>>>\\|<<<\\|&&&\\|\\*\\*\\*\\)\\s-+")
+                   (modes . haskell-modes)))
+    ;; Align on applicative delimiters
+    (add-to-list 'align-rules-list
+                 '(haskell-applicative
+                   (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
+                   (modes . haskell-modes))))
+
   ;; ;; COQ
 
   ;; (with-eval-after-load 'company-coq
@@ -791,7 +812,51 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(safe-local-variable-values
    (quote
-    ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
+    ((eval let
+           ((unimath-topdir
+             (expand-file-name
+              (locate-dominating-file buffer-file-name "UniMath"))))
+           (setq fill-column 100)
+           (make-local-variable
+            (quote coq-use-project-file))
+           (setq coq-use-project-file nil)
+           (make-local-variable
+            (quote coq-prog-args))
+           (make-local-variable
+            (quote before-save-hook))
+           (add-hook
+            (quote before-save-hook)
+            (quote delete-trailing-whitespace))
+           (modify-syntax-entry 39 "w")
+           (modify-syntax-entry 95 "w")
+           (if
+               (not
+                (memq
+                 (quote agda-input)
+                 features))
+               (load
+                (concat unimath-topdir "emacs/agda/agda-input")))
+           (if
+               (not
+                (member
+                 (quote
+                  ("chimney" "╝"))
+                 agda-input-user-translations))
+               (progn
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("chimney" "╝"))
+                        agda-input-user-translations))
+                 (setq agda-input-user-translations
+                       (cons
+                        (quote
+                         ("==>" "⟹"))
+                        agda-input-user-translations))
+                 (agda-input-setup)))
+           (set-input-method "Agda"))
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:patch-experiment --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
      (outshine-regexp-base-char . "@")
      (eval let
            ((unimath-topdir
