@@ -586,7 +586,6 @@ will not be modified."
        (haskell    . t)
        (java       . t)
        (python     . t)
-       (sh         . t)
        (shell      . t)
        ))
 
@@ -694,15 +693,20 @@ will not be modified."
   ;; https://bit.ly/2Rn92GA
   ;; https://bit.ly/2Oh0lvt
   (with-eval-after-load 'align
-    ;; Align EOL comments
-    (add-to-list 'align-rules-list
-                 '(haskell-eol-comment
-                   (regexp . "\\(\\s-+\\)--\\s-+")
-                   (modes . haskell-modes)))
+    ;; Align EOL comments TODO: moves comment-only lines
+    ;; (add-to-list 'align-rules-list
+    ;;              '(haskell-eol-comment
+    ;;                (regexp . "\\(\\s-+\\)--\\s-+")
+    ;;                (modes . haskell-modes)))
     ;; Align arrow operators
     (add-to-list 'align-rules-list
                  '(haskell-eol-comment
                    (regexp . "\\(\\s-+\\)\\(>>>\\|<<<\\|&&&\\|\\*\\*\\*\\)\\s-+")
+                   (modes . haskell-modes)))
+    ;; Align if/then/else
+    (add-to-list 'align-rules-list
+                 '(haskell-ite
+                   (regexp . "\\(\\s-+\\)\\(if\|then\|else\\)\\s-+")
                    (modes . haskell-modes)))
     ;; Align on applicative delimiters
     (add-to-list 'align-rules-list
@@ -810,157 +814,13 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe rbenv ranger rake prettier-js paradox spinner outshine outorg org-board mmm-mode minitest helm-rtags helm-org-rifle helm-git-grep google-c-style flycheck-rtags evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-org evil-mc evil-matchit evil-magit treepy graphql evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens paredit evil-args evil-anzu anzu doom-modeline eldoc-eval shrink-path disaster company-rtags rtags company-c-headers company-auctex clang-format chruby bundler inf-ruby auctex-latexmk auctex attrap ascii-art-to-unicode evil goto-chg undo-tree yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smartparens slim-mode shell-pop scss-mode sass-mode restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general popwin pippel pipenv pip-requirements persp-mode password-generator overseer orgit org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain open-junk-file nix-mode neotree nameless mvn multi-term move-text meghanada maven-test-mode math-symbols markdown-toc magit-todos magit-svn magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hydra hungry-delete hlint-refactor hindent highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-unimpaired evil-numbers evil-nerd-commenter eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav editorconfig dumb-jump dotenv-mode direnv diminish define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-nixos-options company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-anaconda column-enforce-mode cmm-mode clean-aindent-mode centered-cursor-mode bind-map auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((eval let
-           ((unimath-topdir
-             (expand-file-name
-              (locate-dominating-file buffer-file-name "UniMath"))))
-           (setq fill-column 100)
-           (make-local-variable
-            (quote coq-use-project-file))
-           (setq coq-use-project-file nil)
-           (make-local-variable
-            (quote coq-prog-args))
-           (make-local-variable
-            (quote before-save-hook))
-           (add-hook
-            (quote before-save-hook)
-            (quote delete-trailing-whitespace))
-           (modify-syntax-entry 39 "w")
-           (modify-syntax-entry 95 "w")
-           (if
-               (not
-                (memq
-                 (quote agda-input)
-                 features))
-               (load
-                (concat unimath-topdir "emacs/agda/agda-input")))
-           (if
-               (not
-                (member
-                 (quote
-                  ("chimney" "╝"))
-                 agda-input-user-translations))
-               (progn
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("chimney" "╝"))
-                        agda-input-user-translations))
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("==>" "⟹"))
-                        agda-input-user-translations))
-                 (agda-input-setup)))
-           (set-input-method "Agda"))
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:patch-experiment --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
+    ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
      (outshine-regexp-base-char . "@")
-     (eval let
-           ((unimath-topdir
-             (expand-file-name
-              (locate-dominating-file buffer-file-name "UniMath"))))
-           (setq fill-column 100)
-           (make-local-variable
-            (quote coq-use-project-file))
-           (setq coq-use-project-file nil)
-           (make-local-variable
-            (quote coq-prog-args))
-           (setq coq-prog-args
-                 (\`
-                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
-                   (\,
-                    (concat unimath-topdir "UniMath"))
-                   "UniMath")))
-           (make-local-variable
-            (quote before-save-hook))
-           (add-hook
-            (quote before-save-hook)
-            (quote delete-trailing-whitespace))
-           (modify-syntax-entry 39 "w")
-           (modify-syntax-entry 95 "w")
-           (if
-               (not
-                (memq
-                 (quote agda-input)
-                 features))
-               (load
-                (concat unimath-topdir "emacs/agda/agda-input")))
-           (if
-               (not
-                (member
-                 (quote
-                  ("chimney" "╝"))
-                 agda-input-user-translations))
-               (progn
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("chimney" "╝"))
-                        agda-input-user-translations))
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("==>" "⟹"))
-                        agda-input-user-translations))
-                 (agda-input-setup)))
-           (set-input-method "Agda"))
-     (eval let
-           ((unimath-topdir
-             (expand-file-name
-              (locate-dominating-file buffer-file-name "UniMath"))))
-           (setq fill-column 100)
-           (make-local-variable
-            (quote coq-use-project-file))
-           (setq coq-use-project-file nil)
-           (make-local-variable
-            (quote coq-prog-args))
-           (setq coq-prog-args
-                 (\`
-                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
-                   (\,
-                    (concat unimath-topdir "UniMath"))
-                   "UniMath")))
-           (setq outline-regexp "(\\** [*]\\{1,8\\} ")
-           (make-local-variable
-            (quote before-save-hook))
-           (add-hook
-            (quote before-save-hook)
-            (quote delete-trailing-whitespace))
-           (modify-syntax-entry 39 "w")
-           (modify-syntax-entry 95 "w")
-           (if
-               (not
-                (memq
-                 (quote agda-input)
-                 features))
-               (load
-                (concat unimath-topdir "emacs/agda/agda-input")))
-           (if
-               (not
-                (member
-                 (quote
-                  ("chimney" "╝"))
-                 agda-input-user-translations))
-               (progn
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("chimney" "╝"))
-                        agda-input-user-translations))
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("==>" "⟹"))
-                        agda-input-user-translations))
-                 (agda-input-setup)))
-           (set-input-method "Agda"))
-     (org-log-into-drawer . t)
-     (org-enforce-todo-dependencies . t)
-     (org-enforce-todo-checkbox-dependencies . t)
-     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
      (javascript-backend . tern)
      (javascript-backend . lsp)
      (go-backend . go-mode)
