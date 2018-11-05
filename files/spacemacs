@@ -1,6 +1,8 @@
 ;; -*- mode: emacs-lisp -*-
-;; This file is loaded by Spacemacs at startup.
-;; It must be stored in your home directory.
+
+;;; Dotspacemacs
+
+; Remember to use outshine/outorg with this buffer!
 
 (defun dotspacemacs/layers ()
   "Layer configuration:
@@ -29,6 +31,9 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
+
+;;;; Layers
+
    '(ruby
      emacs-lisp
      helm ; full-featured auto-completion
@@ -72,6 +77,9 @@ This function should only modify configuration layer settings."
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
      )
+
+;;;; Extra packages
+
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -430,6 +438,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (setq evil-want-abbrev-expand-on-insert-exit nil)
   )
 
+;;;; =user-config=
+
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
@@ -438,7 +448,7 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  ;; ;; GENERAL
+;;;;; General
 
   (setq-default tab-width 4)
 
@@ -489,7 +499,7 @@ you should place your code here."
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
 
-  ;; ;; ORG
+;;;;; Org
 
   ;; Outshine/outorg
 
@@ -651,7 +661,7 @@ will not be modified."
       "sm"   'org-mark-subtree
       ))
 
-  ;; ;; C
+;;;;; C
 
   ;; https://bit.ly/2QqJLvw
 
@@ -668,7 +678,7 @@ will not be modified."
   (spacemacs/add-to-hooks 'clang-format-buffer-smart-on-save
                           '(c-mode-hook c++-mode-hook))
 
-  ;; ;; HASKELL
+;;;;; Haskell
 
   (setq dante-repl-command-line '("nix-shell" "--pure" "--run" "cabal repl --builddir=dist/dante"))
   (add-hook 'dante-mode-hook
@@ -723,7 +733,7 @@ will not be modified."
                    (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
                    (modes . haskell-modes))))
 
-  ;; ;; COQ
+;;;;; Coq
 
   ;; (with-eval-after-load 'company-coq
   ;;    (add-to-list 'company-coq-disabled-features 'prettify-symbols))
@@ -773,19 +783,19 @@ will not be modified."
                      :action (helm-make-actions "Insert" (lambda (x) (insert x))))
           :buffer "*helm blah*"))
 
-  ;; ;; SHELL
+;;;;; Shell
 
   (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
                                             sh-indentation 2)))
 
-  ;; ;; PYTHON
+;;;;; Python
 
   ;; Jump to top-level definitions
   ;; (spacemacs/set-leader-keys-for-major-mode 'python-mode
   ;;   (completing-read prompt candidates nil t)
   ;;   "gt"  '(lambda () (interactive) (helm-ag-this-file)))
 
-  ;; ;; LATEX
+;;;;; LaTeX
 
   (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
   (setq require-final-newline t)
@@ -798,7 +808,7 @@ will not be modified."
   (setq TeX-view-program-selection '((output-pdf "Zathura")))
   ; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
 
-  ;; ;; MUTT
+;;;;; Mutt
 
   (defun siddharthist/msg-mode ()
     ;; Map j/k to move visual lines.
