@@ -520,6 +520,8 @@ you should place your code here."
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
 
+;;;;;; Keybindings
+
   ;; Find good functions to put here with (list-command-history)
   (spacemacs/set-leader-keys
     ;; 'o' is the "user key"
@@ -543,6 +545,25 @@ you should place your code here."
 
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
+
+;;;;;; Ediff
+
+  ;; https://emacs.stackexchange.com/questions/13019/how-to-undo-on-ediff-a-b-changes
+  (add-hook 'ediff-mode-hook
+    (progn
+      ;; use undo-tree.el
+      (defun my-ediff-undo-A ()
+        (interactive)
+        (save-window-excursion (with-selected-window ediff-window-A (undo-tree-undo))))
+      (defun my-ediff-undo-B ()
+        (interactive)
+        (save-window-excursion (with-selected-window ediff-window-B (undo-tree-undo))))
+      (defun my-ediff-redo-A ()
+        (interactive)
+        (save-window-excursion (with-selected-window ediff-window-A (undo-tree-redo))))
+      (defun my-ediff-redo-B ()
+        (interactive)
+        (save-window-excursion (with-selected-window ediff-window-B (undo-tree-redo))))))
 
 ;;;;; Org
 
