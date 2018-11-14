@@ -600,36 +600,62 @@ you should place your code here."
   ;;           (append (make-list (- space-width 1) '(?\s (Br . Bl)))
   ;;                   '(?\s (Br . Br))
   ;;                   (cons (cdr el) nil)))))
-
-  (setq haskell-prettify-symbols-alist
-        (append
-         (mapvalues 'my/three-spaces
-                    '(("<*>" . ?⊛)))
+  (setq comparison-prettify-symbols-alist
          (mapvalues 'my/two-spaces
                     '((">=" . ?≥)
                       ("<=" . ?≤)
                       ("==" . ?≟)
-                      ("<|" . ?⊲) ; sequences
+                      ("/=" . ?≠)
+                      ("!=" . ?≠))))
+
+  (setq arrow-prettify-symbols-alist
+        (mapvalues 'my/two-spaces
+                   '(("->" . ?→)
+                     ("<-" . ?←)
+                     ("=>" . ?⇒))))
+
+  (setq bool-prettify-symbols-alist
+        (mapvalues 'my/two-spaces
+                   '(("&&" . ?∧)
+                     ("||" . ?∨))))
+
+  (setq haskell-prettify-symbols-alist
+        (append
+         comparison-prettify-symbols-alist
+         arrow-prettify-symbols-alist
+         bool-prettify-symbols-alist
+         (mapvalues 'my/three-spaces
+                    '(("<*>" . ?⊛)))
+         (mapvalues 'my/two-spaces
+                    '(("<|" . ?⊲) ; sequences
                       ("|>" . ?⊳) ; sequences
-                      ("&&" . ?∧)
-                      ("||" . ?∨)
-                      ("->" . ?→)
-                      ("<-" . ?←)
-                      ("=>" . ?⇒)
-                      ("::" . ?∷)
-                      ("/=" . ?≠)))))
+                      ("::" . ?∷)))))
+
+  (setq org-prettify-symbols-alist
+        (append
+         comparison-prettify-symbols-alist
+         arrow-prettify-symbols-alist
+         bool-prettify-symbols-alist
+         (mapvalues 'my/two-spaces
+                    '(("::" . ?∷)))))
 
   (setq prettify-symbols-unprettify-at-point t)
+
   (defun my/haskell-prettify-symbols ()
     "Enable prettification for Haskell symbols."
     (interactive)
     (prettify-symbols-mode -1)
-    ;; TODO: append? see https://bit.ly/2DamIAA
-    ;; TODO: automatically figure out width? https://bit.ly/2zyR508
-    (setq-local prettify-symbols-alist
-                haskell-prettify-symbols-alist)
+    (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
     (prettify-symbols-mode))
   (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols)
+
+  (defun my/org-prettify-symbols ()
+    "Enable prettification for Org symbols."
+    (interactive)
+    (prettify-symbols-mode -1)
+    (setq-local prettify-symbols-alist org-prettify-symbols-alist)
+    (prettify-symbols-mode))
+  (add-hook 'org-mode-hook 'my/org-prettify-symbols)
 
 ;;;;; Org
 
