@@ -38,6 +38,12 @@
   };
   system.autoUpgrade.enable = true;
 
+  xdg = {
+    icons.enable = true;
+    menus.enable = true;
+    mime.enable  = true;
+  };
+
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
@@ -46,6 +52,7 @@
     exfat
     file
     git
+    gitAndTools.hub # github access for magithub
     gnumake
     gnupg
     imagemagick
