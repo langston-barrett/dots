@@ -55,4 +55,8 @@ in_interactive_session() {
 # https://github.com/andreafrancia/trash-cli
 alias tp='trash-put'
 alias tl='trash-list'
-alias rm='echo Use \rm or tp (=trash-put)'
+alias rm='echo Use \\ rm or tp \(trash-put\)'
+
+copy_last_command() {
+  echo "!!" | xsel -ib
+}
