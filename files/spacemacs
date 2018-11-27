@@ -504,10 +504,6 @@ you should place your code here."
     (evil-local-set-key 'normal (kbd "<next>") 'scroll-down)
     (evil-local-set-key 'insert (kbd "C-r") 'siddharthist/send-C-r))
 
-  ;; https://bit.ly/2OrfDO0
-  (when (require 'hungry-delete nil 'noerror)
-    (global-hungry-delete-mode))
-
   (defun siddharthist/send-C-r ()
     (interactive)
     (term-send-raw-string "\C-r"))
@@ -521,6 +517,20 @@ you should place your code here."
   (defun siddharthist/ansi-term-nix-shell ()
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
+
+  ;; org-wiki and saw-script
+  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
+
+  ;; https://bit.ly/2OrfDO0
+  ;; (when (require 'hungry-delete nil 'noerror)
+  ;;   (global-hungry-delete-mode))
+
+  ;; Shift-Backspace does a hungry delete
+  (when (require 'smart-hungry-delete)
+    ;; (smart-hungry-delete-add-default-hooks) ; I'm suspicious of this.
+    (global-set-key (kbd "S-<backspace>") 'smart-hungry-delete-backward-char))
+
+  (setq require-final-newline t)
 
 ;;;;;; (Ma)git
 
@@ -553,33 +563,26 @@ you should place your code here."
     "oon"  'outshine-navi ; prefer ji/jI/mr
     "oogu" 'outline-up-heading)
 
-  ;; org-wiki and saw-script
-  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
-
 ;;;;;; Ediff
 
-  ;; https://emacs.stackexchange.com/questions/13019/how-to-undo-on-ediff-a-b-changes
-  (add-hook 'ediff-mode-hook
-    (lambda ()
-      (progn
-        ;; use undo-tree.el
-        (defun my-ediff-undo-A ()
-          (interactive)
-          (save-window-excursion (with-selected-window ediff-window-A (undo-tree-undo))))
-        (defun my-ediff-undo-B ()
-          (interactive)
-          (save-window-excursion (with-selected-window ediff-window-B (undo-tree-undo))))
-        (defun my-ediff-redo-A ()
-          (interactive)
-          (save-window-excursion (with-selected-window ediff-window-A (undo-tree-redo))))
-        (defun my-ediff-redo-B ()
-          (interactive)
-          (save-window-excursion (with-selected-window ediff-window-B (undo-tree-redo)))))))
-
-  ;; Shift-Backspace does a hungry delete
-  (when (require 'smart-hungry-delete)
-    ;; (smart-hungry-delete-add-default-hooks) ; I'm suspicious of this.
-    (global-set-key (kbd "S-<backspace>") 'smart-hungry-delete-backward-char))
+  (with-eval-after-load 'ediff
+    ;; https://emacs.stackexchange.com/questions/13019/how-to-undo-on-ediff-a-b-changes
+    (add-hook 'ediff-mode-hook
+              (lambda ()
+                (progn
+                  ;; use undo-tree.el
+                  (defun my-ediff-undo-A ()
+                    (interactive)
+                    (save-window-excursion (with-selected-window ediff-window-A (undo-tree-undo))))
+                  (defun my-ediff-undo-B ()
+                    (interactive)
+                    (save-window-excursion (with-selected-window ediff-window-B (undo-tree-undo))))
+                  (defun my-ediff-redo-A ()
+                    (interactive)
+                    (save-window-excursion (with-selected-window ediff-window-A (undo-tree-redo))))
+                  (defun my-ediff-redo-B ()
+                    (interactive)
+                    (save-window-excursion (with-selected-window ediff-window-B (undo-tree-redo))))))))
 
 ;;;;; Prettify-symbols
 
@@ -643,18 +646,6 @@ you should place your code here."
                    '(("&&" . ?∧)
                      ("||" . ?∨))))
 
-  (setq haskell-prettify-symbols-alist
-        (append
-         comparison-prettify-symbols-alist
-         arrow-prettify-symbols-alist
-         bool-prettify-symbols-alist
-         ;; (mapvalues 'my/three-spaces
-         ;;            '(("<*>" . ?⊛)))
-         (mapvalues 'my/two-spaces
-                    '(("<|" . ?⊲) ; sequences
-                      ("|>" . ?⊳) ; sequences
-                      ("::" . ?∷)))))
-
   (setq org-prettify-symbols-alist
         (append
          ;; percent-encoding-prettify-symbols
@@ -666,21 +657,35 @@ you should place your code here."
 
   (setq prettify-symbols-unprettify-at-point t)
 
-  (defun my/haskell-prettify-symbols ()
-    "Enable prettification for Haskell symbols."
-    (interactive)
-    (prettify-symbols-mode -1)
-    (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
-    (prettify-symbols-mode))
-  (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols)
+  (with-eval-after-load 'haskell
+    (setq haskell-prettify-symbols-alist
+          (append
+           comparison-prettify-symbols-alist
+           arrow-prettify-symbols-alist
+           bool-prettify-symbols-alist
+           ;; (mapvalues 'my/three-spaces
+           ;;            '(("<*>" . ?⊛)))
+           (mapvalues 'my/two-spaces
+                      '(("<|" . ?⊲) ; sequences
+                        ("|>" . ?⊳) ; sequences
+                        ("::" . ?∷)))))
 
-  (defun my/org-prettify-symbols ()
-    "Enable prettification for Org symbols."
-    (interactive)
-    (prettify-symbols-mode -1)
-    (setq-local prettify-symbols-alist org-prettify-symbols-alist)
-    (prettify-symbols-mode))
-  (add-hook 'org-mode-hook 'my/org-prettify-symbols)
+    (defun my/haskell-prettify-symbols ()
+      "Enable prettification for Haskell symbols."
+      (interactive)
+      (prettify-symbols-mode -1)
+      (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
+      (prettify-symbols-mode))
+    (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols))
+
+  (with-eval-after-load 'org
+    (defun my/org-prettify-symbols ()
+      "Enable prettification for Org symbols."
+      (interactive)
+      (prettify-symbols-mode -1)
+      (setq-local prettify-symbols-alist org-prettify-symbols-alist)
+      (prettify-symbols-mode))
+    (add-hook 'org-mode-hook 'my/org-prettify-symbols))
 
 ;;;;; Elfeed
 
@@ -928,7 +933,7 @@ will not be modified."
     (defun my/haskell-find-declaration ()
       (interactive)
       (let* ((cur-word (thing-at-point 'word)))
-        (grep (concat cur-word " ::"))))
+        (rgrep (combine-and-quote-strings (list "grep" "-r" (concat cur-word " ::"))))))
 
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       "ff"  'my/haskell-find-declaration)
@@ -975,47 +980,43 @@ will not be modified."
   ;; Coq key bindings:
   ;; - Use SPC-m-SPC instead of SPC-m-. for less pinky strain
   ;; - Use SPC-gE to process to the end of the file. Good for finding out where one left off.
-  (spacemacs/set-leader-keys-for-major-mode 'coq-mode
-    "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
-    "SPC" 'proof-goto-point
-    "miH" 'siddharthist-surround-region-hide)
-  (setq coq-one-command-per-line nil)       ; https://github.com/ProofGeneral/PG/issues/53
-  (setq proof-electric-terminator-enable t) ; https://github.com/ProofGeneral/PG/issues/53
+  (with-eval-after-load 'proof-general
+    (spacemacs/set-leader-keys-for-major-mode 'coq-mode
+      "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
+      "SPC" 'proof-goto-point
+      "miH" 'siddharthist-surround-region-hide)
+    (setq coq-one-command-per-line nil)       ; https://github.com/ProofGeneral/PG/issues/53
+    (setq proof-electric-terminator-enable t)) ; https://github.com/ProofGeneral/PG/issues/53
 
-  ;; surround a region with a hide command for coqdoc
-  (defun siddharthist/surround-region-hide ()
-    (interactive)
-    (progn
-      (goto-char (region-end))
-      (insert "(* end hide *)")
-      (goto-char (region-beginning))
-      (insert "(* begin hide *)\n")))
+  (with-eval-after-load 'coq
+    ;; surround a region with a hide command for coqdoc
+    (defun my/surround-region-hide ()
+      (interactive)
+      (progn
+        (goto-char (region-end))
+        (insert "(* end hide *)")
+        (goto-char (region-beginning))
+        (insert "(* begin hide *)\n")))
 
-  ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
-  (setq undo-tree-enable-undo-in-region nil)
+    ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
+    (setq undo-tree-enable-undo-in-region nil)
 
-  ;; Cobbled together from:
-  ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
-  ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
-  ; TODO: n is void?
-  (defun siddharthist/coq-compile-projectile ()
-    (interactive)
-    (require 'projectile)
-    (let ((makefile (concat (projectile-project-root) "/Makefile"))
-          (n (buffer-name))
-          (l (string-match ".v" n)))
-      (if (not makefile)
-          (error "No build file found for project %s" (projectile-project-root)))
-      (compile (concat "make " (substring n 0 l) ".vo"))))
+    ;; Cobbled together from:
+    ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
+    ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
+    ; TODO: n is void?
+    (defun my/coq-compile-projectile ()
+      (interactive)
+      (require 'projectile)
+      (let ((makefile (concat (projectile-project-root) "/Makefile"))
+            (n (buffer-name))
+            (l (string-match ".v" n)))
+        (if (not makefile)
+            (error "No build file found for project %s" (projectile-project-root)))
+        (compile (concat "make " (substring n 0 l) ".vo"))))
 
-  (defun siddharthist/coq-helm-hypothesis ()
-    (interactive)
-    (require 'company-coq)
-    (require 'helm)
-    (helm :sources (helm-build-sync-source "test"
-                     :candidates company-coq--hyp-names
-                     :action (helm-make-actions "Insert" (lambda (x) (insert x))))
-          :buffer "*helm blah*"))
+    )
+
 
 ;;;;; Shell
 
@@ -1031,16 +1032,16 @@ will not be modified."
 
 ;;;;; LaTeX
 
-  (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
-  (setq require-final-newline t)
+  (with-eval-after-load 'latex
+    (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
+    ;; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
 
-  ;; make backslash easier in TeX, use Agda input mode
-  ;; TODO: make backslash semicolon
-  (add-hook 'org-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
-  (add-hook 'TeX-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
-  (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
-  (setq TeX-view-program-selection '((output-pdf "Zathura")))
-  ; (spacemacs/set-leader-keys-for-major-mode 'TeX-mode "mim" 'math-symbols-helm-insert-char)
+    ;; make backslash easier in TeX, use Agda input mode
+    ;; TODO: make backslash semicolon
+    (add-hook 'org-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
+    (add-hook 'TeX-mode-hook   '(lambda () (local-set-key (kbd ";") "\\")))
+    (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
+    (setq TeX-view-program-selection '((output-pdf "Zathura"))))
 
 ;;;;; Mutt
 
@@ -1055,7 +1056,7 @@ will not be modified."
   (add-hook 'message-mode-hook 'msg-mode)
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
 
-  )
+  ) ;; end user-config
 
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
