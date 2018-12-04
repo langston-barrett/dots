@@ -33,8 +33,20 @@
     buildCores = 4;
     gc.automatic = true;
     useSandbox = true;
+
     # Use a local clone of nixpkgs at /etc/nixpkgs
     #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
+
+    # Use cachix binary caches
+    binaryCaches = [
+      "https://cache.nixos.org/"
+      "https://hie-nix.cachix.org"
+    ];
+    binaryCachePublicKeys = [
+      "hie-nix.cachix.org-1:EjBSHzF6VmDnzqlldGXbi0RM3HdjfTU3yDRi9Pd0jTY="
+    ];
+    trustedUsers = [ "root" "siddharthist" ];
+
   };
   system.autoUpgrade.enable = true;
 
