@@ -10,6 +10,15 @@
   # Opportunisticly encrypt TCP traffic
   networking.tcpcrypt.enable = true;
 
+  programs.firejail = {
+    enable = true;
+    # TODO: Add some here
+    # wrappedBinaries = {
+    #   firefox = "${lib.getBin pkgs.firefox}/bin/firefox";
+    #   mpv = "${lib.getBin pkgs.mpv}/bin/mpv";
+    # };
+  };
+
   security = {
     apparmor = {
       enable = true;
