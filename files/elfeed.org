@@ -1,0 +1,23 @@
+* elfeed                                                             :elfeed:
+** type theory
+*** [[http://homotopytypetheory.org/feed/][Homotopy Type Theory]]
+*** [[https://groups.google.com/forum/feed/homotopytypetheory/msgs/atom.xml?num=30][HoTT mailing list]]
+*** [[http://math.andrej.com/feed/][Mathematics and Computation - Andrej Bauer]]
+*** [[http://existentialtype.wordpress.com/feed/][Existential Type - Rob Harper]]
+*** [[https://edwinb.wordpress.com/feed/][Edwin Brady]]
+** coq
+*** [[http://coq-blog.clarus.me/rss.xml][Coq blog - Guillaume Claret]]
+*** [[http://poleiro.info/atom.xml][Poleiro: latest posts]]
+** haskell
+*** [[http://feeds.feedburner.com/fpcomplete][FP Complete]]
+*** [[http://themonadreader.wordpress.com/feed/][The Monad.Reader - Edward Kmett]]
+** emacs
+*** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
+*** [[http://endlessparentheses.com/atom.xml][endless parens]]
+** nix
+*** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
+*** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
+** other tech
+*** [[http://google-opensource.blogspot.com/feeds/posts/default][Google Open Source Blog]]
+*** [[http://onethingwell.org/rss][One Thing Well]]
+*** [[http://blog.llvm.org/feeds/posts/default][LLVM project blog]]
