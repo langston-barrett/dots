@@ -43,6 +43,8 @@ alias grhm='git reset --hard origin/master'
 alias gri='git rebase -i'
 alias gs='git status'
 
+function git_clone_mine { git clone "https://github.com/siddharthist/$1" }
+
 ## Nix
 alias nb='nix-build'
 alias nba='nix-build -A'
