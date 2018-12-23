@@ -119,6 +119,19 @@
         mode: "0640"
       when: "(become | bool) and (not ci)"
 
+    - name: make tpm dir
+      file:
+        path: "{{ home }}/.tmux/plugins"
+        state: directory
+        mode: 0755
+
+    - name: clone tpm
+      git:
+        repo: 'https://github.com/tmux-plugins/tpm'
+        dest: "{{ home }}/.tmux/plugins/tpm"
+        clone: yes
+        update: no
+
     - name: make user symlink dirs
       file:
         follow: true
