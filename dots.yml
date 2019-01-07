@@ -51,6 +51,8 @@
       - src: latex-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
         mode: "0750"
+      - src: matterhorn.ini
+        dst: "{{ xdg_config_home }}/matterhorn/config.ini"
       - src: monitor/at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/at-desk.sh"
         mode: "0750"

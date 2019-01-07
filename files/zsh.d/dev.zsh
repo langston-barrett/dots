@@ -59,6 +59,9 @@ alias nz='nix-shell --run "exec zsh" || nix-shell nix/shell.nix --run "exec zsh"
 
 ## Generic
 
+alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
+alias makej='make -j$(nproc)'
+
 proj_test () {
   test_cmd="make test"
 
