@@ -92,7 +92,7 @@ This function should only modify configuration layer settings."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(;; all-the-icons
                                       emojify
-                                      w3m
+                                      ;; w3m
                                       helpful       ; better elisp help
                                       ialign        ; interactive align-regexp
                                       mmm-mode      ; markdown multi-mode
@@ -100,8 +100,11 @@ This function should only modify configuration layer settings."
                                       direnv        ; direnv + nix
                                       math-symbols  ; easily insert unicode latex macros
                                       prop-menu     ; needed for saw-script-mode
+                                      dimmer
                                       ;; ORG
                                       ;; TODO: Make outshine/outorg layer
+                                      helm-navi
+                                      navi-mode
                                       outorg
                                       outshine
                                       ;; idle-org-agenda
@@ -547,6 +550,10 @@ you should place your code here."
 
   (setq require-final-newline t)
 
+  (when (require 'dimmer nil 'noerror)
+    (setq dimmer-fraction 0.10)
+    (dimmer-mode))
+
   (golden-ratio-mode)
   (setq golden-ratio-adjust-factor .85
         golden-ratio-wide-adjust-factor .85)
@@ -558,6 +565,47 @@ you should place your code here."
          (add-to-list 'grep-find-ignored-directories v))
        (dolist (v '("*log"))
          (add-to-list 'grep-find-ignored-files v))))
+
+
+;;;;; my sidebar
+
+  ;; TODO: make this its own library
+
+  (defun neo-buffer--create ()
+    "Create and switch to NeoTree buffer."
+    (switch-to-buffer
+     (generate-new-buffer-name neo-buffer-name))
+    (neotree-mode)
+    ;; disable linum-mode
+    (when (and (boundp 'linum-mode)
+               (not (null linum-mode)))
+      (linum-mode -1))
+    ;; Use inside helm window in NeoTree
+    ;; Refs https://github.com/jaypei/emacs-neotree/issues/226
+    (setq-local helm-split-window-inside-p t)
+    (current-buffer))
+
+
+  (setq my/sidebar-buffer nil)
+  (defun my/get-sidebar-buffer (&optional init-p)
+    "Return the sidebar buffer if it exists."
+    (unless (equal (buffer-name my/sidebar-buffer) "my/sidebar-buffer")
+      (setq my/sidebar-buffer nil))
+    (when (and init-p (null my/sidebar-buffer))
+      (save-window-excursion
+        (setq my/sidebar-buffer
+              (neo-buffer--create))))
+    neo-global--buffer)
+
+  (defun my/create-sidebar-window ()
+    "Create a window of sidebar width."
+    (let ((window (evil-window-new)))
+      (neo-window--init window buffer)
+      (neo-global--attach)
+      (neo-global--reset-width)
+      window))
+  (defun my/show-emacs-to-remember ()
+    )
 
 ;;;;;; eacl
 
@@ -759,6 +807,8 @@ you should place your code here."
   ;;          (add-hook 'elfeed-show-mode-hook my/elfeed-mode-kbd))
 
 ;;;;; Org
+
+  (require 'navi-mode)
 
   ;; hideshow-org
   ;; TODO: change keybinding? may interfere with outshine
@@ -1008,7 +1058,7 @@ will not be modified."
 
   (with-eval-after-load 'haskell
 
-    (setq dante-repl-command-line '("nix-shell" "--pure" "--run" "cabal repl --builddir=dist/dante"))
+    (setq dante-repl-command-line '("nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante"))
     (add-hook 'dante-mode-hook
               '(lambda () (flycheck-add-next-checker 'haskell-dante
                                                      '(warning . haskell-hlint))))
@@ -1069,6 +1119,16 @@ will not be modified."
                   '(haskell-applicative
                     (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
                     (modes . haskell-modes)))))
+
+;;;;; Nix
+
+  (with-eval-after-load 'nix
+    (with-eval-after-load 'align
+      ;; Align =
+      (add-to-list 'align-rules-list
+                  '(nix-eq
+                    (regexp . "=")
+                    (modes . nix-modes)))))
 
 ;;;;; Java
 
@@ -1177,12 +1237,16 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet-snippets web-mode tao-theme rmsbolt racer pyvenv proof-general outshine outorg orgit org-ref pdf-tools tablist org-projectile org-download org-brain org-board nix-mode neotree meghanada magithub lsp-ui lsp-javascript-typescript typescript-mode lsp-java lsp-haskell live-py-mode json-navigator json-mode intero hlint-refactor hl-todo highlight-indentation helpful elisp-refs helm-xref helm-bibtex parsebib google-translate git-timemachine flyspell-correct-helm flyspell-correct flycheck-haskell eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit evil-goggles eval-sexp-fu eshell-prompt-extras emojify elfeed-goodies editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word dante cython-mode counsel-projectile counsel swiper ivy company-lsp company-go company-coq math-symbol-lists cargo rust-mode browse-at-remote auto-yasnippet auto-compile aggressive-indent ace-window ace-link anaconda-mode elfeed smartparens flycheck haskell-mode company request projectile window-purpose imenu-list rtags avy lsp-mode ht magit magit-popup git-commit dash markdown-mode helm helm-core f simple-httpd spaceline powerline evil goto-chg async org-plus-contrib hydra yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify w3m volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree treepy toml-mode toc-org tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shut-up shrink-path shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters pytest pyenv-mode py-isort pug-mode prop-menu prettier-js popwin pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox packed overseer origami org-sticky-header org-present org-pomodoro org-mime org-category-capture org-bullets open-junk-file noflet nameless mvn multi-term move-text mmm-mode maven-test-mode math-symbols markdown-toc magit-svn magit-gitflow magit-gh-pulls macrostep lsp-python lsp-go lorem-ipsum loop livid-mode link-hint lcr key-chord json-snatcher json-reformat js2-refactor js-doc insert-shebang indent-guide importmagic impatient-mode ialign hungry-delete hindent highlight-parentheses highlight-numbers highlight hierarchy helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphql gradle-mode google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ghub+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help ensime emmet-mode elisp-slime-nav elfeed-web elfeed-org dotenv-mode disaster direnv diminish company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-math company-ghci company-ghc company-emacs-eclim company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format centered-cursor-mode biblio auto-highlight-symbol auto-dictionary auctex-latexmk ascii-art-to-unicode ace-jump-mode ace-jump-helm-line ac-ispell)))
+    (helm-navi navi-mode yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify w3m volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shell-pop scss-mode sass-mode rmsbolt restart-emacs ranger rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general prettier-js pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-sticky-header org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode meghanada maven-test-mode math-symbols markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-ui lsp-python lsp-javascript-typescript lsp-java lsp-haskell lsp-go lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emojify emmet-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv diminish diff-hl define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-lsp company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format centered-cursor-mode cargo browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
+    ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal new-configure --enable-tests && cabal new-repl --builddir=dist/dante")
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
+     (org-log-into-drawer . t)
+     (org-enforce-todo-dependencies . t)
+     (org-enforce-todo-checkbox-dependencies . t)
+     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
      (javascript-backend . tern)
      (javascript-backend . lsp)
      (go-backend . go-mode)
