@@ -1,0 +1,5 @@
+#name : module declaration
+#contributor : Michel Rijnders <g.a.c.rijnders@gmail.com>
+# --
+module ${1:name} (${2:exports}) where
+$0

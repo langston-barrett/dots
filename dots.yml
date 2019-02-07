@@ -40,6 +40,9 @@
         dst: "{{ xdg_config_home }}/git/gitignore"
       - src: git/pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
+      - src: haskell-mode-snippets
+        dst: "{{ home }}/.emacs.d/private/snippets/haskell-mode"
+        mode: "0750"
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
       - src: i3status.conf

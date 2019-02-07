@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: newtype
+# key: new
+# contributor: Langston Barrett
+# --
+-- | The $1 type wraps $3 ...
+newtype ${1:TypeName} ${2:tyvars} = $1 { un$1 :: ${3:UnderlyingType} $2 }
+deriving (Data, Eq, Functor, Generic, Generic1, Ord, Read, Show, Typeable)

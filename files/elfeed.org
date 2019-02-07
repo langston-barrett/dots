@@ -13,9 +13,11 @@
 *** [[http://feeds.feedburner.com/fpcomplete][FP Complete]]
 *** [[http://themonadreader.wordpress.com/feed/][The Monad.Reader - Edward Kmett]]
 *** [[https://www.reddit.com/r/haskell/.rss][Haskell reddit]]
+*** [[http://justtesting.org/rss][Just Testing]]
 ** emacs
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
+*** [[pragmaticemacs.com/feed/][pragmatic emacs]]
 ** nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
@@ -23,3 +25,5 @@
 *** [[http://google-opensource.blogspot.com/feeds/posts/default][Google Open Source Blog]]
 *** [[http://onethingwell.org/rss][One Thing Well]]
 *** [[http://blog.llvm.org/feeds/posts/default][LLVM project blog]]
+*** [[https://github.com/siddharthist.private.atom?token=AEGGs3KMHuciRsj5_WLER5StFA6vZKAJks66OiqVwA==][Github]]
+*** [[https://www.reddit.com/r/nosyntax/.rss][r/nosyntax]]

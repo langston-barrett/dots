@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: dat
+# name: gadt
+# condition: (= (length "gadt") (current-column))
+# contributor: Langston Barrett
+# --
+data ${1:TyName} ${2:TyVars} where
+${3:Constructor} -> $1 $2
+$3 -> $1 $2
+deriving (Data, Eq, Functor, Generic, Generic1, Ord, Read, Show, Typeable)
