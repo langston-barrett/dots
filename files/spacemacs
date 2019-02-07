@@ -38,12 +38,8 @@ This function should only modify configuration layer settings."
 
 ;;;; Layers
 
-   '(ruby
-     emacs-lisp
+   '(rust
      helm ; full-featured auto-completion
-     html
-     javascript
-     python
 
      ;; Features
      (auto-completion :variables
@@ -52,6 +48,7 @@ This function should only modify configuration layer settings."
      (elfeed :variables rmh-elfeed-org-files (list "~/code/dots/files/elfeed.org"))
      git    ; magit! SPC g m
      github ; magithub!
+     lsp
      (shell :variables
             shell-default-shell 'ansi-term
             shell-default-position 'bottom)
@@ -59,26 +56,29 @@ This function should only modify configuration layer settings."
      imenu-list ; SPC b i
      spell-checking ; requires aspell
      syntax-checking
+     ;; unicode-fonts
 
      ;; Languages
      (c-c++ :variables c-c++-enable-clang-support t)
      agda
      bibtex ; org-ref!
      coq
+     emacs-lisp
      (go :variables go-tab-width 4)
-     lsp
-     (haskell :variables haskell-enable-hindent-style "fundamental"
-              haskell-completion-backend 'hie)
+     html
+     javascript
+     python
      ;; (haskell :variables haskell-enable-hindent-style "fundamental"
-     ;;          haskell-completion-backend 'dante)
+     ;;          haskell-completion-backend 'hie)
+     (haskell :variables haskell-enable-hindent-style "fundamental"
+              haskell-completion-backend 'dante)
      (java :variables java-backend 'lsp)
      (latex :variables
             latex-build-command "LatexMk"
             latex-enable-auto-fill t)
      markdown
      org
-     restructuredtext
-                                        ; saw-script
+     ;; saw-script
      nixos
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
@@ -91,8 +91,10 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(;; all-the-icons
+                                      emojify
                                       w3m
-                                      helpful
+                                      helpful       ; better elisp help
+                                      ialign        ; interactive align-regexp
                                       mmm-mode      ; markdown multi-mode
                                       smart-hungry-delete ; delete all whitespace at once
                                       direnv        ; direnv + nix
@@ -102,10 +104,14 @@ This function should only modify configuration layer settings."
                                       ;; TODO: Make outshine/outorg layer
                                       outorg
                                       outshine
+                                      ;; idle-org-agenda
                                       ox-gfm       ; github markdown export for org
                                       org-board    ; link archiving
+                                      org-sticky-header
                                       link-hint    ; TODO: keybindings
                                       ascii-art-to-unicode ; nicer org-brain
+
+                                      rmsbolt      ; browse compiler output
                                       ;; (recipe
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "GaloisInc/saw-script"
@@ -489,6 +495,13 @@ you should place your code here."
 
   (setq-default tab-width 4)
 
+  ;; fonts
+  ;; http://ergoemacs.org/emacs/emacs_list_and_set_font.html
+  ;; (when (member "Symbola" (font-family-list))
+  ;;   (set-fontset-font t 'unicode "Symbola" nil 'prepend))
+  ;; (when (member "Noto Emoji" (font-family-list))
+  ;;   (set-fontset-font t 'unicode "Noto Emoji" nil 'prepend))
+
   ;; Set escape keybinding to "jk"
   (setq-default evil-escape-key-sequence "jk")
 
@@ -514,6 +527,8 @@ you should place your code here."
     (interactive)
     (ansi-term "/run/current-system/sw/bin/zsh"))
 
+  (setq helm-ag-use-agignore t)
+
   (defun siddharthist/ansi-term-nix-shell ()
     (interactive)
     (ansi-term "nix-shell --run 'exec zsh'"))
@@ -531,6 +546,34 @@ you should place your code here."
     (global-set-key (kbd "S-<backspace>") 'smart-hungry-delete-backward-char))
 
   (setq require-final-newline t)
+
+  (golden-ratio-mode)
+  (setq golden-ratio-adjust-factor .85
+        golden-ratio-wide-adjust-factor .85)
+
+  (eval-after-load 'grep
+    '(progn
+       (dolist (v '("dist-newstyle/"
+                    "dist/"))
+         (add-to-list 'grep-find-ignored-directories v))
+       (dolist (v '("*log"))
+         (add-to-list 'grep-find-ignored-files v))))
+
+;;;;;; eacl
+
+  (defun my/haskell-insert-import ()
+    (interactive)
+    (evil-open-below 1)
+    (evil-beginning-of-line)
+    (insert "import          ")
+    (eacl-complete-line))
+
+  (when (require 'eacl nil 'noerror)
+    (spacemacs/set-leader-keys
+      ;; 'o' is the "user key"
+      ;; 'm' for 'major mode (haskell)'
+      ;; 'i' for 'import'
+      "omi"  'my/haskell-insert-import))
 
 ;;;;;; (Ma)git
 
@@ -555,6 +598,11 @@ you should place your code here."
     ;; fonts
     "oFd"  'spacemacs/scale-down-font
     "oFu"  'spacemacs/scale-up-font
+
+    ;; emoji
+    "oEi"  'emojify-insert-emoji
+    "oEd"  'emojify-describe-emoji
+    "oEl"  'emojify-list-emoji
 
     ;; outshine/outorg/navi
     "ooe"  'outorg-edit-as-org
@@ -719,6 +767,11 @@ you should place your code here."
 
   ;; Outshine/outorg
 
+  ;; (when (require 'idle-org-agenda nil 'noerror)
+  ;;   (setq
+  ;;    '(idle-org-agenda-interval 360) ;; 10 x 60 seconds
+  ;;    '(idle-org-agenda-mode t)))
+
   (when (require 'org-link-minor-mode nil 'noerror)
         (add-hook 'prog-mode-hook 'org-link-minor-mode))
 
@@ -726,7 +779,7 @@ you should place your code here."
     (progn
       (defvar outline-minor-mode-prefix "\C-o") ;; TODO change
       (setq outorg-edit-buffer-persistent-message nil)
-      (add-hook 'outline-minor-mode-hook 'outshine-hook-function)
+      (add-hook 'outline-minor-mode-hook 'outshine-mode)
       (add-hook 'prog-mode-hook          'outline-minor-mode)
       (add-hook 'haskell-mode-hook
                 '(lambda () (progn (setq outshine-preserve-delimiter-whitespace t)))))
@@ -754,8 +807,38 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
+    (setq org-stick-header-full-path 'reversed)
+    ;; (defcustom org-sticky-header-full-path nil
+    ;;   "Show the full outline path."
+    ;;   :type '(radio (const :tag "Show only current heading" nil)
+    ;;                 (const :tag "Show full outline path to current heading" full)
+    ;;                 (const :tag "Show full outline path, but reversed so current heading is first" reversed)))
+
+    (defun org-brain-insert-resource-icon (link)
+      "Insert an icon, based on content of org-mode LINK."
+      (insert (format "%s "
+                      (cond ((string-prefix-p "http" link)
+                            (cond ((string-match "wikipedia\\.org" link)
+                                    (all-the-icons-faicon "wikipedia-w"))
+                                  ((string-match "github\\.com" link)
+                                    (all-the-icons-octicon "mark-github"))
+                                  ((string-match "vimeo\\.com" link)
+                                    (all-the-icons-faicon "vimeo"))
+                                  ((string-match "youtube\\.com" link)
+                                    (all-the-icons-faicon "youtube"))
+                                  (t
+                                    (all-the-icons-faicon "globe"))))
+                            ((string-prefix-p "brain:" link)
+                            (all-the-icons-fileicon "brain"))
+                            (t
+                            (all-the-icons-icon-for-file link))))))
+
+    (when (require 'emojify nil 'noerror)
+      (add-hook 'org-mode-hook #'emojify-mode))
+
     (add-hook 'org-mode-hook
               (lambda () (progn
+                           (org-sticky-header-mode)
                            (when (require 'agda-input nil 'noerror) (set-input-method "Agda"))
                            (add-hook 'after-save-hook
                                      '(lambda () (progn (org-babel-tangle)
@@ -876,26 +959,50 @@ will not be modified."
       "sm"   'org-mark-subtree
       ))
 
-;;;;; C
+;;;;; C/C++
 
   ;; put in ~/.emacs.d/private/local/
   ;; https://github.com/llvm-mirror/llvm/blob/master/utils/emacs/llvm-mode.el
   (require 'llvm-mode nil 'noerror)
 
+  (defun my/c-mode-hook ()
+    (progn
+      (add-to-list semantic-default-submodes global-semantic-stickyfunc-mode)
+      (semantic-mode 1)))
+
+  (spacemacs/add-to-hooks 'my/c-mode-hook
+                          '(c-mode-hook c++-mode-hook))
+
+  ;; TODO: not sure the below works
+
   ;; https://bit.ly/2QqJLvw
 
-  (defun siddharthist/clang-format-buffer-smart ()
+  (defun my/clang-format-buffer-smart ()
     "Reformat buffer if .clang-format exists in the projectile root."
     (interactive)
     (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
       (clang-format-buffer)))
 
-  (defun siddharthist/clang-format-buffer-smart-on-save ()
+  (defun my/clang-format-buffer-smart-on-save ()
     "Add auto-save hook for clang-format-buffer-smart."
     (add-hook 'before-save-hook 'siddharthist/clang-format-buffer-smart nil t))
 
-  (spacemacs/add-to-hooks 'clang-format-buffer-smart-on-save
+  (spacemacs/add-to-hooks 'my/clang-format-buffer-smart-on-save
                           '(c-mode-hook c++-mode-hook))
+
+;;;;; Rust
+
+  (with-eval-after-load 'rust
+    ;; Align EOL comments
+    (add-to-list 'align-rules-list
+                 '(rust-eol-comment
+                   (regexp . "//")
+                   (modes . rust-mode)))
+    ;; Align match
+    (add-to-list 'align-rules-list
+                 '(rust-match
+                   (regexp . "=>")
+                   (modes . rust-mode))))
 
 ;;;;; Haskell
 
@@ -904,7 +1011,7 @@ will not be modified."
     (setq dante-repl-command-line '("nix-shell" "--pure" "--run" "cabal repl --builddir=dist/dante"))
     (add-hook 'dante-mode-hook
               '(lambda () (flycheck-add-next-checker 'haskell-dante
-                                                    '(warning . haskell-hlint))))
+                                                     '(warning . haskell-hlint))))
 
     ; Set the Haskell mode outline header syntax to be "-- *"
     ; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
@@ -980,11 +1087,11 @@ will not be modified."
   ;; Coq key bindings:
   ;; - Use SPC-m-SPC instead of SPC-m-. for less pinky strain
   ;; - Use SPC-gE to process to the end of the file. Good for finding out where one left off.
-  (with-eval-after-load 'proof-general
-    (spacemacs/set-leader-keys-for-major-mode 'coq-mode
-      "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
-      "SPC" 'proof-goto-point
-      "miH" 'siddharthist-surround-region-hide)
+  (spacemacs/set-leader-keys-for-major-mode 'coq
+    "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
+    "SPC" 'proof-goto-point
+    "miH" 'siddharthist-surround-region-hide)
+  (with-eval-after-load 'coq
     (setq coq-one-command-per-line nil)       ; https://github.com/ProofGeneral/PG/issues/53
     (setq proof-electric-terminator-enable t)) ; https://github.com/ProofGeneral/PG/issues/53
 
@@ -1070,128 +1177,12 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (w3m yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shell-pop seeing-is-believing scss-mode sass-mode rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocop rspec-mode robe restart-emacs rbenv ranger rake rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general prettier-js pippel pipenv pip-requirements persp-mode password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode minitest meghanada maven-test-mode math-symbols markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-ui lsp-python lsp-javascript-typescript lsp-java lsp-haskell lsp-go lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv diminish diff-hl define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-lsp company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format chruby centered-cursor-mode bundler browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-complete-rst auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (yasnippet-snippets web-mode tao-theme rmsbolt racer pyvenv proof-general outshine outorg orgit org-ref pdf-tools tablist org-projectile org-download org-brain org-board nix-mode neotree meghanada magithub lsp-ui lsp-javascript-typescript typescript-mode lsp-java lsp-haskell live-py-mode json-navigator json-mode intero hlint-refactor hl-todo highlight-indentation helpful elisp-refs helm-xref helm-bibtex parsebib google-translate git-timemachine flyspell-correct-helm flyspell-correct flycheck-haskell eyebrowse evil-visual-mark-mode evil-surround evil-nerd-commenter evil-matchit evil-magit evil-goggles eval-sexp-fu eshell-prompt-extras emojify elfeed-goodies editorconfig dumb-jump doom-modeline eldoc-eval diff-hl define-word dante cython-mode counsel-projectile counsel swiper ivy company-lsp company-go company-coq math-symbol-lists cargo rust-mode browse-at-remote auto-yasnippet auto-compile aggressive-indent ace-window ace-link anaconda-mode elfeed smartparens flycheck haskell-mode company request projectile window-purpose imenu-list rtags avy lsp-mode ht magit magit-popup git-commit dash markdown-mode helm helm-core f simple-httpd spaceline powerline evil goto-chg async org-plus-contrib hydra yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify w3m volatile-highlights vi-tilde-fringe uuidgen use-package undo-tree treepy toml-mode toc-org tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shut-up shrink-path shell-pop scss-mode sass-mode restart-emacs ranger rainbow-delimiters pytest pyenv-mode py-isort pug-mode prop-menu prettier-js popwin pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox packed overseer origami org-sticky-header org-present org-pomodoro org-mime org-category-capture org-bullets open-junk-file noflet nameless mvn multi-term move-text mmm-mode maven-test-mode math-symbols markdown-toc magit-svn magit-gitflow magit-gh-pulls macrostep lsp-python lsp-go lorem-ipsum loop livid-mode link-hint lcr key-chord json-snatcher json-reformat js2-refactor js-doc insert-shebang indent-guide importmagic impatient-mode ialign hungry-delete hindent highlight-parentheses highlight-numbers highlight hierarchy helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports graphql gradle-mode google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist ghub+ gh-md fuzzy font-lock+ flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery expand-region evil-visualstar evil-unimpaired evil-tutor evil-org evil-numbers evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eshell-z esh-help ensime emmet-mode elisp-slime-nav elfeed-web elfeed-org dotenv-mode disaster direnv diminish company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-math company-ghci company-ghc company-emacs-eclim company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format centered-cursor-mode biblio auto-highlight-symbol auto-dictionary auctex-latexmk ascii-art-to-unicode ace-jump-mode ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:llvm-pretty --builddir=dist/dante")
-     (org-src-preserve-indentation . t)
-     (eval defun my/grep-link
-           (regexp)
-           "Run `rgrep' with REGEXP as argument."
-           (grep-compute-defaults)
-           (rgrep
-            (concat regexp " :: ")
-            "*"
-            (expand-file-name "~/code/llvm-pretty-bc-parser/src")))
-     (eval org-add-link-type "id"
-           (quote my/grep-link))
-     (org-log-into-drawer . t)
-     (org-enforce-todo-dependencies . t)
-     (org-enforce-todo-checkbox-dependencies . t)
-     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl lib:llvm-pretty-bc-parser --builddir=dist/dante")
-     (eval let
-           ((unimath-topdir
-             (expand-file-name
-              (locate-dominating-file buffer-file-name "UniMath"))))
-           (setq fill-column 100)
-           (make-local-variable
-            (quote coq-use-project-file))
-           (setq coq-use-project-file nil)
-           (make-local-variable
-            (quote coq-prog-args))
-           (setq coq-prog-args
-                 (\`
-                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
-                   (\,
-                    (concat unimath-topdir "UniMath"))
-                   "UniMath")))
-           (make-local-variable
-            (quote before-save-hook))
-           (add-hook
-            (quote before-save-hook)
-            (quote delete-trailing-whitespace))
-           (modify-syntax-entry 39 "w")
-           (modify-syntax-entry 95 "w")
-           (if
-               (not
-                (memq
-                 (quote agda-input)
-                 features))
-               (load
-                (concat unimath-topdir "emacs/agda/agda-input")))
-           (if
-               (not
-                (member
-                 (quote
-                  ("chimney" "╝"))
-                 agda-input-user-translations))
-               (progn
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("chimney" "╝"))
-                        agda-input-user-translations))
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("==>" "⟹"))
-                        agda-input-user-translations))
-                 (agda-input-setup)))
-           (set-input-method "Agda"))
-     (eval let
-           ((unimath-topdir
-             (expand-file-name
-              (locate-dominating-file buffer-file-name "UniMath"))))
-           (setq fill-column 100)
-           (make-local-variable
-            (quote coq-use-project-file))
-           (setq coq-use-project-file nil)
-           (make-local-variable
-            (quote coq-prog-args))
-           (setq coq-prog-args
-                 (\`
-                  ("-emacs" "-noinit" "-indices-matter" "-type-in-type" "-w" "-notation-overridden,-local-declaration,+uniform-inheritance,-deprecated-option" "-Q"
-                   (\,
-                    (concat unimath-topdir "UniMath"))
-                   "UniMath")))
-           (make-local-variable
-            (quote coq-prog-name))
-           (setq coq-prog-name
-                 (concat unimath-topdir "sub/coq/bin/coqtop"))
-           (make-local-variable
-            (quote before-save-hook))
-           (add-hook
-            (quote before-save-hook)
-            (quote delete-trailing-whitespace))
-           (modify-syntax-entry 39 "w")
-           (modify-syntax-entry 95 "w")
-           (if
-               (not
-                (memq
-                 (quote agda-input)
-                 features))
-               (load
-                (concat unimath-topdir "emacs/agda/agda-input")))
-           (if
-               (not
-                (member
-                 (quote
-                  ("chimney" "╝"))
-                 agda-input-user-translations))
-               (progn
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("chimney" "╝"))
-                        agda-input-user-translations))
-                 (setq agda-input-user-translations
-                       (cons
-                        (quote
-                         ("==>" "⟹"))
-                        agda-input-user-translations))
-                 (agda-input-setup)))
-           (set-input-method "Agda"))
+    ((dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
      (javascript-backend . tern)
      (javascript-backend . lsp)
      (go-backend . go-mode)
