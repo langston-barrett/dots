@@ -110,7 +110,6 @@ This function should only modify configuration layer settings."
                                       ;; ORG
                                       ox-gfm       ; github markdown export for org
                                       org-board    ; link archiving
-                                      org-sticky-header
                                       link-hint    ; TODO: keybindings
                                       ascii-art-to-unicode ; nicer org-brain
 
@@ -783,38 +782,11 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
-    (setq org-stick-header-full-path 'reversed)
-    ;; (defcustom org-sticky-header-full-path nil
-    ;;   "Show the full outline path."
-    ;;   :type '(radio (const :tag "Show only current heading" nil)
-    ;;                 (const :tag "Show full outline path to current heading" full)
-    ;;                 (const :tag "Show full outline path, but reversed so current heading is first" reversed)))
-
-    (defun org-brain-insert-resource-icon (link)
-      "Insert an icon, based on content of org-mode LINK."
-      (insert (format "%s "
-                      (cond ((string-prefix-p "http" link)
-                            (cond ((string-match "wikipedia\\.org" link)
-                                    (all-the-icons-faicon "wikipedia-w"))
-                                  ((string-match "github\\.com" link)
-                                    (all-the-icons-octicon "mark-github"))
-                                  ((string-match "vimeo\\.com" link)
-                                    (all-the-icons-faicon "vimeo"))
-                                  ((string-match "youtube\\.com" link)
-                                    (all-the-icons-faicon "youtube"))
-                                  (t
-                                    (all-the-icons-faicon "globe"))))
-                            ((string-prefix-p "brain:" link)
-                            (all-the-icons-fileicon "brain"))
-                            (t
-                            (all-the-icons-icon-for-file link))))))
-
     (when (require 'emojify nil 'noerror)
       (add-hook 'org-mode-hook #'emojify-mode))
 
     (add-hook 'org-mode-hook
               (lambda () (progn
-                           (org-sticky-header-mode)
                            (when (require 'agda-input nil 'noerror) (set-input-method "Agda"))
                            (add-hook 'after-save-hook
                                      '(lambda () (progn (org-babel-tangle)
