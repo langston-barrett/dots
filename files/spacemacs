@@ -111,7 +111,6 @@ This function should only modify configuration layer settings."
                                       ox-gfm       ; github markdown export for org
                                       org-board    ; link archiving
                                       link-hint    ; TODO: keybindings
-                                      ascii-art-to-unicode ; nicer org-brain
 
                                       rmsbolt      ; browse compiler output
                                       ;; (recipe
@@ -800,12 +799,8 @@ you should place your code here."
                            (auto-fill-mode t)    ; Automatic line wrapping at fill column
 
                            (defun aa2u-buffer () (aa2u (point-min) (point-max)))
-                           (add-hook 'org-brain-after-visualize-hook #'aa2u-buffer)
-
                            (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
 
-
-    ;; Nicer org-brain
 
     (require 'org-wiki nil 'noerror)
     (setq org-confirm-babel-evaluate nil
@@ -873,25 +868,6 @@ will not be modified."
 
       ;; CREATED property
       "iPC" 'org-set-created-property
-
-      ;; org-brain
-      "mA"  'org-brain-agenda
-      "mp"  'org-brain-pin
-      "mR"  'org-brain-refile
-      "mx"  'org-brain-delete-entry
-
-      ;; org-brain: navigation
-      "gp"  'org-brain-goto-parent
-      "gc"  'org-brain-goto-child
-      "gf"  'org-brain-goto-friend
-
-      ;; org-brain: relationships
-      "mac" 'org-brain-add-child
-      "map"  'org-brain-add-parent
-      "maf"  'org-brain-add-friendship
-      "mrc"  'org-brain-add-child
-      "mrp"  'org-brain-add-parent
-      "mrf"  'org-brain-add-friendship
 
       ;; helm-org-rifle (added upstream)
       ;; "r"   'helm-org-rifle
@@ -1136,7 +1112,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (writeroom-mode visual-fill-column treemacs-projectile treemacs-evil treemacs pfuture forge closql emacsql-sqlite emacsql treepy graphql cquery ccls yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shell-pop scss-mode sass-mode rmsbolt restart-emacs ranger rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general prettier-js pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer origami orgit org-sticky-header org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode meghanada maven-test-mode math-symbols markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-ui lsp-python lsp-javascript-typescript lsp-java lsp-haskell lsp-go lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-navi helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emojify emmet-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish diff-hl define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-lsp company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (writeroom-mode visual-fill-column treemacs-projectile treemacs-evil treemacs pfuture forge closql emacsql-sqlite emacsql treepy graphql cquery ccls yasnippet-snippets yapfify yaml-mode xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org tao-theme tagedit symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete slim-mode shell-pop scss-mode sass-mode rmsbolt restart-emacs ranger rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort pug-mode prop-menu proof-general prettier-js pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer origami orgit org-sticky-header org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode neotree nameless mvn multi-term move-text mmm-mode meghanada maven-test-mode math-symbols markdown-toc magithub magit-svn magit-gitflow magit-gh-pulls macrostep lsp-ui lsp-python lsp-javascript-typescript lsp-java lsp-haskell lsp-go lorem-ipsum livid-mode live-py-mode link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic impatient-mode ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-navi helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag haskell-snippets groovy-mode groovy-imports gradle-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates github-search github-clone gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gist gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emojify emmet-mode elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish diff-hl define-word dante cython-mode counsel-projectile company-web company-tern company-statistics company-shell company-rtags company-nixos-options company-lsp company-go company-ghci company-ghc company-emacs-eclim company-coq company-cabal company-c-headers company-auctex company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile auctex-latexmk ascii-art-to-unicode aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(safe-local-variable-values
+   (quote
+    ((org-log-into-drawer . t)
+     (org-enforce-todo-dependencies . t)
+     (org-enforce-todo-checkbox-dependencies . t)
+     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
+     (go-backend . go-mode)
+     (go-backend . lsp)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
