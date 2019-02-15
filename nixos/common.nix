@@ -88,6 +88,7 @@
     xclip # for pass
     xsel
     zip
+    zsh-completions
   ];
 
   virtualisation.docker.enable = true;

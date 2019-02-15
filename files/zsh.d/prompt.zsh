@@ -27,3 +27,6 @@ fi
 if [[ $(uname -n) != langston-nixos ]]; then
   PROMPT="$(whoami)@$(uname -n) ${dir_2} > "
 fi
+
+# Unrelated: bind ctrl-backspace to delete previous word
+bindkey '^H' backward-kill-word

@@ -44,6 +44,7 @@ in {
       powerline-fonts
       #hack-font             # great monospaced font
       #helvetica-neue-lt-std # classic
+      fira-code
       lato
       libre-caslon
       noto-fonts-emoji      # emoji
@@ -51,6 +52,7 @@ in {
       overpass              # header
       oxygenfonts           # UI
       stix-otf              # latex math font
+      symbola
     ];
   };
 
