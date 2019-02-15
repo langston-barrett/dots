@@ -67,6 +67,8 @@
         mode: "0750"
       - src: my-cheatsheet.el
         dst: "{{ home }}/.emacs.d/private/local/my-cheatsheet.el"
+      - src: eshell-aliases
+        dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
         dst: "{{ home }}/.offlineimaprc"
       # Currently breaks GNOME on Fedora

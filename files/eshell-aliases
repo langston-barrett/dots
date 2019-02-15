@@ -1,0 +1,65 @@
+alias a fasd -a
+alias ag ag --path-to-ignore ~/code/dots/files/agignore
+alias amiconnected while true; do if curl google.com &> /dev/null; then echo "$(date +%H:%M) ~~~GOOD~~~"; else echo "$(date +%H:%M) ---BAD---"; fi; sleep 5; done
+alias conky conky --config=$XDG_CONFIG_HOME/conky/conkyrc
+alias d fasd -d
+alias docker-gc sudo docker ps -a -q -f status=exited | xargs --no-run-if-empty sudo docker rm
+alias docker-gc-images docker images -q | xargs --no-run-if-empty docker rmi || true
+alias f fasd -f
+alias ga git add
+alias gb git branch
+alias gbD git branch -D
+alias gc git checkout
+alias gcb git checkout -b
+alias gcl git clone --depth 20
+alias gcm git commit -m
+alias gd git diff
+alias gdc git diff --cached
+alias gdm git diff master
+alias gf git fetch
+alias gfa git fetch --all
+alias gm git merge
+alias gmum git merge upstream/master
+alias gp git checkout master && git pull && git checkout -
+alias gpo git push -u origin
+alias gpum git pull upstream master
+alias gr git reset
+alias grhm git reset --hard origin/master
+alias gri git rebase -i
+alias grv git remote -v
+alias gs git status
+alias l ls -alh
+alias ll ls -l
+alias ls ls --color=tty
+alias ls1 ls -1
+alias makej make -j$(nproc)
+alias nb nix-build
+alias nba nix-build -A
+alias nixpkgs-pr-review export TRAVIS_BUILD_DIR=$PWD && ./maintainers/scripts/travis-nox-review-pr.sh nixpkgs-verify nixpkgs-manual nixpkgs-tarball && ./maintainers/scripts/travis-nox-review-pr.sh nixos-options nixos-manual
+alias ns nix-shell
+alias nsp nix-shell --pure
+alias nspr nix-shell --pure --run
+alias nsr nix-shell --run
+alias nsrzsh nix-shell --run "exec zsh"
+alias nz nix-shell --run "exec zsh" || nix-shell nix/shell.nix --run "exec zsh"
+alias pastebin curl -F "clbin=<-" https://clbin.com
+alias reload source /etc/zshrc
+alias rm echo Use \\ rm or tp \(trash-put\)
+alias run-help man
+alias s fasd -si
+alias screenshot import -window root ~/Downloads/screenshot.jpg
+alias sd fasd -sid
+alias sf fasd -sif
+alias sys sudo systemctl
+alias sysr sudo systemctl restart
+alias syss sudo systemctl status
+alias sysu systemctl --user
+alias sysur systemctl --user restart
+alias sysus systemctl --user status
+alias test-ssh ssh -T git@github.com
+alias tl trash-list
+alias tp trash-put
+alias which-command whence
+alias work-algebra $'cd ~/Dropbox/langston/tex/math332; \\\n  zathura dummit.djvu & disown; \\\n  zathura notes/tex/1-ring-theory.pdf & disown; \\\n  /nix/store/943746a48sk06w1n8nk7r28bsg6rcrn2-emacs-26.1/bin/emacsclient --create-frame & disown; \\\n  sleep 1; exit 0\n'
+alias z fasd_cd -d
+alias zz fasd_cd -d -i
