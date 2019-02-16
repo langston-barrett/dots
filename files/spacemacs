@@ -598,6 +598,12 @@ you should place your code here."
              ;;  (file-name-nondirectory pwd)
              "$ ")))
   (setq eshell-aliases-file "~/.emacs.d/eshell/alias") ; TODO: change this
+  (add-to-list eshell-visual-commands "ghcid")
+
+  ;; Use C-r for backwards terminal search, even in evil mode
+  (defun my/eshell-cr ()
+    (evil-local-set-key 'insert (kbd "C-r") 'helm-eshell-history))
+  (add-hook 'eshell-mode-hook 'my/eshell-cr)
 
 ;;;;; cheatsheet
 
