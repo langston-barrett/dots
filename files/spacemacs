@@ -588,7 +588,18 @@ you should place your code here."
     ;; 'a' for 'ag'
     "opa"  'my/projectile-ag-in-other-project)
 
-;;;;;; cheatsheet
+;;;;; eshell
+
+  (setq eshell-prompt-function
+        (lambda ()
+           (let ((pwd (eshell/pwd)))
+             ;; (concat
+             ;;  (file-name-directory pwd)
+             ;;  (file-name-nondirectory pwd)
+             "$ ")))
+  (setq eshell-aliases-file "~/.emacs.d/eshell/alias") ; TODO: change this
+
+;;;;; cheatsheet
 
   (when (require 'cheatsheet nil 'noerror)
     (require 'my-cheatsheet)
@@ -597,7 +608,7 @@ you should place your code here."
       ;; 'C' for 'cheatsheet'
       "oC"  'cheatsheet-show))
 
-;;;;;; eacl
+;;;;; eacl
 
   (defun my/haskell-insert-import ()
     (interactive)
@@ -613,7 +624,7 @@ you should place your code here."
       ;; 'i' for 'import'
       "omi"  'my/haskell-insert-import))
 
-;;;;;; (Ma)git
+;;;;; (Ma)git
 
   (setq magithub-clone-default-directory "~/code")
   (setq magit-repository-directories '(("~/code" . 2)))
@@ -621,7 +632,7 @@ you should place your code here."
   (setq magit-wip-merge-branch t)
   ;; (add-hook 'prog-mode-hook 'magit-wip-mode)
 
-;;;;;; Keybindings
+;;;;; Keybindings
 
   ;; Find good functions to put here with (list-command-history)
   (spacemacs/set-leader-keys
@@ -642,7 +653,7 @@ you should place your code here."
     "oEd"  'emojify-describe-emoji
     "oEl"  'emojify-list-emoji)
 
-;;;;;; Ediff
+;;;;; Ediff
 
   (with-eval-after-load 'ediff
     ;; https://emacs.stackexchange.com/questions/13019/how-to-undo-on-ediff-a-b-changes
@@ -663,7 +674,7 @@ you should place your code here."
                     (interactive)
                     (save-window-excursion (with-selected-window ediff-window-B (undo-tree-redo))))))))
 
-;;;;;; Prettify-symbols
+;;;;; Prettify-symbols
 
   ;; https://bit.ly/2SVwzji
   ;; https://bit.ly/2QukKiD
@@ -766,7 +777,7 @@ you should place your code here."
       (prettify-symbols-mode))
     (add-hook 'org-mode-hook 'my/org-prettify-symbols))
 
-;;;;;; Elfeed
+;;;;; Elfeed
 
   ;; https://github.com/iqbalansari/dotEmacs/blob/master/config/rss.org
   ;; (defun my/elfeed-open-in-w3m ()
@@ -789,7 +800,7 @@ you should place your code here."
   ;; (require 'elfeed
   ;;          (add-hook 'elfeed-show-mode-hook my/elfeed-mode-kbd))
 
-;;;;;; Org
+;;;;; Org
 
   (when (require 'org-link-minor-mode nil 'noerror)
         (add-hook 'prog-mode-hook 'org-link-minor-mode))
@@ -904,7 +915,7 @@ will not be modified."
       "sm"   'org-mark-subtree
       ))
 
-;;;;;; C/C++
+;;;;; C/C++
 
   ;; put in ~/.emacs.d/private/local/
   ;; https://github.com/llvm-mirror/llvm/blob/master/utils/emacs/llvm-mode.el
@@ -935,7 +946,7 @@ will not be modified."
   (spacemacs/add-to-hooks 'my/clang-format-buffer-smart-on-save
                           '(c-mode-hook c++-mode-hook))
 
-;;;;;; Rust
+;;;;; Rust
 
   (with-eval-after-load 'rust
     ;; Align EOL comments
@@ -949,7 +960,7 @@ will not be modified."
                    (regexp . "=>")
                    (modes . rust-mode))))
 
-;;;;;; Haskell
+;;;;; Haskell
 
   (with-eval-after-load 'haskell
 
@@ -1019,7 +1030,7 @@ will not be modified."
                     (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
                     (modes . haskell-modes)))))
 
-;;;;;; Nix
+;;;;; Nix
 
   (with-eval-after-load 'nix
     (with-eval-after-load 'align
@@ -1029,7 +1040,7 @@ will not be modified."
                     (regexp . "=")
                     (modes . nix-modes)))))
 
-;;;;;; Java
+;;;;; Java
 
   ;; Formatting really screws things up in weird ways.
   ;; e.g.: https://github.com/emacs-lsp/lsp-java/issues/75
@@ -1038,7 +1049,7 @@ will not be modified."
       (setq lsp-java-format-comments-enabled nil)
       (setq lsp-java-format-comments-enabled nil)))
 
-;;;;;; Coq
+;;;;; Coq
 
   ;; (with-eval-after-load 'company-coq
   ;;    (add-to-list 'company-coq-disabled-features 'prettify-symbols))
@@ -1084,19 +1095,19 @@ will not be modified."
     )
 
 
-;;;;;; Shell
+;;;;; Shell
 
   (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
                                             sh-indentation 2)))
 
-;;;;;; Python
+;;;;; Python
 
   ;; Jump to top-level definitions
   ;; (spacemacs/set-leader-keys-for-major-mode 'python-mode
   ;;   (completing-read prompt candidates nil t)
   ;;   "gt"  '(lambda () (interactive) (helm-ag-this-file)))
 
-;;;;;; LaTeX
+;;;;; LaTeX
 
   (with-eval-after-load 'latex
     (add-hook 'doc-view-mode-hook 'auto-revert-mode) ; see latex layer docs
@@ -1109,7 +1120,7 @@ will not be modified."
     (add-hook 'LaTeX-mode-hook '(lambda () (local-set-key (kbd ";") "\\")))
     (setq TeX-view-program-selection '((output-pdf "Zathura"))))
 
-;;;;;; Mutt
+;;;;; Mutt
 
   (defun siddharthist/msg-mode ()
     ;; Map j/k to move visual lines.
