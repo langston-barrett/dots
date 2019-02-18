@@ -18,6 +18,7 @@
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
 *** [[pragmaticemacs.com/feed/][pragmatic emacs]]
+*** see also: http://www.modernemacs.com/post/
 ** nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]

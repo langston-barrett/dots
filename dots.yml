@@ -141,6 +141,13 @@
         clone: yes
         update: no
 
+    - name: clone zaw
+      git:
+        repo: 'https://github.com/zsh-users/zaw'
+        dest: "{{ home }}/.zsh.d/zaw"
+        clone: yes
+        update: no
+
     - name: make user symlink dirs
       file:
         follow: true
