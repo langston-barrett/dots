@@ -17,6 +17,14 @@
  '(:key "CTRL x 8 ENTER" :description "enter a unicode symbol (in search bar)")
  '(:key "SPC a u"        :description "undo-tree-visualize"))
 
+;;;; helm-projectile
+
+(cheatsheet-add-group
+ 'helm-projectile
+ '(:key "SPC+CTRL"       :description "After SPC p f, mark files")
+ '(:key "CTRL-z"         :description "After SPC p f, file actions")
+ '(:key "SPC p h"        :description "helm-projectile combo function"))
+
 ;;;; favorites
 
 (cheatsheet-add-group
