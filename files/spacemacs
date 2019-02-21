@@ -46,7 +46,7 @@ This function should only modify configuration layer settings."
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-complete-with-key-sequence "ff")
-     ;; (colors :variables colors-colorize-identifiers 'variables)
+     (colors :variables colors-colorize-identifiers 'variables)
      (elfeed :variables rmh-elfeed-org-files (list "~/code/dots/files/elfeed.org"))
      git    ; magit! SPC g m
      ;; github ; magithub!
@@ -65,7 +65,9 @@ This function should only modify configuration layer settings."
      ;; unicode-fonts
 
      ;; Languages
-     (c-c++ :variables c-c++-enable-clang-support t)
+     (c-c++ :variables c-c++-enable-clang-support t
+                       c-c++-enable-clang-format-on-save t
+                       c-c++-enable-auto-newline t)
      ;; agda
      bibtex ; org-ref!
      coq
@@ -118,6 +120,8 @@ This function should only modify configuration layer settings."
                                       ;; ox-gfm       ; github markdown export for org
                                       org-board    ; link archiving
                                       link-hint    ; TODO: keybindings
+
+                                      simple-call-tree
 
                                       ; rmsbolt      ; browse compiler output
                                       ;; (recipe
@@ -595,11 +599,16 @@ you should place your code here."
   (with-eval-after-load 'eshell
     (setq eshell-prompt-function
           (lambda ()
-            (let ((pwd (eshell/pwd)))
-              ;; (concat
-              ;;  (file-name-directory pwd)
-              ;;  (file-name-nondirectory pwd)
-              "$ ")))
+            (concat
+             "┌─["
+             "]──["
+             (propertize (format-time-string "%H:%M" (current-time)) 'face `(:foreground "yellow"))
+             "]──["
+             (replace-regexp-in-string "^/home/siddharthist/" "~/" (eshell/pwd))
+             "]\n"
+             "└─"
+             (if (= (user-uid) 0) "# " "> ")
+             )))
 
     (setq eshell-aliases-file "~/.emacs.d/eshell/alias") ; TODO: change this
 
@@ -953,30 +962,83 @@ will not be modified."
   ;; https://github.com/llvm-mirror/llvm/blob/master/utils/emacs/llvm-mode.el
   (require 'llvm-mode nil 'noerror)
 
-  (defun my/c-mode-hook ()
-    (progn
-      (add-to-list semantic-default-submodes global-semantic-stickyfunc-mode)
-      (semantic-mode 1)))
-
-  (spacemacs/add-to-hooks 'my/c-mode-hook
-                          '(c-mode-hook c++-mode-hook))
+  ;; (with-eval-after-load 'c
+  ;;   (if (boundp 'company-c-headers-path-user)
+  ;;       (add-to-list 'company-c-headers-path-user "../../build/include/")
+  ;;       (setq 'company-c-headers-path-user '("../../build/include/")))
+  ;;   (if (boundp 'flycheck-clang-include-path)
+  ;;       (add-to-list 'flycheck-clang-include-path "../../build/include/")
+  ;;       (setq 'flycheck-clang-include-path '("../../build/include/"))))
 
   ;; TODO: not sure the below works
 
   ;; https://bit.ly/2QqJLvw
 
-  (defun my/clang-format-buffer-smart ()
-    "Reformat buffer if .clang-format exists in the projectile root."
-    (interactive)
-    (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
-      (clang-format-buffer)))
+  ;; (defun my/clang-format-buffer-smart ()
+  ;;   "Reformat buffer if .clang-format exists in the projectile root."
+  ;;   (interactive)
+  ;;   (when (f-exists? (expand-file-name ".clang-format" (projectile-project-root)))
+  ;;     (clang-format-buffer)))
 
-  (defun my/clang-format-buffer-smart-on-save ()
-    "Add auto-save hook for clang-format-buffer-smart."
-    (add-hook 'before-save-hook 'siddharthist/clang-format-buffer-smart nil t))
+  ;; (defun my/clang-format-buffer-smart-on-save ()
+  ;;   "Add auto-save hook for clang-format-buffer-smart."
+  ;;   (add-hook 'before-save-hook 'siddharthist/clang-format-buffer-smart nil t))
 
-  (spacemacs/add-to-hooks 'my/clang-format-buffer-smart-on-save
-                          '(c-mode-hook c++-mode-hook))
+  ;; (spacemacs/add-to-hooks '(lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t))
+  ;;                         '(c-mode-hook c++-mode-hook))
+
+  (when (require 'cflow-mode nil 'noerror)
+    (spacemacs/set-leader-keys-for-major-mode 'cflow-mode
+      "g" 'cflow-find-function
+      "s" 'cflow-find-function
+      "r" 'cflow-find-recursion-root
+      "R" 'cflow-find-recursion-next
+      "x" 'cflow-goto-expand
+      "E" 'cflow-edit-out-full)
+    (autoload 'cflow-mode "cflow-mode")
+    (setq auto-mode-alist (append auto-mode-alist
+                                  '(("\\.cflow$" . cflow-mode)))))
+
+  (defconst libc-headers
+    '("<assert.h>"
+      "<complex.h>"
+      "<ctype.h>"
+      "<errno.h>"
+      "<fenv.h>"
+      "<float.h>"
+      "<inttypes.h>"
+      "<iso646.h>"
+      "<limits.h>"
+      "<locale.h>"
+      "<math.h>"
+      "<setjmp.h>"
+      "<signal.h>"
+      "<stdalign.h>"
+      "<stdarg.h>"
+      "<stdatomic.h>"
+      "<stdbool.h>"
+      "<stddef.h>"
+      "<stdint.h>"
+      "<stdio.h>"
+      "<stdlib.h>"
+      "<stdnoreturn.h>"
+      "<string.h>"
+      "<tgmath.h>"
+      "<threads.h>"
+      "<time.h>"
+      "<uchar.h>"
+      "<wchar.h>"
+      "<wctype.h>"))
+
+  (defun my/libc-include (header-name)
+    "An interactive prompt for the extension (EXT-NAME) to add."
+    (interactive (list (completing-read "libc header: " libc-headers)))
+      (evil-open-below 1)
+      (evil-beginning-of-line)
+      (insert (concat "#include " header-name)))
+
+  (spacemacs/set-leader-keys-for-major-mode 'c
+    "ih" 'my/libc-include)
 
 ;;;;; Rust
 
@@ -1179,51 +1241,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (helm-gtags ggtags counsel-gtags add-node-modules-path yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete shell-pop rmsbolt restart-emacs ranger rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort prop-menu proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
- '(safe-local-variable-values
-   (quote
-    ((dante-repl-command-line "nix-shell" "--pure" "nix/shell.nix" "--run" "cabal configure && cabal repl lib:modular-interpreters --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
-     (org-src-preserve-indentation . t)
-     (eval defun my/arxiv-link
-           (no)
-           "Browse a arxiv link"
-           (browse-url
-            (concat "https://arxiv.org/abs/" no)))
-     (eval org-add-link-type "arxiv"
-           (quote my/arxiv-link))
-     (eval defun my/pretty-issue
-           (no)
-           "Browse a github issue"
-           (browse-url
-            (concat "https://github.com/elliottt/llvm-pretty/issues/" no)))
-     (eval org-add-link-type "pretty-issue"
-           (quote my/pretty-issue))
-     (eval defun my/parser-issue
-           (no)
-           "Browse a github issue"
-           (browse-url
-            (concat "https://github.com/GaloisInc/llvm-pretty-bc-parser/issues/" no)))
-     (eval org-add-link-type "parser-issue"
-           (quote my/parser-issue))
-     (eval defun my/grep-link
-           (regexp)
-           "Run `rgrep' with REGEXP as argument."
-           (grep-compute-defaults)
-           (rgrep
-            (concat regexp " :: ")
-            "*"
-            (expand-file-name "~/code/llvm-pretty-bc-parser/src")))
-     (eval org-add-link-type "id"
-           (quote my/grep-link))
-     (org-log-into-drawer . t)
-     (org-enforce-todo-dependencies . t)
-     (org-enforce-todo-checkbox-dependencies . t)
-     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
-     (dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
-     (go-backend . go-mode)
-     (go-backend . lsp)))))
+    (simple-call-tree anaphora yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection spaceline-all-the-icons smeargle smart-hungry-delete shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
