@@ -22,6 +22,8 @@
     symlinks:
       # - src: aspell-dict
       #   dst: "{{ home }}/.aspell.en.pws"
+      - src: alacritty.yml
+        dst: "{{ xdg_config_home }}/alacritty/alacritty.yml"
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
       # - src: gtkrc-2.0
@@ -75,6 +77,9 @@
       # - src: profile
       #   dst: "{{ home }}/.profile"
       #   mode: "0775"
+      - src: org-mode-snippets
+        dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
+        mode: "0750"
       - src: ranger/commands.py
         dst: "{{ xdg_config_home }}/ranger/commands.py"
       - src: ranger/rc.conf

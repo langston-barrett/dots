@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: bash
+# name: bash
+# contributor: Langston Barrett
+# --
+\#+begin_src bash
+\#+end_src
