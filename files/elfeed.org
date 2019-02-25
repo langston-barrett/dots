@@ -22,6 +22,9 @@
 ** nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
+** static analyais
+*** [[http://angr.io/blog/][angr blog]]
+*** [[https://blog.trailofbits.com/feed/][trail of bits blog]]
 ** other tech
 *** [[http://google-opensource.blogspot.com/feeds/posts/default][Google Open Source Blog]]
 *** [[http://onethingwell.org/rss][One Thing Well]]
