@@ -53,10 +53,10 @@
           (writeDenyProfile pkgs.imagemagick "convert")
           (writeDenyProfile pkgs.mpw "mpw")
           (writeDenyProfile pkgs.p7zip "7z")
-          (writeDenyProfile pkgs.rofi "rofi")
           (writeDenyProfile pkgs.unzip "unzip")
           (writeDenyProfile pkgs.xcompmgr "xcompmgr")
           (writeDenyProfile pkgs.zip "zip")
+          # Rofi needs /run/user
         ];
     };
     hideProcessInformation = true;
