@@ -74,11 +74,12 @@
     gitAndTools.hub # github access for magithub
     gnumake
     gnupg
+    htop
     imagemagick
     mpw
     nix-prefetch-git
-    pass
     p7zip
+    pass
     ranger
     silver-searcher # ag
     sudo

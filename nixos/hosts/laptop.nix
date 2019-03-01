@@ -60,7 +60,6 @@
     comfortaa
     dropbox
     gimp
-    htop
     kdeconnect
     maim
     mu
@@ -73,6 +72,14 @@
 
     # extra development
     clang
+    rr
+
+    # all necessary for emacs build epdfinfo
+    autoconf
+    automake
+    autobuild
+    pkgconfig
+    gnum4
   ];
 
   # virtualisation.virtualbox.enableHardening = true;

@@ -57,6 +57,7 @@ in {
         ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr -c";
         Restart = "always";
         RestartSec = "5s";
+        MemoryLimit = "512M";
       };
     };
 
@@ -66,6 +67,7 @@ in {
         ExecStart = "${pkgs.kdeconnect}/bin/kdeconnect-indicator";
         Restart = "always";
         RestartSec = "5s";
+        MemoryLimit = "512M";
       };
     };
   };

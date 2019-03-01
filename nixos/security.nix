@@ -47,12 +47,15 @@
             writeDenyProfile = path: binary:
               pkgs.writeText "apparmor-${binary}" (mkDenyProfile path binary);
         in [
+          (writeDenyProfile pkgs.arandr "arandr")
           (writeDenyProfile pkgs.feh "feh")
           (writeDenyProfile pkgs.file "file")
           (writeDenyProfile pkgs.imagemagick "convert")
           (writeDenyProfile pkgs.mpw "mpw")
           (writeDenyProfile pkgs.p7zip "7z")
+          (writeDenyProfile pkgs.rofi "rofi")
           (writeDenyProfile pkgs.unzip "unzip")
+          (writeDenyProfile pkgs.xcompmgr "xcompmgr")
           (writeDenyProfile pkgs.zip "zip")
         ];
     };

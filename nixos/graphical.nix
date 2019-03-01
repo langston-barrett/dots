@@ -10,6 +10,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     # GTK and window manager functionality
+    arandr
     arc-theme
     feh
     moka-icon-theme
@@ -21,6 +22,7 @@ in {
     xfce.xfce4_power_manager_gtk3
 
     # General graphical packages
+    alacritty
     firefox
     kcolorchooser
     xpdf
@@ -81,6 +83,7 @@ in {
         ExecStart = "${pkgs.feh}/bin/feh --no-fehbg --bg-fill /home/siddharthist/.config/wallpaper.jpg";
         Restart = "on-failure";
         RestartSec = "5s";
+        MemoryLimit = "512M";
       };
     };
   };
