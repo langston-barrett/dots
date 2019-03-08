@@ -23,7 +23,8 @@
  'helm-projectile
  '(:key "SPC+CTRL"       :description "After SPC p f, mark files")
  '(:key "CTRL-z"         :description "After SPC p f, file actions")
- '(:key "SPC p h"        :description "helm-projectile combo function"))
+ '(:key "SPC p h"        :description "helm-projectile combo function")
+ '(:key "SPC p p CTRL-z" :description "switch projectile project, open magit"))
 
 ;;;; favorites
 
@@ -52,6 +53,13 @@
  '(:key "v*"        :description "view")
  '(:key "\\"        :description " filter items by tag")
  '(:key "-"         :description "exclude items by tag"))
+
+;;;; org-ref
+
+(cheatsheet-add-group
+ 'org-ref
+ '(:key "SPC o r r" :description "org-ref")
+ '(:key "SPC o r n" :description "org-ref notes for this citation"))
 
 ;;;; mine
 

@@ -1,3 +1,5 @@
+.envrc
+.clang_complete
 result
 *.gpg
 
