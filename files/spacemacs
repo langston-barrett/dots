@@ -38,15 +38,13 @@ This function should only modify configuration layer settings."
 
 ;;;; Layers
 
-   '(
-     rust
-     helm ; full-featured auto-completion
+   '(helm ; full-featured auto-completion
 
      ;; Features
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-complete-with-key-sequence "ff")
-     (colors :variables colors-colorize-identifiers 'variables)
+     ;; (colors :variables colors-colorize-identifiers 'variables)
      (elfeed :variables rmh-elfeed-org-files (list "~/code/dots/files/elfeed.org"))
      git    ; magit! SPC g m
      pdf ; read pdfs, use with org-noter
@@ -69,13 +67,12 @@ This function should only modify configuration layer settings."
      (c-c++ :variables c-c++-enable-clang-support t
                        c-c++-enable-clang-format-on-save t
                        c-c++-enable-auto-newline t)
-     semantic
+     ;; semantic
 
      ;; agda
      bibtex ; org-ref!
      coq
      emacs-lisp
-     (go :variables go-tab-width 4)
      ;; html
      ;; javascript
      python
@@ -83,14 +80,15 @@ This function should only modify configuration layer settings."
      ;;          haskell-completion-backend 'hie)
      ;; lsp
      (haskell :variables ; haskell-enable-hindent-style "fundamental"
-                         haskell-completion-backend 'dante)
-     ;; (java :variables java-backend 'lsp)
+                         haskell-completion-backend 'dante
+                         haskell-enable-hindent t)
      ;; (latex :variables
      ;;        latex-build-command "LatexMk"
      ;;        latex-enable-auto-fill t)
      markdown
      org
      outshine
+     rust
      ;; saw-script
      nixos
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
@@ -108,6 +106,7 @@ This function should only modify configuration layer settings."
                                       smart-hungry-delete ; delete all whitespace at once
                                       direnv        ; direnv + nix
                                       math-symbols  ; easily insert unicode latex macros
+                                      dhall-mode
                                       ;; all-the-icons
                                       ;; w3m
                                       ;; mmm-mode      ; markdown multi-mode
@@ -142,7 +141,9 @@ This function should only modify configuration layer settings."
 
    ;; A list of packages that will not be installed and loaded.
    ;; https://github.com/syl20bnr/spacemacs/issues/2294
-   dotspacemacs-excluded-packages '(exec-path-from-shell)
+   dotspacemacs-excluded-packages '(exec-path-from-shell
+                                    google-c-style
+                                    )
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and deletes any unused
@@ -269,7 +270,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
- :size 18
+ :size 28
                                :weight normal
                                :width normal)
 
@@ -533,9 +534,6 @@ you should place your code here."
     (interactive)
     (revert-buffer :ignore-auto :noconfirm))
 
-  (eval-after-load 'evil
-    (evil-visual-mark-mode 1))
-
   ;; Use C-r for backwards terminal search, even in evil mode
   (defun siddharthist/setup-term-mode ()
     (evil-local-set-key 'normal (kbd "<prior>") 'scroll-up)
@@ -560,6 +558,14 @@ you should place your code here."
 
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
+
+
+  (defun my/inhibit-semantic-p ()
+    (not (or (equal major-mode 'c++-mode)
+             (equal major-mode 'c-mode))))
+
+  (with-eval-after-load 'semantic
+    (add-to-list 'semantic-inhibit-functions #'my/inhibit-semantic-p))
 
   ;; https://bit.ly/2OrfDO0
   ;; (when (require 'hungry-delete nil 'noerror)
@@ -807,8 +813,10 @@ you should place your code here."
            ;; (mapvalues 'my/three-spaces
            ;;            '(("<*>" . ?⊛)))
            (mapvalues 'my/two-spaces
-                      '(("<|" . ?⊲) ; sequences
-                        ("|>" . ?⊳) ; sequences
+                      '(("<|" . ?⊲) ; sequences/application in flow
+                        ("|>" . ?⊳) ; sequences/application in flow
+                        (".>" . ?⋖) ; composition in flow
+                        ("<." . ?⋗) ; composition in flow
                         ("::" . ?∷)))))
 
     (defun my/haskell-prettify-symbols ()
@@ -864,6 +872,26 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
+;;;;;; org-ref
+
+    (setq reftex-default-bibliography '("~/Dropbox/langston/bib/references.bib"))
+
+    ;; see org-ref for use of these variables
+    (setq org-ref-bibliography-notes "~/Dropbox/langston/org/bibliography.org"
+          org-ref-default-bibliography '("~/Dropbox/langston/bib/references.bib")
+          org-ref-pdf-directory "~/Dropbox/langston/bib/")
+
+    (setq bibtex-completion-bibliography "~/Dropbox/langston/bib/references.bib"
+          bibtex-completion-library-path "~/Dropbox/langston/bib/"
+          bibtex-completion-notes-path "~/Dropbox/langston/org/bibliography.org")
+
+    (with-eval-after-load 'org-ref
+      (spacemacs/set-leader-keys
+        "orr" 'org-ref
+        "orn" 'org-ref-open-notes-at-point))
+
+;;;;;; misc
+
     (when (require 'emojify nil 'noerror)
       (add-hook 'org-mode-hook #'emojify-mode))
 
@@ -890,7 +918,8 @@ you should place your code here."
           org-src-fontify-natively   t
           org-src-tab-acts-natively  t)
 
-    ;; Clock
+;;;;;; clock
+
     (setq org-clock-persist t)
     (setq org-clock-history-length 20)
     (setq org-agenda-clock-consistency-checks
@@ -930,6 +959,8 @@ will not be modified."
        (shell      . t)
        ))
 
+;;;;;; keybindings
+
     (spacemacs/set-leader-keys
       ;; org-noter
       "on"   'org-noter)
@@ -958,6 +989,10 @@ will not be modified."
 
       ;; helm-org-rifle (added upstream)
       ;; "r"   'helm-org-rifle
+
+      ;; org-board
+      "Ba"   'org-board-archive
+      "BA"   'org-board-archive-dry-run
 
       ;; org-board
       "Ba"   'org-board-archive
@@ -1003,12 +1038,12 @@ will not be modified."
 
   (when (require 'cflow-mode nil 'noerror)
     (spacemacs/set-leader-keys-for-major-mode 'cflow-mode
-      "g" 'cflow-find-function
-      "s" 'cflow-find-function
-      "r" 'cflow-find-recursion-root
-      "R" 'cflow-find-recursion-next
-      "x" 'cflow-goto-expand
-      "E" 'cflow-edit-out-full)
+      "qg" 'cflow-find-function
+      "qs" 'cflow-find-function
+      "qr" 'cflow-find-recursion-root
+      "qR" 'cflow-find-recursion-next
+      "qx" 'cflow-goto-expand
+      "qE" 'cflow-edit-out-full)
     (autoload 'cflow-mode "cflow-mode")
     (setq auto-mode-alist (append auto-mode-alist
                                   '(("\\.cflow$" . cflow-mode)))))
@@ -1255,10 +1290,37 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-noter yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle smart-hungry-delete simple-call-tree shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
+    (js2-mode js-doc impatient-mode helm-gtags ggtags counsel-gtags add-node-modules-path org-noter yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle smart-hungry-delete simple-call-tree shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((org-log-into-drawer . t)
+    ((haskell-mode-stylish-haskell-path . "brittany")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
+     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal new-configure && cabal new-repl lib:llvm-pretty-bc-parser --builddir=dist-newstyle/dante")
+     (eval defun my/pretty-issue
+           (no)
+           "Browse a github issue"
+           (browse-url
+            (concat "https://github.com/elliottt/llvm-pretty/issues/" no)))
+     (eval org-add-link-type "pretty-issue"
+           (quote my/pretty-issue))
+     (eval defun my/parser-issue
+           (no)
+           "Browse a github issue"
+           (browse-url
+            (concat "https://github.com/GaloisInc/llvm-pretty-bc-parser/issues/" no)))
+     (eval org-add-link-type "parser-issue"
+           (quote my/parser-issue))
+     (eval defun my/grep-link
+           (regexp)
+           "Run `rgrep' with REGEXP as argument."
+           (grep-compute-defaults)
+           (rgrep
+            (concat regexp " :: ")
+            "*"
+            (expand-file-name "~/code/llvm-pretty-bc-parser/src")))
+     (eval org-add-link-type "id"
+           (quote my/grep-link))
+     (org-log-into-drawer . t)
      (org-enforce-todo-dependencies . t)
      (org-enforce-todo-checkbox-dependencies . t)
      (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
