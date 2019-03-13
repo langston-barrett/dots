@@ -60,9 +60,11 @@
     comfortaa
     dropbox
     gimp
+    keynav
     kdeconnect
     maim
     mu
+    musescore
     oxygenfonts
     redshift
     spotify
@@ -73,6 +75,10 @@
     # extra development
     clang
     rr
+
+    # python development
+    # python
+    # pythonPackages.importmagic
 
     # all necessary for emacs build epdfinfo
     autoconf
