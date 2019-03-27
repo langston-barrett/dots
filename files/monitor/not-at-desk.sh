@@ -8,5 +8,6 @@ xrandr --dpi 160
 sed -i 's/\([[:space:]]\)\+:size 28/\1:size 18/'    ~/code/dots/files/spacemacs
 sed -i 's/xft:Hack:size=28/xft:Hack:size=18/'       ~/.Xresources
 sed -i 's/Xft.dpi:        192/Xft.dpi:        160/' ~/.Xresources
+sed -i 's/\([[:space:]]\)\+size 11.0/\1size 9.0/'    ~/code/dots/files/alacritty.yml
 
 bash $HOME/.config/i3/scripts/post.sh

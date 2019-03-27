@@ -19,6 +19,7 @@
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
 *** [[pragmaticemacs.com/feed/][pragmatic emacs]]
 *** see also: http://www.modernemacs.com/post/
+*** [[https://with-emacs.com/rss.xml][with emacs]]
 ** nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
