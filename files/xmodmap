@@ -7,3 +7,6 @@ keysym Control_L = Caps_Lock
 keysym Caps_Lock = Control_L
 add Lock = Caps_Lock
 add Control = Control_L
+
+! Switch mouse buttons
+pointer = 3 2 1

@@ -75,6 +75,7 @@
     # extra development
     clang
     rr
+    shellcheck
 
     # python development
     # python

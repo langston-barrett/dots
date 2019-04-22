@@ -2,6 +2,15 @@
 
 (require 'cheatsheet)
 
+;;;; vim combinators
+
+(cheatsheet-add-group
+ 'vim-combinators
+ '(:key "aa"  :description "(spacemacs) text object: an argument")
+ '(:key "a\"" :description "text object: a string")
+ '(:key "a`"  :description "text object: backquoted")
+ '(:key "a)"  :description "text object: parens"))
+
 ;;;; common
 
 (cheatsheet-add-group
