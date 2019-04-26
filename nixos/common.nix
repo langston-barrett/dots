@@ -66,9 +66,11 @@
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
+    bat
     curl
     emacs
     exfat
+    fd
     file
     git
     gitAndTools.hub # github access for magithub

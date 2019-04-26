@@ -57,6 +57,12 @@ alias tp='trash-put'
 alias tl='trash-list'
 alias rm='echo Use \\ rm or tp \(trash-put\)'
 
+# https://github.com/sharkdp/fd
+alias find='echo Use \\ rm or fd'
+
+# https://github.com/sharkdp/bat
+alias cat='echo Use \\ cat or bat'
+
 copy_last_command() {
   echo "!!" | xsel -ib
 }

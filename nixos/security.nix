@@ -40,6 +40,8 @@
                 deny @{PROC}/** rwklx,
 
                 # Allow access to a few directories
+                /tmp/** rwmix,
+                /run/user/** rwmix,
                 /nix/store/** rwmix,
                 @{HOME}/** rw,
               }
