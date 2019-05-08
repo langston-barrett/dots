@@ -38,9 +38,8 @@ This function should only modify configuration layer settings."
 
 ;;;; Layers
 
-   '(ocaml
-     javascript
-     csv
+   '(csv
+     racket
      helm ; full-featured auto-completion
 
      ;; Features
@@ -71,9 +70,9 @@ This function should only modify configuration layer settings."
      (c-c++ :variables c-c++-enable-clang-support t
                        c-c++-enable-clang-format-on-save t
                        c-c++-enable-auto-newline t)
-     ;; semantic
-
-     ;; agda
+     agda
+     racket
+     javascript ; json
      bibtex ; org-ref!
      coq
      emacs-lisp
@@ -111,6 +110,8 @@ This function should only modify configuration layer settings."
                                       direnv        ; direnv + nix
                                       math-symbols  ; easily insert unicode latex macros
                                       dhall-mode
+                                      lispy
+                                      lispyville
                                       ;; all-the-icons
                                       ;; w3m
                                       ;; mmm-mode      ; markdown multi-mode
@@ -131,15 +132,42 @@ This function should only modify configuration layer settings."
                                       flycheck-mypy
                                       doom-themes
 
-                                      ; rmsbolt      ; browse compiler output
-                                      ;; (recipe
-                                      ;;  :location (recipe :fetcher github
-                                      ;;                    :repo "GaloisInc/saw-script"
-                                      ;;                    :files '("saw-script.el")))
-                                      ;; (recipe
+                                      (symbol-overlay
+                                       :location (recipe :fetcher github
+                                                         :repo "wolray/symbol-overlay"))
+
+                                      (eacl
+                                       :location (recipe :fetcher github
+                                                         :repo "redguardtoo"
+                                                         :files '("eacl.el")))
+
+                                      (haskell-pragma
+                                       :location (recipe :fetcher github
+                                                         :repo "travitch/haskell-pragma.el"
+                                                         :files '("haskell-pragma.el")))
+
+                                      ;; (google-java-format
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "google/google-java-format"
                                       ;;                    :files '("core/src/main/scripts/google-java-format.el")))
+
+                                      ;; here be big repos :'(
+                                      ;; https://framagit.org/steckerhalter/quelpa/issues/164
+
+                                      ;; (saw-script
+                                      ;;  :location (recipe :fetcher github
+                                      ;;                    :repo "GaloisInc/saw-script"
+                                      ;;                    :files '("saw-script.el")))
+
+                                      ;; (llvm-mode
+                                      ;;  :location (recipe :fetcher github
+                                      ;;                    :repo "llvm-mirror/llvm"
+                                      ;;                    :files '("utils/emacs/llvm-mode.el")))
+
+                                      ;; (agda-input
+                                      ;;  :location (recipe :fetcher github
+                                      ;;                    :repo "agda/agda"
+                                      ;;                    :files '("src/data/emacs-mode/agda-input.el")))
                                       )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -501,6 +529,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; Coq layer defines abbreviations on *single letters*, so by default typing
   ;; one letter and pressing ESC will expand the letter, which prevents typing
   ;; https://github.com/syl20bnr/spacemacs/issues/8853
+  ;; (load-file (let ((coding-system-for-read 'utf-8))
+  ;;              (shell-command-to-string "agda-mode locate")))
   (setq evil-want-abbrev-expand-on-insert-exit nil))
 
 ;;;; =user-config=
@@ -557,9 +587,7 @@ you should place your code here."
 
   (setq helm-ag-use-agignore t)
 
-  (defun siddharthist/ansi-term-nix-shell ()
-    (interactive)
-    (ansi-term "nix-shell --run 'exec zsh'"))
+  (require 'saw-script nil 'noerror)
 
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
@@ -612,6 +640,21 @@ you should place your code here."
     ;; 'a' for 'ag'
     "opa"  'my/projectile-ag-in-other-project)
 
+;;;;; symbol-overlay
+
+  (with-eval-after-load 'symbol-overlay
+    (spacemacs/set-leader-keys
+      ;; 'o' is the "user key"
+      ;; 's' for 'show' or 'symbol'
+      ;; 'p' for 'put'
+      "osp"  'symbol-overlay-put
+      "osr"  'symbol-overlay-remove-all
+      "osM"  'symbol-overlay-mode)
+
+    (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
+
+    (add-hook 'prog-mode-hook 'symbol-overlay-mode))
+
 ;;;;; eshell
 
   (with-eval-after-load 'eshell
@@ -632,8 +675,8 @@ you should place your code here."
 
     (if (boundp 'eshell-visual-commands)
         (add-to-list 'eshell-visual-commands "ghcid")
-        (setq eshell-visual-commands
-              '("ghcid" "matterhorn" "mpw" "less" "more" "top" "htop")))
+      (setq eshell-visual-commands
+            '("ghcid" "matterhorn" "mpw" "less" "more" "top" "htop")))
 
 
     ;; Use C-r for backwards terminal search, even in evil mode
@@ -662,22 +705,23 @@ you should place your code here."
 
 ;;;;; eacl
 
-  (defun my/haskell-insert-import ()
-    (interactive)
-    (evil-open-below 1)
-    (evil-beginning-of-line)
-    (cond ((eq major-mode 'haskell-mode)
-           (insert "import          "))
-          ((eq major-mode 'coq-mode)
-           (insert "Require ")))
-    (eacl-complete-line))
+  (with-eval-after-load 'haskell
 
-  (when (require 'eacl nil 'noerror)
-    (spacemacs/set-leader-keys
-      ;; 'o' is the "user key"
-      ;; 'm' for 'major mode (haskell)'
+    (defun my/haskell-insert-import ()
+      (interactive)
+      (evil-open-below 1)
+      (evil-beginning-of-line)
+      (cond ((eq major-mode 'haskell-mode)
+             (insert "import          "))
+            ((eq major-mode 'coq-mode)
+             (insert "Require ")))
+      (eacl-complete-line))
+  
+
+    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+      ;; 'i' for 'insert'
       ;; 'i' for 'import'
-      "omi"  'my/haskell-insert-import))
+      "ii" 'my/haskell-insert-import))
 
 ;;;;; (Ma)git
 
@@ -773,12 +817,12 @@ you should place your code here."
   ;;                   '(?\s (Br . Br))
   ;;                   (cons (cdr el) nil)))))
   (setq comparison-prettify-symbols-alist
-         (mapvalues 'my/two-spaces
-                    '((">=" . ?≥)
-                      ("<=" . ?≤)
-                      ("==" . ?≟)
-                      ("/=" . ?≠)
-                      ("!=" . ?≠))))
+        (mapvalues 'my/two-spaces
+                   '((">=" . ?≥)
+                     ("<=" . ?≤)
+                     ("==" . ?≟)
+                     ("/=" . ?≠)
+                     ("!=" . ?≠))))
 
   ;; The commented-out versions are the "short" arrows, active are "long"
   (setq arrow-prettify-symbols-alist
@@ -824,10 +868,10 @@ you should place your code here."
            ;; (mapvalues 'my/three-spaces
            ;;            '(("<*>" . ?⊛)))
            (mapvalues 'my/two-spaces
-                      '(("<|" . ?⊲) ; sequences/application in flow
-                        ("|>" . ?⊳) ; sequences/application in flow
-                        (".>" . ?⋖) ; composition in flow
-                        ("<." . ?⋗) ; composition in flow
+                      '(("<|" . ?⊲)     ; sequences/application in flow
+                        ("|>" . ?⊳)     ; sequences/application in flow
+                        (".>" . ?⋖)     ; composition in flow
+                        ("<." . ?⋗)     ; composition in flow
                         ("::" . ?∷)))))
 
     (defun my/haskell-prettify-symbols ()
@@ -873,7 +917,7 @@ you should place your code here."
 ;;;;; Org
 
   (when (require 'org-link-minor-mode nil 'noerror)
-        (add-hook 'prog-mode-hook 'org-link-minor-mode))
+    (add-hook 'prog-mode-hook 'org-link-minor-mode))
 
   (setq org-directory          "~/Dropbox/langston/org")
   (setq org-wiki-location      "~/Dropbox/langston/org"
@@ -918,7 +962,7 @@ you should place your code here."
 
                            (fci-mode t)          ; Enable fill column indicator
                            (setq fill-column 80) ; Set fill column to 80
-                           (auto-fill-mode t)    ; Automatic line wrapping at fill column
+                           (auto-fill-mode t) ; Automatic line wrapping at fill column
 
                            (defun aa2u-buffer () (aa2u (point-min) (point-max)))
                            (add-to-list 'write-file-functions 'delete-trailing-whitespace))))
@@ -1187,9 +1231,9 @@ will not be modified."
   (defun my/libc-include (header-name)
     "An interactive prompt for the extension (EXT-NAME) to add."
     (interactive (list (completing-read "libc header: " libc-headers)))
-      (evil-open-below 1)
-      (evil-beginning-of-line)
-      (insert (concat "#include " header-name)))
+    (evil-open-below 1)
+    (evil-beginning-of-line)
+    (insert (concat "#include " header-name)))
 
   (defun my/c++-include (header-name)
     "An interactive prompt for the extension (EXT-NAME) to add."
@@ -1219,6 +1263,18 @@ will not be modified."
                    (regexp . "=>")
                    (modes . rust-mode))))
 
+;;;;; Racket
+
+  (with-eval-after-load 'lispy
+    (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
+    (add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
+    (add-hook 'lispy-mode-hook #'lispyville-mode)
+    (define-prefix-command 'lispy-delete-map)
+
+    ;; Delete keymap
+    (define-key lispy-mode-map (kbd "d") nil) ;; delete old binding
+    (lispy-define-key lispy-mode-map-lispy "d" 'lispy-delete)) ;; new binding
+
 ;;;;; Haskell
 
   ;; TODO: ag with prefix: save excursion, write "data" or "newtype" at end of file
@@ -1233,13 +1289,13 @@ will not be modified."
               '(lambda () (flycheck-add-next-checker 'haskell-dante
                                                      '(warning . haskell-hlint))))
 
-    ; Set the Haskell mode outline header syntax to be "-- *"
-    ; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
+                                        ; Set the Haskell mode outline header syntax to be "-- *"
+                                        ; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
     (defun siddharthist/haskell-mode-outline-hook ()
       (setq outline-regexp
             (rx
-              ;; Outline headings
-              (and (* space)
+             ;; Outline headings
+             (and (* space)
                   (one-or-more (syntax comment-start))
                   (* space)
                   (group (one-or-more "\*"))
@@ -1278,19 +1334,19 @@ will not be modified."
       ;;                (modes . haskell-modes)))
       ;; Align arrow operators
       (add-to-list 'align-rules-list
-                  '(haskell-eol-comment
-                    (regexp . "\\(\\s-+\\)\\(>>>\\|<<<\\|&&&\\|\\*\\*\\*\\)\\s-+")
-                    (modes . haskell-modes)))
+                   '(haskell-eol-comment
+                     (regexp . "\\(\\s-+\\)\\(>>>\\|<<<\\|&&&\\|\\*\\*\\*\\)\\s-+")
+                     (modes . haskell-modes)))
       ;; Align if/then/else
       (add-to-list 'align-rules-list
-                  '(haskell-ite
-                    (regexp . "\\(\\s-+\\)\\(if\|then\|else\\)\\s-+")
-                    (modes . haskell-modes)))
+                   '(haskell-ite
+                     (regexp . "\\(\\s-+\\)\\(if\|then\|else\\)\\s-+")
+                     (modes . haskell-modes)))
       ;; Align on applicative delimiters
       (add-to-list 'align-rules-list
-                  '(haskell-applicative
-                    (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
-                    (modes . haskell-modes)))))
+                   '(haskell-applicative
+                     (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
+                     (modes . haskell-modes)))))
 
 ;;;;; Nix
 
@@ -1311,6 +1367,11 @@ will not be modified."
       (setq lsp-java-format-comments-enabled nil)
       (setq lsp-java-format-comments-enabled nil)))
 
+;;;;; Agda
+
+  (when (require 'agda2-mode nil 'noerror)
+    (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
+
 ;;;;; Coq
 
   ;; (with-eval-after-load 'company-coq
@@ -1324,7 +1385,7 @@ will not be modified."
     "SPC" 'proof-goto-point
     "miH" 'siddharthist-surround-region-hide)
   (with-eval-after-load 'coq
-    (setq coq-one-command-per-line nil)       ; https://github.com/ProofGeneral/PG/issues/53
+    (setq coq-one-command-per-line nil) ; https://github.com/ProofGeneral/PG/issues/53
     (setq proof-electric-terminator-enable t)) ; https://github.com/ProofGeneral/PG/issues/53
 
   (with-eval-after-load 'coq
@@ -1337,13 +1398,13 @@ will not be modified."
         (goto-char (region-beginning))
         (insert "(* begin hide *)\n")))
 
-    ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
+                                        ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
     (setq undo-tree-enable-undo-in-region nil)
 
     ;; Cobbled together from:
-    ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
-    ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
-    ; TODO: n is void?
+                                        ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
+                                        ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
+                                        ; TODO: n is void?
     (defun my/coq-compile-projectile ()
       (interactive)
       (require 'projectile)
@@ -1427,10 +1488,24 @@ This function is called at the very end of Spacemacs initialization."
  '(flycheck-python-pylint-executable "python3")
  '(package-selected-packages
    (quote
-    (utop caml ocp-indent merlin graphviz-dot-mode web-beautify tern prettier-js livid-mode skewer-mode js2-refactor multiple-cursors csv-mode js2-mode js-doc impatient-mode helm-gtags ggtags counsel-gtags add-node-modules-path org-noter yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle smart-hungry-delete simple-call-tree shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
+    (racket-mode faceup company-quickhelp utop caml ocp-indent merlin graphviz-dot-mode web-beautify tern prettier-js livid-mode skewer-mode js2-refactor multiple-cursors csv-mode js2-mode js-doc impatient-mode helm-gtags ggtags counsel-gtags add-node-modules-path org-noter yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle smart-hungry-delete simple-call-tree shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((haskell-mode-stylish-haskell-path . "brittany")
+    ((agda2-program-args "-i../deps/agda-stdlib/src" "-i../deps/agda-base/src")
+     (agda2-program-args "-i../deps/agda-stdlib" "-i../deps/agda-base")
+     (agda2-program-args "-i../../deps/agda-stdlib" "-i../../deps/agda-base")
+     (eval progn
+           (load-file "/nix/store/g4jpmcr5pgask3g61mvclnfw0wfi3j8z-Agda-2.6.1-data/share/ghc-8.6.4/x86_64-linux-ghc-8.6.4/Agda-2.6.1/emacs-mode/agda2.el")
+           (setq agda2-program-args
+                 (quote
+                  ("-ideps/agda-stdlib" "-ideps/agda-base"))))
+     (eval progn
+           (load-file "/nix/store/nkiqj8c08sa7x05vabig6m6bfj5sv731-Agda-2.5.4.1-data/share/ghc-8.4.4/x86_64-linux-ghc-8.4.4/Agda-2.5.4.1/emacs-mode/agda2.el")
+           (setq agda2-program-args
+                 (quote
+                  ("-i/nix/store/66a4bqc5fmnak2glr9bjc85wn2argl2d-agda-stdlib-0.16/share/agda"))))
+     (major-mode . agda2-mode)
+     (haskell-mode-stylish-haskell-path . "brittany")
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal new-configure && cabal new-repl lib:llvm-pretty-bc-parser --builddir=dist-newstyle/dante")
      (eval defun my/pretty-issue
