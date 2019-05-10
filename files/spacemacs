@@ -39,7 +39,6 @@ This function should only modify configuration layer settings."
 ;;;; Layers
 
    '(csv
-     racket
      helm ; full-featured auto-completion
 
      ;; Features
@@ -138,13 +137,11 @@ This function should only modify configuration layer settings."
 
                                       (eacl
                                        :location (recipe :fetcher github
-                                                         :repo "redguardtoo"
-                                                         :files '("eacl.el")))
+                                                         :repo "redguardtoo/eacl"))
 
                                       (haskell-pragma
                                        :location (recipe :fetcher github
-                                                         :repo "travitch/haskell-pragma.el"
-                                                         :files '("haskell-pragma.el")))
+                                                         :repo "travitch/haskell-pragma.el"))
 
                                       ;; (google-java-format
                                       ;;  :location (recipe :fetcher github
@@ -642,14 +639,15 @@ you should place your code here."
 
 ;;;;; symbol-overlay
 
+  (spacemacs/set-leader-keys
+    ;; 'o' is the "user key"
+    ;; 's' for 'show' or 'symbol'
+    ;; 'p' for 'put'
+    "osp"  'symbol-overlay-put
+    "osr"  'symbol-overlay-remove-all
+    "osM"  'symbol-overlay-mode)
+
   (with-eval-after-load 'symbol-overlay
-    (spacemacs/set-leader-keys
-      ;; 'o' is the "user key"
-      ;; 's' for 'show' or 'symbol'
-      ;; 'p' for 'put'
-      "osp"  'symbol-overlay-put
-      "osr"  'symbol-overlay-remove-all
-      "osM"  'symbol-overlay-mode)
 
     (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
 
@@ -1270,6 +1268,40 @@ will not be modified."
     (add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
     (add-hook 'lispy-mode-hook #'lispyville-mode)
     (define-prefix-command 'lispy-delete-map)
+
+    (setq my-structurally-navigating nil)
+
+    (defun my/toggle-structural-nav ()
+      (interactive)
+      (if my-structurally-navigating
+          (progn
+            (setq my-structurally-navigating nil)
+            (evil-local-set-key 'normal ">" 'evil-shift-right)
+            (evil-local-set-key 'normal "<" 'evil-shift-left)
+            (evil-local-set-key 'normal "f" 'evil-find-char)
+            (evil-local-set-key 'normal "b" 'evil-backward-word-begin)
+            (evil-local-set-key 'normal "h" 'evil-backward-char)
+            (evil-local-set-key 'normal "j" 'evil-next-line)
+            (evil-local-set-key 'normal "k" 'evil-previous-line)
+            (evil-local-set-key 'normal "l" 'evil-forward-char))
+          (progn
+            (setq my-structurally-navigating t)
+            (evil-local-set-key 'normal ">" 'sp-forward-slurp-sexp)
+            (evil-local-set-key 'normal "<" 'lispy-barf)
+            (evil-local-set-key 'normal "f" 'lispy-flow)
+            (evil-local-set-key 'normal "b" 'lispy-back)
+            (evil-local-set-key 'normal "h" 'lispy-left)
+            (evil-local-set-key 'normal "j" 'lispy-down)
+            (evil-local-set-key 'normal "k" 'lispy-up)
+            (evil-local-set-key 'normal "l" 'lispy-right))))
+
+    (spacemacs/set-leader-keys-for-major-mode 'racket-mode
+      "n"   'my/toggle-structural-nav
+      ">"   'lispy-slurp
+      "<"   'lispy-barf
+      "ic"  'lispy-clone
+      "xf"  'lispy-delete
+      "xb"  'lispy-delete-backward)
 
     ;; Delete keymap
     (define-key lispy-mode-map (kbd "d") nil) ;; delete old binding
