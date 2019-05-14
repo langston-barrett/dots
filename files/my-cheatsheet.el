@@ -17,6 +17,7 @@
  'common
  '(:key "alt+p"          :description "spacmacsanywhere.sh")
  '(:key "SPC g t"        :description "git timemachine transient state")
+ '(:key "SPC g r"        :description "smerge transient state")
  '(:key "gf"             :description "go to relative path at cursor")
  '(:key "SPC i s"        :description "yas")
  '(:key "SPC i S"        :description "auto-yasnippet")
@@ -40,7 +41,8 @@
 (cheatsheet-add-group
  'favorites
  '(:key "SPC x a a" :description "align")
- '(:key "SPC s e"   :description "iedit!"))
+ '(:key "SPC s e"   :description "iedit!")
+ '(:key "SPC o s p" :description "highlight symbol"))
 
 ;;;; functions
 
