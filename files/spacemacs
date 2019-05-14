@@ -104,32 +104,34 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(emojify
-                                      ialign        ; interactive align-regexp
+                                      ialign ; interactive align-regexp
                                       smart-hungry-delete ; delete all whitespace at once
-                                      direnv        ; direnv + nix
-                                      math-symbols  ; easily insert unicode latex macros
+                                      direnv              ; direnv + nix
+                                      math-symbols ; easily insert unicode latex macros
                                       dhall-mode
                                       lispy
                                       lispyville
                                       ;; all-the-icons
                                       ;; w3m
                                       ;; mmm-mode      ; markdown multi-mode
-                                      prop-menu     ; needed for saw-script-mode
+                                      prop-menu ; needed for saw-script-mode
 
                                       ;; UI
-                                      cheatsheet    ; self-explanatory
-                                      helpful       ; better elisp help
-                                      dimmer        ; dim inactive buffers
-                                      ; symon         ; system monitor
+                                      cheatsheet ; self-explanatory
+                                      helpful    ; better elisp help
+                                      dimmer     ; dim inactive buffers
+                                        ; symon         ; system monitor
 
                                       ;; ORG
                                       ;; ox-gfm       ; github markdown export for org
-                                      org-board    ; link archiving
-                                      link-hint    ; TODO: keybindings
+                                      org-board ; link archiving
+                                      link-hint ; TODO: keybindings
                                       org-noter
 
                                       flycheck-mypy
                                       doom-themes
+
+                                      scribble-mode
 
                                       (symbol-overlay
                                        :location (recipe :fetcher github
@@ -746,6 +748,9 @@ you should place your code here."
     "oev"  'eval-region
     "oeb"  'eval-buffer
 
+    "o>"   'sp-forward-slurp-sexp
+    "o<"   'lispy-barf
+
     "glh"  'git-link-homepage
 
     ;; 'i' for insert
@@ -1297,7 +1302,7 @@ will not be modified."
 
     (spacemacs/set-leader-keys-for-major-mode 'racket-mode
       "n"   'my/toggle-structural-nav
-      ">"   'lispy-slurp
+      ">"   'sp-forward-slurp-sexp
       "<"   'lispy-barf
       "ic"  'lispy-clone
       "xf"  'lispy-delete

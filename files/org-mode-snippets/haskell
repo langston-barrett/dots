@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# key: bash
-# name: bash
+# key: haskell
+# name: hask*
 # contributor: Langston Barrett
 # --
-#+begin_src bash
+#+begin_src haskell
 #+end_src

@@ -96,3 +96,14 @@ setopt HIST_FIND_NO_DUPS    # Do not display a line previously found.
 setopt HIST_IGNORE_SPACE    # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
+
+# projects
+projects=(crucible llvm-pretty-bc-parser parameterized-utils saw-script)
+
+fetch() {
+  for project in "${projects[@]}"; do
+    echo ".... $project ...."
+    cd "$HOME/code/$project"
+    git fetch --all
+  done
+}

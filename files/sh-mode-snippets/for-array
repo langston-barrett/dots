@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: for-array
+# key: for*
+# --
+for project in "${projects[@]}"; do
+  $1
+done

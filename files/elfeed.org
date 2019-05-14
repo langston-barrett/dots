@@ -6,6 +6,7 @@
 *** [[http://existentialtype.wordpress.com/feed/][Existential Type - Rob Harper]]
 *** [[https://edwinb.wordpress.com/feed/][Edwin Brady]]
 *** [[http://ezyang.tumblr.com/rss][ezyang]]
+*** [[http://semantic-domain.blogspot.com/feeds/posts/default][Semantic Domain]]
 ** coq
 *** [[http://coq-blog.clarus.me/rss.xml][Coq blog - Guillaume Claret]]
 *** [[http://poleiro.info/atom.xml][Poleiro: latest posts]]
