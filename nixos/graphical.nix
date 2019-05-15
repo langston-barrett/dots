@@ -24,6 +24,7 @@ in {
     # General graphical packages
     alacritty
     firefox
+    qutebrowser
     kcolorchooser
     xpdf
     zathura

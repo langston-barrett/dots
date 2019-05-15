@@ -302,7 +302,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Hack"
- :size 18
+ :size 28
                                :weight normal
                                :width normal)
 
@@ -895,6 +895,10 @@ you should place your code here."
     (add-hook 'org-mode-hook 'my/org-prettify-symbols))
 
 ;;;;; Elfeed
+
+  (with-eval-after-load 'browse-url
+    (setq browse-url-browser-function 'browse-url-generic)
+    (setq browse-url-generic-program "qutebrowser"))
 
   ;; https://github.com/iqbalansari/dotEmacs/blob/master/config/rss.org
   ;; (defun my/elfeed-open-in-w3m ()
