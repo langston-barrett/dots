@@ -703,26 +703,6 @@ you should place your code here."
       ;; 'C' for 'cheatsheet'
       "oC"  'cheatsheet-show))
 
-;;;;; eacl
-
-  (with-eval-after-load 'haskell
-
-    (defun my/haskell-insert-import ()
-      (interactive)
-      (evil-open-below 1)
-      (evil-beginning-of-line)
-      (cond ((eq major-mode 'haskell-mode)
-             (insert "import          "))
-            ((eq major-mode 'coq-mode)
-             (insert "Require ")))
-      (eacl-complete-line))
-  
-
-    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
-      ;; 'i' for 'insert'
-      ;; 'i' for 'import'
-      "ii" 'my/haskell-insert-import))
-
 ;;;;; (Ma)git
 
   (setq git-link-default-remote "upstream")
@@ -1507,6 +1487,32 @@ will not be modified."
     )
   (add-hook 'message-mode-hook 'msg-mode)
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
+
+;;;;; eacl
+
+  (defun my/smart-insert-import ()
+    (interactive)
+    (evil-open-below 1)
+    (evil-beginning-of-line)
+    (let ((eacl-complete
+           (lambda (s)
+             (progn (insert s)
+                    (eacl-complete-line)))))
+      (cond ((eq major-mode 'haskell-mode) (eacl-complete "import          "))
+            ((eq major-mode 'coq-mode) (eacl-complete "Require "))
+            ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
+            ((eq major-mode 'c-mode) (call-interacively 'my/libc-include)))))
+
+  ;; 'i' for 'insert'
+  ;; 'i' for 'import'
+  (spacemacs/set-leader-keys-for-major-mode 'c-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'c++-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'coq-mode
+    "ii" 'my/smart-insert-import)
 
   ) ;; end user-config
 
