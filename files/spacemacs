@@ -591,7 +591,6 @@ you should place your code here."
   ;; org-wiki and saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
 
-
   (defun my/inhibit-semantic-p ()
     (not (or (equal major-mode 'c++-mode)
              (equal major-mode 'c-mode))))
@@ -615,8 +614,8 @@ you should place your code here."
     (dimmer-mode))
 
   (golden-ratio-mode)
-  (setq golden-ratio-adjust-factor .85
-        golden-ratio-wide-adjust-factor .85)
+  (setq golden-ratio-adjust-factor .90
+        golden-ratio-wide-adjust-factor .90)
 
   (eval-after-load 'grep
     '(progn
@@ -1256,7 +1255,6 @@ will not be modified."
     (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
     (add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
     (add-hook 'lispy-mode-hook #'lispyville-mode)
-    (define-prefix-command 'lispy-delete-map)
 
     (setq my-structurally-navigating nil)
 
@@ -1284,13 +1282,14 @@ will not be modified."
             (evil-local-set-key 'normal "k" 'lispy-up)
             (evil-local-set-key 'normal "l" 'lispy-right))))
 
-    (spacemacs/set-leader-keys-for-major-mode 'racket-mode
-      "n"   'my/toggle-structural-nav
-      ">"   'sp-forward-slurp-sexp
-      "<"   'lispy-barf
-      "ic"  'lispy-clone
-      "xf"  'lispy-delete
-      "xb"  'lispy-delete-backward)
+    (dolist (mode (list 'racket-mode 'emacs-lisp-mode))
+      (spacemacs/set-leader-keys-for-major-mode mode
+        "n"   'my/toggle-structural-nav
+        ">"   'sp-forward-slurp-sexp
+        "<"   'lispy-barf
+        "ic"  'lispy-clone
+        "xf"  'lispy-delete
+        "xb"  'lispy-delete-backward))
 
     ;; Delete keymap
     (define-key lispy-mode-map (kbd "d") nil) ;; delete old binding
