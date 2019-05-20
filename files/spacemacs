@@ -532,8 +532,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;;              (shell-command-to-string "agda-mode locate")))
 
   (let ((sz (if (> (x-display-pixel-width) 5000) 28 18)))
-    (setq-default dotspacemacs-default-font '("Hack"
-                                              :size 28
+    (setq-default dotspacemacs-default-font `("Hack"
+                                              :size ,sz
                                               :weight normal
                                               :width normal)))
 
