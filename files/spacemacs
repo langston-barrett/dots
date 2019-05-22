@@ -145,6 +145,10 @@ This function should only modify configuration layer settings."
                                        :location (recipe :fetcher github
                                                          :repo "travitch/haskell-pragma.el"))
 
+                                      (dropbox-conflicts
+                                       :location (recipe :fetcher github
+                                                         :repo "jezcope/dropbox-conflicts-el"))
+
                                       ;; (google-java-format
                                       ;;  :location (recipe :fetcher github
                                       ;;                    :repo "google/google-java-format"
@@ -553,6 +557,11 @@ you should place your code here."
 
   (setq-default tab-width 4)
 
+  ;; Always reload log files from disk
+  (add-to-list 'auto-mode-alist '("log" . auto-revert-mode))
+
+  (dropbox-conflicts-mode 1)
+
   ;; https://github.com/bbatsov/projectile/issues/1174
   (setq projectile-git-submodule-command "")
 
@@ -570,10 +579,16 @@ you should place your code here."
   (setq-default evil-escape-key-sequence "jk")
 
   ;; Source: http://www.emacswiki.org/emacs-en/download/misc-cmds.el
-  (defun revert-buffer-no-confirm ()
+  (defun my/revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive)
     (revert-buffer :ignore-auto :noconfirm))
+
+  (spacemacs/set-leader-keys
+    ;; 'o' is the "user key"
+    ;; 'b' for 'buffer'
+    ;; 'r' for 'revert'
+    "obr"  'my/revert-buffer-no-confirm)
 
   ;; Use C-r for backwards terminal search, even in evil mode
   (defun siddharthist/setup-term-mode ()
@@ -658,6 +673,10 @@ you should place your code here."
   (with-eval-after-load 'symbol-overlay
 
     (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
+    (define-key symbol-overlay-map (kbd "?") 'symbol-overlay-map-help)
+
+    ;; Don't override delete, it's confusing
+    (define-key symbol-overlay-map (kbd "d") nil)
 
     (add-hook 'prog-mode-hook 'symbol-overlay-mode))
 
