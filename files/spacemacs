@@ -1473,14 +1473,15 @@ will not be modified."
 
   (with-eval-after-load 'python
 
-    (setq-default flycheck-enabled-checkers '(flycheck-mypy))
+    ;; TODO: only do this if typing is imported? or something
+    ;; (setq-default flycheck-enabled-checkers '(flycheck-mypy))
+    ;; (when (require 'flycheck-mypy nil 'noerror)
+    ;;   (flycheck-add-next-checker 'python-flake8 'python-mypy t))
+
     (custom-set-variables
      '(flycheck-python-flake8-executable "python3")
      '(flycheck-python-pycompile-executable "python3")
-     '(flycheck-python-pylint-executable "python3"))
-
-    (when (require 'flycheck-mypy nil 'noerror)
-      (flycheck-add-next-checker 'python-flake8 'python-mypy t)))
+     '(flycheck-python-pylint-executable "python3")))
 
   ;; Jump to top-level definitions
   ;; (spacemacs/set-leader-keys-for-major-mode 'python-mode
