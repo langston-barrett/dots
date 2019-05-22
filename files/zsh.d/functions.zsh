@@ -62,6 +62,9 @@ alias find='echo Use \\ rm or fd'
 
 # https://github.com/sharkdp/bat
 alias cat='echo Use \\ cat or bat'
+alias batp='bat --paging=always'
+alias less='echo Use \\ less or batp'
+export BAT_PAGER='less'
 
 copy_last_command() {
   echo "!!" | xsel -ib
