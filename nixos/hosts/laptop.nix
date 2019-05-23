@@ -97,10 +97,10 @@
   #rngd.enable = true; # feed hardware randomness to kernel when possible
 
   # Printing
-  services.printing = {
-    enable  = true;
-    drivers = [ pkgs.hplip ];
-  };
+  # services.printing = {
+  #   enable  = true;
+  #   drivers = [ pkgs.hplip ];
+  # };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

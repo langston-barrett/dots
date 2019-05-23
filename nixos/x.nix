@@ -6,7 +6,8 @@
 let mkGraphicalService = attrs: {
     enable = true;
     # user = "siddharthist";
-    environment = { DISPLAY = ":0"; };
+    environment.DISPLAY = ":${builtins.toString config.services.xserver.display}";
+    # environment = { DISPLAY = ":0"; };
     after = [ "display-manager.service" ];
     partOf = [ "display-manager.service" ];
     wantedBy = [ "graphical.target" ];
@@ -61,14 +62,49 @@ in {
       };
     };
 
-    kdeconnect = mkGraphicalService {
-      description = "kdeconnect";
+    # kdeconnect.service: Main process exited, code=killed, status=6/ABRT
+    # kdeconnect = mkGraphicalService {
+    #   description = "kdeconnect";
+    #   serviceConfig = {
+    #     ExecStart = "${pkgs.kdeconnect}/bin/kdeconnect-indicator";
+    #     Restart = "always";
+    #     RestartSec = "5s";
+    #     MemoryLimit = "512M";
+    #   };
+    # };
+
+    twmn = mkGraphicalService {
+      description = "twmn";
       serviceConfig = {
-        ExecStart = "${pkgs.kdeconnect}/bin/kdeconnect-indicator";
+        ExecStart = "${pkgs.twmn}/bin/twmnd";
         Restart = "always";
         RestartSec = "5s";
-        MemoryLimit = "512M";
+        # MemoryLimit = "1024M";
       };
     };
+
+    # TODO: try with high verbosity
+    # dunst =
+    #   let
+    #     dunstrc = pkgs.writeText "dunstrc" ''
+    #     '';
+
+    #     wrapper-args = "-config ${dunstrc}";
+
+    #     dunst-wrapper = pkgs.dunst.overrideAttrs (oldAttrs: {
+    #       postInstall = oldAttrs.postInstall + ''
+    #           wrapProgram $out/bin/dunst \
+    #             --add-flags ${pkgs.lib.escapeShellArg wrapper-args}
+    #         '';
+    #     });
+    #   in mkGraphicalService {
+    #     description = "Dunst notification daemon";
+    #     documentation = [ "man:dunst(1)" ];
+    #     serviceConfig = {
+    #       Type = "dbus";
+    #       BusName = "org.freedesktop.Notifications";
+    #       ExecStart = "${dunst-wrapper}/bin/dunst";
+    #     };
+    # };
   };
 }
