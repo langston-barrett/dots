@@ -11,4 +11,8 @@ sed -i 's/xft:Hack:size=../xft:Hack:size=12/'       ~/.Xresources
 sed -i 's/Xft.dpi:        160/Xft.dpi:        192/' ~/.Xresources
 sed -i 's/\([[:space:]]\)\+size 9.0/\1size 11.0/'    ~/code/dots/files/alacritty.yml
 
-bash $HOME/.config/i3/scripts/post.sh
+if pgrep qutebrowser; then
+  qutebrowser ":set zoom.default 200%"
+fi
+
+bash "$HOME/.config/i3/scripts/post.sh"
