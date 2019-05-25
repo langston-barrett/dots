@@ -9,7 +9,7 @@ in {
     flac
     pavucontrol
     ncmpcpp
-    gst_ffmpeg
+    # gst_ffmpeg
     gst_plugins_base
     gst_plugins_good
     gst_plugins_bad
