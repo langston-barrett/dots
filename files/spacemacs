@@ -83,7 +83,7 @@ This function should only modify configuration layer settings."
      ;; lsp
      (haskell :variables ; haskell-enable-hindent-style "fundamental"
                          haskell-completion-backend 'dante
-                         haskell-enable-hindent t)
+                         haskell-enable-hindent nil)
      ;; (latex :variables
      ;;        latex-build-command "LatexMk"
      ;;        latex-enable-auto-fill t)
@@ -177,9 +177,7 @@ This function should only modify configuration layer settings."
 
    ;; A list of packages that will not be installed and loaded.
    ;; https://github.com/syl20bnr/spacemacs/issues/2294
-   dotspacemacs-excluded-packages '(exec-path-from-shell
-                                    google-c-style
-                                    )
+   dotspacemacs-excluded-packages '(google-c-style)
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
    ;; `used-only' installs only explicitly used packages and deletes any unused
@@ -1340,13 +1338,14 @@ will not be modified."
     ;; Dante
     (setq dante-command-line '("nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante"))
     (setq dante-repl-command-line '("nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante"))
-    (add-hook 'dante-mode-hook
-              '(lambda () (flycheck-add-next-checker 'haskell-dante
-                                                     '(warning . haskell-hlint))))
+    (defun my/dante-mode-hook ()
+      (flycheck-add-next-checker 'haskell-dante '(warning . haskell-hlint)))
+    (add-hook 'dante-mode-hook 'my/dante-mode-hook)
 
-                                        ; Set the Haskell mode outline header syntax to be "-- *"
-                                        ; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
-    (defun siddharthist/haskell-mode-outline-hook ()
+    ;; Set the Haskell mode outline header syntax to be "-- *"
+    ;; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
+    (defun my/haskell-mode-outline-hook ()
+      (setq outshine-preserve-delimiter-whitespace t)
       (setq outline-regexp
             (rx
              ;; Outline headings
@@ -1355,19 +1354,16 @@ will not be modified."
                   (* space)
                   (group (one-or-more "\*"))
                   (* space)))))
-    (add-hook 'haskell-mode-hook 'siddharthist/haskell-mode-outline-hook)
-    (add-hook 'haskell-mode-hook
-              '(lambda () (progn
-                            (when (require 'haskell-pragma nil 'noerror)
-                              (haskell-pragma-mode))
-                            (spacemacs/toggle-whitespace-cleanup-off))))
-    (add-hook 'haskell-mode-hook
-              '(lambda () (setq outshine-preserve-delimiter-whitespace t)))
-    (add-hook 'haskell-pragma-mode-hook
-              '(lambda () (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
-                            "ip"  'haskell-pragma-add-other-extension
-                            )))
-    (add-hook 'w3m-display-hook 'w3m-haddock-display)
+
+    (defun my/haskell-mode-pragma-hook ()
+      ;; (spacemacs/toggle-whitespace-cleanup-off)
+      (when (require 'haskell-pragma nil 'noerror)
+        (haskell-pragma-mode)
+        (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+          "ip"  'haskell-pragma-add-other-extension)))
+
+    (add-hook 'haskell-mode-hook 'my/haskell-mode-outline-hook)
+    (add-hook 'haskell-mode-hook 'my/haskell-mode-pragma-hook)
 
     ;; Find the declaration of an identifier
     (defun my/haskell-find-declaration ()
@@ -1630,3 +1626,17 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  )
 )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
