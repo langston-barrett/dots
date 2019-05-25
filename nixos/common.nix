@@ -41,7 +41,7 @@
     binaryCaches = [
       "https://cache.nixos.org/"
       "https://hie-nix.cachix.org"
-      "http://fryingpan.dev.galois.com/hydra"
+      # "http://fryingpan.dev.galois.com/hydra"
     ];
     binaryCachePublicKeys = [
       "hie-nix.cachix.org-1:EjBSHzF6VmDnzqlldGXbi0RM3HdjfTU3yDRi9Pd0jTY="
@@ -50,7 +50,7 @@
     ];
     trustedBinaryCaches = [
       "https://cache.nixos.org"
-      "http://fryingpan.dev.galois.com/hydra"
+      # "http://fryingpan.dev.galois.com/hydra"
     ];
     trustedUsers = [ "root" "siddharthist" ];
 
