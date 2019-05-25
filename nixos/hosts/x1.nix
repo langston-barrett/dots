@@ -45,6 +45,8 @@
     };
   };
 
+  nixpkgs.config.allowUnfree = true; # dropbox
+
   programs.light.enable = true;
   # programs.java.enable = true;
 
@@ -58,7 +60,6 @@
     calibre
     # chromium
     comfortaa
-    dropbox
     gimp
     # keynav
     kdeconnect

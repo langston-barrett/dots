@@ -6,6 +6,7 @@ let
     longitude = "-122.63";
   };
   location = portland;
+  master = (import ./pkgs.nix { inherit pkgs; }).master;
 in {
 
   environment.systemPackages = with pkgs; [
@@ -23,6 +24,7 @@ in {
 
     # General graphical packages
     alacritty
+    master.dropbox
     firefox
     qutebrowser
     kcolorchooser

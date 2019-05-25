@@ -58,7 +58,6 @@
     calibre
     chromium
     comfortaa
-    dropbox
     gimp
     keynav
     kdeconnect
