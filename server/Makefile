@@ -1,3 +1,14 @@
+REMOTE := cfern:/home/siddharthist
+RSYNC := rsync \
+	     -e ssh \
+	     --human-readable \
+	     --progress \
+	     --archive \
+		 --exclude=syncthing \
+		 --exclude=result \
+	     --exclude=log \
+		 --include='.*'
+
 result/%.tar.gz: %.nix
 	nix-build $<
 
@@ -5,24 +16,15 @@ result/%.tar.gz: %.nix
 	sudo docker load < result
 	touch $@
 
-.PHONY: copy
-copy: syncthing.nix
-	rsync \
-	  --human-readable \
-	  --progress \
-	  --archive \
-	  --delete \
-	  --delete-excluded \
-	  --exclude=syncthing \
-	  --exclude=result \
-	  --exclude=log \
-	  -e ssh \
+.PHONY: to
+to:
+	$(RSYNC) \
 	  . \
-	  cfern:/home/siddharthist
+	  $(REMOTE)
 
-.PHONY: remote
-remote: copy
-	ssh cfern 'make syncthing.image'
+.PHONY: from
+from:
+	$(RSYNC) $(REMOTE) .
 
 .PHONY: run
 run: syncthing.image
