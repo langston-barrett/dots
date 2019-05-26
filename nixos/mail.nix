@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    gnupg
     gpgme
     neomutt
     offlineimap

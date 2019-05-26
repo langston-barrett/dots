@@ -12,6 +12,7 @@ Host *.galois.com
   PreferredAuthentications publickey,keyboard-interactive,password
   VerifyHostKeyDNS ask
 
-Host sosite
-  User langston
-  Hostname 192.168.52.117
+Host cfern
+  HostName ec2-54-188-130-129.us-west-2.compute.amazonaws.com
+  Port 22
+  User ubuntu
