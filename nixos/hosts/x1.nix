@@ -8,7 +8,6 @@
     ../common.nix
 
     ../audio.nix
-    ../mail.nix
     ../networking.nix
     ../x.nix
     # ../wayland.nix

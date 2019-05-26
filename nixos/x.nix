@@ -1,3 +1,4 @@
+# * X server
 { config
 , pkgs
 , dpi ? 92
