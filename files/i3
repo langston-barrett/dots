@@ -1,13 +1,8 @@
 #-*- mode: conf -*-
 # dest: $XDG_CONFIG_HOME/i3/config
+# * i3
+# ** startup
 
-# Super. Alt is Mod1.
-set $mod Mod1
-
-# Window titles
-font pango:Open Sans 3
-
-# setup
 exec dropbox start
 exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
@@ -15,6 +10,11 @@ exec xmodmap ~/.xmodmap
 exec --no-startup-id nm-applet
 exec systemctl --user start xcompmgr
 exec systemctl --user start kdeconnect
+
+# ** general
+
+# Super. Alt is Mod1.
+set $mod Mod1
 
 # Mouse+mod floats & drags
 floating_modifier $mod
@@ -30,18 +30,6 @@ bindsym $mod+Return exec alacritty -e sh -c "tmux" # Start tmux by default
 bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)' 
 bindsym $mod+p exec ~/code/dots/files/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
-
-# change focus
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-
-# move focused window (vim)
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
@@ -71,6 +59,49 @@ bindsym $mod+u focus mode_toggle
 #bindsym $mod+a focus parent # focus the parent container
 #bindsym $mod+d focus child  # focus the child container
 
+# Reload, restart, and kill i3
+bindsym $mod+Shift+w reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
+
+# ** navigation
+  
+# *** focus
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+# *** move
+
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+# ** appearance
+
+# Window titles
+font pango:Open Sans 3
+
+# class                 border  backgr. text    indicator child_border
+client.focused          #9E9E9E #9E9E9E #9E9E9E #9E9E9E   #9E9E9E
+client.focused_inactive #000000 #000000 #000000 #000000   #000000
+client.unfocused        #000000 #000000 #000000 #000000   #000000
+client.urgent           #000000 #000000 #000000 #000000   #000000
+client.placeholder      #000000 #000000 #000000 #000000   #000000
+
+client.background       #ffffff
+
+# *** gaps
+
+smart_gaps on
+gaps inner 15
+gaps outer 0
+
+# ** workspaces
+
 # switch to workspace
 bindsym $mod+1 workspace 1
 bindsym $mod+2 workspace 2
@@ -95,10 +126,7 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-# Reload, restart, and kill i3
-bindsym $mod+Shift+w reload
-bindsym $mod+Shift+r restart
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
+# ** resize
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -111,24 +139,9 @@ mode "resize" {
   bindsym Escape mode "default"
 }
 bindsym $mod+r mode "resize"
-
-## Looks - i3gaps
-
-smart_gaps on
-gaps inner 15
-gaps outer 0
 # smart_borders on
 
-# class                 border  backgr. text    indicator child_border
-client.focused          #9E9E9E #9E9E9E #9E9E9E #9E9E9E   #9E9E9E
-client.focused_inactive #000000 #000000 #000000 #000000   #000000
-client.unfocused        #000000 #000000 #000000 #000000   #000000
-client.urgent           #000000 #000000 #000000 #000000   #000000
-client.placeholder      #000000 #000000 #000000 #000000   #000000
-
-client.background       #ffffff
-
-# Multi-monitor
+# ** multi-monitor
 
 set $displayMode "Set display mode [d]esk [l]aptop"
 bindsym $mod+x mode $displayMode
@@ -143,7 +156,7 @@ mode $displayMode {
     bindsym Escape mode "default"
 }
 
-# i3bar
+# ** i3bar
 
 bar {
   i3bar_command i3bar -t
@@ -176,3 +189,4 @@ bar {
   #   urgent_workspace   #2f343a #900000 #ffffff
   # }
 }
+    
