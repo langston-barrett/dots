@@ -1,0 +1,9 @@
+version: '3'
+services:
+  syncthing:
+    image: syncthing
+    ports:
+    - "8888:8384"
+    - "22000:8887"
+    volumes:
+    - ./syncthing:/data

@@ -1,0 +1,3 @@
+* server
+
+  Ports 8885-8888 are mine
