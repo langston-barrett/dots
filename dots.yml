@@ -206,7 +206,7 @@
 
     # rather than diffing the config file, just run some commands...
     - name: configure qutebrowser
-      command: qutebrowser "{{ setting }}""
+      command: qutebrowser "{{ setting }}"
       when: "not ci"
       with_items:
         - setting: ':set fonts.monospace Hack'
