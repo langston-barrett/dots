@@ -25,6 +25,7 @@ in {
     # General graphical packages
     alacritty
     master.dropbox
+    master.signal-desktop
     firefox
     qutebrowser
     kcolorchooser

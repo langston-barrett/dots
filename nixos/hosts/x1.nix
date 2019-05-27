@@ -11,6 +11,7 @@
 
     ../audio.nix
     ../networking.nix
+    ../steam.nix
     ../x.nix
     # ../wayland.nix
   ];
@@ -32,18 +33,16 @@
   networking.hostName = "langston-x1"; # Define your hostname.
   # networking.networkmanager.enable = true;
 
-  services.xserver = {
-    synaptics = {
-      enable = true;
-      # OSX-like "Natural" two-finger scrolling
-      twoFingerScroll = true;
-      horizTwoFingerScroll = true;
-      horizEdgeScroll = false;
-      additionalOptions = ''
-        Option "VertScrollDelta"  "-75"
-        Option "HorizScrollDelta" "-75"
-      '';
-    };
+  services.xserver.synaptics = {
+    enable = true;
+    # OSX-like "Natural" two-finger scrolling
+    twoFingerScroll = true;
+    horizTwoFingerScroll = true;
+    horizEdgeScroll = false;
+    additionalOptions = ''
+      Option "VertScrollDelta"  "-75"
+      Option "HorizScrollDelta" "-75"
+    '';
   };
 
   nixpkgs.config.allowUnfree = true; # dropbox

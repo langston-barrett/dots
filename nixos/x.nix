@@ -31,6 +31,7 @@ in {
 
     enable = true;
     layout = "us";
+    videoDrivers = [ "intel" ];
 
     displayManager = {
       lightdm.enable = true;

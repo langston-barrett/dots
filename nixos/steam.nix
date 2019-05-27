@@ -11,5 +11,10 @@
     steam
     # TODO
     #xhost # for running `xhost +` when steam doesn't work
+
+    # see also x.nix#videoDrivers
+    # are these necessary?
+    mesa
+    mesa_drivers
   ];
 }
