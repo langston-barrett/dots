@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 let
-  mpd_mopidy = "mpd";
-  mpd_port   = 6600;
-  music_dir  = "/home/siddharthist/Dropbox/langston/music";
+  mpd_mopidy  = "mopidy";
+  mpd_port    = 6600;
+  music_dir   = "/home/siddharthist/music";
 in {
   environment.systemPackages = with pkgs; [
     flac
@@ -14,12 +14,18 @@ in {
     gst_plugins_good
     gst_plugins_bad
     gst_plugins_ugly
-  ];
+  ] ++ (if mpd_mopidy == "mopidy" then [ mopidy ] else []);
 
+  # For file access. Remember to chmod 0750 all directories in the music_dir
+  # chain.
+  users.users.mopidy = {
+    extraGroups = [ "audio" "siddharthist" ];
+  };
+
+  # You'll also want to run `sys start mopidy-scan.service`
   services.mopidy = {
     enable = if mpd_mopidy == "mopidy" then true else false;
-    # user = "siddharthist";
-    # group = "siddharthist";
+    dataDir = "/home/mopidy/";
     configuration = ''
       [local]
       media_dir = ${music_dir}
@@ -27,7 +33,7 @@ in {
 
       [file]
       enabled = true
-      media_dir = ${music_dir}
+      media_dirs = ${music_dir}
       follow_symlinks = true
 
       [soundcloud]
@@ -79,8 +85,18 @@ in {
   };
 
   # sound.enableMediaKeys = true; # sxhkd takes care of this
+  # see https://github.com/NixOS/nixpkgs/issues/39635
+  # TODO: see logs
   hardware.pulseaudio = {
     enable = true;
     package = pkgs.pulseaudioFull;
+    # tcp = {
+    #   enable = true;
+    #   anonymousClients.allowedIpRanges = [ "127.0.0.1" ];
+    # };
+    # configFile = pkgs.writeText "default.pa" ''
+    #   load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1
+    # '';
+    systemWide = true;
   };
 }
