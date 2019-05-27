@@ -62,7 +62,7 @@ alias nspr='nix-shell --pure --run'
 
 # TODO: replace with "nix run || nix log"
 alias nsrzsh='nix-shell --run "exec zsh"'
-alias nz='nix-shell --run "exec zsh" || nix-shell nix/shell.nix --run "exec zsh"'
+alias nz='nsrzsh || nsrzsh nix/shell.nix || nsrzsh tools/shell.nix'
 
 ## Generic
 
