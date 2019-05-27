@@ -3,6 +3,8 @@
 
 {
   imports = [
+    <nixos-hardware/common/cpu/intel>
+
     # Include the results of the hardware scan.
     ./hardware-configuration-x1.nix
     ../common.nix

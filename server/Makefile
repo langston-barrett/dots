@@ -19,6 +19,8 @@ result/%.tar.gz: %.nix
 .PHONY: to
 to:
 	$(RSYNC) \
+	  --delete \
+	  --delete-excluded \
 	  . \
 	  $(REMOTE)
 
