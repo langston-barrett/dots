@@ -1,9 +1,11 @@
 version: '3'
 services:
   syncthing:
-    image: syncthing
+    image: syncthing/syncthing
     ports:
     - "8888:8384"
-    - "22000:8887"
+    - "8887:22000"
+    - "8886:21027/udp"
     volumes:
-    - ./syncthing:/data
+    - ./syncthing/data:/srv/data
+    - ./syncthing/config:/srv/config

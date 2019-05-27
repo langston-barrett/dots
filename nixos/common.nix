@@ -95,6 +95,13 @@
 
   virtualisation.docker.enable = true;
 
+  services.syncthing = {
+    enable = true;
+    group = "siddharthist";
+    user = "siddharthist";
+    dataDir = "/home/siddharthist/sync";
+    openDefaultPorts = true;
+  };
   # Other common ones:
   # gcc #
   # python
