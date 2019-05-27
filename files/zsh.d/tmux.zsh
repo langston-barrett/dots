@@ -2,7 +2,8 @@
 
 #### tmux dracula theme
 
-if [[ $(uname -n) == langston-nixos ]]; then
+if [[ $(uname -n) == langston-nixos ]] || \
+   [[ $(uname -n) == langston-x1 ]]; then
 
   ## Colors
   local black='colour16'
