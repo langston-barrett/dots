@@ -82,6 +82,8 @@
       - src: org-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
         mode: "0750"
+      - src: qutebrowser/quickmarks
+        dst: "{{ xdg_config_home }}/qutebrowser/quickmarks"
       - src: ranger/commands.py
         dst: "{{ xdg_config_home }}/ranger/commands.py"
       - src: ranger/rc.conf
