@@ -15,6 +15,7 @@
 *** [[http://themonadreader.wordpress.com/feed/][The Monad.Reader - Edward Kmett]]
 *** [[https://www.reddit.com/r/haskell/.rss][Haskell reddit]]
 *** [[http://justtesting.org/rss][Just Testing]]
+*** [[https://ryanglscott.github.io/feed.xml][Ryan G.L. Scott]]
 ** emacs
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
