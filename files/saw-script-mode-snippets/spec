@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: spec
+# key: spec*
+# --
+let $1 = do {
+};

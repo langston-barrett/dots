@@ -93,6 +93,9 @@
         mode: "0750"
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
+      - src: saw-script-mode-snippets
+        dst: "{{ home }}/.emacs.d/private/snippets/saw-script-mode"
+        mode: "0750"
       - src: sh-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
         mode: "0750"

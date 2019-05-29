@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: llvm-load-module
+# key: llvm_lo*
+# --
+m <- llvm_load_module "$1";
