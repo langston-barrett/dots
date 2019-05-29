@@ -9,24 +9,15 @@ RSYNC := rsync \
 	     --exclude=log \
 		 --include='.*'
 
-result/%.tar.gz: %.nix
-	nix-build $<
-
-%.image: result/%.tar.gz
-	sudo docker load < result
-	touch $@
-
 .PHONY: to
 to:
 	$(RSYNC) \
-	  --delete \
-	  --delete-excluded \
 	  . \
 	  $(REMOTE)
 
 .PHONY: from
 from:
-	$(RSYNC) $(REMOTE) .
+	$(RSYNC) --exclude=code $(REMOTE) .
 
 .PHONY: run
 run: syncthing.image

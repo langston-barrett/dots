@@ -66,6 +66,10 @@ alias batp='bat --paging=always'
 alias less='echo Use \\ less or batp'
 export BAT_PAGER='less'
 
+batc() {
+  bat "$1" |& xsel -ib
+}
+
 copy_last_command() {
   echo "!!" | xsel -ib
 }
