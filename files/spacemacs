@@ -695,7 +695,7 @@ you should place your code here."
     (define-key symbol-overlay-map (kbd "d") nil)
 
     (defun saw-script-ignore-function (symbol)
-      (symbol-overlay-match-keyword-list symbol '("let" "do" "include")))
+      (symbol-overlay-match-keyword-list symbol saw-script-keywords))
     (defun haskell-ignore-function (symbol)
       (symbol-overlay-match-keyword-list
        symbol
