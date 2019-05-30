@@ -692,7 +692,18 @@ you should place your code here."
 
     ;; Don't override delete or word movement, it's confusing
     (define-key symbol-overlay-map (kbd "w") nil)
-    (define-key symbol-overlay-map (kbd "d") nil))
+    (define-key symbol-overlay-map (kbd "d") nil)
+
+    (defun saw-script-ignore-function (symbol)
+      (symbol-overlay-match-keyword-list symbol '("let" "do" "include")))
+    (defun haskell-ignore-function (symbol)
+      (symbol-overlay-match-keyword-list
+       symbol
+       '("let" "rec" "do" "in" "where" "module" "import")))
+    (add-to-list 'symbol-overlay-ignore-functions
+                 '(saw-script-mode . saw-script-ignore-function))
+    (add-to-list 'symbol-overlay-ignore-functions
+                 '(haskell-mode . haskell-ignore-function)))
 
 ;;;;; eshell
 
