@@ -69,7 +69,7 @@ This function should only modify configuration layer settings."
      (c-c++ :variables c-c++-enable-clang-support t
                        c-c++-enable-clang-format-on-save t
                        c-c++-enable-auto-newline t)
-     agda
+     ;; agda
      racket
      javascript ; json
      bibtex ; org-ref!
@@ -673,21 +673,26 @@ you should place your code here."
   (with-eval-after-load 'symbol-overlay
 
     (require 'cursor-sensor)
+    (add-hook 'prog-mode-hook 'symbol-overlay-mode)
+    (add-hook 'prog-mode-hook 'cursor-sensor-mode)
 
-    (defun my/symbol-overlay-cursor-hook (window oldpos entered-or-left)
-      ;; TODO: enter a transient state
+    ;; TODO: enter a transient state
+    ;; Do something when the cursor is on a highlighted symbol
+    (defun my/cursor-function (window oldpos entered-or-left)
       (when (equal entered-or-left 'entered)
         (message "entered")))
-    (setq symbol-overlay-cursor-hook 'my/symbol-overlay-cursor-hook)
+    (defun my/symbol-overlay-overlay-created-function (ov)
+      (overlay-put ov 'cursor-sensor-functions '(my/cursor-function)))
+
+    (add-to-list 'symbol-overlay-overlay-created-functions
+                 'my/symbol-overlay-overlay-created-function)
 
     (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
     (define-key symbol-overlay-map (kbd "?") 'symbol-overlay-map-help)
 
     ;; Don't override delete or word movement, it's confusing
     (define-key symbol-overlay-map (kbd "w") nil)
-    (define-key symbol-overlay-map (kbd "d") nil)
-
-    (add-hook 'prog-mode-hook 'symbol-overlay-mode))
+    (define-key symbol-overlay-map (kbd "d") nil))
 
 ;;;;; eshell
 
@@ -731,7 +736,7 @@ you should place your code here."
 ;;;;; cheatsheet
 
   (when (require 'cheatsheet nil 'noerror)
-    (require 'my-cheatsheet)
+    ;; (require 'my-cheatsheet)
     (spacemacs/set-leader-keys
       ;; 'o' is the "user key"
       ;; 'C' for 'cheatsheet'
@@ -1295,45 +1300,47 @@ will not be modified."
 
 ;;;;; Racket
 
+  (setq my-structurally-navigating nil)
+
+  (defun my/toggle-structural-nav ()
+    (interactive)
+    (if my-structurally-navigating
+        (progn
+          (setq my-structurally-navigating nil)
+          (lispy-mode -1)
+          (evil-local-set-key 'normal ">" 'evil-shift-right)
+          (evil-local-set-key 'normal "<" 'evil-shift-left)
+          (evil-local-set-key 'normal "f" 'evil-find-char)
+          (evil-local-set-key 'normal "b" 'evil-backward-word-begin)
+          (evil-local-set-key 'normal "h" 'evil-backward-char)
+          (evil-local-set-key 'normal "j" 'evil-next-line)
+          (evil-local-set-key 'normal "k" 'evil-previous-line)
+          (evil-local-set-key 'normal "l" 'evil-forward-char))
+        (progn
+          (setq my-structurally-navigating t)
+          (lispy-mode 1)
+          (evil-local-set-key 'normal ">" 'sp-forward-slurp-sexp)
+          (evil-local-set-key 'normal "<" 'lispy-barf)
+          (evil-local-set-key 'normal "f" 'lispy-flow)
+          (evil-local-set-key 'normal "b" 'lispy-back)
+          (evil-local-set-key 'normal "h" 'lispy-left)
+          (evil-local-set-key 'normal "j" 'lispy-down)
+          (evil-local-set-key 'normal "k" 'lispy-up)
+          (evil-local-set-key 'normal "l" 'lispy-right))))
+
+  (dolist (mode (list 'racket-mode 'emacs-lisp-mode))
+    (spacemacs/set-leader-keys-for-major-mode mode
+      "n"   'my/toggle-structural-nav
+      ">"   'sp-forward-slurp-sexp
+      "<"   'lispy-barf
+      "ic"  'lispy-clone
+      "xf"  'lispy-delete
+      "xb"  'lispy-delete-backward))
+
   (with-eval-after-load 'lispy
     (add-hook 'emacs-lisp-mode-hook (lambda () (lispy-mode 1)))
     (add-hook 'racket-mode-hook (lambda () (lispy-mode 1)))
     (add-hook 'lispy-mode-hook #'lispyville-mode)
-
-    (setq my-structurally-navigating nil)
-
-    (defun my/toggle-structural-nav ()
-      (interactive)
-      (if my-structurally-navigating
-          (progn
-            (setq my-structurally-navigating nil)
-            (evil-local-set-key 'normal ">" 'evil-shift-right)
-            (evil-local-set-key 'normal "<" 'evil-shift-left)
-            (evil-local-set-key 'normal "f" 'evil-find-char)
-            (evil-local-set-key 'normal "b" 'evil-backward-word-begin)
-            (evil-local-set-key 'normal "h" 'evil-backward-char)
-            (evil-local-set-key 'normal "j" 'evil-next-line)
-            (evil-local-set-key 'normal "k" 'evil-previous-line)
-            (evil-local-set-key 'normal "l" 'evil-forward-char))
-          (progn
-            (setq my-structurally-navigating t)
-            (evil-local-set-key 'normal ">" 'sp-forward-slurp-sexp)
-            (evil-local-set-key 'normal "<" 'lispy-barf)
-            (evil-local-set-key 'normal "f" 'lispy-flow)
-            (evil-local-set-key 'normal "b" 'lispy-back)
-            (evil-local-set-key 'normal "h" 'lispy-left)
-            (evil-local-set-key 'normal "j" 'lispy-down)
-            (evil-local-set-key 'normal "k" 'lispy-up)
-            (evil-local-set-key 'normal "l" 'lispy-right))))
-
-    (dolist (mode (list 'racket-mode 'emacs-lisp-mode))
-      (spacemacs/set-leader-keys-for-major-mode mode
-        "n"   'my/toggle-structural-nav
-        ">"   'sp-forward-slurp-sexp
-        "<"   'lispy-barf
-        "ic"  'lispy-clone
-        "xf"  'lispy-delete
-        "xb"  'lispy-delete-backward))
 
     ;; Delete keymap
     (define-key lispy-mode-map (kbd "d") nil) ;; delete old binding
@@ -1581,15 +1588,7 @@ This function is called at the very end of Spacemacs initialization."
     (racket-mode faceup company-quickhelp utop caml ocp-indent merlin graphviz-dot-mode web-beautify tern prettier-js livid-mode skewer-mode js2-refactor multiple-cursors csv-mode js2-mode js-doc impatient-mode helm-gtags ggtags counsel-gtags add-node-modules-path org-noter yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-evil toml-mode toc-org tao-theme symon string-inflection stickyfunc-enhance srefactor spaceline-all-the-icons smeargle smart-hungry-delete simple-call-tree shell-pop restart-emacs ranger rainbow-mode rainbow-identifiers rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort proof-general pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer outshine origami orgit org-ref org-projectile org-present org-pomodoro org-mime org-download org-bullets org-brain org-board open-junk-file nix-mode nameless multi-term move-text mmm-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-haskell lorem-ipsum live-py-mode link-hint intero insert-shebang indent-guide importmagic ialign hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-haskell flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify elisp-slime-nav elfeed-web elfeed-org elfeed-goodies editorconfig dumb-jump dotenv-mode doom-modeline disaster direnv dimmer diminish define-word dante cython-mode counsel-projectile company-statistics company-shell company-rtags company-nixos-options company-go company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode cargo auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((org-src-preserve-indentation . t)
-     (eval defun my/arxiv-link
-           (no)
-           "Browse a arxiv link"
-           (browse-url
-            (concat "https://arxiv.org/abs/" no)))
-     (eval org-add-link-type "arxiv"
-           (quote my/arxiv-link))
-     (python-shell-interpreter . python3\.7)
+    ((python-shell-interpreter . python3\.7)
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
      (dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
      (agda2-program-args "-i../deps/agda-stdlib/src" "-i../deps/agda-base/src")
