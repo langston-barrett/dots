@@ -684,8 +684,8 @@ you should place your code here."
     (defun my/symbol-overlay-overlay-created-function (ov)
       (overlay-put ov 'cursor-sensor-functions '(my/cursor-function)))
 
-    (add-to-list 'symbol-overlay-overlay-created-functions
-                 'my/symbol-overlay-overlay-created-function)
+    ;; (add-to-list 'symbol-overlay-overlay-created-functions
+    ;;              'my/symbol-overlay-overlay-created-function)
 
     (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
     (define-key symbol-overlay-map (kbd "?") 'symbol-overlay-map-help)
@@ -930,6 +930,34 @@ you should place your code here."
     (setq browse-url-browser-function 'browse-url-generic)
     (setq browse-url-generic-program "qutebrowser"))
 
+  (with-eval-after-load 'elfeed
+    (spacemacs|define-transient-state elfeed
+      :title "Elfeed Transient State"
+      :doc "
+     Navigate       ^^^^      Filtering      ^^    Other^^
+     ───────────────^^^^──    ───────────────^^──  ─────^^───
+     [_RET_] show entry       [_s_] live filter    [_q_] exit transient state
+     [_r_] mark read          [_S_] set filter     [_Q_] exit elfeed
+     [_b_] open browser"
+      :bindings
+      ("q" nil :exit t)
+      ("Q" elfeed-search-quit-window :exit t)
+
+      ("RET" elfeed-search-show-entry)
+      ("r" elfeed-search-untag-all-unread)
+      ("b" elfeed-search-browse-url)
+
+      ("s" elfeed-search-live-filter)
+      ("S" elfeed-search-set-filter))
+
+    (spacemacs/set-leader-keys-for-major-mode 'elfeed-search-mode
+      "." 'spacemacs/elfeed-transient-state/body)
+
+    (add-hook 'elfeed-search-mode-hook
+              'spacemacs/elfeed-transient-state/body))
+
+
+
   ;; https://github.com/iqbalansari/dotEmacs/blob/master/config/rss.org
   ;; (defun my/elfeed-open-in-w3m ()
   ;;   (interactive)
@@ -949,7 +977,7 @@ you should place your code here."
 
   ;; TODO: is this the right mode hook?
   ;; (require 'elfeed
-  ;;          (add-hook 'elfeed-show-mode-hook my/elfeed-mode-kbd))
+
 
 ;;;;; Org
 
