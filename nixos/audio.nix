@@ -97,6 +97,6 @@ in {
     # configFile = pkgs.writeText "default.pa" ''
     #   load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1
     # '';
-    systemWide = true;
+    # systemWide = true;
   };
 }
