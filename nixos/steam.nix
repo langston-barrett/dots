@@ -14,7 +14,8 @@
 
     # see also x.nix#videoDrivers
     # are these necessary?
-    mesa
+
+    # mesa # not found?
     mesa_drivers
   ];
 }

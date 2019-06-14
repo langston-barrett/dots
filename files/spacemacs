@@ -1579,18 +1579,19 @@ will not be modified."
 
 ;;;;; eacl
 
+  ;; This doesn't work as a 'let' binding??
+  (defun my/eacl-complete (s)
+    (progn (insert s)
+           (eacl-complete-line)))
+
   (defun my/smart-insert-import ()
     (interactive)
     (evil-open-below 1)
     (evil-beginning-of-line)
-    (let ((eacl-complete
-           (lambda (s)
-             (progn (insert s)
-                    (eacl-complete-line)))))
-      (cond ((eq major-mode 'haskell-mode) (eacl-complete "import          "))
-            ((eq major-mode 'coq-mode) (eacl-complete "Require "))
-            ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
-            ((eq major-mode 'c-mode) (call-interacively 'my/libc-include)))))
+    (cond ((eq major-mode 'haskell-mode) (my/eacl-complete "import          "))
+          ((eq major-mode 'coq-mode) (my/eacl-complete "Require "))
+          ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
+          ((eq major-mode 'c-mode) (call-interacively 'my/libc-include))))
 
   ;; 'i' for 'insert'
   ;; 'i' for 'import'
