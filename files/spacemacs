@@ -937,9 +937,11 @@ you should place your code here."
       :doc "
      Navigate       ^^^^      Filtering      ^^    Other^^
      ───────────────^^^^──    ───────────────^^──  ─────^^───
-     [_RET_] show entry       [_s_] live filter    [_q_] exit transient state
-     [_r_] mark read          [_S_] set filter     [_Q_] exit elfeed
-     [_b_] open browser"
+     [_RET_] show entry       [_s_] live filter    [_g_] update
+     [_r_] mark read          [_S_] set filter     [_q_] exit transient state
+     [_b_] open browser                            [_Q_] exit elfeed
+     [_j_] next line
+     [_k_] previous line"
       :bindings
       ("q" nil :exit t)
       ("Q" elfeed-search-quit-window :exit t)
@@ -947,6 +949,10 @@ you should place your code here."
       ("RET" elfeed-search-show-entry)
       ("r" elfeed-search-untag-all-unread)
       ("b" elfeed-search-browse-url)
+      ("k" evil-previous-visual-line)
+      ("j" evil-next-visual-line)
+
+      ("g" elfeed-update)
 
       ("s" elfeed-search-live-filter)
       ("S" elfeed-search-set-filter))
