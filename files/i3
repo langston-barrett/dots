@@ -68,10 +68,10 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3
   
 # *** focus
 
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+; focus right
 
 # *** move
 

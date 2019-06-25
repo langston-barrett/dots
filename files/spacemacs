@@ -576,6 +576,10 @@ you should place your code here."
 
   ;; Set escape keybinding to "jk"
   (setq-default evil-escape-key-sequence "jk")
+  (define-key evil-motion-state-map "j" 'evil-backward-char)
+  (define-key evil-motion-state-map ";" 'evil-forward-char)
+  (define-key evil-motion-state-map "k" 'evil-next-line)
+  (define-key evil-motion-state-map "l" 'evil-previous-line)
 
   ;; Source: http://www.emacswiki.org/emacs-en/download/misc-cmds.el
   (defun my/revert-buffer-no-confirm ()
