@@ -1146,6 +1146,10 @@ will not be modified."
 
 ;;;;; C/C++
 
+  (add-hook 'c++-mode-hook
+            (lambda () (setq flycheck-clang-include-path
+                             (list (expand-file-name "~/code/mate/submodules/souffle/include")))))
+
   ;; put in ~/.emacs.d/private/local/
   ;; https://github.com/llvm-mirror/llvm/blob/master/utils/emacs/llvm-mode.el
   (require 'llvm-mode nil 'noerror)
