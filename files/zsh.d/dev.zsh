@@ -64,10 +64,16 @@ alias nspr='nix-shell --pure --run'
 alias nsrzsh='nix-shell --run "exec zsh"'
 alias nz='nsrzsh || nsrzsh nix/shell.nix || nsrzsh tools/shell.nix'
 
+run_from_unstable () {
+  nix-shell -p "with import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { }; $1" --run "$1 & disown"
+
+}
+
 ## Generic
 
 alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
+alias docker='sudo -g docker docker'
 
 proj_test () {
   test_cmd="make test"
