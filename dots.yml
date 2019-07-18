@@ -34,6 +34,8 @@
         dst: "{{ xdg_config_home }}/compton.conf"
       - src: config.nix
         dst: "{{ xdg_config_home }}/nixpkgs/config.nix"
+      - src: gdbinit
+        dst: "{{ home }}/.gdbinit"
       - src: git/gitconfig
         dst: "{{ home }}/.gitconfig"
       - src: git/galois.gitconfig
