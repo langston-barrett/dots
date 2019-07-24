@@ -1,0 +1,33 @@
+# -*- mode: snippet -*-
+# key: graph
+# name: graph
+# contributor: Langston Barrett
+# --
+#+begin_src dot :file tmp.png :cmdline -Kdot -Tpng
+  digraph {
+
+    SHA256 [shape=box];
+    SHA256_Init [shape=diamond];
+    SHA256_Update [shape=box];
+    SHA256_Final [shape=box];
+    EVP_MD_CTX_clear_flags [shape=diamond];
+    engine_table_select [shape=diamond];
+
+    HKDF -> HMAC;
+    HMAC -> SHA256;
+    HMAC -> EVP_Digest;
+    EVP_Digest -> EVP_DigestInit_ex;
+    EVP_Digest -> EVP_DigestUpdate;
+    EVP_Digest -> EVP_DigestFinal;
+    EVP_DigestInit_ex -> SHA256_Init;
+    EVP_DigestInit_ex -> EVP_MD_CTX_clear_flags;
+    EVP_DigestUpdate -> SHA256_Update;
+    EVP_DigestFinal -> SHA256_Final;
+    EVP_DigestFinal -> EVP_DigestUpdate;
+    SHA256 -> SHA256_Init;
+    SHA256 -> SHA256_Update;
+    SHA256 -> SHA256_Final;
+    SHA256_Final -> SHA256_Update;
+    SHA256 -> engine_table_select;
+  }
+#+end_src
