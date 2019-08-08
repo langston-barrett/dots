@@ -29,9 +29,9 @@
   # services.tzupdate.enable = true;
 
   nix = {
-    maxJobs = 4;
-    buildCores = 4;
-    gc.automatic = true;
+    maxJobs = 8;
+    buildCores = 8;
+    # gc.automatic = true;
     useSandbox = true;
 
     # Use a local clone of nixpkgs at /etc/nixpkgs
