@@ -34,10 +34,12 @@ alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
 alias gcb='git checkout -b'
 alias gd='git diff'
-alias gdc='git diff --cached'
+alias gds='git diff --cached'
 alias gdm='git diff master'
 alias gf='git fetch'
 alias gfa='git fetch --all'
+alias gFp='git pull origin'
+alias gFu='git pull upstream'
 alias gm='git merge'
 alias gmum='git merge upstream/master'
 alias gp='git checkout master && git pull && git checkout -'
@@ -48,9 +50,24 @@ alias grhm='git reset --hard origin/master'
 alias gri='git rebase -i'
 alias grv='git remote -v'
 alias gs='git status'
+alias gss='git status --short'
 
 function github_clone { git clone "https://github.com/$1" }
 function git_clone_mine { git clone "https://github.com/siddharthist/$1" }
+
+function git() {
+  if [[ "$1" == "push" ]]; then
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ $branch == "master" ]]; then
+      case "$(basename $(pwd))" in
+        "chess") echo "Refusing to push to master" ;;
+        *) command git "$@"
+      esac
+    fi
+  else
+    command git "$@"
+  fi
+}
 
 ## Nix
 alias nb='nix-build'
