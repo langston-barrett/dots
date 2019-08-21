@@ -95,6 +95,10 @@ This function should only modify configuration layer settings."
      rust
      ;; saw-script
      nixos
+     (scala :variables
+            scala-auto-start-ensime t
+            scala-enable-eldoc t) ;; type at point
+
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
      )
@@ -534,6 +538,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; https://github.com/syl20bnr/spacemacs/issues/8853
   ;; (load-file (let ((coding-system-for-read 'utf-8))
   ;;              (shell-command-to-string "agda-mode locate")))
+
+  (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "stable.melpa.org/packages/"))
+  (add-to-list 'package-pinned-packages '(ensime . "melpa-stable"))
 
   (let ((sz (if (> (x-display-pixel-width) 5000) 28 18)))
     (setq-default dotspacemacs-default-font `("Hack"
@@ -1493,6 +1500,8 @@ will not be modified."
     (progn
       (setq lsp-java-format-comments-enabled nil)
       (setq lsp-java-format-comments-enabled nil)))
+
+;;;;; Scala
 
 ;;;;; Agda
 
