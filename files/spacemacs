@@ -97,7 +97,7 @@ This function should only modify configuration layer settings."
      nixos
      (scala :variables
             scala-auto-start-ensime t
-            scala-enable-eldoc t) ;; type at point
+            scala-enable-eldoc nil) ;; type at point (sometimes freezes)
 
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
@@ -982,7 +982,12 @@ you should place your code here."
       "." 'spacemacs/elfeed-transient-state/body)
 
     (add-hook 'elfeed-search-mode-hook
-              'spacemacs/elfeed-transient-state/body))
+              'spacemacs/elfeed-transient-state/body)
+
+    (defun my/elfeed-hydra-hook ()
+      (when (equal major-mode 'elfeed-search-mode)
+        (spacemacs/elfeed-transient-state/body)))
+    (add-hook 'focus-in-hook 'my/elfeed-hydra-hook))
 
 
 
@@ -1502,6 +1507,15 @@ will not be modified."
       (setq lsp-java-format-comments-enabled nil)))
 
 ;;;;; Scala
+
+  (with-eval-after-load 'scala
+    (setq ensime-startup-notification nil)
+    (defun my/sbt-hydra-hook ()
+      (when (equal major-mode 'sbt-mode)
+        (sbt-hydra)))
+    (add-hook 'focus-in-hook 'my/sbt-hydra-hook)
+    (spacemacs/set-leader-keys-for-major-mode 'scala-mode
+      "ee" 'ensime-print-errors-at-point))
 
 ;;;;; Agda
 
