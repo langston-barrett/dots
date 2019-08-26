@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# key: bash
-# name: bash
+# key: nix
+# name: nix
 # contributor: Langston Barrett
 # --
-#+begin_src bash :results verbatim
+#+begin_src nix
 #+end_src

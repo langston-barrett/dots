@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# key: bash
-# name: bash
+# key: java
+# name: java
 # contributor: Langston Barrett
 # --
-#+begin_src bash :results verbatim
+#+begin_src java
 #+end_src

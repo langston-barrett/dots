@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# key: bash
-# name: bash
+# key: c
+# name: c
 # contributor: Langston Barrett
 # --
-#+begin_src bash :results verbatim
+#+begin_src c
 #+end_src
