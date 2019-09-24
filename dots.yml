@@ -50,6 +50,8 @@
       - src: haskell-mode-snippets
         dst: "{{ home }}/.emacs.d/private/snippets/haskell-mode"
         mode: "0750"
+      - src: home.nix
+        dst: "{{ xdg_config_home }}/nixpkgs/home.nix"
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
       - src: i3status.conf
@@ -205,6 +207,15 @@
       git:
         repo: 'https://github.com/syl20bnr/spacemacs'
         dest: "{{ home }}/.emacs.d"
+        clone: yes
+        update: no
+
+    # TODO and build
+    # nix-shell --pure -p libtool -p cmake -p libvterm --run "cmake .. && make"
+    - name: clone emacs-libvterm
+      git:
+        repo: 'https://github.com/akermu/emacs-libvterm.git'
+        dest: "{{ home }}/.emacs.d/private"
         clone: yes
         update: no
 

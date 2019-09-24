@@ -87,7 +87,7 @@
 (defvar smithy-font-lock-defaults
   `(((,smithy--keyword-regexp . 'smithy-keyword-face)
      (,smithy--operator-regexp . 'smithy-operator-face)
-     ;; ("@\w+" . 'font-lock-function-name-face)
+  ;; ("@\w+" . 'font-lock-function-name-face)
      )
     nil nil nil
     (font-lock-extend-after-change-region-function . smithy--extend-after-change-region-function))
