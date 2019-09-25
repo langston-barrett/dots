@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+
+
   # Encrypted DNS queries
   services.dnscrypt-proxy = {
     enable = true;
@@ -20,6 +22,7 @@
   };
 
   security = {
+    # auditd.enable = true;
     apparmor = {
       enable = true;
       confineSUIDApplications = true; # install apparmor profiles for SUID apps

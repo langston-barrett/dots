@@ -86,9 +86,9 @@ This function should only modify configuration layer settings."
      (haskell :variables ; haskell-enable-hindent-style "fundamental"
                          haskell-completion-backend 'dante
                          haskell-enable-hindent nil)
-     (latex :variables
-            latex-build-command "LatexMk"
-            latex-enable-auto-fill t)
+     ;; (latex :variables
+     ;;        latex-build-command "LatexMk"
+     ;;        latex-enable-auto-fill t)
      markdown
      org
      outshine
@@ -1060,9 +1060,9 @@ you should place your code here."
     (add-hook 'org-mode-hook
               (lambda () (progn
                            (when (require 'agda-input nil 'noerror) (set-input-method "Agda"))
-                           (add-hook 'after-save-hook
-                                     '(lambda () (progn (org-babel-tangle)
-                                                        (message "%s tangled" buffer-file-name))))
+                           ;; (add-hook 'after-save-hook
+                           ;;           '(lambda () (progn (org-babel-tangle)
+                           ;;                              (message "%s tangled" buffer-file-name))))
 
                            ;; (add-hook 'org-babel-post-tangle-hook
                            ;;           '(lambda () (indent-region (point-min) (point-max))))
@@ -1670,7 +1670,8 @@ This function is called at the very end of Spacemacs initialization."
     (sqlup-mode sql-indent exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((python-shell-interpreter . "python3.7")
+    ((org-src-preserve-indentation . t)
+     (python-shell-interpreter . "python3.7")
      (python-shell-interpreter . python3\.7)
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
      (dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
