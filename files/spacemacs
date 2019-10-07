@@ -75,10 +75,10 @@ This function should only modify configuration layer settings."
      bibtex ; org-ref!
      coq
      emacs-lisp
-     ;; html
-     ;; javascript
      ;; (python :variables python-enable-yapf-format-on-save t)
-     (python :variables python-formatter 'yapf) ; only on develop
+     ;; (python :variables python-formatter 'yapf) ; only on develop
+     lsp
+     (python :variables python-backend 'lsp)
 
      ;; (haskell :variables haskell-enable-hindent-style "fundamental"
      ;;          haskell-completion-backend 'hie)
@@ -109,73 +109,76 @@ This function should only modify configuration layer settings."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(emojify
-                                      ialign ; interactive align-regexp
-                                      smart-hungry-delete ; delete all whitespace at once
-                                      direnv              ; direnv + nix
-                                      math-symbols ; easily insert unicode latex macros
-                                      dhall-mode
-                                      lispy
-                                      lispyville
-                                      ;; all-the-icons
-                                      ;; w3m
-                                      ;; mmm-mode      ; markdown multi-mode
-                                      prop-menu ; needed for saw-script-mode
+   dotspacemacs-additional-packages
+   '(emojify
+     ialign ; interactive align-regexp
+     smart-hungry-delete ; delete all whitespace at once
+     direnv              ; direnv + nix
+     math-symbols ; easily insert unicode latex macros
+     dhall-mode
+     lispy
+     lispyville
+     ;; all-the-icons
+     ;; w3m
+     ;; mmm-mode      ; markdown multi-mode
+     prop-menu ; needed for saw-script-mode
 
-                                      ;; UI
-                                      cheatsheet ; self-explanatory
-                                      helpful    ; better elisp help
-                                      dimmer     ; dim inactive buffers
-                                        ; symon         ; system monitor
+     ;; UI
+     cheatsheet ; self-explanatory
+     helpful    ; better elisp help
+     dimmer     ; dim inactive buffers
+     olivetti
 
-                                      ;; ORG
-                                      ;; ox-gfm       ; github markdown export for org
-                                      org-board ; link archiving
-                                      link-hint ; TODO: keybindings
-                                      org-noter
+     ;; On ELPA, but fails to install from there?
+     ;; ORG
+     ;; ox-gfm       ; github markdown export for org
+     org-board ; link archiving
+     link-hint ; TODO: keybindings
+     org-noter
 
-                                      flycheck-mypy
-                                      doom-themes
+     flycheck-mypy
+     doom-themes
 
-                                      (symbol-overlay
-                                       :location (recipe :fetcher github
-                                                         :repo "siddharthist/symbol-overlay"))
+     (symbol-overlay
+      :location (recipe :fetcher github
+                        :repo "siddharthist/symbol-overlay"))
 
-                                      (eacl
-                                       :location (recipe :fetcher github
-                                                         :repo "redguardtoo/eacl"))
+     (eacl
+      :location (recipe :fetcher github
+                        :repo "redguardtoo/eacl"))
 
-                                      (haskell-pragma
-                                       :location (recipe :fetcher github
-                                                         :repo "travitch/haskell-pragma.el"))
+     (haskell-pragma
+      :location (recipe :fetcher github
+                        :repo "travitch/haskell-pragma.el"))
 
-                                      (dropbox-conflicts
-                                       :location (recipe :fetcher github
-                                                         :repo "jezcope/dropbox-conflicts-el"))
+     (dropbox-conflicts
+      :location (recipe :fetcher github
+                        :repo "jezcope/dropbox-conflicts-el"))
 
-                                      ;; (google-java-format
-                                      ;;  :location (recipe :fetcher github
-                                      ;;                    :repo "google/google-java-format"
-                                      ;;                    :files '("core/src/main/scripts/google-java-format.el")))
+     ;; (google-java-format
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "google/google-java-format"
+     ;;                    :files '("core/src/main/scripts/google-java-format.el")))
 
-                                      ;; here be big repos :'(
-                                      ;; https://framagit.org/steckerhalter/quelpa/issues/164
+     ;; here be big repos :'(
+     ;; https://framagit.org/steckerhalter/quelpa/issues/164
 
-                                      ;; (saw-script
-                                      ;;  :location (recipe :fetcher github
-                                      ;;                    :repo "GaloisInc/saw-script"
-                                      ;;                    :files '("saw-script.el")))
+     ;; (saw-script
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "GaloisInc/saw-script"
+     ;;                    :files '("saw-script.el")))
 
-                                      ;; (llvm-mode
-                                      ;;  :location (recipe :fetcher github
-                                      ;;                    :repo "llvm-mirror/llvm"
-                                      ;;                    :files '("utils/emacs/llvm-mode.el")))
+     ;; (llvm-mode
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "llvm-mirror/llvm"
+     ;;                    :files '("utils/emacs/llvm-mode.el")))
 
-                                      ;; (agda-input
-                                      ;;  :location (recipe :fetcher github
-                                      ;;                    :repo "agda/agda"
-                                      ;;                    :files '("src/data/emacs-mode/agda-input.el")))
-                                      )
+     ;; (agda-input
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "agda/agda"
+     ;;                    :files '("src/data/emacs-mode/agda-input.el")))
+     )
+
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
@@ -572,9 +575,6 @@ you should place your code here."
   ;; https://github.com/bbatsov/projectile/issues/1174
   (setq projectile-git-submodule-command "")
 
-  (when (boundp 'golden-ratio-exclude-modes)
-    (add-to-list 'golden-ratio-exclude-modes "pdf-view-mode"))
-
   ;; fonts
   ;; http://ergoemacs.org/emacs/emacs_list_and_set_font.html
   ;; (when (member "Symbola" (font-family-list))
@@ -646,11 +646,14 @@ you should place your code here."
     (setq dimmer-fraction 0.10)
     (dimmer-mode))
 
-  (golden-ratio-mode)
-  (setq golden-ratio-adjust-factor .90
-        golden-ratio-wide-adjust-factor .90)
+  (with-eval-after-load 'golden-ratio-mode
+    (when (boundp 'golden-ratio-exclude-modes)
+      (add-to-list 'golden-ratio-exclude-modes "pdf-view-mode"))
+    (golden-ratio-mode)
+    (setq golden-ratio-adjust-factor .90
+          golden-ratio-wide-adjust-factor .90))
 
-  (eval-after-load 'grep
+  (with-eval-after-load 'grep
     '(progn
        (dolist (v '("dist-newstyle/"
                     "dist/"))
@@ -670,6 +673,10 @@ you should place your code here."
     ;; 'p' for 'projectile'
     ;; 'a' for 'ag'
     "opa"  'my/projectile-ag-in-other-project)
+
+  ;; (with-eval-after-load 'darkroom
+  ;;   (setq darkroom-text-scale-increase 0.5)
+  ;;   (add-hook 'markdown-mode-hook 'darkroom-tentative-mode))
 
 ;;;;; symbol-overlay
 
@@ -1011,6 +1018,12 @@ you should place your code here."
   ;; TODO: is this the right mode hook?
   ;; (require 'elfeed
 
+;;;;; Klister
+
+  (with-eval-after-load 'klister-mode
+    (setq klister-command "../dist-newstyle/build/x86_64-linux/ghc-8.6.5/klister-0.1/x/klister-repl/build/klister-repl/klister-repl")
+    (spacemacs/set-leader-keys-for-major-mode 'klister-mode
+      "c"  'klister-run-current-buffer))
 
 ;;;;; Org
 
@@ -1118,6 +1131,7 @@ will not be modified."
        (haskell    . t)
        (java       . t)
        (python     . t)
+       (plantuml   . t)
        (shell      . t)
        ))
 
@@ -1630,6 +1644,8 @@ will not be modified."
     (evil-open-below 1)
     (evil-beginning-of-line)
     (cond ((eq major-mode 'haskell-mode) (my/eacl-complete "import          "))
+          ((eq major-mode 'scala-mode) (my/eacl-complete "import "))
+          ((eq major-mode 'python-mode) (my/eacl-complete "import "))
           ((eq major-mode 'coq-mode) (my/eacl-complete "Require "))
           ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
           ((eq major-mode 'c-mode) (call-interacively 'my/libc-include))))
@@ -1643,6 +1659,10 @@ will not be modified."
   (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
     "ii" 'my/smart-insert-import)
   (spacemacs/set-leader-keys-for-major-mode 'coq-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'scala-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'python-mode
     "ii" 'my/smart-insert-import)
 
   ) ;; end user-config
@@ -1664,13 +1684,32 @@ This function is called at the very end of Spacemacs initialization."
  '(flycheck-python-flake8-executable "python3")
  '(flycheck-python-pycompile-executable "python3")
  '(flycheck-python-pylint-executable "python3")
+ '(hl-todo-keyword-faces
+   (quote
+    (("TODO" . "#dc752f")
+     ("NEXT" . "#dc752f")
+     ("THEM" . "#2d9574")
+     ("PROG" . "#4f97d7")
+     ("OKAY" . "#4f97d7")
+     ("DONT" . "#f2241f")
+     ("FAIL" . "#f2241f")
+     ("DONE" . "#86dc2f")
+     ("NOTE" . "#b1951d")
+     ("KLUDGE" . "#b1951d")
+     ("HACK" . "#b1951d")
+     ("TEMP" . "#b1951d")
+     ("FIXME" . "#dc752f")
+     ("XXX" . "#dc752f")
+     ("XXXX" . "#dc752f"))))
  '(magit-log-section-arguments (quote ("-n256" "--decorate")))
  '(package-selected-packages
    (quote
-    (sqlup-mode sql-indent exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode counsel-css company-web web-completion-data add-node-modules-path exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e")))
  '(safe-local-variable-values
    (quote
-    ((python-shell-interpreter . "python3.7")
+    ((dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante")
+     (python-shell-interpreter . "python3.7")
      (python-shell-interpreter . python3\.7)
      (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
      (dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
