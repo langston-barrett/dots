@@ -817,6 +817,9 @@ you should place your code here."
     ;; 'x' for text
     "oxa"  'ialign-interactive-align)
 
+  (evil-define-key 'insert prog-mode-map
+    (kbd "<S-return>") 'hippie-expand)
+
 ;;;;; Ediff
 
   (with-eval-after-load 'ediff
@@ -1635,6 +1638,7 @@ will not be modified."
 ;;;;; eacl
 
   ;; This doesn't work as a 'let' binding??
+  ;; TODO: only consider files of the appropriate suffices
   (defun my/eacl-complete (s)
     (progn (insert s)
            (eacl-complete-line)))
@@ -1645,6 +1649,7 @@ will not be modified."
     (evil-beginning-of-line)
     (cond ((eq major-mode 'haskell-mode) (my/eacl-complete "import          "))
           ((eq major-mode 'scala-mode) (my/eacl-complete "import "))
+          ((eq major-mode 'java-mode) (my/eacl-complete "import "))
           ((eq major-mode 'python-mode) (my/eacl-complete "import "))
           ((eq major-mode 'coq-mode) (my/eacl-complete "Require "))
           ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
@@ -1661,6 +1666,8 @@ will not be modified."
   (spacemacs/set-leader-keys-for-major-mode 'coq-mode
     "ii" 'my/smart-insert-import)
   (spacemacs/set-leader-keys-for-major-mode 'scala-mode
+    "ii" 'my/smart-insert-import)
+  (spacemacs/set-leader-keys-for-major-mode 'java-mode
     "ii" 'my/smart-insert-import)
   (spacemacs/set-leader-keys-for-major-mode 'python-mode
     "ii" 'my/smart-insert-import)
