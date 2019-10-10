@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: doc
+# key: /*
+# --
+/**
+ * ${1:documentation}
+ *
+ * @param  ${2:param-name} ${3:param-desc}
+ * @return ${4:return-desc}
+ */

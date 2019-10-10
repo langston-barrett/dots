@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: set
+# name: Set
+# condition: (= (length "inst") (current-column))
+# contributor: Langston Barrett
+# --
+Set<${1:Class}>

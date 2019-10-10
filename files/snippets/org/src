@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: src
+# name: src
+# contributor: Langston Barrett
+# --
+#+begin_src
+#+end_src

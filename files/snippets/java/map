@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: map
+# name: Map
+# condition: (= (length "inst") (current-column))
+# contributor: Langston Barrett
+# --
+Map<${1:Key}, ${2:Value}>
