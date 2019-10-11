@@ -25,8 +25,9 @@ bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "fir
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Return exec alacritty
+bindsym $mod+Shift+Return exec alacritty -e sh -c "tmux" # Start tmux by default
 #bindsym $mod+Shift+Return exec urxvt
-bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)' 
+# bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)' 
 bindsym $mod+p exec ~/code/dots/files/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
 

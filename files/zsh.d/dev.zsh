@@ -56,6 +56,26 @@ alias gss='git status --short'
 function github_clone { git clone "https://github.com/$1" }
 function git_clone_mine { git clone "https://github.com/siddharthist/$1" }
 
+# https://stackoverflow.com/questions/3231804/in-bash-how-to-add-are-you-sure-y-n-to-any-command-or-alias#32708121
+prompt_confirm() {
+  while true; do
+    read -r -n 1 -p "${1:-Continue?} [y/n]: " REPLY
+    case $REPLY in
+      [yY]) echo ; return 0 ;;
+      [nN]) echo ; return 1 ;;
+      *) printf " \033[31m %s \n\033[0m" "invalid input"
+    esac
+  done
+}
+
+function git_delete_untracked {
+  for f in $(git ls-files --others --exclude-standard); do
+    if prompt_confirm "Want to delete $f?"; then
+      tp "$f"
+    fi
+  done
+}
+
 function git() {
   if [[ "$1" == "push" ]]; then
     branch=$(git rev-parse --abbrev-ref HEAD)
@@ -64,6 +84,8 @@ function git() {
         "chess") echo "Refusing to push to master" ;;
         *) command git "$@"
       esac
+    else
+      command git "$@"
     fi
   else
     command git "$@"
