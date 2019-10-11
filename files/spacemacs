@@ -95,6 +95,7 @@ This function should only modify configuration layer settings."
      rust
      ;; saw-script
      nixos
+     (java :variables java-backend 'lsp)
      (scala :variables
             scala-auto-start-ensime t
             scala-enable-eldoc nil) ;; type at point (sometimes freezes)
