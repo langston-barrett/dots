@@ -86,9 +86,9 @@ This function should only modify configuration layer settings."
      (haskell :variables ; haskell-enable-hindent-style "fundamental"
                          haskell-completion-backend 'dante
                          haskell-enable-hindent nil)
-     (latex :variables
-            latex-build-command "LatexMk"
-            latex-enable-auto-fill t)
+     ;; (latex :variables
+     ;;        latex-build-command "LatexMk"
+     ;;        latex-enable-auto-fill t)
      markdown
      org
      outshine
@@ -1051,6 +1051,8 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
+    (org-indent-mode 1)
+
 ;;;;;; org-ref
 
     (setq reftex-default-bibliography '("~/Dropbox/langston/bib/references.bib"))
@@ -1077,9 +1079,9 @@ you should place your code here."
     (add-hook 'org-mode-hook
               (lambda () (progn
                            (when (require 'agda-input nil 'noerror) (set-input-method "Agda"))
-                           (add-hook 'after-save-hook
-                                     '(lambda () (progn (org-babel-tangle)
-                                                        (message "%s tangled" buffer-file-name))))
+                           ;; (add-hook 'after-save-hook
+                           ;;           '(lambda () (progn (org-babel-tangle)
+                           ;;                              (message "%s tangled" buffer-file-name))))
 
                            ;; (add-hook 'org-babel-post-tangle-hook
                            ;;           '(lambda () (indent-region (point-min) (point-max))))
@@ -1680,112 +1682,7 @@ will not be modified."
 This is an auto-generated function, do not modify its content directly, use
 Emacs customize menu instead.
 This function is called at the very end of Spacemacs initialization."
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("6b2636879127bf6124ce541b1b2824800afc49c6ccd65439d6eb987dbf200c36" "6d589ac0e52375d311afaa745205abb6ccb3b21f6ba037104d71111e7e76a3fc" default)))
- '(evil-want-Y-yank-to-eol nil)
- '(flycheck-python-flake8-executable "python3")
- '(flycheck-python-pycompile-executable "python3")
- '(flycheck-python-pylint-executable "python3")
- '(hl-todo-keyword-faces
-   (quote
-    (("TODO" . "#dc752f")
-     ("NEXT" . "#dc752f")
-     ("THEM" . "#2d9574")
-     ("PROG" . "#4f97d7")
-     ("OKAY" . "#4f97d7")
-     ("DONT" . "#f2241f")
-     ("FAIL" . "#f2241f")
-     ("DONE" . "#86dc2f")
-     ("NOTE" . "#b1951d")
-     ("KLUDGE" . "#b1951d")
-     ("HACK" . "#b1951d")
-     ("TEMP" . "#b1951d")
-     ("FIXME" . "#dc752f")
-     ("XXX" . "#dc752f")
-     ("XXXX" . "#dc752f"))))
- '(magit-log-section-arguments (quote ("-n256" "--decorate")))
- '(package-selected-packages
-   (quote
-    (web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode counsel-css company-web web-completion-data add-node-modules-path exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
- '(pdf-view-midnight-colors (quote ("#b2b2b2" . "#292b2e")))
- '(safe-local-variable-values
-   (quote
-    ((dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante")
-     (python-shell-interpreter . "python3.7")
-     (python-shell-interpreter . python3\.7)
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl lib:saw-script --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "shell.nix" "--pure" "--run" "cabal configure --enable-tests && cabal repl --builddir=dist/dante")
-     (agda2-program-args "-i../deps/agda-stdlib/src" "-i../deps/agda-base/src")
-     (agda2-program-args "-i../deps/agda-stdlib" "-i../deps/agda-base")
-     (agda2-program-args "-i../../deps/agda-stdlib" "-i../../deps/agda-base")
-     (eval progn
-           (load-file "/nix/store/g4jpmcr5pgask3g61mvclnfw0wfi3j8z-Agda-2.6.1-data/share/ghc-8.6.4/x86_64-linux-ghc-8.6.4/Agda-2.6.1/emacs-mode/agda2.el")
-           (setq agda2-program-args
-                 (quote
-                  ("-ideps/agda-stdlib" "-ideps/agda-base"))))
-     (eval progn
-           (load-file "/nix/store/nkiqj8c08sa7x05vabig6m6bfj5sv731-Agda-2.5.4.1-data/share/ghc-8.4.4/x86_64-linux-ghc-8.4.4/Agda-2.5.4.1/emacs-mode/agda2.el")
-           (setq agda2-program-args
-                 (quote
-                  ("-i/nix/store/66a4bqc5fmnak2glr9bjc85wn2argl2d-agda-stdlib-0.16/share/agda"))))
-     (major-mode . agda2-mode)
-     (haskell-mode-stylish-haskell-path . "brittany")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal configure && cabal repl --builddir=dist/dante")
-     (dante-repl-command-line "nix-shell" "nix/shell.nix" "--pure" "--run" "cabal new-configure && cabal new-repl lib:llvm-pretty-bc-parser --builddir=dist-newstyle/dante")
-     (eval defun my/pretty-issue
-           (no)
-           "Browse a github issue"
-           (browse-url
-            (concat "https://github.com/elliottt/llvm-pretty/issues/" no)))
-     (eval org-add-link-type "pretty-issue"
-           (quote my/pretty-issue))
-     (eval defun my/parser-issue
-           (no)
-           "Browse a github issue"
-           (browse-url
-            (concat "https://github.com/GaloisInc/llvm-pretty-bc-parser/issues/" no)))
-     (eval org-add-link-type "parser-issue"
-           (quote my/parser-issue))
-     (eval defun my/grep-link
-           (regexp)
-           "Run `rgrep' with REGEXP as argument."
-           (grep-compute-defaults)
-           (rgrep
-            (concat regexp " :: ")
-            "*"
-            (expand-file-name "~/code/llvm-pretty-bc-parser/src")))
-     (eval org-add-link-type "id"
-           (quote my/grep-link))
-     (org-log-into-drawer . t)
-     (org-enforce-todo-dependencies . t)
-     (org-enforce-todo-checkbox-dependencies . t)
-     (org-archive-location . "~/Dropbox/langston/archive/org/archive-%s::")
-     (go-backend . go-mode)
-     (go-backend . lsp)))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (exec-path-from-shell yapfify yaml-mode xterm-color ws-butler winum which-key web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package toml-mode toc-org symbol-overlay spaceline smeargle smart-hungry-delete shell-pop scribble-mode restart-emacs ranger rainbow-delimiters racket-mode faceup racer pyvenv pytest pyenv-mode py-isort prop-menu pip-requirements persp-mode pcre2el paradox spinner origami orgit org-ref pdf-tools key-chord tablist org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-noter org-mime org-download org-bullets org-board open-junk-file nix-mode neotree multi-term move-text mmm-mode math-symbols markdown-toc magit-gitflow magit-popup macrostep lorem-ipsum livid-mode skewer-mode live-py-mode lispyville lispy zoutline swiper linum-relative link-hint json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero insert-shebang indent-guide imenu-list ialign hydra lv hy-mode hungry-delete htmlize hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers parent-mode highlight-indentation helpful shut-up elisp-refs loop helm-themes helm-swoop helm-pydoc helm-projectile projectile helm-nixos-options helm-mode-manager helm-make helm-hoogle helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-bibtex parsebib helm-ag haskell-snippets haskell-pragma google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-helm flyspell-correct flycheck-rust flycheck-pos-tip pos-tip flycheck-mypy flycheck-haskell flycheck pkg-info epl flx-ido flx fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu eshell-z eshell-prompt-extras esh-help emojify ht elisp-slime-nav elfeed-web simple-httpd elfeed-org dumb-jump elfeed-goodies eacl dropbox-conflicts doom-themes disaster direnv dimmer diminish diff-hl dhall-mode define-word cython-mode csv-mode company-tern company-statistics company-shell company-nixos-options company-ghci company-ghc company-cabal company-c-headers company-anaconda column-enforce-mode coffee-mode cmm-mode cmake-mode clean-aindent-mode clang-format cheatsheet cargo bind-map bind-key biblio auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+
+
