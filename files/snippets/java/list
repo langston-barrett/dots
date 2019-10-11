@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: list
+# name: List
+# condition: (= (length "inst") (current-column))
+# contributor: Langston Barrett
+# --
+List<${1:Class}>

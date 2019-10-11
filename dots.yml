@@ -47,9 +47,6 @@
         dst: "{{ xdg_config_home }}/git/gitignore"
       - src: git/pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
-      - src: haskell-mode-snippets
-        dst: "{{ home }}/.emacs.d/private/snippets/haskell-mode"
-        mode: "0750"
       - src: home.nix
         dst: "{{ xdg_config_home }}/nixpkgs/home.nix"
       - src: i3
@@ -62,9 +59,6 @@
         dst: "{{ xdg_config_home }}/beets/library.blb"
       - src: latexmkrc
         dst: "{{ home }}/.latexmkrc"
-      - src: latex-mode-snippets
-        dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
-        mode: "0750"
       - src: matterhorn.ini
         dst: "{{ xdg_config_home }}/matterhorn/config.ini"
       - src: monitor/at-desk.sh
@@ -86,9 +80,6 @@
       # - src: profile
       #   dst: "{{ home }}/.profile"
       #   mode: "0775"
-      - src: org-mode-snippets
-        dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
-        mode: "0750"
       - src: qutebrowser/quickmarks
         dst: "{{ xdg_config_home }}/qutebrowser/quickmarks"
       - src: ranger/commands.py
@@ -100,11 +91,23 @@
         mode: "0750"
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
-      - src: saw-script-mode-snippets
-        dst: "{{ home }}/.emacs.d/private/snippets/saw-script-mode"
+      - src: snippets/java
+        dst: "{{ home }}/.emacs.d/private/snippets/java-mode"
         mode: "0750"
-      - src: sh-mode-snippets
+      - src: snippets/haskell
+        dst: "{{ home }}/.emacs.d/private/snippets/haskell-mode"
+        mode: "0750"
+      - src: snippets/latex
+        dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
+        mode: "0750"
+      - src: snippets/org
+        dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
+        mode: "0750"
+      - src: snippets/sh
         dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
+        mode: "0750"
+      - src: snippets/saw-script
+        dst: "{{ home }}/.emacs.d/private/snippets/saw-script-mode"
         mode: "0750"
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
