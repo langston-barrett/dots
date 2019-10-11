@@ -1047,6 +1047,8 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
+    (org-indent-mode 1)
+
 ;;;;;; org-ref
 
     (setq reftex-default-bibliography '("~/Dropbox/langston/bib/references.bib"))
