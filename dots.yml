@@ -104,6 +104,9 @@
       - src: snippets/latex
         dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
         mode: "0750"
+      - src: snippets/nix
+        dst: "{{ home }}/.emacs.d/private/snippets/nix-mode"
+        mode: "0750"
       - src: snippets/org
         dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
         mode: "0750"

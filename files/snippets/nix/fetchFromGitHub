@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: fetchFromGitHub
+# key: fetchFromGitHub
+# --
+fetchFromGitHub {
+  owner = "${1:owner}";
+  repo = "${2:repo}";
+  rev = "${3:rev}";
+  sha256 = "${4:sha256}";
+};
