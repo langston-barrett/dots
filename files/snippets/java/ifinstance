@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: ifinst
+# key: ifinst
+# --
+if (${1:object} instanceof ${2:class}) {
+    $3
+}
