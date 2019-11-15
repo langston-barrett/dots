@@ -96,7 +96,7 @@
   virtualisation.docker.enable = true;
 
   services.syncthing = {
-    enable = true;
+    enable = false;
     group = "siddharthist";
     user = "siddharthist";
     dataDir = "/home/siddharthist/sync";
