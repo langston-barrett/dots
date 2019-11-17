@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: mkDerivation
+# key: mkDerivation
+# --
+{ stdenv
+, fetchurl
+}:
+
+stdenv.mkDerivation {
+  version = "1.0.0";
+  name = "name-${version}";
+  src = ./.;
+  meta = ${1:meta};
+}

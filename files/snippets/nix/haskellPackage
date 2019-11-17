@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: haskellPackage
+# key: haskellPackage
+# --
+{ mkDerivation
+, base
+, stdenv
+}:
+mkDerivation {
+  pname = "pname";
+  version = "1.0.0";
+  src = ${1:src};
+  libraryHaskellDepends = [ base ];
+  testHaskellDepends = [ base ];
+  testToolDepends = [ ];
+  homepage = "http://foo.bar/";
+  description = "";
+  license = stdenv.lib.licenses.mit;
+}

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: meta
+# key: meta
+# --
+meta = with stdenv.lib; {
+  description = "${1:desc}";
+  longDescription = ''
+    ${2:longdesc}
+  '';
+  homepage = "http://foo.bar/";
+  license = licenses.mit;
+  maintainers = with maintainers; [ ];
+  platforms = platforms.unix;
+};
