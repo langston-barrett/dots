@@ -157,6 +157,10 @@ This function should only modify configuration layer settings."
       :location (recipe :fetcher github
                         :repo "jezcope/dropbox-conflicts-el"))
 
+     (souffle-mode
+      :location (recipe :fetcher github
+                        :repo "souffle-lang/souffle-mode"))
+
      ;; (google-java-format
      ;;  :location (recipe :fetcher github
      ;;                    :repo "google/google-java-format"
@@ -1395,6 +1399,11 @@ will not be modified."
                  '(rust-match
                    (regexp . "=>")
                    (modes . rust-mode))))
+
+;;;;; Souffle
+
+  (when (require 'souffle-mode nil 'noerror)
+    (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode)))
 
 ;;;;; Racket
 
