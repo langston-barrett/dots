@@ -18,7 +18,7 @@ OUTPUT = UINPUT_SINK
 
 @cel  = TN esc lctl        // tap-next that is either a control, or an esc
 @cer  = TN esc rctl        // tap-next that is either a control, or an esc
-@sym  = TH 200 pgdn LT-sym // taphold that is either a meta, or toggles sym
+// @sym  = TH 200 pgdn LT-sym // taphold that is either a meta, or toggles sym
 
 // ** Layers
 
@@ -64,7 +64,7 @@ LAYER base
        `         left rght up   down [    ]
                  esc  lalt      lmet @cer
                       home      pgup
-            bspc lsft end       @sym ret  spc
+            bspc lsft end       pgdn ret  spc
 
 // *** nav
 
@@ -81,13 +81,13 @@ LAYER nav
 
 // *** sym
 
-LAYER sym
-  _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    9    0    `    \    _    ;    '    [    ]    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-       _         _    _    _    _    _    _
-                 _    _         _    _
-                      _         _
-            _    _    _         _    _    _
+// LAYER sym
+//   _    _    _    _    _    _    _    _    _    _    _    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//   _    9    0    `    \    _    ;    '    [    ]    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//        _         _    _    _    _    _    _
+//                  _    _         _    _
+//                       _         _
+//             _    _    _         _    _    _
