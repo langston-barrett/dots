@@ -3,5 +3,6 @@
 # key: ifinst
 # --
 if (${1:object} instanceof ${2:class}) {
-    $3
+    final $2 ${3:name} = ($2) $1;
+    $4
 }
