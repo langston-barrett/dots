@@ -57,16 +57,16 @@
   };
   system.autoUpgrade.enable = true;
 
-  xdg = {
-    icons.enable = true;
-    menus.enable = true;
-    mime.enable  = true;
-  };
+  # only on recent nixos...
+  # xdg = {
+  #   icons.enable = true;
+  #   menus.enable = true;
+  #   mime.enable  = true;
+  # };
 
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
-    bat
     curl
     emacs
     exfat
@@ -91,7 +91,7 @@
     xsel
     zip
     zsh-completions
-  ];
+  ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
 
   virtualisation.docker.enable = true;
 

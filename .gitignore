@@ -2,5 +2,7 @@
 *.svg
 *.png
 inspiration
+**/.vagrant
+*.ovpn
 
 files/zsh.d/zaw
