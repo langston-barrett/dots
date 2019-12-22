@@ -12,6 +12,8 @@ in {
     # python3
     unstable.metasploit
     unstable.nmap
+    openvpn
+    netcat-openbsd
   ];
   system.stateVersion = "18.03";
 }

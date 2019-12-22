@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
   #                     inline: "ls /etc/nixos && exit 1"
 
   config.vm.provision :nixos,
-    run: 'always',
+    # run: 'always',
     inline: %{
 { config, pkgs, ... }:
 
