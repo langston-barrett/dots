@@ -1,7 +1,15 @@
+log
 .envrc
 .clang_complete
 result
 *.gpg
+.sbt-hydra-history
+
+# Java LSP
+.settings
+.project
+project/
+**/target/
 
 # Compiled source #
 # *.com # Breaks on golang's github.com paths
