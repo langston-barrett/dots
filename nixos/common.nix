@@ -4,7 +4,11 @@
 
 { config, pkgs, ... }:
 
-{
+let emacsVterm =
+      with pkgs; (emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
+        epkgs.emacs-libvterm
+      ]);
+in {
   imports = [
     ./security.nix
     ./users.nix
@@ -19,7 +23,10 @@
     defaultLocale = "en_US.UTF-8";
   };
 
-  services.emacs.enable = true;
+  services.emacs = {
+    enable = true;
+    package = emacsVterm;
+  };
   nixpkgs.config.allowUnfree = true;
 
   # Time
@@ -68,7 +75,7 @@
     atool # "compress" command in ranger
     bat
     curl
-    emacs
+    emacsVterm
     exfat
     fd
     file
