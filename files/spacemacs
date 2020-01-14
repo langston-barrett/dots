@@ -551,7 +551,7 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "stable.melpa.org/packages/"))
   (add-to-list 'package-pinned-packages '(ensime . "melpa-stable"))
 
-  (let ((sz (if (> (x-display-pixel-width) 5000) 28 18)))
+  (let ((sz (if (> (x-display-pixel-width) 3000) 28 18)))
     (setq-default dotspacemacs-default-font `("Hack"
                                               :size ,sz
                                               :weight normal
@@ -1403,6 +1403,11 @@ will not be modified."
                    (regexp . "=>")
                    (modes . rust-mode))))
 
+;;;;; Souffle
+
+  (when (require 'souffle-mode nil 'noerror)
+    (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode)))
+
 ;;;;; Racket
 
   (setq my-structurally-navigating nil)
@@ -1618,6 +1623,8 @@ will not be modified."
 
   (with-eval-after-load 'python
 
+    (setq lsp-pyls-plugins-pycodestyle-enabled nil)
+
     ;; TODO: only do this if typing is imported? or something
     ;; (setq-default flycheck-enabled-checkers '(flycheck-mypy))
     ;; (when (require 'flycheck-mypy nil 'noerror)
@@ -1678,8 +1685,9 @@ will not be modified."
           ((eq major-mode 'java-mode) (my/eacl-complete "import "))
           ((eq major-mode 'python-mode) (my/eacl-complete "import "))
           ((eq major-mode 'coq-mode) (my/eacl-complete "Require "))
+          ((eq major-mode 'rust-mode) (my/eacl-complete "use "))
           ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
-          ((eq major-mode 'c-mode) (call-interacively 'my/libc-include))))
+          ((eq major-mode 'c-mode) (call-interactively 'my/libc-include))))
 
   ;; 'i' for 'insert'
   ;; 'i' for 'import'

@@ -20,7 +20,8 @@ in {
     rofi
     rxvt_unicode-with-plugins
     vanilla-dmz # cursor theme
-    xfce.xfce4_power_manager_gtk3
+    # xfce.xfce4_power_manager_gtk3
+    libnotify
 
     # General graphical packages
     alacritty

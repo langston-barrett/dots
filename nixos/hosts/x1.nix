@@ -60,12 +60,12 @@
     calibre
     # chromium
     comfortaa
-    gimp
+    # gimp
     # keynav
     kdeconnect
     maim
     mu
-    musescore
+    # musescore
     oxygenfonts
     redshift
     spotify
@@ -74,8 +74,6 @@
     ympd
 
     # extra development
-    clang
-    rr
     shellcheck
 
     # python development

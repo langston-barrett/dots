@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-
-
   # Encrypted DNS queries
   services.dnscrypt-proxy = {
     enable = true;
@@ -12,14 +10,14 @@
   # Opportunisticly encrypt TCP traffic
   networking.tcpcrypt.enable = true;
 
-  programs.firejail = {
-    enable = true;
-    # TODO: Add some here
-    # wrappedBinaries = {
-    #   firefox = "${lib.getBin pkgs.firefox}/bin/firefox";
-    #   mpv = "${lib.getBin pkgs.mpv}/bin/mpv";
-    # };
-  };
+  # programs.firejail = {
+  #   enable = true;
+  #   # TODO: Add some here
+  #   # wrappedBinaries = {
+  #   #   firefox = "${lib.getBin pkgs.firefox}/bin/firefox";
+  #   #   mpv = "${lib.getBin pkgs.mpv}/bin/mpv";
+  #   # };
+  # };
 
   security = {
     # auditd.enable = true;

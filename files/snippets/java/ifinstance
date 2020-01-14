@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: ifinst
+# key: ifinst
+# --
+if (${1:object} instanceof ${2:class}) {
+    final $2 ${3:name} = ($2) $1;
+    $4
+}
