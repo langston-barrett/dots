@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: equal
+# key: equal
+# --
+public boolean equals(Object other) {
+    if (other instanceof ${1:class}) {
+        final $1 ${2:otherName} = ($1) other;
+        return ${3:cond};
+    }
+    return false;
+}
