@@ -113,7 +113,8 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
-   '(emojify
+   '(evil-fringe-mark
+     emojify
      ialign ; interactive align-regexp
      smart-hungry-delete ; delete all whitespace at once
      direnv              ; direnv + nix
@@ -654,6 +655,9 @@ you should place your code here."
   (when (require 'smart-hungry-delete)
     ;; (smart-hungry-delete-add-default-hooks) ; I'm suspicious of this.
     (global-set-key (kbd "S-<backspace>") 'smart-hungry-delete-backward-char))
+
+  (when (require 'evil-fringe-mark nil 'noerror)
+    (global-evil-fringe-mark-mode))
 
   (setq require-final-newline t)
 
