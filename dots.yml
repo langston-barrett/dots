@@ -206,13 +206,6 @@
         - src: Xresources
           dst: "{{ home }}/.Xresources"
 
-    - name: clone zaw
-      git:
-        repo: 'https://github.com/zsh-users/zaw'
-        dest: "{{ home }}/.zsh.d/zaw"
-        clone: yes
-        update: no
-
     - name: clone spacemacs
       git:
         repo: 'https://github.com/syl20bnr/spacemacs'
