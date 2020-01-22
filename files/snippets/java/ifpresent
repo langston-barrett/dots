@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: ifpresent
+# key: ifpresent
+# --
+final Optional<${1:type}> ${2:name} = ${3:call};
+if ($2.isPresent()) {
+    final $1 $2 = $2.get();
+}
