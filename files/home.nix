@@ -3,8 +3,9 @@
 {
   home.packages = with pkgs; [fasd];
 
-  services.dunst = {
-    enable = true;
+  services = {
+    dunst.enable = true;
+    lorri.enable = true;
   };
 
   # programs.home-manager = {

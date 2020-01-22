@@ -10,6 +10,7 @@
     ../audio.nix
     ../mail.nix
     ../networking.nix
+    ../steam.nix
     ../x.nix
     # ../wayland.nix
   ];

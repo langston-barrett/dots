@@ -39,7 +39,6 @@ in {
       #export RXVT_SOCKET=/run/user/$(id -u)/urxvtd-socket
       sessionCommands = ''
         xrdb -merge ~/.Xresources
-        xmodmap ~/.xmodmap
       '';
     };
     # desktopManager.xfce.enable = true;
