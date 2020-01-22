@@ -2,3 +2,5 @@
 dist/dante/*
 *.hi
 *.o
+dist/
+dist-newstyle/
