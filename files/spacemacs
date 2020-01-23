@@ -697,6 +697,10 @@ you should place your code here."
   ;;   (setq darkroom-text-scale-increase 0.5)
   ;;   (add-hook 'markdown-mode-hook 'darkroom-tentative-mode))
 
+  (with-eval-after-load 'projectile
+    (dolist (dir (list "dist" "dist-newstyle"))
+      (add-to-list 'projectile-globally-ignored-directories dir)))
+
 ;;;;; symbol-overlay
 
   (spacemacs/set-leader-keys
