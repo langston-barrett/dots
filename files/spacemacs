@@ -583,6 +583,16 @@ you should place your code here."
 
   (setq-default tab-width 4)
 
+  (with-eval-after-load 'olivetti
+    (setq olivetti-body-width 100)
+    ;; Enter olivetti mode whenever there is only one window
+    (defun my/window-olivetti-configuration-change-hook ()
+      (let ((num-windows (seq-length (window-list))))
+        (if (= num-windows 1)
+            (olivetti-mode 1)
+            (olivetti-mode -1))))
+    (add-to-list 'window-configuration-change-hook 'my/window-olivetti-configuration-change-hook))
+
   ;; Always reload log files from disk
   (add-to-list 'auto-mode-alist '("log" . auto-revert-mode))
 
