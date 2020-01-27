@@ -709,7 +709,8 @@ you should place your code here."
   (with-eval-after-load 'minimap
     (setq minimap-minimum-width 10)
     (setq minimap-maximum-width 13)
-    (setq minimap-automatically-delete-window nil))
+    (setq minimap-automatically-delete-window nil)
+    (add-to-list 'minimap-major-modes 'org-mode))
 
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
@@ -1138,6 +1139,7 @@ you should place your code here."
     (defun my/no-org-links () (org-link-minor-mode -1))
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
+  (setq org-brain-show-resources nil)
   (setq org-directory          "~/Dropbox/langston/org")
   (setq org-wiki-location      "~/Dropbox/langston/org"
         org-brain-path         "~/Dropbox/langston/org"
