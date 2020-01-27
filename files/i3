@@ -26,7 +26,7 @@ bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "fir
 bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+Return exec alacritty -e sh -c "tmux" # Start tmux by default
 #bindsym $mod+Shift+Return exec urxvt
-# bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)' 
+# bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'
 bindsym $mod+p exec ~/code/dots/files/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
 
@@ -64,7 +64,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
 
 # ** navigation
-  
+
 # *** focus
 
 bindsym $mod+h focus left
@@ -150,10 +150,41 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 # smart_borders on
 
-# ** multi-monitor
+# ** exec
+
+set $execMode "Switch mode: [q]uit [d]isplay [f]ocus"
+bindsym $mod+x mode $execMode
+
+mode $execMode {
+    bindsym d mode $displayMode
+    bindsym f mode $focusMode
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym q mode "default"
+}
+
+# ** focus
+
+set $focusMode "Focus: [b]rittle [c]hess [e]mail [o]rganize"
+
+mode $focusMode {
+    bindsym b exec bash -c "source ~/.zsh.d/focus.zsh && set_focus brittle"; \
+                mode "default"
+    bindsym c exec bash -c "source ~/.zsh.d/focus.zsh && set_focus chess"; \
+                mode "default"
+    bindsym e exec bash -c "source ~/.zsh.d/focus.zsh && set_focus email"; \
+                mode "default"
+    bindsym o exec bash -c "source ~/.zsh.d/focus.zsh && set_focus organize"; \
+                mode "default"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym q mode "default"
+}
+
+# ** display
 
 set $displayMode "Set display mode [d]esk [l]aptop"
-bindsym $mod+x mode $displayMode
 
 mode $displayMode {
     bindsym d exec "~/.config/i3/scripts/at-desk.sh"; \
@@ -163,6 +194,7 @@ mode $displayMode {
 
     bindsym Return mode "default"
     bindsym Escape mode "default"
+    bindsym q mode "default"
 }
 
 # ** i3bar
@@ -170,7 +202,7 @@ mode $displayMode {
 bar {
   i3bar_command i3bar -t
   font pango:Hack, Icons 8
- 
+
   output primary
   tray_output primary
   status_command i3status
@@ -198,4 +230,3 @@ bar {
   #   urgent_workspace   #2f343a #900000 #ffffff
   # }
 }
-    
