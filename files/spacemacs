@@ -122,6 +122,7 @@ This function should only modify configuration layer settings."
      dhall-mode
      lispy
      lispyville
+     org-make-toc
      ;; all-the-icons
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
@@ -156,10 +157,6 @@ This function should only modify configuration layer settings."
      (haskell-pragma
       :location (recipe :fetcher github
                         :repo "travitch/haskell-pragma.el"))
-
-     (dropbox-conflicts
-      :location (recipe :fetcher github
-                        :repo "jezcope/dropbox-conflicts-el"))
 
      (souffle-mode
       :location (recipe :fetcher github
@@ -592,8 +589,6 @@ you should place your code here."
 
   ;; Always reload log files from disk
   (add-to-list 'auto-mode-alist '("log" . auto-revert-mode))
-
-  (dropbox-conflicts-mode 1)
 
   ;; https://github.com/bbatsov/projectile/issues/1174
   (setq projectile-git-submodule-command "")
