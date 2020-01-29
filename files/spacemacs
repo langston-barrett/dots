@@ -595,6 +595,9 @@ you should place your code here."
 
   (setq-default tab-width 4)
 
+  (setq browse-url-browser-function 'browse-url-generic)
+  (setq browse-url-generic-program "qutebrowser")
+
   ;; Always reload log files from disk
   (add-to-list 'auto-mode-alist '("log" . auto-revert-mode))
 
@@ -763,11 +766,12 @@ you should place your code here."
 
 ;;;;; prism
 
-  (prism-set-colors
-   :lightens '(0 5 10)
-   :desaturations '(-2.5 0 2.5)
-   :colors (-map #'doom-color
-                 '(red orange yellow green blue violet)))
+  (with-eval-after-load 'prism
+    (prism-set-colors
+     :lightens '(0 5 10)
+     :desaturations '(-2.5 0 2.5)
+     :colors (-map #'doom-color
+                   '(red orange yellow green blue violet))))
   (add-hook 'json-mode-hook 'prism-mode)
 
 ;;;;; symbol-overlay
@@ -1078,10 +1082,6 @@ you should place your code here."
     (add-hook 'saw-script-mode-hook 'my/saw-script-prettify-symbols))
 
 ;;;;; Elfeed
-
-  (with-eval-after-load 'browse-url
-    (setq browse-url-browser-function 'browse-url-generic)
-    (setq browse-url-generic-program "qutebrowser"))
 
   (with-eval-after-load 'elfeed
     (spacemacs|define-transient-state elfeed
@@ -1747,8 +1747,8 @@ will not be modified."
     (setq lsp-pyls-plugins-pyflakes-enabled nil)
     (setq lsp-pyls-plugins-pycodestyle-enabled nil)
     (defun my/set-flycheck-error-level ()
-      (setq-local flycheck-navigation-minimum-level 'error)
-      (setq-local flycheck-error-list-minimum-level 'error))
+      (setq flycheck-navigation-minimum-level 'error)
+      (setq flycheck-error-list-minimum-level 'error))
     (add-hook 'python-mode-hook 'my/set-flycheck-error-level)
 
     (custom-set-variables
@@ -1851,7 +1851,8 @@ This function is called at the very end of Spacemacs initialization."
     (rvm ruby-tools ruby-test-mode ruby-hash-syntax rubocopfmt rubocop rspec-mode robe inf-ruby rbenv rake minitest helm-gtags ggtags yasnippet-snippets yapfify yaml-mode xterm-color ws-butler writeroom-mode winum which-key web-beautify vterm volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile treemacs-magit treemacs-evil toml-mode toc-org tao-theme symon symbol-overlay string-inflection spaceline-all-the-icons smeargle smart-hungry-delete shell-pop restart-emacs ranger rainbow-delimiters racket-mode racer pytest pyenv-mode py-isort prop-menu proof-general prettier-js pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox overseer origami orgit org-ref org-projectile org-present org-pomodoro org-noter org-mime org-download org-cliplink org-bullets org-brain org-board open-junk-file olivetti nodejs-repl nix-mode nameless mvn multi-term move-text mmm-mode meghanada maven-test-mode math-symbols markdown-toc magit-svn magit-gitflow macrostep lsp-ui lsp-treemacs lsp-python-ms lsp-java lsp-haskell lorem-ipsum livid-mode live-py-mode lispyville link-hint json-navigator json-mode js2-refactor js-doc intero insert-shebang indent-guide importmagic ialign hybrid-mode hungry-delete hlint-refactor hl-todo hindent highlight-parentheses highlight-numbers highlight-indentation helpful helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-org helm-nixos-options helm-mode-manager helm-make helm-lsp helm-hoogle helm-gitignore helm-git-grep helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag haskell-snippets haskell-pragma groovy-mode groovy-imports gradle-mode google-translate golden-ratio gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md fuzzy font-lock+ flyspell-correct-helm flycheck-rust flycheck-rtags flycheck-pos-tip flycheck-package flycheck-mypy flycheck-bashate flx-ido fish-mode fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help ensime emojify elisp-slime-nav elfeed-org elfeed-goodies editorconfig eacl dumb-jump dropbox-conflicts dotenv-mode doom-themes doom-modeline disaster direnv dimmer diminish diff-hl dhall-mode devdocs define-word dap-mode dante cython-mode csv-mode cquery cpp-auto-include company-tern company-statistics company-shell company-rtags company-nixos-options company-lsp company-ghci company-ghc company-coq company-cabal company-c-headers company-anaconda column-enforce-mode cmm-mode clean-aindent-mode clang-format cheatsheet centered-cursor-mode ccls cargo browse-at-remote blacken auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile attrap aggressive-indent ace-link ace-jump-helm-line ac-ispell)))
  '(safe-local-variable-values
    (quote
-    ((eval defun my/arxiv-link
+    ((org-indent-mode . 1)
+     (eval defun my/arxiv-link
            (no)
            "Browse a arxiv link"
            (browse-url
