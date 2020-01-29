@@ -123,7 +123,20 @@ bindsym $mod+Shift+a move container to workspace a
 bindsym $mod+Shift+s move container to workspace s
 bindsym $mod+Shift+d move container to workspace d
 bindsym $mod+Shift+f move container to workspace f
+bindsym $mod+1 workspace "brittle"
+bindsym $mod+2 workspace "chess"
+bindsym $mod+3 workspace "email"
+bindsym $mod+4 workspace "organize"
+# bindsym $mod+1 workspace 1
+# bindsym $mod+2 workspace 2
+# bindsym $mod+3 workspace 3
+# bindsym $mod+4 workspace 4
+# bindsym $mod+5 workspace 5
 
+bindsym $mod+Shift+1 move container to workspace "brittle"
+bindsym $mod+Shift+2 move container to workspace "chess"
+bindsym $mod+Shift+3 move container to workspace "email"
+bindsym $mod+Shift+4 move container to workspace "organize"
 # bindsym $mod+Shift+1 move container to workspace 1
 # bindsym $mod+Shift+2 move container to workspace 2
 # bindsym $mod+Shift+3 move container to workspace 3
@@ -170,13 +183,17 @@ set $focusMode "Focus: [b]rittle [c]hess [e]mail [o]rganize"
 
 mode $focusMode {
     bindsym b exec bash -c "source ~/.zsh.d/focus.zsh && set_focus brittle"; \
-                mode "default"
+                mode "default"; \
+                workspace brittle
     bindsym c exec bash -c "source ~/.zsh.d/focus.zsh && set_focus chess"; \
-                mode "default"
+                mode "default"; \
+                workspace "chess"
     bindsym e exec bash -c "source ~/.zsh.d/focus.zsh && set_focus email"; \
-                mode "default"
+                mode "default"; \
+                workspace "email"
     bindsym o exec bash -c "source ~/.zsh.d/focus.zsh && set_focus organize"; \
-                mode "default"
+                mode "default"; \
+                workspace "organize"
     bindsym Return mode "default"
     bindsym Escape mode "default"
     bindsym q mode "default"
