@@ -122,7 +122,6 @@ This function should only modify configuration layer settings."
      dhall-mode
      lispy
      lispyville
-     org-make-toc
      ;; all-the-icons
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
@@ -142,6 +141,8 @@ This function should only modify configuration layer settings."
      org-board ; link archiving
      link-hint ; TODO: keybindings
      org-noter
+     org-make-toc
+     org-sidebar
 
      flycheck-mypy
      doom-themes
@@ -1525,6 +1526,39 @@ will not be modified."
     (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode)))
 
 ;;;;; Racket
+
+  ;; TODO: Attempt transient state:
+  ;; (spacemacs|define-transient-state lispy
+  ;;   :title "Lispy Transient State"
+  ;;   :doc "
+  ;;    Navigate       ^^^^      Edit           ^^    Other^^
+  ;;    ───────────────^^^^──    ───────────────^^──  ─────^^───
+  ;;    [_b_] undo move          [_m_] mark           [_q_] exit transient state
+  ;;    [_>_] slurp              [_c_] clone
+  ;;    [_<_] barf
+  ;;    [_f_] forward
+  ;;    [_h_] left
+  ;;    [_j_] down
+  ;;    [_k_] up
+  ;;    [_l_] right"
+
+  ;;   :bindings
+  ;;   ("q" nil :exit t)
+
+  ;;   ;; Navigate
+  ;;   (">" 'sp-forward-slurp-sexp)
+  ;;   ("<" 'lispy-barf)
+  ;;   ("f" 'lispy-flow)
+  ;;   ("b" 'lispy-back)
+  ;;   ("h" 'lispy-left)
+  ;;   ("j" 'lispy-down)
+  ;;   ("k" 'lispy-up)
+  ;;   ("l" 'lispy-right)
+
+  ;;   ;; Edit
+  ;;   ("m" 'lispy-mark)
+  ;;   ("c" 'lispy-clone))
+
 
   (setq my-structurally-navigating nil)
 
