@@ -731,39 +731,17 @@ you should place your code here."
    ;; If there is more than one, they won't work right.
    '(minimap-active-region-background ((t (:background "gray25")))))
 
+;;;;; centered-window-mode
+
+  (with-eval-after-load 'centered-window-mode
+    (setq cwm-centered-window-width 100))
+
 ;;;;; olivetti
 
   ;; Enter olivetti mode whenever there is only one window (horizontally)
 
-  (defun my/single-window-mode-on ()
-    (interactive)
-    (olivetti-mode 1)
-    ;; (minimap-mode 1)
-    (spacemacs/toggle-fill-column-indicator-on))
-
-  (defun my/single-window-mode-off ()
-    (interactive)
-    (olivetti-mode -1)
-    ;; (minimap-mode -1)
-    (spacemacs/toggle-fill-column-indicator-off))
-
-  ;; (defun my/window-olivetti-configuration-change-hook ()
-  ;;   (if (= (seq-length (window-list)) 1)
-  ;;       (my/single-window-moade-on)
-  ;;       (my/single-window-moade-off)))
-  ;; (add-to-list 'window-configuration-change-hook
-  ;;              'my/window-olivetti-configuration-change-hook)
-
-  (setq olivetti-body-width 100)
   (with-eval-after-load 'olivetti
     (setq olivetti-body-width 100))
-
-  (spacemacs/set-leader-keys
-    ;; 'o' is the "user key"
-    ;; 'T' for 'toggle ui stuff'
-    ;; 's' for single-window
-    "oTs"  'my/single-window-mode-on
-    "oTS"  'my/single-window-mode-off)
 
 ;;;;; prism
 
