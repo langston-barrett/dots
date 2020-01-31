@@ -22,7 +22,7 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-enable-lazy-installation 'nil
 
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
@@ -743,10 +743,64 @@ you should place your code here."
 
 ;;;;; olivetti
 
-  ;; Enter olivetti mode whenever there is only one window (horizontally)
+  (setq olivetti-body-width 100)
+  (when (require 'olivetti nil 'noerror)
+    (setq olivetti-body-width 100)
 
-  (with-eval-after-load 'olivetti
-    (setq olivetti-body-width 100))
+    ;; Enter olivetti mode whenever there is only one window (horizontally)
+    (defun my/single-window-mode-on ()
+      (interactive)
+      (setq olivetti-body-width 100)
+      (olivetti-mode 1)
+      (spacemacs/toggle-fill-column-indicator-on))
+
+    (defun my/single-window-mode-off ()
+      (interactive)
+      (olivetti-mode -1)
+      (spacemacs/toggle-fill-column-indicator-off))
+
+    (defun my/window-configuration-change-hook ()
+      (if (= (count-windows) 1)
+          (my/single-window-mode-on)
+          (my/single-window-mode-off)))
+
+    ;; Stolen from darkroom
+    (define-minor-mode olivetti-tentative-mode
+      "Enters `olivetti-mode' when all other windows are deleted."
+      nil                                 ; init-value
+      nil                                 ; lighter
+      nil                                 ; keymap
+      ;; always begin by removing the hook
+      (remove-hook 'window-configuration-change-hook
+                   'my/window-configuration-change-hook
+                   'global)
+      (when olivetti-mode
+        (display-warning
+        'olivetti
+        (concat "Turning off `olivetti-mode' first. "
+                "It doesn't go with `olivetti-tentative-mode'.")
+        (let ((olivetti-tentative-mode nil))
+          (olivetti-mode -1))))
+      ;; turn olivetti on or off according to window state
+      ;;
+      (if olivetti-tentative-mode
+          ;; re-add the hook when we are turning ourselves on
+          (progn
+            (add-hook 'window-configuration-change-hook
+                      'my/window-configuration-change-hook
+                      'append
+                      'global)
+            ;; call this right away if we're supposed to turn olivetti on
+            ;; immediately.
+            (my/window-configuration-change-hook))
+        (my/single-window-mode-off))))
+
+  (define-global-minor-mode
+    global-olivetti-tentative-mode
+    olivetti-tentative-mode
+    olivetti-tentative-mode)
+
+  (global-olivetti-tentative-mode)
 
 ;;;;; prism
 
@@ -848,10 +902,10 @@ you should place your code here."
   (defun my/insert-from-zsh-history ()
     (interactive)
     (kill-new
-      (helm :sources (helm-build-sync-source "zsh history"
+     (helm :sources (helm-build-sync-source "zsh history"
                       :candidates (my/read-lines "~/.zsh_history")
                       :fuzzy-match t)
-            :buffer "*zsh history*")))
+           :buffer "*zsh history*")))
 
 
   (with-eval-after-load 'vterm
@@ -1652,7 +1706,7 @@ will not be modified."
     (progn
       (setq path-to-lombok (concat (getenv "HOME") "/.m2/repository/org/projectlombok/lombok/1.18.10/lombok-1.18.10.jar"))
       (setq dap-java-java-command (concat "java " (concat "-javaagent:" path-to-lombok) " "
-                                                  (concat "-Xbootclasspath/a:" path-to-lombok)))
+                                          (concat "-Xbootclasspath/a:" path-to-lombok)))
       (setq lsp-java-format-comments-enabled nil)))
 
   ;; https://github.com/emacs-lsp/lsp-java/issues/26
