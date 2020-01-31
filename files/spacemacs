@@ -122,7 +122,6 @@ This function should only modify configuration layer settings."
      dhall-mode
      lispy
      lispyville
-     org-make-toc
      ;; all-the-icons
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
@@ -142,6 +141,8 @@ This function should only modify configuration layer settings."
      org-board ; link archiving
      link-hint ; TODO: keybindings
      org-noter
+     ; org-sidebar
+     org-make-toc
 
      flycheck-mypy
      doom-themes
@@ -172,9 +173,14 @@ This function should only modify configuration layer settings."
      (org-wiki
       :location (recipe :fetcher github
                         :repo "caiorss/org-wiki"))
+
      (helm-shell-history
       :location (recipe :fetcher github
                         :repo "yuutayamada/helm-shell-history"))
+
+     (graph
+      :location (recipe :fetcher github
+                        :repo "storax/graph.el"))
 
      ;; (dockerfile-mode
      ;;  :location (recipe :fetcher github
@@ -1092,6 +1098,8 @@ you should place your code here."
 
     (add-hook 'elfeed-search-mode-hook
               'spacemacs/elfeed-transient-state/body)
+    (add-hook 'elfeed-search-mode-hook
+              'spacemacs/toggle-centered-point-on)
 
     (defun my/elfeed-hydra-hook ()
       (when (equal major-mode 'elfeed-search-mode)
