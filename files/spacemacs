@@ -1071,11 +1071,11 @@ you should place your code here."
     (spacemacs|define-transient-state elfeed
       :title "Elfeed Transient State"
       :doc "
-     Navigate       ^^^^      Filtering      ^^    Other^^
-     ───────────────^^^^──    ───────────────^^──  ─────^^───
+     ^Navigate^               ^Filtering^          ^Other
+     ───────────────────────────────────────────────────────────
      [_RET_] show entry       [_s_] live filter    [_g_] update
      [_r_] mark read          [_S_] set filter     [_q_] exit transient state
-     [_b_] open browser                            [_Q_] exit elfeed
+     [_b_] open browser        ^ ^                 [_Q_] exit elfeed
      [_j_] next line
      [_k_] previous line"
       :bindings
@@ -1511,6 +1511,46 @@ will not be modified."
     (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode)))
 
 ;;;;; Racket
+
+  ;; TODO: Attempt transient state:
+  ;; TODO: https://github.com/abo-abo/hydra/wiki/Nesting-Hydras#visiting-other-hydras-temporarily
+  (spacemacs|define-transient-state lispy
+    :title "Lispy Transient State"
+    :foreign-keys run
+    :doc "
+     ^Navigate^               ^Edit^            ^Mark^            ^Other
+     ^^^^──────────────────────────────────────────────────────────────────────────────────────
+     [_b_] undo move          [_c_] clone       [_m_] mark        [_q_] exit transient state
+     [_>_] slurp               ^ ^              [_i_] mark-car
+     [_<_] barf                ^ ^              [_l_] mark-list
+     [_f_] forward             ^ ^              [_s_] mark-symbol
+     [_h_] left
+     [_j_] down
+     [_k_] up
+     [_l_] right"
+
+    :bindings
+    ("q" nil :exit t)
+
+    ;; Navigate
+    (">" sp-forward-slurp-sexp)
+    ("<" lispy-barf)
+    ("f" lispy-flow)
+    ("b" lispy-back)
+    ("h" lispy-left)
+    ("j" lispy-down)
+    ("k" lispy-up)
+    ("l" lispy-right)
+
+    ;; Edit
+    ("c" lispy-clone)
+
+    ;; Mark
+    ("m" lispy-mark)
+    ("i" lispy-mark-car)
+    ("l" lispy-mark-list)
+    ("s" lispy-mark-symbol))
+
 
   (setq my-structurally-navigating nil)
 
