@@ -14,7 +14,7 @@ function tobak() { mv "$1"{,.bak} ; }
 # Description: move up this number of directories
 # Arguments: $1 - number of directories to go up
 # Returns (echoes): none
-function up() {
+function upn() {
   # Description: repeat a string $1 times
   # Arguments: $1 - str, $2 - Number of times to repeat the string
   function repeat_string() {
@@ -25,6 +25,15 @@ function up() {
   }
   [ -z "$1" ] && 1="1"
   cd $(repeat_string "../" $1)
+}
+
+function up() {
+  re='^[0-9]+$'
+  if [[ $yournumber =~ $re ]] ; then
+    echo "error: enter some number of f's" >&2
+  else
+    upn "$(echo $1 | wc -c)"
+  fi
 }
 
 # mount encrypted disks
