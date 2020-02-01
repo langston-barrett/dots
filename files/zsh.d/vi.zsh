@@ -48,3 +48,13 @@ bindkey '^s' history-incremental-search-forward
 # allow ctrl-a and ctrl-e to move to beginning/end of line
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
+
+# allow ctrl-a and ctrl-e to move to beginning/end of line
+bindkey '^k' up-line-or-history
+bindkey '^j' down-line-or-history
+function use-j-k() {
+  echo "use ctrl-j and ctrl-k, not arrow keys"
+}
+zle -N use-j-k
+bindkey '^[OA' use-j-k
+bindkey '^[OB' use-j-k
