@@ -1205,6 +1205,7 @@ you should place your code here."
         org-default-notes-file (concat org-directory "/capture.org"))
 
   ;; TODO: function for heading level
+  ;; https://orgmode.org/manual/Template-expansion.html#Template-expansion
   (setq org-capture-templates
         '(("t" "todo" entry (file+headline "~/Dropbox/langston/org/capture.org" "to be sorted")
            "** %?\n   %a\n   %U")
