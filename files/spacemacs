@@ -1209,7 +1209,7 @@ you should place your code here."
         '(("t" "todo" entry (file+headline "~/Dropbox/langston/org/capture.org" "to be sorted")
            "** %?\n   %a\n   %U")
           ("p" "pending" entry (file+headline "~/Dropbox/langston/org/capture.org" "pending")
-           "** %?\n   %a\n   %U")
+           "** %?\n   %a\n   DEADLINE: %t")
           ("r" "review" entry (file+headline "~/Dropbox/langston/org/capture.org" "review")
            "** %?\n   %a\n   %U")
           ("w" "workflow" entry (file+headline "~/Dropbox/langston/org/capture.org" "workflow")
