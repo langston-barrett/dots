@@ -1,5 +1,16 @@
 #name : module declaration
-#contributor : Michel Rijnders <g.a.c.rijnders@gmail.com>
+#contributor : Langston Barrett <langston.barrett@gmail.com>
 # --
-module ${1:name} (${2:exports}) where
-$0
+{-
+Module           : ${1:`(file-name-base
+                          (or (buffer-file-name)
+                              (buffer-name)))`}
+Description      : TODO
+Copyright        : (c) Galois, Inc 2020
+License          : BSD3
+Maintainer       : Langston Barrett <langston@galois.com>
+Stability        : provisional
+-}
+module $1
+  ( ${2:exports}
+  ) where
