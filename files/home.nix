@@ -4,7 +4,18 @@
   home.packages = with pkgs; [fasd];
 
   services = {
-    dunst.enable = true;
+    dunst = {
+      enable = true;
+      settings = {
+        global = {
+          geometry = "500-30+50";
+          transparency = 10;
+          frame_color = "#eceff1";
+          font = "Hack 14";
+          word_wrap = true;
+        };
+      };
+    };
     lorri.enable = true;
   };
 
