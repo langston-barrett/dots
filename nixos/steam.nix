@@ -8,7 +8,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    steam
+    # steam
     # TODO
     #xhost # for running `xhost +` when steam doesn't work
 

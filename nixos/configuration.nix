@@ -1,5 +1,5 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./hosts/x1.nix ];
+  imports = [ ./hosts/laptop.nix ];
 }

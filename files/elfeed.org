@@ -16,12 +16,16 @@
 *** [[https://www.reddit.com/r/haskell/.rss][Haskell reddit]]
 *** [[http://justtesting.org/rss][Just Testing]]
 *** [[https://ryanglscott.github.io/feed.xml][Ryan G.L. Scott]]
+*** [[https://www.parsonsmatt.org/feed.xml][Matt Parsons]]
 ** emacs
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
 *** [[pragmaticemacs.com/feed/][pragmatic emacs]]
 *** see also: http://www.modernemacs.com/post/
 *** [[https://with-emacs.com/rss.xml][with emacs]]
+*** [[https://www.reddit.com/r/orgmode/][org-mode subreddit]]
+*** [[https://emacs.cafe/feed.xml][emacs.cafe]]
+*** [[https://planet.emacslife.com/atom.xml][planet emacs]]
 ** nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]

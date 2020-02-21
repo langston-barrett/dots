@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # List services that you want to enable:
-  security.sudo.enable = true;
 
   users = {
 

@@ -63,3 +63,5 @@
 
 [includeIf "gitdir:~/code/v2v"]
     path = ~/.config/git/galois
+[http]
+	sslVerify = false
