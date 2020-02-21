@@ -81,6 +81,9 @@ function git() {
     branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ $branch == "master" ]]; then
       case "$(basename $(pwd))" in
+        "sfe") echo "Refusing to push to master" ;;
+        "renovate") echo "Refusing to push to master" ;;
+        "parameterized-utils") echo "Refusing to push to master" ;;
         "chess") echo "Refusing to push to master" ;;
         *) command git "$@"
       esac
