@@ -53,8 +53,10 @@ bindkey '^e' end-of-line
 bindkey '^k' up-line-or-history
 bindkey '^j' down-line-or-history
 function use-j-k() {
-  notify-send "you can use ctrl-j and ctrl-k"
-  last=${SECONDS}
+  if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then
+    notify-send "you can use ctrl-j and ctrl-k"
+    last=${SECONDS}
+  fi
 }
 zle -N use-j-k
 bindkey '^[OA' use-j-k
