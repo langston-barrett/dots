@@ -1,5 +1,13 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
+
+set -e
+
 export XDG_CONFIG_HOME=$HOME/.config
+
+# nix-shell default.nix  \
+#           --substituters "https://cache.nixos.org" \
+#           --run \
+#           'bash scripts/shellcheck.sh'
 nix-shell default.nix  \
           --substituters "https://cache.nixos.org" \
           --run \

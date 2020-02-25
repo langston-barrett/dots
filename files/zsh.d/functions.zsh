@@ -6,7 +6,7 @@ function remove_exts() {
   # Group with or: Start with \(, Separate exts with \|, end with \)
   re='^.+\.\('; for ext in $1; do re+=$ext && re+='\|'; done; re+='\)$'
   # Now, find and delete based on that regexp
-  find . -iregex "$re" -exec rm {} +
+  find . -iregex "$re" -exec trash-put {} +
   unsetopt shwordsplit
 }
 function tobak() { mv "$1"{,.bak} ; }
@@ -20,37 +20,28 @@ function upn() {
   function repeat_string() {
     if [ -z "$2" ] || [ "$2" -eq 0 ];
     then echo ""
-    else echo $1$(repeat_string "$1" $(expr $2 - 1))
+    else echo "${1}$(repeat_string "${1}" "$((${2} - 1))")"
     fi
   }
   [ -z "$1" ] && 1="1"
-  cd $(repeat_string "../" $1)
+  cd "$(repeat_string "../" "${1}")" || echo "bad"
 }
 
 function up() {
   re='^[0-9]+$'
-  if [[ $yournumber =~ $re ]] ; then
+  if [[ ${1} =~ ${re} ]] ; then
     echo "error: enter some number of f's" >&2
   else
-    upn "$(echo $1 | wc -c)"
+    upn "${#1}"
   fi
 }
 
 # mount encrypted disks
 mount_encrypted() {
   labels=$(ls --color=never /dev/disk/by-label)
-  sudo cryptsetup luksOpen $1 encrypted
-  sudo mkdir -p /mnt/$labels
-  sudo mount /dev/mapper/encrypted /mnt/$labels
-}
-
-# Convert all flac files in a directory to ogg
-to_ogg() {
-  array=()
-  while IFS=  read -r -d $'\0'; do array+=("$REPLY");
-    done < <(find . -name "*.flac" -print0)
-    # array now holds the names of all flac files
-  for flac in $array; do oggenc -q 7 "$flac" && rm -f "$flac"; done
+  sudo cryptsetup luksOpen "${1}" encrypted
+  sudo mkdir -p "/mnt/${labels}"
+  sudo mount /dev/mapper/encrypted "/mnt/${labels}"
 }
 
 # Recursively find and replace
