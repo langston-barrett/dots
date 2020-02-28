@@ -28,7 +28,7 @@ zle -N vi-accept-line
 bindkey -v
 
 # if mode indicator wasn't setup by theme, define default
-if [[ "$MODE_INDICATOR" == "" ]]; then
+if [[ "${MODE_INDICATOR}" == "" ]]; then
   MODE_INDICATOR="%{$fg_bold[red]%}<%{$fg[red]%}<<%{$reset_color%}"
 fi
 
@@ -53,7 +53,8 @@ bindkey '^e' end-of-line
 bindkey '^k' up-line-or-history
 bindkey '^j' down-line-or-history
 function use-j-k() {
-  echo "use ctrl-j and ctrl-k, not arrow keys"
+  notify-send "you can use ctrl-j and ctrl-k"
+  last=${SECONDS}
 }
 zle -N use-j-k
 bindkey '^[OA' use-j-k

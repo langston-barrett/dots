@@ -13,7 +13,7 @@ clean_merged() {
 # 1. Base branch
 # 2. Message
 commit_to_new_branch() {
-  rand=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 16 | head -n 1)
+  rand=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 16 | head -n 1)
   git checkout -b "$rand" "$1"
   git commit -m "$2"
   git push
@@ -53,8 +53,8 @@ alias grv='git remote -v'
 alias gs='git status'
 alias gss='git status --short'
 
-function github_clone { git clone "https://github.com/$1" }
-function git_clone_mine { git clone "https://github.com/siddharthist/$1" }
+function github_clone { git clone "https://github.com/${1}"; }
+function git_clone_mine { git clone "https://github.com/siddharthist/${1}"; }
 
 # https://stackoverflow.com/questions/3231804/in-bash-how-to-add-are-you-sure-y-n-to-any-command-or-alias#32708121
 prompt_confirm() {
@@ -80,7 +80,7 @@ function git() {
   if [[ "$1" == "push" ]]; then
     branch=$(git rev-parse --abbrev-ref HEAD)
     if [[ $branch == "master" ]]; then
-      case "$(basename $(pwd))" in
+      case "$(basename "$(pwd)")" in
         "sfe") echo "Refusing to push to master" ;;
         "renovate") echo "Refusing to push to master" ;;
         "parameterized-utils") echo "Refusing to push to master" ;;
@@ -118,24 +118,6 @@ alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
 alias docker='sudo -g docker docker'
 alias lock='systemctl start physlock'
-
-proj_test () {
-  test_cmd="make test"
-
-  if [[ -f setup.py ]]; then
-    test_cmd="./setup.py test"
-  elif [[ -f *.cabal ]]; then
-    test_cmd="cabal test"
-  elif [[ -f stack.yaml ]]; then
-    test_cmd="stack test"
-  fi
-
-  if [[ -z "$IN_NIX_SHELL" ]] && ([[ -f default.nix ]] || [[ -f shell.nix ]]); then
-    nix-shell --run "$test_cmd"
-  else
-    $test_cmd
-  fi
-}
 
 GPG_TTY=$(tty)
 export GPG_TTY
