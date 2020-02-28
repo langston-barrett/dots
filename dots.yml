@@ -7,10 +7,12 @@
     - colorschemes.yml
 
   vars:
+    # username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     become: false
+    minimal: false
+    graphical: "{{ (true and not minimal) }}"
     colorscheme: "{{ colorscheme_tao_yang }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
-    username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
     # Per-host configuration
@@ -26,6 +28,7 @@
         dst: "{{ home }}/.agignore"
       - src: alacritty.yml
         dst: "{{ xdg_config_home }}/alacritty/alacritty.yml"
+        graphical: true
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
       # - src: gtkrc-2.0
@@ -34,13 +37,17 @@
         #dst: "{{ xdg_config_home }}/gtk-3.0/settings.ini"
       - src: compton.conf
         dst: "{{ xdg_config_home }}/compton.conf"
+        graphical: true
       - src: config.nix
         dst: "{{ xdg_config_home }}/nixpkgs/config.nix"
+        minimal: true
       # status: can't figure out how to customize
       - src: gdbinit
         dst: "{{ home }}/.gdbinit"
+        minimal: true
       - src: gdbinit.d
         dst: "{{ home }}/.gdbinit.d"
+        minimal: true
       - src: git/gitconfig
         dst: "{{ home }}/.gitconfig"
       - src: git/galois.gitconfig
@@ -51,12 +58,16 @@
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       - src: home.nix
         dst: "{{ xdg_config_home }}/nixpkgs/home.nix"
+        minimal: true
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
+        graphical: true
       - src: i3status.conf
         dst: "{{ xdg_config_home }}/i3status/config"
+        graphical: true
       - src: keynavrc
         dst: "{{ xdg_config_home }}/keynav/keynavrc"
+        graphical: true
       - src: library.blb
         dst: "{{ xdg_config_home }}/beets/library.blb"
       - src: latexmkrc
@@ -66,9 +77,11 @@
       - src: monitor/at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/at-desk.sh"
         mode: "0750"
+        graphical: true
       - src: monitor/not-at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/not-at-desk.sh"
         mode: "0750"
+        graphical: true
       - src: mutt
         dst: "{{ home }}/.mutt"
         mode: "0750"
@@ -84,19 +97,26 @@
       #   mode: "0775"
       - src: qutebrowser/config.py
         dst: "{{ xdg_config_home }}/qutebrowser/config.py"
+        graphical: true
       - src: qutebrowser/config.yaml
         dst: "{{ xdg_config_home }}/qutebrowser/config.yaml"
+        graphical: true
       - src: qutebrowser/quickmarks
         dst: "{{ xdg_config_home }}/qutebrowser/quickmarks"
+        graphical: true
       - src: ranger/commands.py
         dst: "{{ xdg_config_home }}/ranger/commands.py"
+        minimal: true
       - src: ranger/rc.conf
         dst: "{{ xdg_config_home }}/ranger/rc.conf"
+        minimal: true
       - src: ranger/scope.sh
         dst: "{{ xdg_config_home }}/ranger/scope.sh"
         mode: "0750"
+        minimal: true
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
+        graphical: true
       - src: snippets/java
         dst: "{{ home }}/.emacs.d/private/snippets/java-mode"
         mode: "0750"
@@ -122,25 +142,31 @@
         dst: "{{ home }}/.spacemacs"
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
+        graphical: true
       - src: ssh
         dst: "{{ home }}/.ssh/config"
       - src: sway
         dst: "{{ xdg_config_home }}/sway/config"
+        graphical: true
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
+        graphical: true
       - src: tmux.conf
         dst: "{{ home }}/.tmux.conf"
       - src: "unsplash/{{ wallpaper }}"
         dst: "{{ xdg_config_home }}/wallpaper.jpg"
+        graphical: true
       - src: urlview
         dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
+        graphical: true
       # - src: Xresources
       #   dst: "{{ home }}/.Xresources"
       - src: zsh.d
         dst: "{{ home }}/.zsh.d"
         mode: "0750"
+        minimal: true
 
       # Themed items
       # - src: "{{ colorscheme['wallpaper'] | default(False) }}"
@@ -149,6 +175,11 @@
       #   dst: "{{ xdg_config_home }}/conky/conkyrc"
 
   tasks:
+    - name: collect facts
+      setup:
+        gather_subset:
+          - '!all'
+
     - name: configure nixos
       become: yes
       register: nixos
@@ -160,20 +191,7 @@
         owner: "{{ username }}"
         group: "{{ username }}"
         mode: "0640"
-      when: "(become | bool) and (not ci)"
-
-    - name: make tpm dir
-      file:
-        path: "{{ home }}/.tmux/plugins"
-        state: directory
-        mode: 0755
-
-    - name: clone tpm
-      git:
-        repo: 'https://github.com/tmux-plugins/tpm'
-        dest: "{{ home }}/.tmux/plugins/tpm"
-        clone: yes
-        update: no
+      when: "(become | bool) and (not ci) and (ansible_distribution == 'NixOS')"
 
     - name: make user symlink dirs
       file:
@@ -183,6 +201,7 @@
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0775') }}"
+      when: "not (item.graphical | default(False)) or (item.graphical and graphical)"
       with_items: "{{ symlinks }}"
 
     - name: make user symlinks
@@ -194,7 +213,10 @@
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0640') }}"
-      when: "item.src != False"
+      when: >
+        item.src != False
+        and (not (item.graphical | default(False)) or (item.graphical and graphical))
+        and ((item.minimal | default(False)) or ((item.minimal | default(False)) == minimal))
       with_items: "{{ symlinks }}"
 
     - name: render user templates
@@ -204,6 +226,7 @@
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0640') }}"
+      when: "graphical"
       with_items:
         - src: Xresources
           dst: "{{ home }}/.Xresources"
@@ -226,12 +249,12 @@
 
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
-      when: "not ci"
+      when: "not ci and graphical"
 
     # rather than diffing the config file, just run some commands...
     - name: configure qutebrowser
       command: qutebrowser "{{ setting }}"
-      when: "not ci"
+      when: "not ci and graphical"
       with_items:
         - setting: ':set fonts.monospace Hack'
         - setting: ':set fonts.downloads "6pt monospace"'
@@ -241,3 +264,6 @@
 
     # - name: set new background
     #   command: "feh --bg-scale {{ xdg_config_home }}/wallpaper.png"
+
+    - include: os/ubuntu.yml
+      when: ansible_distribution == "Ubuntu"

@@ -10,8 +10,6 @@ bail_if_not_installed() {
   fi
 }
 
-bail_if_not_installed python
-
 if ! installed nix; then
   bail_if_not_installed curl
   curl https://nixos.org/nix/install | sh
@@ -28,7 +26,4 @@ fi
 nix-shell default.nix  \
           --substituters "https://cache.nixos.org" \
           --run \
-          'ansible-playbook --forks 100 \
-                            -i inventory \
-                            -e ansible_python_interpreter=$(which python) \
-                            dots.yml'
+          "bash scripts/run-ansible.sh"
