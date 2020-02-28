@@ -17,6 +17,7 @@ if ! [[ -f scripts/run-ansible.sh ]]; then
   dir=$(mktemp -d)
   pushd "$dir"
   curl \
+    --quiet \
     --location \
     --output "$PWD/dots.tar.gz" \
     "https://github.com/langston-barrett/dots/tarball/master"
@@ -28,7 +29,8 @@ if ! [[ -f scripts/run-ansible.sh ]]; then
 
 else
   if ! installed nix; then
-    curl https://nixos.org/nix/install | sh
+    mkdir -m 0755 /nix && chown root /nix
+    curl --quiet https://nixos.org/nix/install | sh
   fi
 
   if [[ -n $XDG_CONFIG_HOME ]]; then
