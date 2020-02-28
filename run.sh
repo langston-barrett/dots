@@ -35,7 +35,7 @@ else
     bail_if_not_installed curl
     bail_if_not_installed sudo
 
-    mkdir -m 0755 /nix && chown root /nx
+    mkdir -m 0755 /nix && chown root /nix
     curl --quiet https://nixos.org/nix/install | sh
 
   fi
