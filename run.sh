@@ -10,10 +10,12 @@ bail_if_not_installed() {
   fi
 }
 
-bail_if_not_installed curl
-bail_if_not_installed tar
 
 if ! [[ -f scripts/run-ansible.sh ]]; then
+
+  bail_if_not_installed curl
+  bail_if_not_installed tar
+
   dir=$(mktemp -d)
   pushd "$dir"
   curl \
@@ -29,8 +31,13 @@ if ! [[ -f scripts/run-ansible.sh ]]; then
 
 else
   if ! installed nix; then
-    mkdir -m 0755 /nix && chown root /nix
+
+    bail_if_not_installed curl
+    bail_if_not_installed sudo
+
+    mkdir -m 0755 /nix && chown root /nx
     curl --quiet https://nixos.org/nix/install | sh
+
   fi
 
   if [[ -n $XDG_CONFIG_HOME ]]; then
