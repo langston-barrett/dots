@@ -1,0 +1,27 @@
+[[snippets]]
+  description = "MATE: pytest"
+  command = """
+  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x/frontend -it mate-dev bash -c 'PYTHONPATH=$PYTHONPATH:$PWD/../.out/bdist/lib/python3.7/site-packages/ pytest -x -k name_of_test'
+  """
+  output = ""
+
+[[snippets]]
+  description = "MATE: shake"
+  command = """
+  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x/frontend -it mate-dev ./shake.sh -j4 -- target --'
+  """
+  output = ""
+
+[[snippets]]
+  description = "MATE: pull and tag"
+  command = """
+  docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist
+  """
+  output = ""
+
+[[snippets]]
+  description = "docker clean"
+  command = """
+  TODO
+  """
+  output = ""
