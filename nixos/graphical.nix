@@ -63,11 +63,13 @@ in {
     ];
   };
 
-  services.redshift = {
-    enable = true;
-    # Portland
+  location = {
     latitude = location.latitude;
     longitude = location.longitude;
+  };
+
+  services.redshift = {
+    enable = true;
   };
 
   environment.variables = {
