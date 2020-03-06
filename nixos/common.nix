@@ -71,6 +71,12 @@ in {
   #   mime.enable  = true;
   # };
 
+  documentation = {
+    dev.enable = true;
+    man.enable = true;
+    nixos.enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
@@ -79,12 +85,13 @@ in {
     exfat
     fd
     file
-    glibc-info
+    # glibc-info
     git
     gitAndTools.hub # github access for magithub
     gnumake
     htop
     imagemagick
+    manpages
     mpw
     nix-prefetch-git
     p7zip
