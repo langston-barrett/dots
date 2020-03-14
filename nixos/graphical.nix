@@ -2,8 +2,8 @@
 
 let
   portland = {
-    latitude = "45.480";
-    longitude = "-122.63";
+    latitude = 45.480;
+    longitude = -122.63;
   };
   location = portland;
   master = (import ./pkgs.nix { inherit pkgs; }).master;
