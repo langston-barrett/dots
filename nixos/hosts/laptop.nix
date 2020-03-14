@@ -8,7 +8,7 @@
     ../common.nix
 
     ../audio.nix
-    ../mail.nix
+    # ../mail.nix
     ../networking.nix
     ../steam.nix
     ../x.nix
