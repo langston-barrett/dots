@@ -2,8 +2,8 @@
 
 // ** IO
 
-// INPUT = LINUX_DEVICE L64 /dev/input/by-id/usb-040b_Weltrend_USB_Mouse-event-if01
-INPUT = LINUX_DEVICE L64 /dev/input/event3
+INPUT = LINUX_DEVICE L64 /dev/input/by-id/usb-040b_Weltrend_USB_Mouse-event-kbd
+// INPUT = LINUX_DEVICE L64 /dev/input/event3
 OUTPUT = UINPUT_SINK
 
 // ** Aliases
