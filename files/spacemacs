@@ -1808,7 +1808,13 @@ will not be modified."
     (custom-set-variables
      '(flycheck-python-flake8-executable "python3")
      '(flycheck-python-pycompile-executable "python3")
-     '(flycheck-python-pylint-executable "python3")))
+     '(flycheck-python-pylint-executable "python3"))
+
+    (defun my/insert-print ()
+      (interactive)
+      (insert "print(\"~\"*40, _)"))
+    (spacemacs/set-leader-keys-for-major-mode 'python-mode
+      "ip" 'my/insert-print))
 
   ;; Jump to top-level definitions
   ;; (spacemacs/set-leader-keys-for-major-mode 'python-mode

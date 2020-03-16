@@ -21,14 +21,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Crypto!!
-  boot.initrd.luks.devices = [
-    {
-      name = "root";
+  boot.initrd.luks.devices = {
+    root = {
       device = "/dev/disk/by-uuid/9fc9c5f4-6ad6-4bce-bd55-1cbe26e42e02";
       preLVM = true;
       allowDiscards = true;
-    }
-  ];
+    };
+  };
 
   networking.hostName = "langston-x1"; # Define your hostname.
   # networking.networkmanager.enable = true;

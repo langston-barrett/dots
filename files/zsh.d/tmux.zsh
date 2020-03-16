@@ -70,4 +70,4 @@ set_tmux() {
 
   fi
 }
-set_tmux
+# set_tmux

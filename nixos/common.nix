@@ -85,7 +85,6 @@ in {
     exfat
     fd
     file
-    # glibc-info
     git
     gitAndTools.hub # github access for magithub
     gnumake
