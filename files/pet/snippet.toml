@@ -4,6 +4,13 @@
   output = ""
 
 [[snippets]]
+  description = "MATE: poi"
+  command = "docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x/ -it mate-dev bash -c './shake.sh --dev-messages -j4 bdist && source source.sh && mate -w  challenges/hamlin.workspace poi -r UseAfterFreePOI'"
+  output = ""
+
+
+
+[[snippets]]
   description = "MATE: shake"
   command = "  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x/frontend -it mate-dev ./shake.sh -j4 -- target --'\n  "
   output = ""

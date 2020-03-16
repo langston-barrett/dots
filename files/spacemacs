@@ -126,6 +126,7 @@ This function should only modify configuration layer settings."
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
      prop-menu ; needed for saw-script-mode
+     pocket-reader
 
      ;; UI
      cheatsheet ; self-explanatory
