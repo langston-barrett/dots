@@ -217,6 +217,11 @@ mode $displayMode {
 # ** i3bar
 
 bar {
+    status_command bash ~/code/dots/files/battery.sh
+    mode invisible
+}
+
+bar {
   i3bar_command i3bar -t
   font pango:Hack, Icons 8
 
@@ -224,6 +229,7 @@ bar {
   tray_output primary
   status_command i3status
   # status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
+
 
   position top
 
