@@ -78,6 +78,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
+    acpi # battery monitoring in scripts
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
     curl
