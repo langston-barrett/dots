@@ -1219,7 +1219,6 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
-    (org-indent-mode 1)
 
 ;;;;;; org-ref
 
@@ -1307,6 +1306,34 @@ will not be modified."
        (plantuml   . t)
        (shell      . t)
        ))
+
+
+;;;;;; functions
+
+    ;; https://emacs.stackexchange.com/questions/10707/in-org-mode-how-to-remove-a-link
+    (defun my/org-remove-link ()
+      "Replace an org link by its description or if empty its address"
+      (interactive)
+      (if (org-in-regexp org-bracket-link-regexp 1)
+          (save-excursion
+            (let ((remove (list (match-beginning 0) (match-end 0)))
+                  (description (if (match-end 3)
+                                   (org-match-string-no-properties 3)
+                                 (org-match-string-no-properties 1))))
+              (apply 'delete-region remove)
+              (insert description)))))
+
+      (defun my/org-insert-link ()
+        "Insert a link from the kill ring"
+        (interactive)
+        (save-excursion
+          (let ((bounds (bounds-of-thing-at-point 'word)))
+            (goto-char (cdr bounds))
+            (insert "]]")
+            (goto-char (car bounds))
+            (insert "[[")
+            (yank)
+            (insert "]["))))
 
 ;;;;;; keybindings
 
