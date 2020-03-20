@@ -99,6 +99,9 @@
       # - src: profile
       #   dst: "{{ home }}/.profile"
       #   mode: "0775"
+      - src: qterminal.ini
+        dst: "{{ xdg_config_home }}/qterminal.org/qterminal.ini"
+        graphical: true
       - src: qutebrowser/config.py
         dst: "{{ xdg_config_home }}/qutebrowser/config.py"
         graphical: true
