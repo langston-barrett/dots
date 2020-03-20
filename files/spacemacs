@@ -1338,6 +1338,8 @@ will not be modified."
 ;;;;;; keybindings
 
     (spacemacs/set-leader-keys
+      "oil"  'my/org-insert-link
+      "orl"  'my/org-remove-link
       ;; org-noter
       "on"   'org-noter)
 
