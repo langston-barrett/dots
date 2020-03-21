@@ -10,6 +10,15 @@ exec --no-startup-id nm-applet
 exec systemctl --user start xcompmgr
 exec systemctl --user start kdeconnect
 
+# ** variables
+
+# See https://github.com/Kyczan/dotfiles
+set_from_resource   $bg i3.bgrnd #282A36    # background
+set_from_resource   $fg i3.fgrnd #FFFFFF    # foreground
+set_from_resource   $in i3.inact #676E7D    # inactive
+set_from_resource   $ur i3.urgen #E53935    # urgent
+set_from_resource   $tr i3.trans FF         # transparency
+
 # ** general
 
 # Super. Alt is Mod1.
@@ -18,9 +27,10 @@ set $mod Mod1
 # Mouse+mod floats & drags
 floating_modifier $mod
 
-bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+bindsym $mod+space exec bash -c "export QTERM=1 && qterminal --drop"
+# bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
-bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/rofi-firefox.sh" -show firefox
+# bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/rofi-firefox.sh" -show firefox
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Return exec alacritty
@@ -236,6 +246,13 @@ bar {
   colors {
     background    #17171788
     statusline    #D8D8D8FF
+    
+    # background  $bg$tr
+    # separator   $in
+    # #                  border   bground   text
+    # focused_workspace  $bg$tr   $bg$tr    $fg
+    # inactive_workspace $bg$tr   $bg$tr    $in
+    # urgent_workspace   $bg$tr   $bg$tr    $ur
   }
 
   # colors {

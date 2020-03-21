@@ -1,0 +1,192 @@
+[
+    {
+        "key": "r",
+        "desc": "rofi",
+        "keys": [
+            {
+                "key": "r",
+                "desc": "run",
+                "exit": true,
+                "cmd": [
+                  "rofi",
+                  "-show",
+                  "drun",
+                  "-kb-cancel",
+                  "Alt+C",
+                  "-kb-cancel",
+                  "Ctrl+g"
+                ]
+            }
+        ]
+    },
+    {
+        "key": "w",
+        "desc": "wm (i3)",
+        "keys": [
+            {
+                "key": "h",
+                "desc": "focus left",
+                "exit": true,
+                "cmd": ["i3-msg", "focus left"]
+            },
+            {
+                "key": "j",
+                "desc": "focus down",
+                "exit": true,
+                "cmd": ["i3-msg", "focus down"]
+            },
+            {
+                "key": "k",
+                "desc": "focus up",
+                "exit": true,
+                "cmd": ["i3-msg", "focus up"]
+            },
+            {
+                "key": "l",
+                "desc": "focus right",
+                "exit": true,
+                "cmd": ["i3-msg", "focus right"]
+            },
+            {
+                "key": "w",
+                "desc": "go to workspace",
+                "keys": [
+                    {
+                        "key": "f",
+                        "desc": "workspace 'f'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "workspace \"f\""]
+                    },
+                    {
+                        "key": "d",
+                        "desc": "workspace 'd'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "workspace \"d\""]
+                    },
+                    {
+                        "key": "s",
+                        "desc": "workspace 's'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "workspace \"s\""]
+                    },
+                    {
+                        "key": "a",
+                        "desc": "workspace 'a'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "workspace \"a\""]
+                    }
+                ]
+            },
+            {
+                "key": "W",
+                "desc": "move to workspace",
+                "exit": true,
+                "keys": [
+                    {
+                        "key": "f",
+                        "desc": "workspace 'f'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "move container to workspace f"]
+                    },
+                    {
+                        "key": "d",
+                        "desc": "workspace 'd'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "move container to workspace d"]
+                    },
+                    {
+                        "key": "s",
+                        "desc": "workspace 's'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "move container to workspace s"]
+                    },
+                    {
+                        "key": "a",
+                        "desc": "workspace 'a'",
+                        "exit": true,
+                        "cmd": ["i3-msg", "move container to workspace a"]
+                    }
+                ]
+            },
+            {
+                "key": "r",
+                "desc": "restart",
+                "exit": true,
+                "cmd": ["i3-msg", "restart"]
+            },
+            {
+                "key": "R",
+                "desc": "reload",
+                "exit": true,
+                "cmd": ["i3-msg", "reload"]
+            },
+            {
+                "key": "k",
+                "desc": "kill",
+                "exit": true,
+                "cmd": ["i3-msg", "kill"]
+            }
+        ]
+    },
+    {
+        "key": "h",
+        "desc": "hardware",
+        "keys": [
+            {
+                "key": "l",
+                "desc": "backlight up",
+                "exit": true,
+                "cmd": ["light", "-A", "20"]
+            },
+            {
+                "key": "L",
+                "desc": "backlight down",
+                "exit": true,
+                "cmd": ["light", "-U", "20"]
+            },
+            {
+                "key": "p",
+                "desc": "power",
+                "keys": [
+                    {
+                        "key": "s",
+                        "desc": "suspend",
+                        "exit": true,
+                        "cmd": ["systemctl", "suspend"]
+                    }
+                ]
+            },
+            {
+                "key": "v",
+                "desc": "volume down",
+                "exit": true,
+                "cmd": ["amixer", "sset", "Master", "5%-"]
+            },
+            {
+                "key": "V",
+                "desc": "volume up",
+                "exit": true,
+                "cmd": ["amixer", "sset", "Master", "5%+"]
+            }
+
+        ]
+    },
+    {
+        "key": "m",
+        "desc": "misc",
+        "keys": [
+            {
+                "key": "s",
+                "desc": "spacemacs anywhere",
+                "exit": true,
+                "cmd": ["bash", "~/code/dots/files/spacemacsanywhere.sh"]
+            },
+            {
+                "key": "p",
+                "desc": "feh",
+                "exit": true,
+                "cmd": ["feh", "--bg-fill", "~/.config/wallpaper.jpg"]
+            }
+        ]
+    }
+]
