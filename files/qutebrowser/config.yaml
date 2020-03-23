@@ -5,3 +5,4 @@ bindings.commands:
 content.images: true
 aliases:
   pocket: "open -t https://getpocket.com/edit?url={url}"
+zoom.default: "125%"
