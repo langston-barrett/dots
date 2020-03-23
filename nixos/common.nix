@@ -82,6 +82,7 @@ in {
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
     curl
+    dive # docker image size analysis
     emacsVterm
     exfat
     fd

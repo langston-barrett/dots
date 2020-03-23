@@ -49,11 +49,6 @@
   programs.light.enable = true;
   # programs.java.enable = true;
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
-
   environment.systemPackages = with pkgs; [
     beets
     calibre
