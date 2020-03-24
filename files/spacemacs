@@ -147,6 +147,7 @@ This function should only modify configuration layer settings."
 
      flycheck-mypy
      doom-themes
+     dracula-theme
 
      ;; TODO: were these changes merged? delete?
      (symbol-overlay
@@ -334,6 +335,7 @@ It should only modify the values of Spacemacs settings."
                          spacemacs-dark
                          tao-yang
                          tao-yin
+                         dracula
                          ;; dichromacy
                          ;; zenburn
                          ;; hc-zenburn
@@ -1877,6 +1879,24 @@ will not be modified."
   (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
 
 ;;;;; eacl
+
+  (eval-after-load 'grep
+    '(progn
+       (dolist (v '("node_modules"
+                    "bower_components"
+                    ".sass_cache"
+                    ".cache"
+                    ".npm"
+                    ".out"
+                    ".git"
+                    "__pycache__"))
+         (add-to-list 'grep-find-ignored-directories v))
+       (dolist (v '("*.min.js"
+                    "*.bundle.js"
+                    "*.min.css"
+                    "*.json"
+                    "*.log"))
+         (add-to-list 'grep-find-ignored-files v))))
 
   ;; This doesn't work as a 'let' binding??
   ;; TODO: only consider files of the appropriate suffices
