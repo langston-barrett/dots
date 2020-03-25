@@ -662,13 +662,6 @@ you should place your code here."
   ;; saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
 
-  (defun my/inhibit-semantic-p ()
-    (not (or (equal major-mode 'c++-mode)
-             (equal major-mode 'c-mode))))
-
-  (with-eval-after-load 'semantic
-    (add-to-list 'semantic-inhibit-functions #'my/inhibit-semantic-p))
-
   ;; https://bit.ly/2OrfDO0
   ;; (when (require 'hungry-delete nil 'noerror)
   ;;   (global-hungry-delete-mode))
