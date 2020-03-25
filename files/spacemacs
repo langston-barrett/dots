@@ -1329,12 +1329,25 @@ will not be modified."
         "Insert a link from the kill ring"
         (interactive)
         (save-excursion
-          (let ((bounds (bounds-of-thing-at-point 'word)))
+          (let ((bounds (if (or (not (region-active-p))
+                                (region-noncontiguous-p))
+                            (bounds-of-thing-at-point 'word)
+                            (region-bounds))))
             (goto-char (cdr bounds))
             (insert "]]")
             (goto-char (car bounds))
             (insert "[[")
-            (yank)
+            (insert
+              (helm :sources
+                    (helm-build-sync-source "Kill Ring"
+                      :candidates #'helm-kill-ring-candidates
+                      :filtered-candidate-transformer #'helm-kill-ring-transformer
+                      :fuzzy-match t
+                      :multiline 'helm-kill-ring-max-offset
+                      :group 'helm-ring)
+                    :buffer "*helm kill ring*"
+                    :resume 'noresume
+                    :allow-nest t))
             (insert "]["))))
 
 ;;;;;; keybindings
