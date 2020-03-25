@@ -19,12 +19,6 @@ commit_to_new_branch() {
   git push
 }
 
-edit_markdown() {
-  emacsclient --create-frame "$1" & disown
-  grip "$1" localhost:8199 & disown
-  firefox localhost:8199
-}
-
 ## Git
 alias ga='git add'
 alias gb='git branch'
@@ -112,6 +106,8 @@ run_from_unstable () {
 
 }
 
+alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/mini.kbd & disown'
+
 ## Generic
 
 alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
@@ -128,3 +124,15 @@ setopt HIST_FIND_NO_DUPS    # Do not display a line previously found.
 setopt HIST_IGNORE_SPACE    # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
+
+# Mate
+
+mate-shake() {
+  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- "$1"
+}
+
+mate-pytest-one() {
+  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- pytests -- -vv -x -k "$1"
+}
+
+alias mate-docker-pull='docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist'
