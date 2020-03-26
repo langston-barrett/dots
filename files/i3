@@ -27,8 +27,9 @@ set $mod Mod1
 # Mouse+mod floats & drags
 floating_modifier $mod
 
-bindsym $mod+space exec bash -c "export QTERM=1 && qterminal --drop"
-# bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+for_window [title="hydra"] floating enable
+bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
+bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
 # bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/rofi-firefox.sh" -show firefox
 
@@ -60,7 +61,7 @@ bindsym $mod+t layout stacking
 # bindsym $mod+Shift+s layout toggle split
 
 # toggle tiling / floating
-# bindsym $mod+Shift+space floating toggle
+#bindsym $mod+Shift+space floating toggle
 
 # change focus between tiling / floating windows
 bindsym $mod+u focus mode_toggle
@@ -246,7 +247,7 @@ bar {
   colors {
     background    #17171788
     statusline    #D8D8D8FF
-    
+
     # background  $bg$tr
     # separator   $in
     # #                  border   bground   text
