@@ -133,6 +133,18 @@
         "desc": "hardware",
         "keys": [
             {
+                "key": "d",
+                "desc": "at desk",
+                "exit": true,
+                "cmd": ["~/.config/i3/scripts/at-desk.sh"]
+            },
+            {
+                "key": "D",
+                "desc": "not at desk",
+                "exit": true,
+                "cmd": ["bash ~/.config/i3/scripts/not-at-desk.sh"]
+            },
+            {
                 "key": "l",
                 "desc": "backlight up",
                 "exit": true,
@@ -160,13 +172,13 @@
                 "key": "v",
                 "desc": "volume down",
                 "exit": true,
-                "cmd": ["amixer", "sset", "Master", "5%-"]
+                "cmd": ["amixer", "sset", "Master", "10%-"]
             },
             {
                 "key": "V",
                 "desc": "volume up",
                 "exit": true,
-                "cmd": ["amixer", "sset", "Master", "5%+"]
+                "cmd": ["amixer", "sset", "Master", "10%+"]
             }
 
         ]
