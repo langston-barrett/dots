@@ -126,7 +126,7 @@ This function should only modify configuration layer settings."
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
      prop-menu ; needed for saw-script-mode
-     pocket-reader
+     ;; pocket-reader
 
      ;; UI
      cheatsheet ; self-explanatory
@@ -176,9 +176,9 @@ This function should only modify configuration layer settings."
       :location (recipe :fetcher github
                         :repo "caiorss/org-wiki"))
 
-     (helm-shell-history
-      :location (recipe :fetcher github
-                        :repo "yuutayamada/helm-shell-history"))
+     ;; (helm-shell-history
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "yuutayamada/helm-shell-history"))
 
      (graph
       :location (recipe :fetcher github
@@ -578,6 +578,20 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "stable.melpa.org/packages/"))
   (add-to-list 'package-pinned-packages '(ensime . "melpa-stable"))
+
+  ;; (defun my/compute-font-size (frame)
+  ;;   "Inspired by https://emacs.stackexchange.com/a/44930/17066. FRAME is ignored."
+  ;;   ;; Using display names is unreliable...switched to checking the resolution
+  ;;   (let* ((attrs (frame-monitor-attributes)) ;; gets attribs for current frame
+  ;;          (width-mm (nth 1 (nth 3 attrs)))
+  ;;          (width-px (nth 3 (nth 2 attrs)))
+  ;;          (size nil)) ;; default size
+  ;;     (cond ((eq width-px 1920) (setq size 18))
+  ;;           (t (setq size 28)))
+  ;;     (set-frame-font (format "Hack %s" size))))
+  ;; (set-frame-font "Hack 8")
+
+  ;; (add-hook 'window-size-change-functions #'tr/compute-font-size)
 
   (let ((sz (if (> (x-display-pixel-width) 3000) 28 18)))
     (setq-default dotspacemacs-default-font `("Hack"
@@ -1214,6 +1228,7 @@ you should place your code here."
 
   (with-eval-after-load 'org
 
+    (require 'org-wiki nil 'noerror)
 
 ;;;;;; org-ref
 
