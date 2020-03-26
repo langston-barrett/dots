@@ -235,6 +235,13 @@
         - src: Xresources
           dst: "{{ home }}/.Xresources"
 
+    - name: clone qutebrowser dracula theme
+      git:
+        repo: 'https://github.com/dracula/qutebrowser-dracula-theme'
+        dest: "{{ xdg_config_home }}/qutebrowser/"
+        clone: yes
+        update: no
+
     - name: clone spacemacs
       git:
         repo: 'https://github.com/syl20bnr/spacemacs'
