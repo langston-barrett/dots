@@ -91,6 +91,8 @@
         dst: "{{ xdg_config_home }}/pet/config.toml"
       - src: pet/snippet.toml
         dst: "{{ xdg_config_home }}/pet/snippet.toml"
+      - src: polybar.ini
+        dst: "{{ xdg_config_home }}/polybar/config"
       # Currently breaks GNOME on Fedora
       # - src: profile
       #   dst: "{{ home }}/.profile"
