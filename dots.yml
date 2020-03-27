@@ -3,15 +3,11 @@
   gather_facts: no
   #strategy: free
 
-  vars_files:
-    - colorschemes.yml
-
   vars:
     # username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     become: false
     minimal: false
     graphical: "{{ (true and not minimal) }}"
-    colorscheme: "{{ colorscheme_tao_yang }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
     home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
     xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
@@ -19,7 +15,7 @@
     dpi: 92
     cursor_size: 32
     urxvt_font_size: 6
-    wallpaper: sarah-dorweiler-105888-unsplash.jpg
+    # wallpaper: sarah-dorweiler-105888-unsplash.jpg
 
     symlinks:
       # - src: aspell-dict
@@ -42,12 +38,12 @@
         dst: "{{ xdg_config_home }}/nixpkgs/config.nix"
         minimal: true
       # status: can't figure out how to customize
-      - src: gdbinit
-        dst: "{{ home }}/.gdbinit"
-        minimal: true
-      - src: gdbinit.d
-        dst: "{{ home }}/.gdbinit.d"
-        minimal: true
+      # - src: gdbinit
+      #   dst: "{{ home }}/.gdbinit"
+      #   minimal: true
+      # - src: gdbinit.d
+      #   dst: "{{ home }}/.gdbinit.d"
+      #   minimal: true
       - src: git/gitconfig
         dst: "{{ home }}/.gitconfig"
       - src: git/galois.gitconfig
@@ -157,26 +153,20 @@
         graphical: true
       - src: tmux.conf
         dst: "{{ home }}/.tmux.conf"
-      - src: "unsplash/{{ wallpaper }}"
-        dst: "{{ xdg_config_home }}/wallpaper.jpg"
-        graphical: true
+      # - src: "unsplash/{{ wallpaper }}"
+      #   dst: "{{ xdg_config_home }}/wallpaper.jpg"
+      #   graphical: true
       - src: urlview
         dst: "{{ home }}/.urlview"
       - src: xmodmap
         dst: "{{ home }}/.xmodmap"
         graphical: true
-      # - src: Xresources
-      #   dst: "{{ home }}/.Xresources"
+      - src: Xresources
+        dst: "{{ home }}/.Xresources"
       - src: zsh.d
         dst: "{{ home }}/.zsh.d"
         mode: "0750"
         minimal: true
-
-      # Themed items
-      # - src: "{{ colorscheme['wallpaper'] | default(False) }}"
-      #   dst: "{{ xdg_config_home }}/wallpaper.png"
-      # - src: "{{ colorscheme['conkyrc'] | default(False) }}"
-      #   dst: "{{ xdg_config_home }}/conky/conkyrc"
 
   tasks:
     - name: collect facts
@@ -223,22 +213,10 @@
         and ((item.minimal | default(False)) or ((item.minimal | default(False)) == minimal))
       with_items: "{{ symlinks }}"
 
-    - name: render user templates
-      template:
-        src: "{{ playbook_dir }}/templates/{{ item.src }}.j2"
-        dest: "{{ item.dst }}"
-        owner: "{{ item.owner | default(username) }}"
-        group: "{{ item.group | default(username) }}"
-        mode: "{{ item.mode | default('0640') }}"
-      when: "graphical"
-      with_items:
-        - src: Xresources
-          dst: "{{ home }}/.Xresources"
-
     - name: clone qutebrowser dracula theme
       git:
         repo: 'https://github.com/dracula/qutebrowser-dracula-theme'
-        dest: "{{ xdg_config_home }}/qutebrowser/"
+        dest: "{{ xdg_config_home }}/qutebrowser/dracula"
         clone: yes
         update: no
 
@@ -249,29 +227,9 @@
         clone: yes
         update: no
 
-    # TODO and build
-    # nix-shell --pure -p libtool -p cmake -p libvterm --run "cmake .. && make"
-    - name: clone emacs-libvterm
-      git:
-        repo: 'https://github.com/akermu/emacs-libvterm.git'
-        dest: "{{ home }}/.emacs.d/private"
-        clone: yes
-        update: no
-
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
       when: "not ci and graphical"
-
-    # rather than diffing the config file, just run some commands...
-    - name: configure qutebrowser
-      command: qutebrowser "{{ setting }}"
-      when: "not ci and graphical"
-      with_items:
-        - setting: ':set fonts.monospace Hack'
-        - setting: ':set fonts.downloads "6pt monospace"'
-        - setting: ':set fonts.completion.entry "6pt monospace"'
-        - setting: ':set fonts.tabs "8pt monospace"'
-        - setting: ':set fonts.statusbar "8pt monospace"'
 
     # - name: set new background
     #   command: "feh --bg-scale {{ xdg_config_home }}/wallpaper.png"

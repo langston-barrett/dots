@@ -50,7 +50,7 @@ This function should only modify configuration layer settings."
      git    ; magit! SPC g m
      version-control
      pdf ; read pdfs, use with org-noter
-     ;; github ; magithub!
+     github
      ;; (shell :variables
      ;;        shell-default-shell 'ansi-term
      ;;        shell-default-position 'bottom)
@@ -331,11 +331,11 @@ It should only modify the values of Spacemacs settings."
    ;; spacemacs starts. Press <SPC> T n to cycle to the next theme in the
    ;; list (works great with 2 themes variants, one dark and one light)
    ;; colorscheme
-   dotspacemacs-themes '(doom-one
+   dotspacemacs-themes '(dracula
                          spacemacs-dark
                          tao-yang
                          tao-yin
-                         dracula
+                         doom-one
                          ;; dichromacy
                          ;; zenburn
                          ;; hc-zenburn
@@ -947,6 +947,7 @@ you should place your code here."
 
 ;;;;; (Ma)git
 
+  (add-to-list 'forge-alist '("gitlab-ext.galois.com" "gitlab-ext.galois.com/api/v4" "gitlab-ext.galois.com" forge-gitlab-repository))
   (setq git-link-default-remote "upstream")
   (setq magithub-clone-default-directory "~/code")
   (setq magit-repository-directories '(("~/code" . 2)))

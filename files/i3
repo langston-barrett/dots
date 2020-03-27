@@ -248,12 +248,12 @@ bar {
     background    #17171788
     statusline    #D8D8D8FF
 
-    # background  $bg$tr
-    # separator   $in
-    # #                  border   bground   text
-    # focused_workspace  $bg$tr   $bg$tr    $fg
-    # inactive_workspace $bg$tr   $bg$tr    $in
-    # urgent_workspace   $bg$tr   $bg$tr    $ur
+    background  $bg$tr
+    separator   $in
+    #                  border   bground   text
+    focused_workspace  $bg$tr   $bg$tr    $fg
+    inactive_workspace $bg$tr   $bg$tr    $in
+    urgent_workspace   $bg$tr   $bg$tr    $ur
   }
 
   # colors {
