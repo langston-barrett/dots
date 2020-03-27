@@ -671,6 +671,10 @@ you should place your code here."
 
   (setq helm-ag-use-agignore t)
 
+  ;; bigger fringes
+  (setq-default left-fringe-width 16)
+  (setq-default right-fringe-width 16)
+
   (require 'saw-script nil 'noerror)
 
   ;; saw-script
@@ -730,6 +734,9 @@ you should place your code here."
   (with-eval-after-load 'projectile
     (dolist (dir (list "dist" "dist-newstyle"))
       (add-to-list 'projectile-globally-ignored-directories dir)))
+
+  (when (require 'diff-hl-mode nil 'noerror)
+    (global-diff-hl-mode 1))
 
 ;;;;; minimap
 

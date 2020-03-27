@@ -24,7 +24,7 @@ else
 fi
 
 # If we're on another machine, show the user/hostname
-if [[ $(uname -n) != langston-nixos ]]; then
+if [[ $(uname -n) != langston-nixos ]] && [[ $(uname -n) != langston-x1 ]]; then
   PROMPT="$(whoami)@$(uname -n) ${dir_2} > "
 fi
 
