@@ -954,7 +954,7 @@ you should place your code here."
 
 ;;;;; (Ma)git
 
-  (add-to-list 'forge-alist '("gitlab-ext.galois.com" "gitlab-ext.galois.com/api/v4" "gitlab-ext.galois.com" forge-gitlab-repository))
+  ;; (add-to-list 'forge-alist '("gitlab-ext.galois.com" "gitlab-ext.galois.com/api/v4" "gitlab-ext.galois.com" forge-gitlab-repository))
   (setq git-link-default-remote "upstream")
   (setq magithub-clone-default-directory "~/code")
   (setq magit-repository-directories '(("~/code" . 2)))
@@ -1240,15 +1240,15 @@ you should place your code here."
 
 ;;;;;; org-ref
 
-    (setq reftex-default-bibliography '("~/Dropbox/langston/bib/references.bib"))
+    (setq reftex-default-bibliography '("~/Dropbox/langston/org/bib/references.bib"))
 
     ;; see org-ref for use of these variables
     (setq org-ref-bibliography-notes "~/Dropbox/langston/org/bibliography.org"
-          org-ref-default-bibliography '("~/Dropbox/langston/bib/references.bib")
-          org-ref-pdf-directory "~/Dropbox/langston/bib/")
+          org-ref-default-bibliography '("~/Dropbox/langston/org/bib/references.bib")
+          org-ref-pdf-directory "~/Dropbox/langston/org/bib/")
 
-    (setq bibtex-completion-bibliography "~/Dropbox/langston/bib/references.bib"
-          bibtex-completion-library-path "~/Dropbox/langston/bib/"
+    (setq bibtex-completion-bibliography "~/Dropbox/langston/org/bib/references.bib"
+          bibtex-completion-library-path "~/Dropbox/langston/org/bib/"
           bibtex-completion-notes-path "~/Dropbox/langston/org/bibliography.org")
 
     (with-eval-after-load 'org-ref
