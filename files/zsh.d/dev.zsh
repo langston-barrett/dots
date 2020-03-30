@@ -89,6 +89,16 @@ function git() {
   fi
 }
 
+
+# systemd
+
+alias sys="sudo systemctl";
+alias syss="sudo systemctl status";
+alias sysr="sudo systemctl restart";
+alias sysu="systemctl --user";
+alias sysus="systemctl --user status";
+alias sysur="systemctl --user restart";
+
 ## Nix
 alias nb='nix-build'
 alias nba='nix-build -A'
