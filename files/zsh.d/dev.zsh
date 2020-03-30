@@ -138,7 +138,8 @@ setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 # Mate
 
 mate-shake() {
-  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- "$1"
+  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- "$1" -- "${@:2}"
+
 }
 
 mate-pytest-one() {
