@@ -7,6 +7,7 @@
 let emacsVterm =
       with pkgs; (emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
         epkgs.emacs-libvterm
+        epkgs.emacsql-sqlite
       ]);
 in {
   imports = [

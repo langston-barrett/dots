@@ -17,15 +17,18 @@
   ];
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    # plymouth.enable = true; # splash screen
 
-  # Crypto!!
-  boot.initrd.luks.devices = {
-    root = {
-      device = "/dev/disk/by-uuid/9fc9c5f4-6ad6-4bce-bd55-1cbe26e42e02";
-      preLVM = true;
-      allowDiscards = true;
+    # Crypto!!
+    initrd.luks.devices = {
+      root = {
+        device = "/dev/disk/by-uuid/9fc9c5f4-6ad6-4bce-bd55-1cbe26e42e02";
+        preLVM = true;
+        allowDiscards = true;
+      };
     };
   };
 
