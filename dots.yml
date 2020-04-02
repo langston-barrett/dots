@@ -83,6 +83,8 @@
         mode: "0750"
       - src: my-cheatsheet.el
         dst: "{{ home }}/.emacs.d/private/local/my-cheatsheet.el"
+      - src: org-roam-packages.el
+        dst: "{{ home }}/.emacs.d/private/org-roam/packages.el"
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
