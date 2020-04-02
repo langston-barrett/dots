@@ -92,6 +92,7 @@ This function should only modify configuration layer settings."
      ;;        latex-enable-auto-fill t)
      markdown
      org
+     org-roam
      outshine
      rust
      ;; saw-script
