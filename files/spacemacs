@@ -71,7 +71,7 @@ This function should only modify configuration layer settings."
                        c-c++-enable-auto-newline t)
      docker
      ;; agda
-     racket
+     ;; racket
      javascript ; json
      bibtex ; org-ref!
      coq
@@ -96,11 +96,11 @@ This function should only modify configuration layer settings."
      rust
      ;; saw-script
      nixos
-     (java :variables java-backend 'lsp)
-     dap
-     (scala :variables
-            scala-auto-start-ensime t
-            scala-enable-eldoc nil) ;; type at point (sometimes freezes)
+     ;; (java :variables java-backend 'lsp)
+     ;; dap
+     ;; (scala :variables
+     ;;        scala-auto-start-ensime t
+     ;;        scala-enable-eldoc nil) ;; type at point (sometimes freezes)
 
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
      yaml
@@ -1216,22 +1216,22 @@ you should place your code here."
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
   (setq org-brain-show-resources nil)
-  (setq org-directory          "~/Dropbox/langston/org")
-  (setq org-wiki-location      "~/Dropbox/langston/org"
-        org-brain-path         "~/Dropbox/langston/org"
-        org-agenda-files       '("~/Dropbox/langston/org")
+  (setq org-directory          "~/org")
+  (setq org-wiki-location      "~/org"
+        org-brain-path         "~/org"
+        org-agenda-files       '("~/org")
         org-default-notes-file (concat org-directory "/capture.org"))
 
   ;; TODO: function for heading level
   ;; https://orgmode.org/manual/Template-expansion.html#Template-expansion
   (setq org-capture-templates
-        '(("t" "todo" entry (file+headline "~/Dropbox/langston/org/capture.org" "to be sorted")
+        '(("t" "todo" entry (file+headline org-default-notes-file "to be sorted")
            "** %?\n   %a\n   %U")
-          ("p" "pending" entry (file+headline "~/Dropbox/langston/org/capture.org" "pending")
+          ("p" "pending" entry (file+headline org-default-notes-file "pending")
            "** %?\n   %a\n   DEADLINE: %t")
-          ("r" "review" entry (file+headline "~/Dropbox/langston/org/capture.org" "review")
+          ("r" "review" entry (file+headline org-default-notes-file "review")
            "** %?\n   %a\n   %U")
-          ("w" "workflow" entry (file+headline "~/Dropbox/langston/org/capture.org" "workflow")
+          ("w" "workflow" entry (file+headline org-default-notes-file "workflow")
            "*** %?\n    %U")))
 
   (with-eval-after-load 'org
@@ -1240,23 +1240,30 @@ you should place your code here."
 
 ;;;;;; org-ref
 
-    (setq reftex-default-bibliography '("~/Dropbox/langston/org/bib/references.bib"))
+    (setq reftex-default-bibliography (list (concat org-directory "/bib/references.bib")))
 
     ;; see org-ref for use of these variables
-    (setq org-ref-bibliography-notes "~/Dropbox/langston/org/bibliography.org"
-          org-ref-default-bibliography '("~/Dropbox/langston/org/bib/references.bib")
-          org-ref-pdf-directory "~/Dropbox/langston/org/bib/")
+    (setq org-ref-bibliography-notes (concat org-directory "/bibliography.org")
+          org-ref-default-bibliography reftex-default-bibliography
+          org-ref-pdf-directory (concat org-directory "/bib/"))
 
-    (setq bibtex-completion-bibliography "~/Dropbox/langston/org/bib/references.bib"
-          bibtex-completion-library-path "~/Dropbox/langston/org/bib/"
-          bibtex-completion-notes-path "~/Dropbox/langston/org/bibliography.org")
+    (setq bibtex-completion-bibliography reftex-default-bibliography
+          bibtex-completion-library-path org-ref-pdf-directory
+          bibtex-completion-notes-path org-ref-bibliography-notes)
 
     (with-eval-after-load 'org-ref
       (spacemacs/set-leader-keys
         "orr" 'org-ref
         "orn" 'org-ref-open-notes-at-point))
 
+;;;;;; latex
+
+    (require 'ox-extra)
+    (ox-extras-activate '(ignore-headlines))
+
 ;;;;;; misc
+
+    (setq org-link-file-path-type 'relative)
 
     (when (require 'emojify nil 'noerror)
       (add-hook 'org-mode-hook #'emojify-mode))
