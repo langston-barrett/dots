@@ -30,7 +30,11 @@ in {
     firefox
     qutebrowser
     kcolorchooser
-    xpdf
+    (polybar.override {
+      i3GapsSupport = true;
+      i3-gaps = i3-gaps;
+      jsoncpp = jsoncpp;
+    })
     zathura
   ];
 
@@ -52,6 +56,7 @@ in {
       #hack-font             # great monospaced font
       #helvetica-neue-lt-std # classic
       fira-code
+      font-awesome
       lato
       libre-caslon
       noto-fonts-emoji      # emoji
@@ -60,6 +65,7 @@ in {
       oxygenfonts           # UI
       stix-otf              # latex math font
       symbola
+      unifont
     ];
   };
 
