@@ -116,7 +116,8 @@ run_from_unstable () {
 
 }
 
-alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/mini.kbd & disown'
+alias kmonad-minidox='z kmon && sudo echo && sudo kmonad ~/code/dots/files/minidox.kbd & disown'
+#alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/mini.kbd & disown'
 
 ## Generic
 
