@@ -133,7 +133,6 @@ This function should only modify configuration layer settings."
      cheatsheet ; self-explanatory
      helpful    ; better elisp help
      dimmer     ; dim inactive buffers
-     ;; focus      ; dim inactive stanzas
      olivetti   ; centering the only active window
      prism      ; color blocks by depth
 
@@ -172,10 +171,6 @@ This function should only modify configuration layer settings."
      (minimap
       :location (recipe :fetcher github
                         :repo "langston-barrett/minimap"))
-
-     (org-wiki
-      :location (recipe :fetcher github
-                        :repo "caiorss/org-wiki"))
 
      ;; (helm-shell-history
      ;;  :location (recipe :fetcher github
@@ -719,6 +714,11 @@ you should place your code here."
   (when (require 'diff-hl-mode nil 'noerror)
     (global-diff-hl-mode 1))
 
+  (defun my/display-ansi-colors ()
+    (interactive)
+    (let ((inhibit-read-only t))
+      (ansi-color-apply-on-region (point-min) (point-max))))
+
 ;;;;; font size
 
   (defun my/compute-font-size (frame)
@@ -728,7 +728,7 @@ you should place your code here."
            (width-mm (nth 1 (nth 3 attrs)))
            (width-px (nth 3 (nth 2 attrs)))
            (size nil)) ;; default size
-      (cond ((eq width-px 1920) (setq size 6))
+      (cond ((eq width-px 1920) (setq size 8))
             ((eq width-px 2560) (setq size 8))
             (t (setq size 12)))
       (set-frame-font (format "Hack %s" size))))
