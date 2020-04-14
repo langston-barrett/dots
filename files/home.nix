@@ -18,7 +18,18 @@
         };
       };
     };
+
     lorri.enable = false;
+
+    kbfs = {
+      enable = true;
+    };
+    keybase = {
+      enable = true;
+    };
+    gpg-agent = {
+      enable = true;
+    };
   };
 
   # programs.home-manager = {
@@ -31,7 +42,7 @@
     password-store = {
       enable = true;
     };
-    
+
     zsh = {
       enable = true;
       enableAutosuggestions = true;
