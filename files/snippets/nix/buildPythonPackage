@@ -10,6 +10,7 @@
 let pname = "pname";
     version = "1.0.0";
 in buildPythonPackage rec {
+  inherit pname version;
   src = fetchPypi {
     inherit pname version;
     sha256 = "126yxzxq7yqhkd3hxqksxrd5kv10iviq15d4lk464j4xi9cdbf23";
