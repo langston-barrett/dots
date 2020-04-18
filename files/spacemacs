@@ -139,7 +139,7 @@ This function should only modify configuration layer settings."
      ;; On ELPA, but fails to install from there?
      ;; ORG
      ;; ox-gfm       ; github markdown export for org
-     ;; anki-editor
+     anki-editor
      ;; org-drill
      doct
      org-super-agenda
@@ -1592,18 +1592,21 @@ will not be modified."
 
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
 
+      ;; org-time-stamp
+      "oac" 'anki-editor-cloze-region
+
       ;; dynamic blocks
       "Du"  'org-dblock-update
       "Da"  'org-update-all-dblocks
 
       ;; org-wiki
-      "wI"  'org-wiki-index
-      "wil" 'org-wiki-insert-link
-      "win" 'org-wiki-insert-new
-      "wn"  'org-wiki-nav
-      "wf"  'org-wiki-helm
-      "wh"  'org-wiki-panel
-      "ws"  'org-wiki-switch-root
+      ;; "wI"  'org-wiki-index
+      ;; "wil" 'org-wiki-insert-link
+      ;; "win" 'org-wiki-insert-new
+      ;; "wn"  'org-wiki-nav
+      ;; "wf"  'org-wiki-helm
+      ;; "wh"  'org-wiki-panel
+      ;; "ws"  'org-wiki-switch-root
 
       ;; org-time-stamp
       "oTi" 'org-time-stamp
