@@ -139,6 +139,8 @@ This function should only modify configuration layer settings."
      ;; On ELPA, but fails to install from there?
      ;; ORG
      ;; ox-gfm       ; github markdown export for org
+     ;; anki-editor
+     ;; org-drill
      doct
      org-super-agenda
      org-board ; link archiving
@@ -1246,9 +1248,11 @@ you should place your code here."
             (sequence "|" "CANCELLED(c@/!)")))
 
     (defun my/hide ()
+      (interactive)
       (org-cycle-hide-drawers 'all))
     (setq meta-org (concat org-directory "/meta.org"))
     (setq vocab-org (concat org-directory "/vocab.org"))
+    (setq cards-org (concat org-directory "/cards.org"))
     (setq org-capture-templates
           (doct '(("todo"
                    :keys "t"
@@ -1322,15 +1326,54 @@ you should place your code here."
                               ":CREATED: %U"
                               ":CREATED_IN_FILE: %a"
                               ":END:"))
-                  ("vocab"
-                   :keys "v"
-                   :file vocab-org
+                  ("anki"
+                   :keys "a"
                    :hook my/hide
-                   :template ("* %?"
-                              ":PROPERTIES:"
-                              ":CREATED: %U"
-                              ":CREATED_IN_FILE: %a"
-                              ":END:")))))
+                   :children (("basic"
+                              :keys "b"
+                              :file cards-org
+                              :headline "Cards"
+                              :template ("* %?"
+                                        ":PROPERTIES:"
+                                        ":CREATED: %U"
+                                        ":CREATED_IN_FILE: %a"
+                                        ":ANKI_DECK: Default"
+                                        ":ANKI_NOTE_TYPE: Basic"
+                                        ":END:"
+                                        "** Front"
+                                        ""
+                                        "** Back"
+                                        ""))
+                             ("cloze"
+                              :keys "c"
+                              :file cards-org
+                              :headline "Cards"
+                              :template ("* %?"
+                                        ":PROPERTIES:"
+                                        ":CREATED: %U"
+                                        ":CREATED_IN_FILE: %a"
+                                        ":ANKI_DECK: Default"
+                                        ":ANKI_NOTE_TYPE: Cloze"
+                                        ":END:"
+                                        "** Text"
+                                        ""))
+                             ("vocab"
+                              :keys "v"
+                              :file vocab-org
+                              :headline "Vocab"
+                              :hook my/hide
+                              :template ("* %?"
+                                        ":PROPERTIES:"
+                                        ":CREATED: %U"
+                                        ":CREATED_IN_FILE: %a"
+                                        ":ANKI_DECK: Default"
+                                        ":ANKI_NOTE_TYPE: Basic"
+                                        ":ANKI_TAGS: vocab"
+                                        ":END:"
+                                        "** Front"
+                                        "Define:"
+                                        "** Back"
+                                        "Wiktionary:")))))))
 
     (setq my/org-header
           (concat
@@ -1345,6 +1388,15 @@ you should place your code here."
            :file-name "${slug}"
            :head ,my/org-header
            :unnarrowed t)))
+
+;;;;;; anki
+
+    (require 'anki-editor)
+    (defun my/anki-editor-push-notes ()
+      (interactive)
+      (save-buffer)
+      (anki-editor-push-notes)
+      (save-buffer))
 
 ;;;;;; agenda
 
@@ -1392,6 +1444,10 @@ you should place your code here."
             (todo . " %i %-5e")
             (tags . " %i %-12:c")
             (search . " %i %-12:c")))
+
+;;;;;; org-drill
+
+    ;; (require 'org-drill)
 
 ;;;;;; org-ref
 
