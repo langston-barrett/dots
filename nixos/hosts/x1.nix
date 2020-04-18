@@ -8,6 +8,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration-x1.nix
     ../common.nix
+    ../general.nix
 
     ../audio.nix
     ../networking.nix
@@ -70,24 +71,10 @@
     vlc
     ympd
 
-    # extra development
-    shellcheck
-
     # python development
     # python
     # pythonPackages.importmagic
-
-    # all necessary for emacs build epdfinfo
-    #autoconf
-    #automake
-    #autobuild
-    #pkgconfig
-    #gnum4
   ];
-
-  # virtualisation.virtualbox.enableHardening = true;
-  virtualisation.virtualbox.host.enable = true;
-  services.physlock.enable = true;
 
   # Can't be enabled in virtual guests
   #rngd.enable = true; # feed hardware randomness to kernel when possible

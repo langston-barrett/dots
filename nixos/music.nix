@@ -7,7 +7,6 @@ let
 in {
   environment.systemPackages = with pkgs; [
     flac
-    pavucontrol
     ncmpcpp
     # gst_ffmpeg
     gst_plugins_base

@@ -9,11 +9,12 @@ in {
   ];
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
-    # python3
+    python37
     unstable.metasploit
     unstable.nmap
     openvpn
     netcat-openbsd
+    burpsuite
   ];
   system.stateVersion = "18.03";
 }

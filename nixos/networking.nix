@@ -3,11 +3,19 @@
 {
 
   networking = {
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
 
     # Use plasma-nm or nm-applet as a GUI
     # Use gnome-control-center or nmtui to configure networkmanager
-    networkmanager.enable = true;
+    networkmanager = {
+      enable = true;
+      dns = "dnsmasq";
+      appendNameservers = [
+        "65.132.32.177"   #PDX
+        "65.132.32.132"   #PDX
+        "65.132.32.174"   #PDX
+        "64.56.102.67"    #DAY
+      ];
+    };
 
     # wicd.enable = true;
     # wpa_supplicant

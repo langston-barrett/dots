@@ -6,6 +6,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration-laptop.nix
     ../common.nix
+    ../general.nix
 
     ../audio.nix
     # ../mail.nix
@@ -72,26 +73,10 @@
     vlc
     ympd
 
-    # extra development
-    clang
-    rr
-    shellcheck
-
     # python development
     # python
     # pythonPackages.importmagic
-
-    # all necessary for emacs build epdfinfo
-    autoconf
-    automake
-    autobuild
-    pkgconfig
-    gnum4
   ];
-
-  # virtualisation.virtualbox.enableHardening = true;
-  virtualisation.virtualbox.host.enable = true;
-  services.physlock.enable = true;
 
   # To set up the VPN, copy the folders to /root/vpn.
   # Make sure to `chown -R root:root` and to `chmod 0600` them.

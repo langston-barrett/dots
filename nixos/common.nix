@@ -83,28 +83,22 @@ in {
     (aspellWithDicts (ds: with ds; [ en ]))
     atool # "compress" command in ranger
     curl
-    dive # docker image size analysis
     emacsVterm
-    exfat
     fd
     file
     git
-    gitAndTools.hub # github access for magithub
     gnumake
     htop
-    imagemagick
     manpages
     mpw
     nix-prefetch-git
     p7zip
-    pass
     ranger
     silver-searcher # ag
     sudo
     tldr
     trash-cli
     unzip
-    xclip # for pass
     xsel
     zip
     zsh-completions
