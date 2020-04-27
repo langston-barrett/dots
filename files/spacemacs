@@ -80,6 +80,7 @@ This function should only modify configuration layer settings."
      ;; (python :variables python-formatter 'yapf) ; only on develop
      lsp
      (python :variables python-backend 'lsp)
+     hy
 
      ;; (haskell :variables haskell-enable-hindent-style "fundamental"
      ;;          haskell-completion-backend 'hie)
@@ -104,8 +105,7 @@ This function should only modify configuration layer settings."
      ;;        scala-enable-eldoc nil) ;; type at point (sometimes freezes)
 
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
-     yaml
-     )
+     yaml)
 
 ;;;; Additional packages
 
@@ -127,6 +127,7 @@ This function should only modify configuration layer settings."
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
      prop-menu ; needed for saw-script-mode
+     helm-dash
      ;; pocket-reader
 
      ;; UI
@@ -169,6 +170,12 @@ This function should only modify configuration layer settings."
       :location (recipe :fetcher github
                         :repo "souffle-lang/souffle-mode"))
 
+
+     ;; An error occurred while installing ql-mode (error: (error Invalid version syntax: ‘Wrong type argument: stringp, quote’ (must start with a number)))
+     ;; (ql-mode
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "Semmle/ql"
+     ;;                    :files '("ql/misc/emacs/ql-mode-base.el")))
 
      ;; minimap
      ;; (minimap
@@ -671,6 +678,26 @@ you should place your code here."
   (when (require 'evil-fringe-mark nil 'noerror)
     (global-evil-fringe-mark-mode))
 
+  (defun my/number-at-point-to-hex ()
+    (interactive)
+    (save-excursion
+      (let* ((bounds (bounds-of-thing-at-point 'word))
+              (front (car bounds))
+              (back (cdr bounds))
+              (num (string-to-number (buffer-substring-no-properties front back))))
+        (delete-region front back)
+        (insert "0x")
+        (insert (format "%.6x" num)))))
+
+  (defun my/find-replace-hex ()
+    (interactive)
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp (rx (+ digit)))
+        (goto-char (- (point) 1))
+        (my/number-at-point-to-hex)
+        (forward-word))))
+
   (setq require-final-newline t)
 
   (when (require 'dimmer nil 'noerror)
@@ -721,6 +748,78 @@ you should place your code here."
     (interactive)
     (let ((inhibit-read-only t))
       (ansi-color-apply-on-region (point-min) (point-max))))
+
+;;;;; helm-dash
+
+  (with-eval-after-load 'helm-dash
+    (setq helm-dash-browser-func 'eww)
+    (require 'xdg)
+    (setq helm-dash-docsets-path
+          (concat
+           (xdg-data-home)
+           "/docsets"))
+    (setq my/helm-dash-user-docsets
+          (list
+           ;; "Beautiful_Soup" ;;
+           "Clang"
+           ;; "Coq" ;;
+           "emacs"
+           ;; "GNU_Make"
+           "HTTP"
+           "Hy"
+           ;; "Hypothesis" ;;
+           ;; "IntelASMx86"
+           "LLVM"
+           ;; "Linux_Man_Pages"
+           ;; "Org_Mode"
+           ;; "R5RS" ;;
+           "Requests"
+           ;; "Sphinx"
+           "Zsh"
+           "glibc"
+           "pytest"))
+    (setq my/helm-dash-official-docsets
+          (list
+           "Haskell"
+           "SQLAlchemy"
+           "JavaScript"
+           "Python 3"
+           "HTML"))
+    (setq helm-dash-common-docsets
+          (append my/helm-dash-official-docsets
+                  my/helm-dash-user-docsets)))
+
+  ;; (defun python-doc ()
+  ;;   (interactive)
+  ;;   (setq-local dash-docs-docsets '("Python_3")))
+  ;; (add-hook 'python-mode-hook 'python-doc)
+
+;;;;; tramp
+
+  (with-eval-after-load 'tramp
+    (defun my/tramp-buffer-hook ()
+      (when (file-remote-p default-directory)
+        (setq-local explicit-shell-file-name "/bin/sh")
+        (setq-local shell-file-name "/bin/sh")))
+    (add-hook 'buffer-list-update-hook #'my/tramp-buffer-hook))
+
+;;;;; tramp git gutter
+
+  ;; https://github.com/nonsequitur/git-gutter-plus/issues/42
+
+  (with-eval-after-load 'git-gutter+
+    (defun git-gutter+-remote-default-directory (dir file)
+      (let* ((vec (tramp-dissect-file-name file))
+             (method (tramp-file-name-method vec))
+             (user (tramp-file-name-user vec))
+             (domain (tramp-file-name-domain vec))
+             (host (tramp-file-name-host vec))
+             (port (tramp-file-name-port vec)))
+        (tramp-make-tramp-file-name method user domain host port dir)))
+
+    (defun git-gutter+-remote-file-path (dir file)
+      (let ((file (tramp-file-name-localname (tramp-dissect-file-name file))))
+        (replace-regexp-in-string (concat "\\`" dir) "" file))))
 
 ;;;;; font size
 
@@ -1333,7 +1432,7 @@ you should place your code here."
                               :keys "b"
                               :file cards-org
                               :headline "Cards"
-                              :template ("* %?"
+                              :template ("* %U"
                                         ":PROPERTIES:"
                                         ":CREATED: %U"
                                         ":CREATED_IN_FILE: %a"
@@ -1341,14 +1440,14 @@ you should place your code here."
                                         ":ANKI_NOTE_TYPE: Basic"
                                         ":END:"
                                         "** Front"
-                                        ""
+                                        "%?"
                                         "** Back"
                                         ""))
                              ("cloze"
                               :keys "c"
                               :file cards-org
                               :headline "Cards"
-                              :template ("* %?"
+                              :template ("* %U"
                                         ":PROPERTIES:"
                                         ":CREATED: %U"
                                         ":CREATED_IN_FILE: %a"
@@ -1356,6 +1455,7 @@ you should place your code here."
                                         ":ANKI_NOTE_TYPE: Cloze"
                                         ":END:"
                                         "** Text"
+                                        "%?"
                                         ""))
                              ("vocab"
                               :keys "v"
@@ -1389,14 +1489,16 @@ you should place your code here."
            :head ,my/org-header
            :unnarrowed t)))
 
+;;;;;; noter
+
 ;;;;;; anki
 
-    (require 'anki-editor)
-    (defun my/anki-editor-push-notes ()
-      (interactive)
-      (save-buffer)
-      (anki-editor-push-notes)
-      (save-buffer))
+    ;; (require 'anki-editor)
+    ;; (defun my/anki-editor-push-notes ()
+    ;;   (interactive)
+    ;;   (save-buffer)
+    ;;   (anki-editor-push-notes)
+    ;;   (save-buffer))
 
 ;;;;;; agenda
 
@@ -1411,10 +1513,10 @@ you should place your code here."
     (add-hook 'org-mode-hook 'my/archive-org-mode-hook)
 
     (setq org-archive-location "~/org/archive/%s::")
-    (defun my/org-agenda-archive-hook ()
-      (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
-      (auto-save-mode))
-    (add-hook 'org-agenda-mode-hook 'my/org-agenda-archive-hook)
+    ;; (defun my/org-agenda-archive-hook ()
+    ;;   (add-hook 'auto-save-hook 'org-save-all-org-buffers nil t)
+    ;;   (auto-save-mode))
+    ;; (add-hook 'org-agenda-mode-hook 'my/org-agenda-archive-hook)
 
     (when (require 'org-super-agenda nil 'noerror)
       (org-super-agenda-mode)
@@ -1607,6 +1709,13 @@ will not be modified."
       ;; "wf"  'org-wiki-helm
       ;; "wh"  'org-wiki-panel
       ;; "ws"  'org-wiki-switch-root
+
+
+      ;; org-brain
+      ;; these go in with org-roam
+      "rac" 'org-brain-add-child
+      "rap" 'org-brain-add-parent
+      "raf" 'org-brain-add-friendship
 
       ;; org-time-stamp
       "oTi" 'org-time-stamp
@@ -2143,6 +2252,7 @@ will not be modified."
                     "*.bundle.js"
                     "*.min.css"
                     "*.json"
+                    "*.bc"
                     "*.log"))
          (add-to-list 'grep-find-ignored-files v))))
 
