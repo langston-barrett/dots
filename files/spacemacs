@@ -682,9 +682,9 @@ you should place your code here."
     (interactive)
     (save-excursion
       (let* ((bounds (bounds-of-thing-at-point 'word))
-              (front (car bounds))
-              (back (cdr bounds))
-              (num (string-to-number (buffer-substring-no-properties front back))))
+             (front (car bounds))
+             (back (cdr bounds))
+             (num (string-to-number (buffer-substring-no-properties front back))))
         (delete-region front back)
         (insert "0x")
         (insert (format "%.6x" num)))))
@@ -789,6 +789,10 @@ you should place your code here."
           (append my/helm-dash-official-docsets
                   my/helm-dash-user-docsets)))
 
+  (defun my/haskell-doc ()
+    (interactive)
+    (setq-local dash-docs-docsets '("Haskell")))
+  (add-hook 'haskell-mode-hook 'my/haskell-doc)
   ;; (defun python-doc ()
   ;;   (interactive)
   ;;   (setq-local dash-docs-docsets '("Python_3")))
@@ -880,12 +884,14 @@ you should place your code here."
       (interactive)
       (setq olivetti-body-width 100)
       (olivetti-mode 1)
-      (spacemacs/toggle-fill-column-indicator-on))
+      (spacemacs/toggle-fill-column-indicator-on)
+      (spacemacs/toggle-truncate-lines-off))
 
     (defun my/single-window-mode-off ()
       (interactive)
       (olivetti-mode -1)
-      (spacemacs/toggle-fill-column-indicator-off))
+      (spacemacs/toggle-fill-column-indicator-off)
+      (spacemacs/toggle-truncate-lines-off))
 
     (defun my/window-configuration-change-hook ()
       (if (= (count-windows) 1)
@@ -1105,6 +1111,9 @@ you should place your code here."
     "oEi"  'emojify-insert-emoji
     "oEd"  'emojify-describe-emoji
     "oEl"  'emojify-list-emoji
+
+    ;; 'h' for help
+    "ohd"  'helm-dash
 
     ;; 'x' for text
     "oxa"  'ialign-interactive-align)
