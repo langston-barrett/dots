@@ -26,6 +26,7 @@ alias gbD='git branch -D'
 alias gc='git checkout'
 alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
+alias gca='git commit --amend'
 alias gcb='git checkout -b'
 alias gd='git diff'
 alias gds='git diff --cached'
@@ -139,12 +140,13 @@ setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 # Mate
 
 mate-shake() {
-  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- "$1" -- "${@:2}"
+  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- "$1" -- "${@:2}"
 
 }
 
 mate-pytest-one() {
-  docker run --rm --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh --dev-messages -j4 -- pytests -- -vv -x -k "$1"
+  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- pytests -- -vv -x -k "$1"
 }
 
 alias mate-docker-pull='docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist'
+alias mate-clean-submodule-integration-framework='pushd submodules/integration_framework && sudo git clean -xdf && sudo git reset --hard HEAD && popd'
