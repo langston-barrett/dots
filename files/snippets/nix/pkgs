@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: pkgs
+# key: pkgs
+# --
+{ pkgs ? import <nixpkgs> { }
+}:

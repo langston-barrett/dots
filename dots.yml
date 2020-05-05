@@ -84,7 +84,7 @@
       - src: my-cheatsheet.el
         dst: "{{ home }}/.emacs.d/private/local/my-cheatsheet.el"
       - src: org-roam-packages.el
-        dst: "{{ home }}/.emacs.d/private/org-roam/packages.el"
+        dst: "{{ home }}/.emacs.d/private/org-roam/package.el"
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
@@ -121,6 +121,9 @@
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
         graphical: true
+      - src: snippets/bash
+        dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
+        mode: "0750"
       - src: snippets/java
         dst: "{{ home }}/.emacs.d/private/snippets/java-mode"
         mode: "0750"
