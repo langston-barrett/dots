@@ -2,4 +2,4 @@
 # name: path
 # key: path
 # --
-export PATH="${PATH}":"${PWD}/."
+export PATH="\${PATH}":"\${PWD}/."

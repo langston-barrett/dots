@@ -154,6 +154,11 @@ This function should only modify configuration layer settings."
      ;; doom-themes
      dracula-theme
 
+     ;; (klister-mode
+     ;;  :location (recipe :fetcher github
+     ;;                    :repo "gelisam/klister"
+     ;;                    :files '("klister.el")))
+
      (symbol-overlay
       :location (recipe :fetcher github
                         :repo "wolray/symbol-overlay"))

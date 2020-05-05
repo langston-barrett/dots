@@ -2,4 +2,4 @@
 # name: pythonpath
 # key: pythonpath
 # --
-export PYTHONPATH="${PYTHONPATH}":"${PWD}/."
+export PYTHONPATH="\${PYTHONPATH}":"\${PWD}/."
