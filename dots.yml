@@ -121,9 +121,6 @@
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
         graphical: true
-      - src: snippets/bash
-        dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
-        mode: "0750"
       - src: snippets/java
         dst: "{{ home }}/.emacs.d/private/snippets/java-mode"
         mode: "0750"
