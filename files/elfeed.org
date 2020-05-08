@@ -1,5 +1,5 @@
 * elfeed                                                             :elfeed:
-** type theory
+** Programming Languages
 *** [[http://homotopytypetheory.org/feed/][Homotopy Type Theory]]
 *** [[https://groups.google.com/forum/feed/homotopytypetheory/msgs/atom.xml?num=30][HoTT mailing list]]
 *** [[http://math.andrej.com/feed/][Mathematics and Computation - Andrej Bauer]]
@@ -7,17 +7,18 @@
 *** [[https://edwinb.wordpress.com/feed/][Edwin Brady]]
 *** [[http://ezyang.tumblr.com/rss][ezyang]]
 *** [[http://semantic-domain.blogspot.com/feeds/posts/default][Semantic Domain]]
-** coq
+*** [[https://www.williamjbowman.com/feeds/all.atom.xml][William J. Bowman]]
+** Coq
 *** [[http://coq-blog.clarus.me/rss.xml][Coq blog - Guillaume Claret]]
 *** [[http://poleiro.info/atom.xml][Poleiro: latest posts]]
-** haskell
+** Haskell
 *** [[http://feeds.feedburner.com/fpcomplete][FP Complete]]
 *** [[http://themonadreader.wordpress.com/feed/][The Monad.Reader - Edward Kmett]]
 *** [[https://www.reddit.com/r/haskell/.rss][Haskell reddit]]
 *** [[http://justtesting.org/rss][Just Testing]]
 *** [[https://ryanglscott.github.io/feed.xml][Ryan G.L. Scott]]
 *** [[https://www.parsonsmatt.org/feed.xml][Matt Parsons]]
-** emacs
+** Emacs
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
 *** [[pragmaticemacs.com/feed/][pragmatic emacs]]
@@ -26,13 +27,13 @@
 *** [[https://www.reddit.com/r/orgmode/][org-mode subreddit]]
 *** [[https://emacs.cafe/feed.xml][emacs.cafe]]
 *** [[https://planet.emacslife.com/atom.xml][planet emacs]]
-** nix
+** Nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
-** static analyais
+** Static Analysis
 *** [[http://angr.io/blog/][angr blog]]
 *** [[https://blog.trailofbits.com/feed/][trail of bits blog]]
-** other tech
+** Other Tech
 *** [[http://google-opensource.blogspot.com/feeds/posts/default][Google Open Source Blog]]
 *** [[http://onethingwell.org/rss][One Thing Well]]
 *** [[http://blog.llvm.org/feeds/posts/default][LLVM project blog]]
