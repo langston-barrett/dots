@@ -19,7 +19,7 @@
       };
     };
 
-    lorri.enable = false;
+    lorri.enable = true;
 
     kbfs = {
       enable = true;

@@ -42,14 +42,14 @@
   "How to highlight SADL keywords."
   :group 'sadl)
 
-(defface sadl-operator-face
-  '((t (:inherit font-lock-keyword-face)))
-  "How to highlight SADL build-in operators."
-  :group 'sadl)
-
 (defface sadl-type-face
   '((t (:inherit font-lock-type-face)))
-  "How to highlight SADL build-in operators."
+  "How to highlight SADL built-in types."
+  :group 'sadl)
+
+(defface sadl-comment-face
+  '((t (:inherit font-lock-comment-face)))
+  "How to highlight SADL comments."
   :group 'sadl)
 
 ;;; Highlighting
@@ -77,14 +77,6 @@
   (regexp-opt sadl-keywords 'words)
   "Regular expression for SADL keyword highlighting.")
 
-(defconst sadl-operators
-  '("." ",")
-  "Operators to highlight in SADL.")
-
-(defvar sadl--operator-regexp
-  (regexp-opt sadl-operators)
-  "Regular expression for SADL keyword highlighting.")
-
 (defconst sadl-types
   '("string"
     "date"
@@ -94,11 +86,16 @@
   (regexp-opt sadl-types 'words)
   "Regular expression for SADL type highlighting.")
 
+(defvar sadl--comment-start "// ")
+
+(defvar sadl--comment-regexp
+  (rx sadl--comment-start (+ anything) line-end)
+  "Regular expression for SADL type highlighting.")
+
 (defvar sadl-font-lock-defaults
   `(((,sadl--keyword-regexp . 'sadl-keyword-face)
-     (,sadl--operator-regexp . 'sadl-operator-face)
      (,sadl--type-regexp . 'sadl-type-face)
-  ;; ("@\w+" . 'font-lock-function-name-face)
+     (,sadl--comment-regexp . 'sadl-comment-face)
      )
     nil nil nil
     (font-lock-extend-after-change-region-function . sadl--extend-after-change-region-function))
@@ -121,7 +118,7 @@
   (setq font-lock-multiline t)
 
   ;; Comment syntax
-  (setq-local comment-start "// ")
+  (setq-local comment-start sadl--comment-start)
   (setq-local comment-end ""))
 
 ;;;###autoload
