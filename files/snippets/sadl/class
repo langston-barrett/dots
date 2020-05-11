@@ -1,0 +1,5 @@
+-# -*- mode: snippet -*-
+# name: class
+# key: class
+# --
+${1:class} is a class.

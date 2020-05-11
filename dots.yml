@@ -136,6 +136,9 @@
       - src: snippets/org
         dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
         mode: "0750"
+      - src: snippets/sadl
+        dst: "{{ home }}/.emacs.d/private/snippets/sadl-mode"
+        mode: "0750"
       - src: snippets/sh
         dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
         mode: "0750"

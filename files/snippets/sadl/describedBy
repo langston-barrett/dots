@@ -1,0 +1,5 @@
+-# -*- mode: snippet -*-
+# name: describedBy
+# key: describedBy
+# --
+  described by ${1:relationName} with values of type ${2:className}.
