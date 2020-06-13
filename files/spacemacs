@@ -1299,12 +1299,12 @@ you should place your code here."
     (add-hook 'elfeed-search-mode-hook
               'spacemacs/toggle-centered-point-on)
 
+    (add-to-list 'elfeed-search-face-alist '(haskell (:foreground "red")))
+
     (defun my/elfeed-hydra-hook ()
       (when (equal major-mode 'elfeed-search-mode)
         (spacemacs/elfeed-transient-state/body)))
     (add-hook 'focus-in-hook 'my/elfeed-hydra-hook))
-
-
 
   ;; https://github.com/iqbalansari/dotEmacs/blob/master/config/rss.org
   ;; (defun my/elfeed-open-in-w3m ()
@@ -1341,8 +1341,9 @@ you should place your code here."
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
   (setq org-directory          "~/org")
-  (setq org-wiki-location      "~/org"
-        org-agenda-files       '("~/org/capture.org")
+  (setq org-wiki-location org-directory
+        org-roam-directory org-directory
+        org-agenda-files '("~/org/capture.org")
         org-default-notes-file (concat org-directory "/capture.org"))
 
   (with-eval-after-load 'org-brain
@@ -1351,6 +1352,13 @@ you should place your code here."
           org-brain-path "~/org"))
 
   (with-eval-after-load 'org
+
+    ;; TODO: More
+    ;; (setq org-refile-targets
+    ;;       (maplist
+    ;;        (lambda (item)
+    ;;          `(,(concat org-directory item) . (:regexp "Cards")))
+    ;;        (list "arm.org" "x86.org")))
 
     (setq org-indent-indentation-per-level 0)
 
@@ -1520,7 +1528,8 @@ you should place your code here."
       "Archive all done tasks."
       (interactive)
       (when (not (string-match-p (regexp-quote "archive") buffer-file-name))
-        (org-map-entries 'org-archive-subtree "/DONE" 'file)))
+        (org-map-entries 'org-archive-subtree "/DONE" 'file)
+        (org-map-entries 'org-archive-subtree "/CANCELLED" 'file)))
 
     (defun my/archive-org-mode-hook ()
       (add-hook 'after-save-hook 'my/org-archive-done-tasks nil t))

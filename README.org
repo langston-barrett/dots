@@ -3,21 +3,6 @@
 These are not your everyday dotfiles! This repo hosts both per-system
 configuration via NixOS and per-user configuration via Ansible.
 
-Ansible roles aren't used to enforce minimal complexity. Ansible is only used
-for symlinking and mild templating.
-
-Anything complex or involving services/packages is upstreamed to nixpkgs.
-
-** migration
-
-   I'm in the midst of migrating from Ansible to [[https://github.com/rycee/home-manager][home-manger]]. Setup currently
-   requires a bit more than usual:
-
-   #+begin_src bash :results verbatim
-     nix-channel --add https://github.com/rycee/home-manager/archive/release-18.03.tar.gz home-manager
-     nix-channel --update
-   #+end_src
-
-   #+RESULTS:
-
-   It is currently only used to manage =dunst=.
+#+begin_src bash :results verbatim
+curl https://raw.githubusercontent.com/langston-barrett/dots/master/run.sh | bash
+#+end_src

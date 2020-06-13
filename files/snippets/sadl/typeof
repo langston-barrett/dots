@@ -2,5 +2,4 @@
 # name: typeof
 # key: typeof
 # --
-${1:class} is a type of ${2:otherClass},
-  described by ${1:relationName} with values of type ${2:className}.
+${1:class} is a type of ${2:otherClass}.

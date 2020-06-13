@@ -40,6 +40,11 @@ else
 
   fi
 
+  if ! (nix-channel --list | grep "home-manager" >/dev/null 2>&1); then
+    nix-channel --add https://github.com/rycee/home-manager/archive/release-20.03.tar.gz home-manager
+    nix-channel --update
+  fi
+
   if [[ -n $XDG_CONFIG_HOME ]]; then
     export XDG_CONFIG_HOME=$HOME/.config
   fi
