@@ -16,17 +16,27 @@ if ! [[ -f scripts/run-ansible.sh ]]; then
   bail_if_not_installed curl
   bail_if_not_installed tar
 
-  dir=$(mktemp -d)
-  pushd "$dir"
-  curl \
-    --quiet \
-    --location \
-    --output "$PWD/dots.tar.gz" \
-    "https://github.com/langston-barrett/dots/tarball/master"
-  tar xvf dots.tar.gz
-  pushd ./langston-barrett-dots*/
+  if installed git; then
+    git clone https://github.com/langston-barrett/dots
+    pushd dots
+    bash run.sh
+  else
+    dir=$PWD/dots
+    if ! [[ -d $dir ]]; then
+      mkdir -p "$dir"
+    fi
+
+    pushd "$dir"
+    curl \
+      --silent \
+      --show-error \
+      --location \
+      --output "$PWD/dots.tar.gz" \
+      "https://github.com/langston-barrett/dots/tarball/master"
+    tar xvf dots.tar.gz
+    pushd ./langston-barrett-dots*/
+  fi
   bash run.sh
-  popd
   popd
 
 else
@@ -36,8 +46,8 @@ else
     bail_if_not_installed sudo
 
     mkdir -m 0755 /nix && chown root /nix
-    curl --quiet https://nixos.org/nix/install | sh
-
+    curl --silent --show-error https://nixos.org/nix/install | sh
+    . "$HOME/.nix-profile/etc/profile.d/nix.sh"
   fi
 
   if ! (nix-channel --list | grep "home-manager" >/dev/null 2>&1); then
@@ -56,4 +66,13 @@ else
             --substituters "https://cache.nixos.org" \
             --run \
             "bash scripts/run-ansible.sh"
+fi
+
+if [[ -f ~/.zshrc ]]; then
+  if ! grep "zsh.d" ~/.zshrc >/dev/null 2>&1; then
+    echo "Old ~/.zshrc, remove to continue"
+    exit 1
+  fi
+else
+  ln -s "$(realpath files/zshrc)" ~/.zshrc
 fi

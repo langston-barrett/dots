@@ -80,29 +80,9 @@ in {
 
   environment.systemPackages = with pkgs; [
     acpi # battery monitoring in scripts
-    (aspellWithDicts (ds: with ds; [ en ]))
-    atool # "compress" command in ranger
-    curl
     emacsVterm
-    fd
-    file
-    git
-    gnumake
-    htop
-    manpages
-    mpw
-    nix-prefetch-git
-    p7zip
-    ranger
-    silver-searcher # ag
-    sudo
-    tldr
-    trash-cli
-    unzip
-    xsel
-    zip
-    zsh-completions
-  ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
+    wget # org-board
+  ] ++ import ./minimal.nix { inherit pkgs; };
 
   virtualisation.docker.enable = true;
 

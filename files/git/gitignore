@@ -4,6 +4,7 @@ log
 result
 *.gpg
 .sbt-hydra-history
+*.ovpn
 
 # Java LSP
 .settings

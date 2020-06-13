@@ -5,6 +5,8 @@
   imports = [
     <nixos-hardware/common/cpu/intel>
 
+    ./x1-openvpn.nix
+
     # Include the results of the hardware scan.
     ./hardware-configuration-x1.nix
     ../common.nix
@@ -55,7 +57,7 @@
 
   environment.systemPackages = with pkgs; [
     beets
-    calibre
+    # calibre
     # chromium
     comfortaa
     # gimp

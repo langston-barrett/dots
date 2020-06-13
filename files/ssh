@@ -4,6 +4,13 @@
 StrictHostKeyChecking ask
 UsePrivilegedPort no
 
+Host vm-36-3c.eic.galois.com
+  User galois
+  ForwardAgent yes
+  PreferredAuthentications publickey,keyboard-interactive,password
+  ControlMaster auto
+  ControlPath ~/.ssh/vm-%r@%h:%p
+
 # options applied for Galois hosts
 Host *.galois.com
   ForwardAgent yes

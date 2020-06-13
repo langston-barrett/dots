@@ -4,5 +4,6 @@
 inspiration
 **/.vagrant
 *.ovpn
+.yas-compiled-snippets.el
 
 files/zsh.d/zaw

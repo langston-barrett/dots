@@ -35,6 +35,7 @@ in {
       i3-gaps = i3-gaps;
       jsoncpp = jsoncpp;
     })
+    xsel
     zathura
   ];
 

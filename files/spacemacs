@@ -1343,7 +1343,7 @@ you should place your code here."
   (setq org-directory          "~/org")
   (setq org-wiki-location org-directory
         org-roam-directory org-directory
-        org-agenda-files '("~/org/capture.org")
+        org-agenda-files (list (concat org-directory "/capture.org"))
         org-default-notes-file (concat org-directory "/capture.org"))
 
   (with-eval-after-load 'org-brain

@@ -60,5 +60,8 @@ zbell_end() {
 }
 
 # register the functions as hooks
-add-zsh-hook preexec zbell_begin
-add-zsh-hook precmd zbell_end
+installed() { command -v "$1" >/dev/null 2>&1; }
+if installed notify-send; then
+  add-zsh-hook preexec zbell_begin
+  add-zsh-hook precmd zbell_end
+fi

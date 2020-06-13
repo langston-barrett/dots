@@ -6,11 +6,27 @@
   vars:
     # username: "{% if ci %}travis{% else %}siddharthist{% endif %}"
     become: false
-    minimal: false
+    minimal: "{{ lookup('env', 'MINIMAL') | bool }}"
     graphical: "{{ (true and not minimal) }}"
     ci: "{{ lookup('env', 'CI') | bool }}" # are we running in Travis?
-    home: "{% if ci  %}{{ playbook_dir }}{% else %}{{ lookup('env', 'HOME') }}{% endif %}"
-    xdg_config_home: "{% if ci %}{{ playbook_dir }}{% else %}{{ lookup('env', 'XDG_CONFIG_HOME') }}{% endif %}"
+    home_n: >
+      {%- if ci  -%}
+        {{ playbook_dir }}
+      {%- else -%}
+        {{ lookup('env', 'HOME') }}
+      {%- endif -%}
+    home: "{{ home_n | trim }}"
+    xdg_config_home_n: >
+      {%- if ci -%}
+        {{ playbook_dir }}
+      {%- else -%}
+        {%- if lookup('env', 'XDG_CONFIG_HOME') -%}
+          {{ lookup('env', 'XDG_CONFIG_HOME') }}
+        {%- else -%}
+          {{ home }}/.config
+        {%- endif -%}
+      {%- endif -%}
+    xdg_config_home: "{{ xdg_config_home_n | trim }}"
     # Per-host configuration
     dpi: 92
     cursor_size: 32
@@ -46,10 +62,12 @@
       #   minimal: true
       - src: git/gitconfig
         dst: "{{ home }}/.gitconfig"
+        minimal: true
       - src: git/galois.gitconfig
         dst: "{{ xdg_config_home }}/git/galois.gitconfig"
       - src: git/gitignore
         dst: "{{ xdg_config_home }}/git/gitignore"
+        minimal: true
       - src: git/pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       - src: home.nix
@@ -181,6 +199,8 @@
         gather_subset:
           - '!all'
 
+    - assert: { that: "ansible_os_family == 'NixOS' or minimal" }
+
     - name: configure nixos
       become: yes
       register: nixos
@@ -202,7 +222,10 @@
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0775') }}"
-      when: "not (item.graphical | default(False)) or (item.graphical and graphical)"
+      when: >
+        item.src != False
+        and (not (item.graphical | default(False)) or (item.graphical and graphical))
+        and ((item.minimal | default(False)) or ((item.minimal | default(False)) == minimal))
       with_items: "{{ symlinks }}"
 
     - name: make user symlinks
@@ -226,6 +249,7 @@
         dest: "{{ xdg_config_home }}/qutebrowser/dracula"
         clone: yes
         update: no
+      when: "graphical"
 
     - name: clone spacemacs
       git:
@@ -233,6 +257,7 @@
         dest: "{{ home }}/.emacs.d"
         clone: yes
         update: no
+      when: "not minimal"
 
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
@@ -241,5 +266,6 @@
     # - name: set new background
     #   command: "feh --bg-scale {{ xdg_config_home }}/wallpaper.png"
 
-    - include: os/ubuntu.yml
-      when: ansible_distribution == "Ubuntu"
+    - name: install packages
+      command: nix-env -if nixos/minimal.nix
+      when: "ansible_distribution != 'NixOS'"

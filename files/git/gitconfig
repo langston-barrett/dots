@@ -6,6 +6,7 @@
     signingkey = 5608B8E7A68F0445
 [core]
     excludesfile = /home/siddharthist/.config/git/gitignore
+	autocrlf = false
 [grep]
     extendedRegexp = true
 [color]
@@ -65,3 +66,5 @@
     path = ~/.config/git/galois
 [http]
 	sslVerify = false
+[gitlab "gitlab-ext.galois.com/api/v4"]
+	user = langston
