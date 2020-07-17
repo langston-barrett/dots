@@ -45,7 +45,7 @@ mount_encrypted() {
 }
 
 # Recursively find and replace
-sed_recurse() { ag -g '.*' -0 | xargs -0 sed -i "$1"; }
+sed_recurse() { ag -g '.*' -0 | xargs -0 sed -i "$@"; }
 
 # https://bit.ly/2ydBgfQ
 in_interactive_session() {

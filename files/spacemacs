@@ -703,7 +703,7 @@ you should place your code here."
         (my/number-at-point-to-hex)
         (forward-word))))
 
-  (setq require-final-newline t)
+  (setq-global require-final-newline t)
 
   (when (require 'dimmer nil 'noerror)
     (setq dimmer-fraction 0.03)
@@ -882,7 +882,6 @@ you should place your code here."
 
   (setq olivetti-body-width 100)
   (when (require 'olivetti nil 'noerror)
-    (setq olivetti-body-width 100)
 
     ;; Enter olivetti mode whenever there is only one window (horizontally)
     (defun my/single-window-mode-on ()
@@ -899,7 +898,7 @@ you should place your code here."
       (spacemacs/toggle-truncate-lines-off))
 
     (defun my/window-configuration-change-hook ()
-      (if (= (count-windows) 1)
+      (if (and (= (count-windows) 1) (> (window-body-width) olivetti-body-width))
           (my/single-window-mode-on)
           (my/single-window-mode-off)))
 
