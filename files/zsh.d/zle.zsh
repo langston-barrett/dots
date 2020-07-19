@@ -22,6 +22,12 @@ fzf-history() {
 zle -N fzf-history
 bindkey '^R^R' fzf-history
 
+insert-clipboard() {
+  zle_append_to_buffer "$(xsel -o)"
+}
+zle -N insert-clipboard
+bindkey -M vicmd ' ic' insert-clipboard
+
 fzf-insert-history() {
   zle_append_to_buffer "$( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')"
 }
@@ -41,7 +47,7 @@ zle -N fzf-insert-directory
 bindkey -M vicmd ' id' fzf-insert-directory
 
 fzf-insert-show-bindings() {
-  zle -R "" "d: directory" "f: file" "h: history"
+  zle -R "" "c: clipboard" "d: directory" "f: file" "h: history"
 }
 zle -N fzf-insert-show-bindings
 bindkey -M vicmd ' i' fzf-insert-show-bindings
