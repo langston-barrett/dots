@@ -99,10 +99,22 @@
       - src: mutt
         dst: "{{ home }}/.mutt"
         mode: "0750"
-      - src: my-cheatsheet.el
-        dst: "{{ home }}/.emacs.d/private/local/my-cheatsheet.el"
-      - src: org-roam-packages.el
-        dst: "{{ home }}/.emacs.d/private/org-roam/package.el"
+      - src: emacs/local
+        dst: "{{ home }}/.emacs.d/private/local"
+        mode: "0750"
+        minimal: true
+      - src: emacs/org-roam
+        dst: "{{ home }}/.emacs.d/private/org-roam"
+        mode: "0750"
+        minimal: true
+      - src: emacs/outshine
+        dst: "{{ home }}/.emacs.d/private/outshine"
+        mode: "0750"
+        minimal: true
+      - src: emacs/snippets
+        dst: "{{ home }}/.emacs.d/private/snippets"
+        mode: "0750"
+        minimal: true
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
@@ -139,32 +151,9 @@
       - src: rofi.rasi
         dst: "{{ xdg_config_home }}/rofi/config.rasi"
         graphical: true
-      - src: snippets/java
-        dst: "{{ home }}/.emacs.d/private/snippets/java-mode"
-        mode: "0750"
-      - src: snippets/haskell
-        dst: "{{ home }}/.emacs.d/private/snippets/haskell-mode"
-        mode: "0750"
-      - src: snippets/latex
-        dst: "{{ home }}/.emacs.d/private/snippets/latex-mode"
-        mode: "0750"
-      - src: snippets/nix
-        dst: "{{ home }}/.emacs.d/private/snippets/nix-mode"
-        mode: "0750"
-      - src: snippets/org
-        dst: "{{ home }}/.emacs.d/private/snippets/org-mode"
-        mode: "0750"
-      - src: snippets/sadl
-        dst: "{{ home }}/.emacs.d/private/snippets/sadl-mode"
-        mode: "0750"
-      - src: snippets/sh
-        dst: "{{ home }}/.emacs.d/private/snippets/sh-mode"
-        mode: "0750"
-      - src: snippets/saw-script
-        dst: "{{ home }}/.emacs.d/private/snippets/saw-script-mode"
-        mode: "0750"
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
+        minimal: true
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
         graphical: true

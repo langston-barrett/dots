@@ -39,3 +39,4 @@
 *** [[http://blog.llvm.org/feeds/posts/default][LLVM project blog]]
 *** [[https://github.com/siddharthist.private.atom?token=AEGGs3KMHuciRsj5_WLER5StFA6vZKAJks66OiqVwA==][Github]]
 *** [[https://www.reddit.com/r/nosyntax/.rss][r/nosyntax]]
+*** [[https://lwn.net/headlines/rss][LWN]]

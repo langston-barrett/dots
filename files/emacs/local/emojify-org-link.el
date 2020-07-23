@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2018 Langston Barrett
 ;; Author: Langston Barrett <langston.barrett@gmail.com>
-;; URL: https://github.com/siddharthist
+;; URL: https://github.com/langston-barrett
 ;; Keywords: emoji, org
 ;; Package-Requires: ()
 ;; Version: 0.1
