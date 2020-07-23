@@ -136,12 +136,14 @@ This function should only modify configuration layer settings."
      dimmer     ; dim inactive buffers
      olivetti   ; centering the only active window
      prism      ; color blocks by depth
+     sr-speedbar
+     (outline-toc
+      :location (recipe :fetcher github
+                        :repo "abingham/outline-toc.el"))
 
      ;; On ELPA, but fails to install from there?
      ;; ORG
      ;; ox-gfm       ; github markdown export for org
-     anki-editor
-     ;; org-drill
      doct
      org-super-agenda
      org-board ; link archiving
@@ -186,10 +188,6 @@ This function should only modify configuration layer settings."
      ;; (minimap
      ;;  :location (recipe :fetcher github
      ;;                    :repo "langston-barrett/minimap"))
-
-     ;; (helm-shell-history
-     ;;  :location (recipe :fetcher github
-     ;;                    :repo "yuutayamada/helm-shell-history"))
 
      ;; (graph
      ;;  :location (recipe :fetcher github
@@ -865,11 +863,27 @@ you should place your code here."
     (add-to-list 'minimap-major-modes 'org-mode))
 
   (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
    '(minimap-active-region-background ((t (:background "gray25")))))
+
+;;;;; speedbar/sb-imenu
+
+  (when (require 'sb-imenu nil 'noerror)
+    (setq speedbar-initial-expansion-list-name "sb-imenu")
+    (defun my/speedbar-buffer-change-hook ()
+      (sb-imenu-refresh))
+    (add-hook 'buffer-list-update-hook #'my/speedbar-buffer-change-hook))
+
+;;;;; outline-toc-mode
+
+  (setq my/outline-modes (list 'org-mode 'markdown-mode))
+  (defun my/outline-toc-mode-window-configuration-change-hook ()
+    (if (member major-mode my/outline-modes)
+        (outline-toc-mode 1)
+        (outline-toc-mode -1)))
+  (add-hook 'window-configuration-change-hook
+            'my/outline-toc-mode-window-configuration-change-hook
+            'append
+            'global)
 
 ;;;;; centered-window-mode
 
@@ -880,6 +894,16 @@ you should place your code here."
 
   (setq olivetti-body-width 100)
   (when (require 'olivetti nil 'noerror)
+
+    (require 'dash)
+
+    (message "%s" (my/count-windows))
+    (setq my/excluded-windows (list " *OUTLINE-TOC*" "*SPEEDBAR*"))
+    (defun my/count-windows ()
+      (length
+        (-filter (lambda (name) (not (member name my/excluded-windows)))
+                (-map (lambda (window) (buffer-name (window-buffer window)))
+                      (window-list-1)))))
 
     ;; Enter olivetti mode whenever there is only one window (horizontally)
     (defun my/single-window-mode-on ()
@@ -896,7 +920,7 @@ you should place your code here."
       (spacemacs/toggle-truncate-lines-off))
 
     (defun my/window-configuration-change-hook ()
-      (if (and (= (count-windows) 1) (> (window-body-width) olivetti-body-width))
+      (if (and (= (my/count-windows) 1) (> (window-body-width) olivetti-body-width))
           (my/single-window-mode-on)
           (my/single-window-mode-off)))
 
@@ -2276,12 +2300,23 @@ will not be modified."
     (interactive)
     (mate-shake "lint"))
 
+  (defun my/mate-format ()
+    (interactive)
+    (mate-shake "format"))
+
   (defun my/mate-lint-jump ()
     (interactive)
     (mate-shake "lint")
     (switch-to-buffer (compilation-find-buffer))
     (goto-char 0)
     (y-or-n-p-with-timeout "Ready to go to error?" 5 nil)
+    (compilation-next-error 1)
+    (compile-goto-error))
+
+  (defun my/next-compilation-error ()
+    (interactive)
+    (switch-to-buffer (compilation-find-buffer))
+    (goto-char 0)
     (compilation-next-error 1)
     (compile-goto-error))
 
@@ -2295,10 +2330,20 @@ will not be modified."
         (progn
           (message "Compilation was successful!")
           (kill-buffer))
+        (my/next-compilation-error)))
+
+  (defun my/rack-mypy ()
+    (interactive)
+    (direnv-mode 1)
+    (compile "mypy .")
+    (switch-to-buffer (compilation-find-buffer))
+    (while (not (equal nil compilation-in-progress))
+      (sleep-for 0.25))
+    (if (equal nil (list 0))
         (progn
-          (goto-char 0)
-          (compilation-next-error 1)
-          (compile-goto-error))))
+          (message "Compilation was successful!")
+          (kill-buffer))
+      (my/next-compilation-error)))
 
 ;;;;; eacl
 
