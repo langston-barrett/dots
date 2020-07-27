@@ -643,18 +643,18 @@ you should place your code here."
     "obr"  'my/revert-buffer-no-confirm)
 
   ;; Use C-r for backwards terminal search, even in evil mode
-  (defun siddharthist/setup-term-mode ()
+  (defun my/setup-term-mode ()
     (evil-local-set-key 'normal (kbd "<prior>") 'scroll-up)
     (evil-local-set-key 'normal (kbd "<next>") 'scroll-down)
-    (evil-local-set-key 'insert (kbd "C-r") 'siddharthist/send-C-r))
+    (evil-local-set-key 'insert (kbd "C-r") 'my/send-C-r))
 
-  (defun siddharthist/send-C-r ()
+  (defun my/send-C-r ()
     (interactive)
     (term-send-raw-string "\C-r"))
 
-  (add-hook 'term-mode-hook 'siddharthist/setup-term-mode)
+  (add-hook 'term-mode-hook 'my/setup-term-mode)
 
-  (defun siddharthist/ansi-term-zsh ()
+  (defun my/ansi-term-zsh ()
     (interactive)
     (ansi-term "/run/current-system/sw/bin/zsh"))
 
@@ -667,7 +667,7 @@ you should place your code here."
   (require 'saw-script nil 'noerror)
 
   ;; saw-script
-  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
+  (add-to-list 'load-path "/home/my/.emacs.d/private/local/")
 
   ;; https://bit.ly/2OrfDO0
   ;; (when (require 'hungry-delete nil 'noerror)
@@ -786,18 +786,30 @@ you should place your code here."
            "JavaScript"
            "Python 3"
            "HTML"))
+
     (setq helm-dash-common-docsets
           (append my/helm-dash-official-docsets
-                  my/helm-dash-user-docsets)))
+                  my/helm-dash-user-docsets))
 
-  (defun my/haskell-doc ()
-    (interactive)
-    (setq-local dash-docs-docsets '("Haskell")))
-  (add-hook 'haskell-mode-hook 'my/haskell-doc)
-  ;; (defun python-doc ()
-  ;;   (interactive)
-  ;;   (setq-local dash-docs-docsets '("Python_3")))
-  ;; (add-hook 'python-mode-hook 'python-doc)
+    (defun my/helm-dash-single-docset (docset)
+      (setq-local dash-docs-docsets-backup dash-docs-docsets)
+      (setq-local dash-docs-docsets (list docset))
+      (funcall-interactively helm-dash)
+      (setq-local dash-docs-docsets dash-docs-docsets-backup))
+
+    (defun my/helm-dash-python ()
+      (interactive)
+      (my/helm-dash-single-docset "Python_3"))
+
+    (defun my/helm-dash-haskell ()
+      (interactive)
+      (my/helm-dash-single-docset "Haskell"))
+
+    (spacemacs/set-leader-keys-for-major-mode 'python-mode
+      "ohd"  'my/helm-dash-python)
+    (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
+      "ohd"  'my/helm-dash-haskell))
+
 
 ;;;;; tramp
 
@@ -897,7 +909,6 @@ you should place your code here."
 
     (require 'dash)
 
-    (message "%s" (my/count-windows))
     (setq my/excluded-windows (list " *OUTLINE-TOC*" "*SPEEDBAR*"))
     (defun my/count-windows ()
       (length
@@ -1028,7 +1039,7 @@ you should place your code here."
              "]──["
              (propertize (format-time-string "%H:%M" (current-time)) 'face `(:foreground "yellow"))
              "]──["
-             (replace-regexp-in-string "^/home/siddharthist/" "~/" (eshell/pwd))
+             (replace-regexp-in-string "^/home/my/" "~/" (eshell/pwd))
              "]\n"
              "└─"
              (if (= (user-uid) 0) "# " "> ")
@@ -1078,13 +1089,6 @@ you should place your code here."
       (evil-local-set-key 'normal "P" 'vterm-yank)
       (evil-local-set-key 'normal "p" 'vterm-yank))
     (add-hook 'vterm-mode-hook 'my/vterm-mode-hook))
-
-;;;;; symon
-
-  (with-eval-after-load 'symon
-    (setq symon-delay 200)
-    (setq symon-sparkline-type 'bounded)
-    (setq symon-monitors '(symon-linux-memory-monitor symon-linux-cpu-monitor)))
 
 ;;;;; cheatsheet
 
@@ -1591,10 +1595,6 @@ you should place your code here."
             (tags . " %i %-12:c")
             (search . " %i %-12:c")))
 
-;;;;;; org-drill
-
-    ;; (require 'org-drill)
-
 ;;;;;; org-ref
 
     (setq reftex-default-bibliography (list (concat org-directory "/bib/references.bib")))
@@ -1817,7 +1817,7 @@ will not be modified."
 
   ;; (defun my/clang-format-buffer-smart-on-save ()
   ;;   "Add auto-save hook for clang-format-buffer-smart."
-  ;;   (add-hook 'before-save-hook 'siddharthist/clang-format-buffer-smart nil t))
+  ;;   (add-hook 'before-save-hook 'my/clang-format-buffer-smart nil t))
 
   ;; (spacemacs/add-to-hooks '(lambda () (add-hook 'before-save-hook 'clang-format-buffer nil t))
   ;;                         '(c-mode-hook c++-mode-hook))
@@ -2122,16 +2122,6 @@ will not be modified."
                      (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
                      (modes . haskell-modes)))))
 
-;;;;; Nix
-
-  ;; (with-eval-after-load 'nix
-  ;;   (with-eval-after-load 'align
-  ;;     ;; Align =
-  ;;     (add-to-list 'align-rules-list
-  ;;                 '(nix-eq
-  ;;                   (regexp . "=")
-  ;;                   (modes . nix-modes)))))
-
 ;;;;; Java
 
   ;; Formatting really screws things up in weird ways.
@@ -2181,7 +2171,7 @@ will not be modified."
   (spacemacs/set-leader-keys-for-major-mode 'coq-mode
     "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
     "SPC" 'proof-goto-point
-    "miH" 'siddharthist-surround-region-hide)
+    "miH" 'my-surround-region-hide)
   (with-eval-after-load 'coq
     (setq coq-one-command-per-line nil) ; https://github.com/ProofGeneral/PG/issues/53
     (setq proof-electric-terminator-enable t)) ; https://github.com/ProofGeneral/PG/issues/53
@@ -2268,7 +2258,7 @@ will not be modified."
 
 ;;;;; Mutt
 
-  (defun siddharthist/msg-mode ()
+  (defun my/msg-mode ()
     ;; Map j/k to move visual lines.
     (define-key evil-motion-state-map "j" 'evil-next-visual-line)
     (define-key evil-motion-state-map "k" 'evil-previous-visual-line)
@@ -2303,6 +2293,10 @@ will not be modified."
   (defun my/mate-format ()
     (interactive)
     (mate-shake "format"))
+
+  (defun my/mate-build ()
+    (interactive)
+    (mate-shake "build"))
 
   (defun my/mate-lint-jump ()
     (interactive)
