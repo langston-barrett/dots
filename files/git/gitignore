@@ -5,7 +5,7 @@ result
 *.gpg
 .sbt-hydra-history
 *.ovpn
-.clangd/
+**/.clangd/*
 
 # Java LSP
 .settings

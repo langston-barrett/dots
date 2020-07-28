@@ -17,7 +17,11 @@ if ! [[ -f scripts/run-ansible.sh ]]; then
   bail_if_not_installed tar
 
   if installed git; then
-    git clone https://github.com/langston-barrett/dots
+    git clone \
+        --jobs "$(nproc)" \
+        --shallow-submodules \
+        --recurse-submodues \
+        https://github.com/langston-barrett/dots
     pushd dots
     bash run.sh
   else

@@ -115,6 +115,10 @@
         dst: "{{ home }}/.emacs.d/private/snippets"
         mode: "0750"
         minimal: true
+      - src: deps/eww-layer
+        dst: "{{ home }}/.emacs.d/private/eww"
+        mode: "0750"
+        minimal: true
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
