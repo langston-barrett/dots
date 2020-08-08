@@ -32,6 +32,9 @@ in {
     layout = "us";
     videoDrivers = [ "intel" ];
 
+    desktopManager = {
+      xterm.enable = false;
+    };
     displayManager = {
       lightdm.enable = true;
       # So urxvt knows where to find the socket.
@@ -39,6 +42,7 @@ in {
       sessionCommands = ''
         xrdb -merge ~/.Xresources
       '';
+      defaultSession = "none+i3";
     };
     # desktopManager.xfce.enable = true;
     windowManager.i3.enable = true;

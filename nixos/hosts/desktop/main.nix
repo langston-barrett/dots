@@ -32,6 +32,11 @@
     enable = true;
     forwardX11 = true;
   };
+  services.xrdp = {
+    enable = true;
+    port = 3389; 
+  };
+  networking.firewall.allowedTCPPorts = [ 3389 ];
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
