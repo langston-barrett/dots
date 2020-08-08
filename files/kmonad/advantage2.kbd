@@ -1,0 +1,93 @@
+// * KMonad Kinesis Advantage 2 specification
+
+// ** IO
+
+INPUT = LINUX_DEVICE L64 /dev/input/by-id/usb-Kinesis_Advantage2_Keyboard_314159265359-if01-event-kbd
+OUTPUT = UINPUT_SINK
+
+// ** Aliases
+
+/*
+ * On the names of keys: Special short names can be found in the source code
+ * [1]. Otherwise, names are the same as in the Linux kernel headers [2], with
+ * no "KEY_" prefix.
+ *
+ * [1]: https://github.com/david-janssen/kmonad/blob/master/src/KMonad/Core/Parser/Parsers/KeyCode.hs
+ * [2]: https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
+ */
+
+@cel  = TN esc lctl        // tap-next that is either a control, or an esc
+@cer  = TN esc rctl        // tap-next that is either a control, or an esc
+// @sym  = TH 200 pgdn LT-sym // taphold that is either a meta, or toggles sym
+
+// ** Layers
+
+// *** Template
+
+/*
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+       _    _    _    _    _    _    _    _
+                 _    _         _    _
+                      _         _
+            _    _    _         _    _    _
+*/
+
+// *** SRC
+
+// for some reason, lctl and caps are swapped, even without xmodmap?
+
+SRC
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  =    1    2    3    4    5    6    7    8    9    0    -
+  tab  q    w    e    r    t    y    u    i    o    p    \
+  lctl a    s    d    f    g    h    j    k    l    ;    '
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+       `         left rght up   down [    ]
+                 caps lalt      lmet rctl
+                      home      pgup
+            bspc del  end       pgdn ret  spc
+
+// *** base
+
+// the same as src by default
+
+LAYER base
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
+  =    1    2    3    4    5    6    7    8    9    0    -
+  tab  q    w    e    r    t    y    u    i    o    p    \
+  esc  a    s    d    f    g    h    j    k    l    ;    '
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+       `         left rght up   down [    ]
+                 esc  lalt      lmet @cer
+                      home      pgup
+            bspc lsft end       pgdn ret  spc
+
+// *** nav
+
+LAYER nav
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    left down up   rght _    _
+       _         _    _    _    _    _    _
+                 _    _         _    _
+                      _         _
+            _    _    _         _    _    _
+
+// *** sym
+
+// LAYER sym
+//   _    _    _    _    _    _    _    _    _    _    _    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//   _    9    0    `    \    _    ;    '    [    ]    _    _
+//   _    _    _    _    _    _    _    _    _    _    _    _
+//        _         _    _    _    _    _    _
+//                  _    _         _    _
+//                       _         _
+//             _    _    _         _    _    _
