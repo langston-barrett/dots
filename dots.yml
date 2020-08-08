@@ -259,6 +259,12 @@
         update: no
       when: "not minimal"
 
+    - name: Download LLVM mode
+      get_url:
+        url: https://raw.githubusercontent.com/llvm-mirror/llvm/master/utils/emacs/llvm-mode.el
+        dest: "{{ home }}/.emacs.d/private/local/llvm-mode.el"
+        mode: '0640'
+
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
       when: "not ci and graphical"
