@@ -1194,115 +1194,115 @@ you should place your code here."
   ;; https://bit.ly/2SVwzji
   ;; https://bit.ly/2QukKiD
 
-  (defun my/two-spaces (symb)
-    `(?\s (Br . Bl) ?\s (Bc . Bc) ,symb))
+  (when (display-graphic-p)
 
-  (defun my/three-spaces (symb)
-    `(?\s (Br . Bl) ?\s (Br . Bl) ?\s (Bc . Bc) ,symb))
+    (setq prettify-symbols-unprettify-at-point t)
 
-  ;; lexical-let lets us define a closure
-  (defun mapcdr (f)
-    "Map a function over the second element of a pair"
-    (lexical-let ((g f))
-      (lambda (p) (cons (car p) (funcall g (cdr p))))))
+    (defun my/two-spaces (symb)
+      `(?\s (Br . Bl) ?\s (Bc . Bc) ,symb))
 
-  (defun mapvalues (f seq &optional seqtype)
-    "Map a function over the values stored in an alist"
-    (lexical-let ((g f))
-      (map (if seqtype seqtype 'list) (mapcdr g) seq)))
+    (defun my/three-spaces (symb)
+      `(?\s (Br . Bl) ?\s (Br . Bl) ?\s (Bc . Bc) ,symb))
 
-  ;; TODO: get this working
-  ;; https://bit.ly/2zyR508
-  ;; (defun make-spaces (el)
-  ;;   (let ((space-width (string-width (car el))))
-  ;;     (cons (car el)
-  ;;           (append (make-list (- space-width 1) '(?\s (Br . Bl)))
-  ;;                   '(?\s (Br . Br))
-  ;;                   (cons (cdr el) nil)))))
-  (setq comparison-prettify-symbols-alist
-        (mapvalues 'my/two-spaces
-                   '((">=" . ?≥)
-                     ("<=" . ?≤)
-                     ("==" . ?≟)
-                     ("/=" . ?≠)
-                     ("!=" . ?≠))))
+    ;; lexical-let lets us define a closure
+    (defun mapcdr (f)
+      "Map a function over the second element of a pair"
+      (lexical-let ((g f))
+        (lambda (p) (cons (car p) (funcall g (cdr p))))))
 
-  ;; The commented-out versions are the "short" arrows, active are "long"
-  (setq arrow-prettify-symbols-alist
-        (mapvalues 'my/two-spaces
-                   '(("=>" . ?⟹)
-                     ("<=" . ?⟸)
-                     ("->" . ?⟶)
-                     ("<-" . ?⟵)
-                     ;; ("=>" . ?⇒)
-                     ;; ("->" . ?→)
-                     ;; ("<-" . ?←)
-                     )))
+    (defun mapvalues (f seq &optional seqtype)
+      "Map a function over the values stored in an alist"
+      (lexical-let ((g f))
+        (map (if seqtype seqtype 'list) (mapcdr g) seq)))
 
-  ;; Not working :/
-  ;; https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
-  ;; (setq percent-encoding-prettify-symbols
-  ;;       (mapvalues 'my/three-spaces
-  ;;                  '(("\%20" . " ")
-  ;;                    ("\%21" . "!"))))
+    ;; TODO: get this working
+    ;; https://bit.ly/2zyR508
+    ;; (defun make-spaces (el)
+    ;;   (let ((space-width (string-width (car el))))
+    ;;     (cons (car el)
+    ;;           (append (make-list (- space-width 1) '(?\s (Br . Bl)))
+    ;;                   '(?\s (Br . Br))
+    ;;                   (cons (cdr el) nil)))))
+    (setq comparison-prettify-symbols-alist
+          (mapvalues 'my/two-spaces
+                    '((">=" . ?≥)
+                      ("<=" . ?≤)
+                      ("==" . ?≟)
+                      ("/=" . ?≠)
+                      ("!=" . ?≠))))
 
-  (setq bool-prettify-symbols-alist
-        (mapvalues 'my/two-spaces
-                   '(("&&" . ?∧)
-                     ("||" . ?∨))))
+    ;; The commented-out versions are the "short" arrows, active are "long"
+    (setq arrow-prettify-symbols-alist
+          (mapvalues 'my/two-spaces
+                    '(("=>" . ?⟹) ;; ("=>" . ?⇒)
+                      ("<=" . ?⟸)
+                      ("->" . ?⟶) ;; ("->" . ?→)
+                      ("<-" . ?⟵) ;; ("<-" . ?←)
+                      )))
 
-  (setq org-prettify-symbols-alist
-        (append
-         ;; percent-encoding-prettify-symbols
-         comparison-prettify-symbols-alist
-         arrow-prettify-symbols-alist
-         bool-prettify-symbols-alist
-         (mapvalues 'my/two-spaces
-                    '(("::" . ?∷)))))
+    ;; Not working :/
+    ;; https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
+    ;; (setq percent-encoding-prettify-symbols
+    ;;       (mapvalues 'my/three-spaces
+    ;;                  '(("\%20" . " ")
+    ;;                    ("\%21" . "!"))))
 
-  (setq prettify-symbols-unprettify-at-point t)
+    (setq bool-prettify-symbols-alist
+          (mapvalues 'my/two-spaces
+                     '(("&&" . ?∧)
+                      ("||" . ?∨))))
 
-  (with-eval-after-load 'haskell
-    (setq haskell-prettify-symbols-alist
+    (setq org-prettify-symbols-alist
           (append
-           comparison-prettify-symbols-alist
-           arrow-prettify-symbols-alist
-           bool-prettify-symbols-alist
-           ;; (mapvalues 'my/three-spaces
-           ;;            '(("<*>" . ?⊛)))
-           (mapvalues 'my/two-spaces
-                      '(("<|" . ?⊲)     ; sequences/application in flow
-                        ("|>" . ?⊳)     ; sequences/application in flow
-                        (".>" . ?⋖)     ; composition in flow
-                        ("<." . ?⋗)     ; composition in flow
-                        ("::" . ?∷)))))
+          ;; percent-encoding-prettify-symbols
+          comparison-prettify-symbols-alist
+          arrow-prettify-symbols-alist
+          bool-prettify-symbols-alist
+          (mapvalues 'my/two-spaces
+                      '(("::" . ?∷)))))
 
-    (defun my/haskell-prettify-symbols ()
-      "Enable prettification for Haskell symbols."
-      (interactive)
-      (prettify-symbols-mode -1)
-      (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
-      (prettify-symbols-mode))
-    (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols))
+    (with-eval-after-load 'haskell
+      (setq haskell-prettify-symbols-alist
+            (append
+            comparison-prettify-symbols-alist
+            arrow-prettify-symbols-alist
+            bool-prettify-symbols-alist
+            ;; (mapvalues 'my/three-spaces
+            ;;            '(("<*>" . ?⊛)))
+            (mapvalues 'my/two-spaces
+                        '(("<|" . ?⊲)     ; sequences/application in flow
+                          ("|>" . ?⊳)     ; sequences/application in flow
+                          (".>" . ?⋖)     ; composition in flow
+                          ("<." . ?⋗)     ; composition in flow
+                          ("::" . ?∷)))))
 
-  (with-eval-after-load 'org
-    (defun my/org-prettify-symbols ()
-      "Enable prettification for Org symbols."
-      (interactive)
-      (prettify-symbols-mode -1)
-      (setq-local prettify-symbols-alist org-prettify-symbols-alist)
-      (prettify-symbols-mode))
-    (add-hook 'org-mode-hook 'my/org-prettify-symbols))
+      (defun my/haskell-prettify-symbols ()
+        "Enable prettification for Haskell symbols."
+        (interactive)
+        (prettify-symbols-mode -1)
+        (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
+        (prettify-symbols-mode))
+      (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols))
+
+    (with-eval-after-load 'org
+      (defun my/org-prettify-symbols ()
+        "Enable prettification for Org symbols."
+        (interactive)
+        (prettify-symbols-mode -1)
+        (setq-local prettify-symbols-alist org-prettify-symbols-alist)
+        (prettify-symbols-mode))
+      (add-hook 'org-mode-hook 'my/org-prettify-symbols))
 
 
-  (with-eval-after-load 'saw-script
-    (defun my/saw-script-prettify-symbols ()
-      "Enable prettification for saw-script symbols."
-      (interactive)
-      (prettify-symbols-mode -1)
-      (setq-local prettify-symbols-alist arrow-prettify-symbols-alist)
-      (prettify-symbols-mode))
-    (add-hook 'saw-script-mode-hook 'my/saw-script-prettify-symbols))
+    (with-eval-after-load 'saw-script
+      (defun my/saw-script-prettify-symbols ()
+        "Enable prettification for saw-script symbols."
+        (interactive)
+        (prettify-symbols-mode -1)
+        (setq-local prettify-symbols-alist arrow-prettify-symbols-alist)
+        (prettify-symbols-mode))
+      (add-hook 'saw-script-mode-hook 'my/saw-script-prettify-symbols)))
+
 
 ;;;;; Elfeed
 
