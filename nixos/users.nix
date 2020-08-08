@@ -5,7 +5,7 @@
   users = {
 
     groups = {
-      siddharthist = {
+      langston = {
         gid = 1000;
       };
       uinput = {};
@@ -15,14 +15,15 @@
     users = {
 
       # Personal
-      siddharthist = {
+      langston = {
         isNormalUser = true;
-        home = "/home/siddharthist";
+        home = "/home/langston";
         shell = pkgs.zsh;
         createHome = true;
         description = "Langston Barrett";
         uid = 1000;
-        group = "siddharthist";
+        group = "langston";
+        openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry langston.barrett@gmail.com"];
         extraGroups = [
           "networkmanager"
           "sway"

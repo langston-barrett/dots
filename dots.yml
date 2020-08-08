@@ -208,6 +208,16 @@
         mode: "0640"
       when: "(become | bool) and (not ci) and (ansible_distribution == 'NixOS')"
 
+    # This has to come before making symlinks so that ~/.emacs is empty
+    - name: clone spacemacs
+      git:
+        repo: 'https://github.com/syl20bnr/spacemacs'
+        dest: "{{ home }}/.emacs.d"
+        clone: yes
+        refspec: develop
+        update: no
+      when: "not minimal"
+
     - name: make user symlink dirs
       file:
         follow: true

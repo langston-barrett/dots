@@ -4,10 +4,9 @@
 
 { config, pkgs, ... }:
 
-let emacsVterm =
+let myEmacs =
       with pkgs; (emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
-        epkgs.emacs-libvterm
-        epkgs.emacsql-sqlite
+        #epkgs.emacsql-sqlite
       ]);
 in {
   imports = [
@@ -26,7 +25,7 @@ in {
 
   services.emacs = {
     enable = true;
-    package = emacsVterm;
+    package = myEmacs;
   };
   nixpkgs.config.allowUnfree = true;
 
@@ -80,7 +79,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     acpi # battery monitoring in scripts
-    emacsVterm
+    myEmacs
     wget # org-board
   ] ++ import ./minimal.nix { inherit pkgs; };
 
