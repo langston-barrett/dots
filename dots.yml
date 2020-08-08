@@ -119,6 +119,7 @@
         dst: "{{ home }}/.emacs.d/private/eww"
         mode: "0750"
         minimal: true
+        outside: yes
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
       - src: offlineimaprc
@@ -225,11 +226,17 @@
       file:
         follow: true
         state: link
-        src: "{{ playbook_dir }}/files/{{ item.src }}"
+        src: >-
+          {%- if (item.outside | default(False)) -%}
+            {{ playbook_dir }}/{{ item.src }}
+          {%- else -%}
+            {{ playbook_dir }}/files/{{ item.src }}
+          {%- endif -%}
         path: "{{ item.dst }}"
         owner: "{{ item.owner | default(username) }}"
         group: "{{ item.group | default(username) }}"
         mode: "{{ item.mode | default('0640') }}"
+        force: "{{ item.force | default(False) }}"
       when: >
         item.src != False
         and (not (item.graphical | default(False)) or (item.graphical and graphical))
