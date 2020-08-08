@@ -1252,56 +1252,42 @@ you should place your code here."
                      '(("&&" . ?∧)
                       ("||" . ?∨))))
 
-    (setq org-prettify-symbols-alist
-          (append
-          ;; percent-encoding-prettify-symbols
-          comparison-prettify-symbols-alist
-          arrow-prettify-symbols-alist
-          bool-prettify-symbols-alist
-          (mapvalues 'my/two-spaces
-                      '(("::" . ?∷)))))
+    (setq my/prettify-symbols-mode-alist
+          `((haskell-mode
+             . (append
+                comparison-prettify-symbols-alist
+                arrow-prettify-symbols-alist
+                bool-prettify-symbols-alist
+                ;; (mapvalues 'my/three-spaces
+                ;;            '(("<*>" . ?⊛)))
+                (mapvalues 'my/two-spaces
+                           '(("<|" . ?⊲)     ; sequences/application in flow
+                             ("|>" . ?⊳)     ; sequences/application in flow
+                             (".>" . ?⋖)     ; composition in flow
+                             ("<." . ?⋗)     ; composition in flow
+                             ("::" . ?∷)))))
+            (org-mode
+             . ,(append
+                 ;; percent-encoding-prettify-symbols
+                 comparison-prettify-symbols-alist
+                 arrow-prettify-symbols-alist
+                 bool-prettify-symbols-alist
+                 (mapvalues 'my/two-spaces '(("::" . ?∷)))))
+             (saw-script-mode . arrow-prettify-symbols-alist)))
 
-    (with-eval-after-load 'haskell
-      (setq haskell-prettify-symbols-alist
-            (append
-            comparison-prettify-symbols-alist
-            arrow-prettify-symbols-alist
-            bool-prettify-symbols-alist
-            ;; (mapvalues 'my/three-spaces
-            ;;            '(("<*>" . ?⊛)))
-            (mapvalues 'my/two-spaces
-                        '(("<|" . ?⊲)     ; sequences/application in flow
-                          ("|>" . ?⊳)     ; sequences/application in flow
-                          (".>" . ?⋖)     ; composition in flow
-                          ("<." . ?⋗)     ; composition in flow
-                          ("::" . ?∷)))))
+    (defun my/prettify-symbols ()
+      (interactive)
+      (prettify-symbols-mode -1)
+      (let ((mode-prettify-symbols-alist
+             (alist-get major-mode my/prettify-symbols-mode-alist)))
+        (when (not (equal nil mode-prettify-symbols-alist))
+          (setq-local prettify-symbols-alist
+                      mode-prettify-symbols-alist)
+          (prettify-symbols-mode))))
 
-      (defun my/haskell-prettify-symbols ()
-        "Enable prettification for Haskell symbols."
-        (interactive)
-        (prettify-symbols-mode -1)
-        (setq-local prettify-symbols-alist haskell-prettify-symbols-alist)
-        (prettify-symbols-mode))
-      (add-hook 'haskell-mode-hook 'my/haskell-prettify-symbols))
-
-    (with-eval-after-load 'org
-      (defun my/org-prettify-symbols ()
-        "Enable prettification for Org symbols."
-        (interactive)
-        (prettify-symbols-mode -1)
-        (setq-local prettify-symbols-alist org-prettify-symbols-alist)
-        (prettify-symbols-mode))
-      (add-hook 'org-mode-hook 'my/org-prettify-symbols))
-
-
-    (with-eval-after-load 'saw-script
-      (defun my/saw-script-prettify-symbols ()
-        "Enable prettification for saw-script symbols."
-        (interactive)
-        (prettify-symbols-mode -1)
-        (setq-local prettify-symbols-alist arrow-prettify-symbols-alist)
-        (prettify-symbols-mode))
-      (add-hook 'saw-script-mode-hook 'my/saw-script-prettify-symbols)))
+    (add-hook 'haskell-mode-hook 'my/prettify-symbols)
+    (add-hook 'org-mode-hook 'my/prettify-symbols)
+    (add-hook 'saw-script-mode-hook 'my/prettify-symbols))
 
 
 ;;;;; Elfeed
