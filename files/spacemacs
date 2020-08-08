@@ -2256,6 +2256,9 @@ will not be modified."
       (setq flycheck-error-list-minimum-level 'error))
     (add-hook 'python-mode-hook 'my/set-flycheck-error-level)
 
+    ;; TODO: Why doesn't this work?
+    ;; (flycheck-select-checker 'python-pycompile)
+
     (custom-set-variables
      '(flycheck-python-flake8-executable "python3")
      '(flycheck-python-pycompile-executable "python3")
