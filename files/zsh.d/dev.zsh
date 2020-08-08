@@ -26,7 +26,7 @@ alias gbD='git branch -D'
 alias gc='git checkout'
 alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
-alias gca='git commit --amend'
+alias gca='EDITOR=vi git commit --amend'
 alias gcb='git checkout -b'
 alias gd='git diff'
 alias gds='git diff --cached'
@@ -43,7 +43,7 @@ alias gPp='git push -u origin'
 alias gPf='git push --force-with-lease'
 alias gr='git reset'
 alias grhm='git reset --hard origin/master'
-alias gri='git rebase -i'
+alias gri='EDITOR=vi git rebase -i'
 alias grv='git remote -v'
 alias gs='git status'
 alias gss='git status --short'
@@ -137,15 +137,23 @@ setopt HIST_IGNORE_SPACE    # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
+# RACK
+
+alias rack-inabox='docker pull interran/rack-box:v1.0 && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:v1.0'
+
 # Mate
 
 mate-shake() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- "$1" -- "${@:2}"
+  docker run --env CI_COMMIT_SHA=fake --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- "$1" -- "${@:2}"
 
 }
 
 mate-pytest-one() {
   docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- pytests -- -vv -x -k "$1"
+}
+
+mate-pytest-debug() {
+  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev bash -c "source source.sh && cd frontend && pytest -vv --pdb -n0 -x -k $1"
 }
 
 mate-pytest-one-integration() {
@@ -156,3 +164,8 @@ mate-pytest-one-integration() {
 
 alias mate-docker-pull='docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist && docker image prune'
 alias mate-clean-submodule-integration-framework='pushd submodules/integration_framework && sudo git clean -xdf && sudo git reset --hard HEAD && popd'
+
+# temporary
+
+alias restart_qute='kill -9 $(pgrep qutebrowser) && qutebrowser 2>&1 > /dev/null & disown'
+alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
