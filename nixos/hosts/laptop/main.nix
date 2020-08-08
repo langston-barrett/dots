@@ -4,13 +4,9 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common.nix
-    ../../general.nix
 
-    ../../audio.nix
-    ../../networking.nix
+    ../../roles/laptop.nix
     ../../steam.nix
-    ../../x.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -28,29 +24,9 @@
   ];
 
   networking.hostName = "langston-nixos";
-  # networking.networkmanager.enable = true;
-
-  services.xserver = {
-    synaptics = {
-      enable = true;
-      # OSX-like "Natural" two-finger scrolling
-      twoFingerScroll = true;
-      horizTwoFingerScroll = true;
-      horizEdgeScroll = false;
-      additionalOptions = ''
-        Option "VertScrollDelta"  "-75"
-        Option "HorizScrollDelta" "-75"
-      '';
-    };
-  };
 
   programs.light.enable = true;
   programs.java.enable = true;
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = false;
-  };
 
   environment.systemPackages = with pkgs; [
     beets

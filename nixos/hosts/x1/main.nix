@@ -9,14 +9,9 @@
 
     ./x1-openvpn.nix
 
-    ../../common.nix
-    ../../general.nix
+    ../../roles/laptop.nix
 
-    ../../audio.nix
-    ../../networking.nix
     ../../steam.nix
-    ../../x.nix
-    # ../wayland.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -36,24 +31,9 @@
   };
 
   networking.hostName = "langston-x1"; # Define your hostname.
-  # networking.networkmanager.enable = true;
-
-  services.xserver.synaptics = {
-    enable = true;
-    # OSX-like "Natural" two-finger scrolling
-    twoFingerScroll = true;
-    horizTwoFingerScroll = true;
-    horizEdgeScroll = false;
-    additionalOptions = ''
-      Option "VertScrollDelta"  "-75"
-      Option "HorizScrollDelta" "-75"
-    '';
-  };
-
   nixpkgs.config.allowUnfree = true; # dropbox
 
   programs.light.enable = true;
-  # programs.java.enable = true;
 
   environment.systemPackages = with pkgs; [
     beets
@@ -77,15 +57,6 @@
     # python
     # pythonPackages.importmagic
   ];
-
-  # Can't be enabled in virtual guests
-  #rngd.enable = true; # feed hardware randomness to kernel when possible
-
-  # Printing
-  # services.printing = {
-  #   enable  = true;
-  #   drivers = [ pkgs.hplip ];
-  # };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

@@ -4,12 +4,12 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common.nix
-    ../../general.nix
 
-    # ../audio.nix
+    ../../roles/server.nix
+
+    ../../audio.nix
     ../../networking.nix
-    # ../steam.nix
+    ../../steam.nix
     ../../x.nix
     # ../wayland.nix
   ];
@@ -22,21 +22,14 @@
   };
 
   networking.hostName = "langston-desktop"; # Define your hostname.
-  # networking.networkmanager.enable = true;
-
   nixpkgs.config.allowUnfree = true; # dropbox
+  environment.systemPackages = with pkgs; [ ];
 
-  environment.systemPackages = with pkgs; [
-  ];
-  services.openssh = {
+  services.xserver = {
     enable = true;
-    forwardX11 = true;
+    videoDrivers = [ "nvidia" "modesetting" ];
+    desktopManager.xfce.enable = true;
   };
-  services.xrdp = {
-    enable = true;
-    port = 3389; 
-  };
-  networking.firewall.allowedTCPPorts = [ 3389 ];
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
