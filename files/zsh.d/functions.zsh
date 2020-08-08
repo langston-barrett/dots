@@ -68,6 +68,13 @@ export BAT_PAGER='less'
 
 alias weather='curl wttr.in/PDX'
 
+readlog() {
+  if [[ -z "$1" ]]; then
+    batp --plain log
+  fi
+  batp --plain "$1"
+}
+
 batc() {
   bat "$1" |& xsel -ib
 }
