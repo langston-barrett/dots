@@ -32,14 +32,14 @@ for_window [title="hydra"] floating enable
 bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
 bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
-# bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/rofi-firefox.sh" -show firefox
+# bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 bindsym $mod+Shift+Return exec alacritty
 bindsym $mod+Return exec urxvt
 #bindsym $mod+Shift+Return exec urxvt
 # bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'
-bindsym $mod+p exec ~/code/dots/files/spacemacsanywhere.sh
+bindsym $mod+p exec ~/code/dots/files/scripts/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
 
 # enter fullscreen mode for the focused container
