@@ -4,7 +4,8 @@
 
 { config, pkgs, ... }:
 
-let myEmacs =
+let variables = import ./hosts/this/variables.nix;
+    myEmacs =
       with pkgs; (emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
         #epkgs.emacsql-sqlite
       ]);
@@ -41,9 +42,6 @@ in {
     # gc.automatic = true;
     useSandbox = true;
 
-    # Use a local clone of nixpkgs at /etc/nixpkgs
-    #nixPath = [ "nixos-config=/etc/nixos/configuration.nix" "/home/siddharthist/code" ];
-
     # Use cachix binary caches
     binaryCaches = [
       "https://cache.nixos.org/"
@@ -59,7 +57,7 @@ in {
       "https://cache.nixos.org"
       # "http://fryingpan.dev.galois.com/hydra"
     ];
-    trustedUsers = [ "root" "siddharthist" ];
+    trustedUsers = [ "root" variables.username ];
 
   };
   system.autoUpgrade.enable = true;
@@ -87,9 +85,9 @@ in {
 
   services.syncthing = {
     enable = false;
-    group = "siddharthist";
-    user = "siddharthist";
-    dataDir = "/home/siddharthist/sync";
+    group = variables.username;
+    user = variables.username;
+    dataDir = "/home/${variables.username}/sync";
     openDefaultPorts = true;
   };
   # Other common ones:

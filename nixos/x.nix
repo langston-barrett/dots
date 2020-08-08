@@ -6,7 +6,6 @@
 
 let mkGraphicalService = attrs: {
     enable = true;
-    # user = "siddharthist";
     environment.DISPLAY = ":${builtins.toString config.services.xserver.display}";
     # environment = { DISPLAY = ":0"; };
     after = [ "display-manager.service" ];

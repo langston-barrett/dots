@@ -1,11 +1,12 @@
 { config, pkgs, ... }:
 
-{
+let variables = import ./hosts/this/variables.nix;
+in {
 
   users = {
 
     groups = {
-      langston = {
+      "${variables.username}" = {
         gid = 1000;
       };
       uinput = {};
@@ -15,15 +16,17 @@
     users = {
 
       # Personal
-      langston = {
+      "${variables.username}" = {
         isNormalUser = true;
-        home = "/home/langston";
+        home = "/home/${variables.username}";
         shell = pkgs.zsh;
         createHome = true;
         description = "Langston Barrett";
         uid = 1000;
-        group = "langston";
-        openssh.authorizedKeys.keys = ["ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry langston.barrett@gmail.com"];
+        group = "${variables.username}";
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry"
+        ];
         extraGroups = [
           "networkmanager"
           "sway"

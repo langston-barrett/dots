@@ -3,19 +3,19 @@
 
 {
   imports = [
+    ./hardware-configuration.nix
+
     <nixos-hardware/common/cpu/intel>
 
     ./x1-openvpn.nix
 
-    # Include the results of the hardware scan.
-    ./hardware-configuration-x1.nix
-    ../common.nix
-    ../general.nix
+    ../../common.nix
+    ../../general.nix
 
-    ../audio.nix
-    ../networking.nix
-    ../steam.nix
-    ../x.nix
+    ../../audio.nix
+    ../../networking.nix
+    ../../steam.nix
+    ../../x.nix
     # ../wayland.nix
   ];
 

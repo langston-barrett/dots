@@ -665,10 +665,9 @@ you should place your code here."
   (setq-default left-fringe-width 16)
   (setq-default right-fringe-width 16)
 
-  (require 'saw-script nil 'noerror)
-
   ;; saw-script
-  (add-to-list 'load-path "/home/my/.emacs.d/private/local/")
+  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
+  (require 'saw-script nil 'noerror)
 
   ;; https://bit.ly/2OrfDO0
   ;; (when (require 'hungry-delete nil 'noerror)
@@ -1553,15 +1552,6 @@ you should place your code here."
     ;;           'append
     ;;           'global)
 
-;;;;;; anki
-
-    ;; (require 'anki-editor)
-    ;; (defun my/anki-editor-push-notes ()
-    ;;   (interactive)
-    ;;   (save-buffer)
-    ;;   (anki-editor-push-notes)
-    ;;   (save-buffer))
-
 ;;;;;; agenda
 
     (defun my/org-archive-done-tasks ()
@@ -1808,17 +1798,7 @@ will not be modified."
                              (list (expand-file-name "~/code/mate/submodules/souffle/include")
                                    (expand-file-name "~/code/mate/llvm/PointerAnalysis")))))
 
-  ;; put in ~/.emacs.d/private/local/
-  ;; https://github.com/llvm-mirror/llvm/blob/master/utils/emacs/llvm-mode.el
   (require 'llvm-mode nil 'noerror)
-
-  ;; (with-eval-after-load 'c
-  ;;   (if (boundp 'company-c-headers-path-user)
-  ;;       (add-to-list 'company-c-headers-path-user "../../build/include/")
-  ;;       (setq 'company-c-headers-path-user '("../../build/include/")))
-  ;;   (if (boundp 'flycheck-clang-include-path)
-  ;;       (add-to-list 'flycheck-clang-include-path "../../build/include/")
-  ;;       (setq 'flycheck-clang-include-path '("../../build/include/"))))
 
   ;; TODO: not sure the below works
 

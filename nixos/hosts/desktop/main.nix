@@ -3,15 +3,14 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration-desktop.nix
-    ../common.nix
-    ../general.nix
+    ./hardware-configuration.nix
+    ../../common.nix
+    ../../general.nix
 
     # ../audio.nix
-    ../networking.nix
+    ../../networking.nix
     # ../steam.nix
-    ../x.nix
+    ../../x.nix
     # ../wayland.nix
   ];
 

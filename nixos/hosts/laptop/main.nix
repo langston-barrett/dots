@@ -3,17 +3,14 @@
 
 {
   imports = [
-    # Include the results of the hardware scan.
-    ./hardware-configuration-laptop.nix
-    ../common.nix
-    ../general.nix
+    ./hardware-configuration.nix
+    ../../common.nix
+    ../../general.nix
 
-    ../audio.nix
-    # ../mail.nix
-    ../networking.nix
-    ../steam.nix
-    ../x.nix
-    # ../wayland.nix
+    ../../audio.nix
+    ../../networking.nix
+    ../../steam.nix
+    ../../x.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -30,7 +27,7 @@
     }
   ];
 
-  networking.hostName = "langston-nixos"; # Define your hostname.
+  networking.hostName = "langston-nixos";
   # networking.networkmanager.enable = true;
 
   services.xserver = {
@@ -129,15 +126,6 @@
     up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
     down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
-
-  # Can't be enabled in virtual guests
-  #rngd.enable = true; # feed hardware randomness to kernel when possible
-
-  # Printing
-  # services.printing = {
-  #   enable  = true;
-  #   drivers = [ pkgs.hplip ];
-  # };
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database
