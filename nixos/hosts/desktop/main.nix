@@ -1,7 +1,14 @@
 # -*- mode: nix -*-
 { config, pkgs, ... }:
 
-{
+let master = (import ../../pkgs.nix { inherit pkgs; }).master;
+    unstable = (import ../../pkgs.nix { inherit pkgs; }).unstable;
+    linuxVersion =
+      pkgs.lib.strings.substring 0 3
+        (pkgs.lib.strings.stringAsChars
+          (c: if c == "." then "_" else c)
+          pkgs.linuxPackages.kernel.version);
+in {
   imports = [
     ./hardware-configuration.nix
 
@@ -22,13 +29,37 @@
   };
 
   networking.hostName = "langston-desktop"; # Define your hostname.
-  nixpkgs.config.allowUnfree = true; # dropbox
-  environment.systemPackages = with pkgs; [ ];
 
-  services.xserver = {
+  # See https://github.com/NixOS/nixpkgs/pull/49703 
+  nixpkgs.config = {
+    config.allowUnfree = true; # dropbox, nvidia
+    packageOverrides = super: let self = super.pkgs; in {
+      linuxPackages = super.linuxPackages.extend (self: super: {
+        nvidiaPackages = super.nvidiaPackages // {
+          # 450.57.tar.gz
+          stable = unstable."linuxPackages_${linuxVersion}".nvidiaPackages.beta;
+          beta = unstable."linuxPackages_${linuxVersion}".nvidiaPackages.beta;
+        };
+      });
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
+    glxinfo # driver query
+  ];
+  # services.xserver = {
+  #   enable = true;
+  #   videoDrivers = [ "nvidiaBeta" ];
+  #   desktopManager.xfce.enable = true;
+  #   # Section "Screen"
+  #   #     Option         "AllowEmptyInitialConfiguration" "True"
+  #   # EndSection
+  #   config = ''
+  #   '';
+  # };
+
+  programs.sway = {
     enable = true;
-    videoDrivers = [ "nvidia" "modesetting" ];
-    desktopManager.xfce.enable = true;
   };
 
   # This value determines the NixOS release with which your system is to be
