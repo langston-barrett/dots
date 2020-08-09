@@ -1,4 +1,5 @@
 { pkgs ? import <nixpkgs>
+, unstable ? import <unstable>
 , config ? { allowUnfree = true; }
 }:
 
@@ -15,4 +16,5 @@ let get = path:
 in {
   "18.03" = get ./json/19.03.json;
   "master" = get ./json/master.json;
+  "unstable" = unstable { inherit config; };
 }
