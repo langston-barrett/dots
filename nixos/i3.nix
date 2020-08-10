@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 
-// TODO deduplicate
+# TODO deduplicate
 let mkGraphicalService = attrs: {
     enable = true;
     environment.DISPLAY = ":${builtins.toString config.services.xserver.display}";
@@ -24,7 +24,7 @@ in {
     windowManager.i3 = {
       enable = true;
       package = pkgs.i3-gaps;
-    }
+    };
   };
 
   systemd.user.services = {

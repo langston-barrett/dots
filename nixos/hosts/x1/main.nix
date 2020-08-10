@@ -31,9 +31,6 @@
   };
 
   networking.hostName = "langston-x1"; # Define your hostname.
-  nixpkgs.config.allowUnfree = true; # dropbox
-
-  programs.light.enable = true;
 
   environment.systemPackages = with pkgs; [
     beets

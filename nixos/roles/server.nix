@@ -6,6 +6,12 @@
     ../common.nix
   ];
 
+  # View with tigervnc
+  environment.systemPackages = with pkgs; [
+    tigervnc
+    tmux
+  ];
+
   services = {
     openssh = {
       enable = true;
@@ -18,9 +24,6 @@
       port = 3389;
     };
   };
-
-  # View with tigervnc
-  environment.systemPackages = with pkgs; [ tigervnc ];
 
   networking.firewall.allowedTCPPorts = [
     3389

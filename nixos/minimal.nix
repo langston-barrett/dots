@@ -28,6 +28,7 @@ with pkgs; [
   tldr
   trash-cli
   unzip
+  wget
   zip
   zsh-completions
 ] ++ lib.optional (pkgs ? "bat") pkgs.bat # only in newer nixos

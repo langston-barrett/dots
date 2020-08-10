@@ -25,7 +25,6 @@
 
   networking.hostName = "langston-nixos";
 
-  programs.light.enable = true;
   programs.java.enable = true;
 
   environment.systemPackages = with pkgs; [

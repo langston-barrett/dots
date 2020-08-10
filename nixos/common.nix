@@ -16,7 +16,6 @@ in {
     ./zsh.nix
   ];
 
-
   i18n = {
     # Use a bigger font for HiDPI displays
     consoleFont = "sun12x22";
@@ -24,21 +23,24 @@ in {
     defaultLocale = "en_US.UTF-8";
   };
 
+  environment.systemPackages = with pkgs; [
+    myEmacs
+  ] ++ import ./minimal.nix { inherit pkgs; };
+
   services.emacs = {
     enable = true;
     package = myEmacs;
   };
-  nixpkgs.config.allowUnfree = true;
 
   # Time
-  #services.chrony.enable = true;
   time.timeZone = "America/Los_Angeles";
   services.localtime.enable = true;
-  # services.tzupdate.enable = true;
 
+  # Nix
+  nixpkgs.config.allowUnfree = true;
+  system.autoUpgrade.enable = true;
   nix = {
-    maxJobs = 8;
-    buildCores = 8;
+    buildCores = 0; # All available
     # gc.automatic = true;
     useSandbox = true;
 
@@ -60,26 +62,18 @@ in {
     trustedUsers = [ "root" variables.username ];
 
   };
-  system.autoUpgrade.enable = true;
 
-  # only on recent nixos...
-  # xdg = {
-  #   icons.enable = true;
-  #   menus.enable = true;
-  #   mime.enable  = true;
-  # };
+  xdg = {
+    icons.enable = true;
+    menus.enable = true;
+    mime.enable  = true;
+  };
 
   documentation = {
     dev.enable = true;
     man.enable = true;
     nixos.enable = true;
   };
-
-  environment.systemPackages = with pkgs; [
-    acpi # battery monitoring in scripts
-    myEmacs
-    wget # org-board
-  ] ++ import ./minimal.nix { inherit pkgs; };
 
   virtualisation.docker.enable = true;
 
@@ -90,19 +84,4 @@ in {
     dataDir = "/home/${variables.username}/sync";
     openDefaultPorts = true;
   };
-  # Other common ones:
-  # gcc #
-  # python
-  # openssl
-  # # Try: nix-env -qaA nixos.haskellPackages
-  # (haskellPackages.ghcWithPackages (pkgs: with pkgs; [
-  #   cabal-install
-  #   hoogle
-  #   HUnit
-  #   QuickCheck
-  #   tasty
-  #   tasty-hunit
-  #   tasty-quickcheck
-  #   text
-  # ])) #
 }

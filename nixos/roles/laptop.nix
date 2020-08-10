@@ -11,6 +11,12 @@
     ../i3.nix
   ];
 
+  environment.systemPackages = with pkgs; [
+    acpi # battery monitoring in scripts
+  ];
+
+  programs.light.enable = true;
+
   services.xserver = {
     enable = true;
     layout = "us";
