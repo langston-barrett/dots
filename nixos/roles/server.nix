@@ -6,7 +6,6 @@
     ../common.nix
   ];
 
-  # View with tigervnc
   environment.systemPackages = with pkgs; [
     tigervnc
     tmux
@@ -15,10 +14,15 @@
   services = {
     openssh = {
       enable = true;
-      forwardX11 = true;
+      # forwardX11 = true;
+      ports = [ 22 ];  # TODO: change
+      permitRootLogin = "no";
+      passwordAuthentication = false;
+      challengeResponseAuthentication = false;
     };
 
     # View with Remmina
+    # TODO: localhost + SSH tunnel
     xrdp = {
       enable = true;
       port = 3389;

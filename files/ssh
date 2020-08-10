@@ -11,11 +11,6 @@ Host vm-36-3c.eic.galois.com
   ControlMaster auto
   ControlPath ~/.ssh/vm-%r@%h:%p
 
-Host odroid1.proj.galois.com
-  User langston
-  PreferredAuthentications publickey
-  IdentityFile ~/.ssh/work_ed25519
-
 # options applied for Galois hosts
 Host *.galois.com
   ForwardAgent yes
@@ -35,14 +30,20 @@ Host vagrant
   IdentitiesOnly yes
   LogLevel FATAL
 
+Host 192.168.0.*
+  PreferredAuthentications publickey,keyboard-interactive,password
+
 Host pi
   HostName 192.168.0.131
   User pi
   Port 11171
-  PreferredAuthentications publickey,keyboard-interactive,password
+
+Host big-wifi
+  User langston
+  HostName 192.168.0.189
+  IdentityFile ~/.ssh/id_ed25519
 
 Host big
   User langston
-  HostName 192.168.0.189
-  PreferredAuthentications publickey
+  HostName 192.168.0.170
   IdentityFile ~/.ssh/id_ed25519
