@@ -203,7 +203,7 @@
                 "key": "s",
                 "desc": "spacemacs anywhere",
                 "exit": true,
-                "cmd": ["bash", "~/code/dots/files/spacemacsanywhere.sh"]
+                "cmd": ["bash", "~/code/dots/files/scripts/spacemacsanywhere.sh"]
             },
             {
                 "key": "p",
