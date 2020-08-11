@@ -89,4 +89,35 @@ in {
     dataDir = "/home/${variables.username}/sync";
     openDefaultPorts = true;
   };
+
+  # Apparmor profiles for package in ./minimal.nix
+  security.apparmor.profiles =
+    let writeDenyProfile =
+          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+    in [
+      (writeDenyProfile { path = pkgs.curl; binary = "curl"; })
+      (writeDenyProfile { path = pkgs.fasd; binary = "fasd"; })
+      (writeDenyProfile { path = pkgs.file; binary = "file"; })
+      (writeDenyProfile { path = pkgs.jq; binary = "jq"; })
+      (writeDenyProfile { path = pkgs.mpw; binary = "mpw"; })
+      (writeDenyProfile { path = pkgs.p7zip; binary = "7z"; })
+      (writeDenyProfile { path = pkgs.pet; binary = "pet"; })
+      (writeDenyProfile { path = pkgs.tree; binary = "tree"; })
+      (writeDenyProfile { path = pkgs.unzip; binary = "unzip"; })
+      (writeDenyProfile { path = pkgs.zip; binary = "zip"; })
+
+      # TODO debug
+      # Failed to open /dev/tty
+      # (writeDenyProfile { path = pkgs.fzf; binary = "fzf"; })
+
+      # TODO test these
+      # (writeDenyProfile { path = pkgs.trash-cli; binary = "trash-empty"; })
+      # (writeDenyProfile { path = pkgs.trash-cli; binary = "trash-put"; })
+      # (writeDenyProfile { path = pkgs.trash-cli; binary = "trash-restore"; })
+      # (writeDenyProfile {
+      #   path = pkgs.tldr;
+      #   binary = "tldr";
+      #   network = true;
+      # })
+    ];
 }

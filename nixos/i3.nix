@@ -27,6 +27,13 @@
     };
   };
 
+  apparmor.profiles =
+    let writeDenyProfile =
+          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+    in [
+      (writeDenyProfile { path = pkgs.xcompmgr; binary = "xcompmgr"; })
+    ];
+
   systemd.user.services =
     let graphical = import ./functions/graphical-service.nix {
           inherit config;
