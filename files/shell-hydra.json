@@ -16,6 +16,20 @@
                   "-kb-cancel",
                   "Ctrl+g"
                 ]
+            },
+            {
+                "key": "w",
+                "desc": "window",
+                "exit": true,
+                "cmd": [
+                  "rofi",
+                  "-show",
+                  "window",
+                  "-kb-cancel",
+                  "Alt+C",
+                  "-kb-cancel",
+                  "Ctrl+g"
+                ]
             }
         ]
     },
