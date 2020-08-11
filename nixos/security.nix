@@ -33,6 +33,7 @@
     };
 
     # auditd.enable = true;
+    # TODO: Split across files, factor profiles out into functions/
     apparmor = {
       enable = true;
       confineSUIDApplications = true; # install apparmor profiles for SUID apps

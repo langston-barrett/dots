@@ -9,6 +9,7 @@
 
     ../../audio.nix
     ../../networking.nix
+    ../../music.nix
     ../../steam.nix
     ../../x.nix
     # ../wayland.nix
@@ -29,7 +30,17 @@
   services.xserver = {
     enable = true;
     videoDrivers = [ "nvidia" ];
-    desktopManager.xfce.enable = true;
+    displayManager = {
+      defaultSession = "none+i3";
+      lightdm.enable = true;
+      lightdm.autoLogin.enable = true;
+      lightdm.autoLogin.user = "langston";
+    };
+    windowManager.i3 = {
+      enable = true;
+      package = pkgs.i3-gaps;
+    };
+    # desktopManager.xfce.enable = true;
   };
 
   nix = {

@@ -16,10 +16,15 @@ in {
     ./zsh.nix
   ];
 
+  # Use a bigger font for HiDPI displays
+  console = {
+    keyMap = "us";
+    font = "sun12x22";
+  };
+
   i18n = {
-    # Use a bigger font for HiDPI displays
-    consoleFont = "sun12x22";
-    consoleKeyMap = "us";
+    # consoleFont = "sun12x22";
+    # consoleKeyMap = "us";
     defaultLocale = "en_US.UTF-8";
   };
 

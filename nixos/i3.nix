@@ -1,16 +1,16 @@
 { config, pkgs, ... }:
 
-# TODO deduplicate
-let mkGraphicalService = attrs: {
-    enable = true;
-    environment.DISPLAY = ":${builtins.toString config.services.xserver.display}";
-    # environment = { DISPLAY = ":0"; };
-    after = [ "display-manager.service" ];
-    partOf = [ "display-manager.service" ];
-    wantedBy = [ "graphical.target" ];
-  } // attrs;
-in {
+{
   imports = [ ./x.nix ];
+
+  environment.systemPackages = with pkgs; [
+    (polybar.override {
+      i3GapsSupport = true;
+      i3-gaps = i3-gaps;
+      jsoncpp = jsoncpp;
+    })
+    # i3status
+  ];
 
   services.xserver = {
     displayManager = {
@@ -27,10 +27,17 @@ in {
     };
   };
 
-  systemd.user.services = {
-    xcompmgr = mkGraphicalService {
+  systemd.user.services =
+    let graphical = import ./functions/graphical-service.nix {
+          inherit config;
+          userService = true;
+        };
+    in {
+
+    xcompmgr = {
       description = "Use xcompmgr compositor";
-      serviceConfig = {
+      serviceConfig = graphical // {
+        enable = true;
         ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr -c";
         Restart = "always";
         RestartSec = "5s";
@@ -38,14 +45,14 @@ in {
       };
     };
 
-    twmn = mkGraphicalService {
+    twmn =
       enable = false;
-      description = "twmn";
-      serviceConfig = {
+      description = "twmn notification server daemon";
+      serviceConfig = graphical // {
         ExecStart = "${pkgs.twmn}/bin/twmnd";
         Restart = "always";
         RestartSec = "5s";
-        # MemoryLimit = "1024M";
+        MemoryLimit = "1024M";
       };
     };
 

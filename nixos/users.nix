@@ -26,6 +26,7 @@ in {
         group = "${variables.username}";
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOF4q49aKIqNfjv68fPtyq0gFrWOTyfILGX2GCf8Wd6A g6"
         ];
         extraGroups = [
           "networkmanager"

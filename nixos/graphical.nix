@@ -7,20 +7,16 @@ let
   };
   location = portland;
   master = (import ./pkgs.nix { inherit pkgs; }).master;
+  variables = import ./hosts/this/variables.nix;
 in {
+  imports = [ ./gtk.nix ];
 
   environment.systemPackages = with pkgs; [
-    # GTK and window manager functionality
-    arandr
-    arc-theme
+    # Window manager functionality
     feh
-    moka-icon-theme
-    paper-gtk-theme
-    paper-icon-theme
     rofi
     rxvt_unicode-with-plugins
     vanilla-dmz # cursor theme
-    # xfce.xfce4_power_manager_gtk3
     libnotify
 
     # General graphical packages
@@ -30,11 +26,6 @@ in {
     firefox
     qutebrowser
     kcolorchooser
-    (polybar.override {
-      i3GapsSupport = true;
-      i3-gaps = i3-gaps;
-      jsoncpp = jsoncpp;
-    })
     xsel
     zathura
   ];
@@ -79,26 +70,26 @@ in {
     enable = true;
   };
 
-  environment.variables = {
-    # GTK themes: Arc Light
-    GTK_THEME = "Arc";
-    GTK_PATH = "$GTK_PATH:${pkgs.arc-theme}/lib/gtk-2.0:${pkgs.arc-theme}/lib/gtk-3.0";
-    GTK2_RC_FILES = "$HOME/.nix-profile/share/themes/Arc/gtk-2.0/gtkrc";
-  };
-
   systemd.user.services = {
     feh = {
       enable = true;
       description = "Use feh image viewer to set the wallpaper";
-      after = [ "display-manager.service" ];
-      partOf = [ "display-manager.service" ];
-      wantedBy = [ "graphical.target" ];
-      serviceConfig = {
-        ExecStart = "${pkgs.feh}/bin/feh --no-fehbg --bg-fill /home/siddharthist/.config/wallpaper.jpg";
-        Restart = "on-failure";
-        RestartSec = "5s";
-        MemoryLimit = "512M";
-      };
+      serviceConfig =
+        let graphical = import ./functions/graphical-service.nix {
+              inherit config;
+              userService = true;
+            };
+        in graphical // {
+          ExecStart = ''
+            ${pkgs.feh}/bin/feh \
+              --no-fehbg \
+              --bg-fill \
+              /home/${variables.username}/.config/wallpaper.jpg
+          '';
+          Restart = "on-failure";
+          RestartSec = "5s";
+          MemoryLimit = "512M";
+        };
     };
   };
 }
