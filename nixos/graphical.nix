@@ -21,11 +21,13 @@ in {
 
     # General graphical packages
     alacritty
+    anki
+    baobab
+    firefox
+    kcolorchooser
     master.dropbox
     master.signal-desktop
-    firefox
     qutebrowser
-    kcolorchooser
     xsel
     zathura
   ];

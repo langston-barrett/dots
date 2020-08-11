@@ -102,6 +102,7 @@ in {
       (writeDenyProfile { path = pkgs.mpw; binary = "mpw"; })
       (writeDenyProfile { path = pkgs.p7zip; binary = "7z"; })
       (writeDenyProfile { path = pkgs.pet; binary = "pet"; })
+      (writeDenyProfile { path = pkgs.tree; binary = "tree"; })
       (writeDenyProfile { path = pkgs.unzip; binary = "unzip"; })
       (writeDenyProfile { path = pkgs.zip; binary = "zip"; })
 

@@ -26,6 +26,7 @@ with pkgs; [
   ranger
   silver-searcher # ag
   tldr
+  tree
   trash-cli
   unzip
   wget

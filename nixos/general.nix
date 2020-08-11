@@ -3,9 +3,8 @@
 
 {
   environment.systemPackages = with pkgs; [
-    dive # docker image size analysis
     exfat
-    gitAndTools.hub # github access for magithub
+    graphviz
     imagemagick
     pass
 
@@ -18,6 +17,8 @@
 
     # extra development
     clang
+    docker-compose
+    llvm
     rr
     shellcheck
   ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
@@ -26,7 +27,9 @@
     let writeDenyProfile =
           import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
     in [
+      (writeDenyProfile { path = pkgs.bat; binary = "bat"; })
       (writeDenyProfile { path = pkgs.imagemagick; binary = "convert"; })
+      (writeDenyProfile { path = pkgs.pass; binary = "pass"; })
     ];
 
   virtualisation.virtualbox.host.enable = true;
