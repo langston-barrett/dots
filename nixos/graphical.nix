@@ -30,6 +30,17 @@ in {
     zathura
   ];
 
+  security.apparmor.profiles =
+    let writeDenyProfile =
+          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+    in [
+      (writeDenyProfile { path = pkgs.feh; binary = "feh"; })
+      # TODO: test these
+      # (writeDenyProfile { path = pkgs.kcolorchooser; binary = "kcolorchooser"; })
+      # (writeDenyProfile { path = pkgs.xsel; binary = "xsel"; })
+      # (writeDenyProfile { path = pkgs.zathura; binary = "zathura"; })
+    ];
+
   fonts = {
     enableFontDir = false;
     enableGhostscriptFonts = true;

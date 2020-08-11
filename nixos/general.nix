@@ -22,6 +22,12 @@
     shellcheck
   ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
 
+  apparmor.profiles =
+    let writeDenyProfile =
+          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+    in [
+      (writeDenyProfile { path = pkgs.imagemagick; binary = "convert"; })
+    ];
 
   virtualisation.virtualbox.host.enable = true;
   services.physlock.enable = true;
