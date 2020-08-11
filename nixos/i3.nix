@@ -45,7 +45,7 @@
       };
     };
 
-    twmn =
+    twmn = {
       enable = false;
       description = "twmn notification server daemon";
       serviceConfig = graphical // {
