@@ -3,7 +3,9 @@ if [[ -n "$HYDRA" ]]; then
   # NTS: exec does not work here
   # shell_hydra ~/code/dots/files/shell-hydra.json; exit
 
+  # No notifications for backgrounded dogs
   setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR
+
   i3-msg 'no_focus [class="conky"]' &> /dev/null
   conky --config=$HOME/code/dots/files/conky/default.conkyrc &> /dev/null &
   pid=$!
