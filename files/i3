@@ -29,6 +29,10 @@ set $mod Mod1
 floating_modifier $mod
 
 for_window [title="hydra"] floating enable
+for_window [title="hydra"] resize set 500 500
+for_window [title="hydra"] move position center
+for_window [class="conky"] floating enable
+
 bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
 bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
@@ -39,7 +43,6 @@ bindsym $mod+Shift+Return exec alacritty
 bindsym $mod+Return exec urxvt
 #bindsym $mod+Shift+Return exec urxvt
 # bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'
-bindsym $mod+p exec ~/code/dots/files/scripts/spacemacsanywhere.sh
 bindsym $mod+Shift+c kill
 
 # enter fullscreen mode for the focused container

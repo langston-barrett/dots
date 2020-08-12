@@ -23,7 +23,7 @@
     shellcheck
   ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
 
-  apparmor.profiles =
+  security.apparmor.profiles =
     let writeDenyProfile =
           import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
     in [

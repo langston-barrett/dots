@@ -1,10 +1,10 @@
 #!/usr/bin/env zsh
-export MPW_FULLNAME='Langston Barrett'
-export MPW_SITETYPE=x
 
 # https://github.com/Lyndir/MasterPassword/blob/master/platform-independent/cli-c/mpw.bashrc
 
 mpw() {
+  export MPW_FULLNAME='Langston Barrett'
+  export MPW_SITETYPE=x
   _copy() {
     if hash pbcopy 2>/dev/null; then
       pbcopy

@@ -11,6 +11,7 @@
 
     ../../roles/laptop.nix
 
+    ../../bluetooth.nix
     ../../steam.nix
   ];
 
@@ -39,7 +40,7 @@
     comfortaa
     # gimp
     # keynav
-    kdeconnect
+    # kdeconnect
     maim
     mu
     # musescore
@@ -48,7 +49,7 @@
     spotify
     tmux
     vlc
-    ympd
+    # ympd
 
     # python development
     # python

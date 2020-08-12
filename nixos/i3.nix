@@ -27,7 +27,7 @@
     };
   };
 
-  apparmor.profiles =
+  security.apparmor.profiles =
     let writeDenyProfile =
           import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
     in [

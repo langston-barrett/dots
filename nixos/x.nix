@@ -22,11 +22,11 @@
     let writeDenyProfile =
           import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
     in [
-      (writeDenyProfile { path = pkgs.arandr; binary = "arandr"; })
       (writeDenyProfile { path = pkgs.xcompmgr; binary = "xcompmgr"; })
       # TODO  test these
       # (writeDenyProfile { path = pkgs.arandr; binary = "aspell"; })
       # (writeDenyProfile { path = pkgs.xorg.xmodmap; binary = "xmodmap"; })
+      # (writeDenyProfile { path = pkgs.arandr; binary = "arandr"; })
     ];
 
   # TODO: Factor out into a module, open ports in firewall automatically

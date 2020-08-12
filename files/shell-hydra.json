@@ -18,6 +18,12 @@
                 ]
             },
             {
+                "key": "p",
+                "desc": "pass",
+                "exit": true,
+                "cmd": ["rofi-pass"]
+            },
+            {
                 "key": "w",
                 "desc": "window",
                 "exit": true,
