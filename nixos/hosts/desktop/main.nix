@@ -62,6 +62,7 @@
     };
     timers = {
       autoSuspend = {
+        enable = true;
         description = "Suspend on a schedule";
         wantedBy = [ "timers.target" ];
         timerConfig = {
@@ -69,10 +70,12 @@
         };
       };
       autoResume = {
+        enable = true;
         description = "Resume on a schedule";
         wantedBy = [ "timers.target" ];
         timerConfig = {
           OnCalendar = "*-*-* 07:00:00";
+          WakeSystem = true;
         };
       };
     };
