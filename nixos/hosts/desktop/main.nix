@@ -43,6 +43,41 @@
     # desktopManager.xfce.enable = true;
   };
 
+  systemd.user = {
+    services = {
+      autoSuspend = {
+        description = "Suspend on a schedule";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
+        };
+      };
+      autoResume = {
+        description = "Resume on a schedule";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = "${pkgs.coreutils}/bin/true";
+        };
+      };
+    };
+    timers = {
+      autoSuspend = {
+        description = "Suspend on a schedule";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*-*-* 00:30:00";
+        };
+      };
+      autoResume = {
+        description = "Resume on a schedule";
+        wantedBy = [ "timers.target" ];
+        timerConfig = {
+          OnCalendar = "*-*-* 07:00:00";
+        };
+      };
+    };
+  };
+
   nix = {
     buildCores = 0;
     maxJobs = 24;
