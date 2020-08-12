@@ -2,6 +2,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./dev.nix ];
+
   environment.systemPackages = with pkgs; [
     exfat
     graphviz
@@ -14,14 +16,7 @@
     autobuild
     pkgconfig
     gnum4
-
-    # extra development
-    clang
-    docker-compose
-    llvm
-    rr
-    shellcheck
-  ] ++ lib.optional (pkgs ? "bat") pkgs.bat; # only in newer nixos
+  ];
 
   security.apparmor.profiles =
     let writeDenyProfile =

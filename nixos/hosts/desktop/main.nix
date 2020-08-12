@@ -7,12 +7,10 @@
 
     ../../roles/server.nix
 
-    ../../audio.nix
+    ../../dev.nix
     ../../networking.nix
-    ../../music.nix
     ../../steam.nix
     ../../x.nix
-    # ../wayland.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -22,7 +20,7 @@
     # plymouth.enable = true; # splash screen
   };
 
-  networking.hostName = "langston-desktop"; # Define your hostname.
+  networking.hostName = "langston-desktop";
 
   environment.systemPackages = with pkgs; [
     glxinfo # driver query

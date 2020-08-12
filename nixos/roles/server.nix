@@ -14,7 +14,7 @@
   services = {
     openssh = {
       enable = true;
-      # forwardX11 = true;
+      forwardX11 = true;  # notifications
       ports = [ 22 ];  # TODO: change
       permitRootLogin = "no";
       passwordAuthentication = false;
