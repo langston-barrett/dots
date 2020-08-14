@@ -1,14 +1,23 @@
 { config, pkgs, ... }:
 
 {
-  hardware.pulseaudio.support32Bit = true;
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
+  environment.systemPackages = with pkgs; [ steam ];
+
+  hardware = {
+    steam-hardware.enable  = true;
+    pulseaudio.support32Bit = true;
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
   };
 
   # https://support.steampowered.com/kb_article.php 
+  # UDP remote port 27000--27100: Game traffic
+  # UDP local port 27031-27036: Remote Play
+  # TCP local port 27036: Remote Play
+  # UDP remote port 4380
   networking = {
     firewall = {
       allowedUDPPortRanges = [
@@ -20,15 +29,4 @@
       allowedTCPPorts = [ 27036 ];
     };
   };
-
-    # UDP remote port 27000--27100: Game traffic
-    # UDP local port 27031-27036: Remote Play
-    # TCP local port 27036: Remote Play
-    # UDP remote port 4380
-
-  environment.systemPackages = with pkgs; [
-    steam
-    # TODO
-    #xhost # for running `xhost +` when steam doesn't work
-  ];
 }
