@@ -7,3 +7,4 @@ inspiration
 .yas-compiled-snippets.el
 
 files/zsh.d/zaw
+files/emacs/local/llvm-mode.el

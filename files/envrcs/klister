@@ -1,0 +1,3 @@
+# -*- sh -*-
+use_nix ~/code/dots/files/nix/klister/shell.nix
+PATH_add dist-newstyle/build/x86_64-linux/ghc-8.6.5/klister-0.1/x/klister/

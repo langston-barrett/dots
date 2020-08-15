@@ -253,6 +253,19 @@
         and ((item.minimal | default(False)) or ((item.minimal | default(False)) == minimal))
       with_items: "{{ symlinks }}"
 
+    - name: symlink envrcs
+      ignore_errors: yes
+      file:
+        follow: true
+        state: link
+        src: "{{ playbook_dir }}/files/envrcs/{{ item.project }}"
+        path: "{{ home }}/code/{{ item.project }}/.envrc"
+        owner: "{{ username }}"
+        group: "{{ username }}"
+        mode: "0640"
+      with_items:
+        - project: klister
+
     - name: clone qutebrowser dracula theme
       git:
         repo: 'https://github.com/dracula/qutebrowser-dracula-theme'
@@ -277,6 +290,7 @@
 
     - name: handle xrdb changes
       command: xrdb -merge $HOME/.Xresources
+      ignore_errors: yes
       when: "not ci and graphical"
 
     # - name: set new background
