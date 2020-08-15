@@ -7,10 +7,13 @@
 
     ../../roles/server.nix
 
+    ../../audio.nix
     ../../dev.nix
     ../../networking.nix
     ../../steam.nix
     ../../x.nix
+
+    ../../services/tigervnc.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -20,7 +23,7 @@
     # plymouth.enable = true; # splash screen
   };
 
-  networking.hostName = "langston-desktop";
+  networking.hostName = "big";
 
   environment.systemPackages = with pkgs; [
     glxinfo # driver query
@@ -41,7 +44,14 @@
     # desktopManager.xfce.enable = true;
   };
 
-  systemd.user = {
+  services.tigervnc = {
+    enable = true;
+    port = 5900;
+    xStartup = "${pkgs.qutebrowser}/bin/qutebrowser";
+    geometry = "2560x1440";
+  };
+
+  systemd = {
     services = {
       autoSuspend = {
         description = "Suspend on a schedule";

@@ -2,9 +2,7 @@
 
 let variables = import ./hosts/this/variables.nix;
 in {
-
   users = {
-
     groups = {
       "${variables.username}" = {
         gid = 1000;
@@ -14,8 +12,6 @@ in {
 
     # Remember to set the password with `passwd`
     users = {
-
-      # Personal
       "${variables.username}" = {
         isNormalUser = true;
         home = "/home/${variables.username}";
@@ -38,10 +34,4 @@ in {
       };
     };
   };
-
-  # KMonad: https://github.com/david-janssen/kmonad#uinput-permissions
-  services.udev.extraRules = ''
-    KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
-  '';
-  boot.kernelModules = [ "uinput" ];
 }
