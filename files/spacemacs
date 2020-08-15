@@ -913,7 +913,7 @@ you should place your code here."
     (require 'dash)
 
     (setq my/excluded-buffer-names
-          (list " *OUTLINE-TOC*" "*SPEEDBAR*" "*Help*"))
+          (list " *OUTLINE-TOC*" "*SPEEDBAR*" "*Help*" "*org-roam*"))
     (setq my/excluded-buffer-prefixes
           (list "org-sidebar" "<tree>" "HELM"))
 
@@ -1368,6 +1368,9 @@ you should place your code here."
     (defun my/no-org-links () (org-link-minor-mode -1))
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
+  (when (require 'org-indent-mode nil 'noerror)
+    (add-hook 'org-mode-hook 'org-indent-mode))
+
   (setq org-directory "~/org")
   (setq org-wiki-location org-directory
         org-default-notes-file (concat org-directory "/capture.org"))
@@ -1389,8 +1392,6 @@ you should place your code here."
                                ("~/org/todo.org" :maxlevel . 10)))
     ;; TODO: This makes it not show all the options?
     ;; (setq org-refile-use-outline-path nil)
-
-    (setq org-indent-indentation-per-level 0)
 
 ;;;;;; capture
 
@@ -1527,20 +1528,6 @@ you should place your code here."
                                         "** Back"
                                         "Wiktionary:")))))))
 
-    (setq my/org-header
-          (concat
-           "#+TITLE: ${title}\n"
-           "#+SETUPFILE: meta/setup.org\n"
-           "#+BRAIN_PARENTS:\n"
-           "#+BRAIN_CHILDREN:\n"
-           "#+BRAIN_FRIENDS:\n"))
-    (setq org-roam-capture-templates
-          `(("d" "default" plain (function org-roam--capture-get-point)
-           "\n* ${title}\n\n%?"
-           :file-name "${slug}"
-           :head ,my/org-header
-           :unnarrowed t)))
-
 ;;;;;; org-gcal
 
     (setq org-gcal-file-alist
@@ -1551,6 +1538,22 @@ you should place your code here."
 
     (with-eval-after-load 'org-roam
       (setq org-roam-directory org-directory)
+
+      (setq my/org-header
+            (concat
+             "#+TITLE: ${title}\n"
+             "#+SETUPFILE: meta/setup.org\n"
+             "#+BRAIN_PARENTS:\n"
+             "#+BRAIN_CHILDREN:\n"
+             "#+BRAIN_FRIENDS:\n"))
+
+      (setq org-roam-capture-templates
+            `(("d" "default" plain (function org-roam--capture-get-point)
+               "\n* ${title}\n\n%?"
+               :file-name "${slug}"
+               :head ,my/org-header
+               :unnarrowed t)))
+
       ;; For some reason, this makes the agenda very expensive:
       (setq org-roam-link-use-custom-faces nil))
 
@@ -1588,6 +1591,7 @@ you should place your code here."
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "."  'spacemacs/org-agenda-transient-state/body)
       (setq org-agenda-files (list (concat org-directory "/capture.org")
+                                   (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
       (setq org-agenda-prefix-format
@@ -1603,17 +1607,23 @@ you should place your code here."
               (:name "(Waiting)"
                      :todo "WAIT"
                      :order 9)
+              (:name "Daily"
+                     :scheduled today
+                     :category "daily"
+                     :order 1)
               (:name "Today"
+                     :scheduled today
+                     :scheduled past
                      :deadline past
                      :deadline today
-                     :order 1)
+                     :order 2)
               (:name "(Scheduled)"
                      :scheduled t
                      :order 10)
               (:name "Important !"
                      :and (:priority "A"
                                      :scheduled nil)
-                     :order 2)
+                     :order 3)
               (:auto-parent t :order 7)
               (:name "Low effort"
                      :effort< "0:20"
@@ -1631,20 +1641,26 @@ you should place your code here."
                    (:name "(Waiting)"
                           :todo "WAIT"
                           :order 9)
+                   (:name "Daily"
+                          :scheduled today
+                          :category "daily"
+                          :order 1)
                    (:name "Today"
+                          :scheduled today
+                          :scheduled past
                           :deadline past
                           :deadline today
-                          :order 1)
+                          :order 2)
                    (:name "Reply"
                           :tag "reply"
-                          :order 3)
+                          :order 4)
                    (:name "(Scheduled)"
                           :scheduled t
                           :order 10)
-                   (:name "Important !"
+                   (:name "Important!"
                           :and (:priority "A"
                                           :scheduled nil)
-                          :order 2)
+                          :order 3)
                    (:auto-category t :order 7)
                    (:name "Low effort"
                           :effort< "0:20"
