@@ -42,4 +42,31 @@
       '';
     };
   };
+
+  systemd.user =
+    let variables = import ../hosts/this/variables.nix;
+    in {
+      # TODO lock down
+      services = {
+        calendar = {
+          description = "Log the Google Calendar to disk every once in a while";
+          serviceConfig = {
+            Type = "oneshot";
+            ExecStart = ''
+              ${pkgs.bash}/bin/bash -c "${pkgs.gcalcli}/bin/gcalcli agenda > /home/${variables.username}/.local/share/calendar.txt"
+            '';
+          };
+        };
+      };
+      timers = {
+        calendar = {
+          enable = true;
+          description = "Log the Google Calendar to disk every once in a while";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
+            OnCalendar = "*:0/15";  # every 15 minutes
+          };
+        };
+      };
+    };
 }

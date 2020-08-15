@@ -76,7 +76,8 @@
 
   systemd = {
     user = {
-      timers = {};
+      timers = {
+      };
     };
   };
 
