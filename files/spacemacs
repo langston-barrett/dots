@@ -1369,11 +1369,12 @@ you should place your code here."
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
   (when (require 'org-indent-mode nil 'noerror)
-    (add-hook 'org-mode-hook 'org-indent-mode))
+    (add-hook 'org-mode-hook 'org-indent-mode)
+    (setq org-indent-indentation-per-level 2))
 
   (setq org-directory "~/org")
   (setq org-wiki-location org-directory
-        org-default-notes-file (concat org-directory "/capture.org"))
+        org-default-notes-file (concat org-directory "/todo.org"))
 
   (with-eval-after-load 'org-brain
     (defun aa2u-buffer () (aa2u (point-min) (point-max)))
@@ -1389,7 +1390,7 @@ you should place your code here."
     ;;          `(,(concat org-directory item) . (:regexp "Cards")))
     ;;        (list "arm.org" "x86.org")))
     (setq org-refile-targets '((org-agenda-files :maxlevel . 3)
-                               ("~/org/todo.org" :maxlevel . 10)))
+                               ("~/org/todo.org" :maxlevel . 3)))
     ;; TODO: This makes it not show all the options?
     ;; (setq org-refile-use-outline-path nil)
 
@@ -1409,23 +1410,39 @@ you should place your code here."
           (doct '(("todo"
                    :keys "t"
                    :file org-default-notes-file
-                   :headline "Unsorted"
                    :hook my/hide
                    :template ("* TODO [#%^{Priority|C|A|B|C}] %?"
                               ":PROPERTIES:"
                               ":CREATED: %U"
                               ":CREATED_IN_FILE: %a"
-                              ":END:"))
-                  ("jedi"
-                   :keys "j"
-                   :file org-default-notes-file
-                   :headline "Jedi"
-                   :hook my/hide
-                   :template ("* TODO [#%^{Priority|C|A|B|C}] %?"
-                              ":PROPERTIES:"
-                              ":CREATED: %U"
-                              ":CREATED_IN_FILE: %a"
-                              ":END:"))
+                              ":END:")
+                   :children (("unsorted"
+                               :headline "Unsorted"
+                               :keys "t")
+                              ("work"
+                               :keys "w"
+                               :headline "Work"
+                               :children (("work"
+                                           :keys "w"
+                                           :headline "General")
+                                          ("jedi"
+                                           :keys "j"
+                                           :headline "Jedi")
+                                          ("arcos"
+                                           :keys "a"
+                                           :headline "ARCOS")
+                                          ("chess"
+                                           :keys "c"
+                                           :headline "CHESS")))
+                              ("personal"
+                               :keys "p"
+                               :headline "Personal")
+                              ("dots"
+                               :keys "d"
+                               :headline "Dots")
+                              ("meta"
+                               :keys "m"
+                               :headline "Meta")))
                   ("pending"
                    :keys "p"
                    :file org-default-notes-file
@@ -1456,28 +1473,7 @@ you should place your code here."
                                :verb "Compose")
                               ("read"
                                :keys "e"
-                               :verb "Read"))
-                   )
-                  ("document"
-                   :keys "d"
-                   :file meta-org
-                   :headline "Appendix D: To document"
-                   :hook my/hide
-                   :template ("* TODO %?"
-                              ":PROPERTIES:"
-                              ":CREATED: %U"
-                              ":CREATED_IN_FILE: %a"
-                              ":END:"))
-                  ("workflow"
-                   :keys "w"
-                   :file meta-org
-                   :headline "Appendix C: TODOs"
-                   :hook my/hide
-                   :template ("* TODO [#%^{Priority|C|A|B|C}] %?"
-                              ":PROPERTIES:"
-                              ":CREATED: %U"
-                              ":CREATED_IN_FILE: %a"
-                              ":END:"))
+                               :verb "Read")))
                   ("anki"
                    :keys "a"
                    :hook my/hide
@@ -1536,8 +1532,11 @@ you should place your code here."
 
 ;;;;;; roam
 
+    ;; "This variable needs to be set before any calls to Org-roam functions,
+    ;; including enabling org-roam-mode."
+    (setq org-roam-directory org-directory)
+
     (with-eval-after-load 'org-roam
-      (setq org-roam-directory org-directory)
 
       (setq my/org-header
             (concat
@@ -1590,8 +1589,7 @@ you should place your code here."
     (with-eval-after-load 'org-agenda
       (spacemacs/set-leader-keys-for-major-mode 'org-mode
         "."  'spacemacs/org-agenda-transient-state/body)
-      (setq org-agenda-files (list (concat org-directory "/capture.org")
-                                   (concat org-directory "/practices.org")
+      (setq org-agenda-files (list (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
       (setq org-agenda-prefix-format
@@ -1634,13 +1632,13 @@ you should place your code here."
                ((org-super-agenda-groups
                  '(;; Each group has an implicit boolean OR operator between its selectors.
                    (:discard
-                    (:and (:file-path "todo.org" :not (:category ("CHESS" "ARCOS")))))
+                    (:and (:file-path "todo.org" :category ("Dots" "Meta"))))
                    (:name "Personal"
-                          :tag "personal"
-                          :order 11)
+                          :category "Personal"
+                          :order 9)
                    (:name "(Waiting)"
                           :todo "WAIT"
-                          :order 9)
+                          :order 8)
                    (:name "Daily"
                           :scheduled today
                           :category "daily"
@@ -1656,12 +1654,12 @@ you should place your code here."
                           :order 4)
                    (:name "(Scheduled)"
                           :scheduled t
-                          :order 10)
+                          :order 7)
                    (:name "Important!"
                           :and (:priority "A"
                                           :scheduled nil)
                           :order 3)
-                   (:auto-category t :order 7)
+                   (:auto-parent t :order 5)
                    (:name "Low effort"
                           :effort< "0:20"
                           :order 8))))))))

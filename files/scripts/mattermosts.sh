@@ -2,13 +2,7 @@
 
 set -euo pipefail
 
-host=big-wifi
-
-if ssh "${host}" tmux list-sessions; then
-  sessions=$(ssh "${host}" tmux list-sessions 2>&1)
-else
-  sessions=""
-fi
+host=big
 
 for team in galois arcos chess; do
   session="${team}-matterhorn"
