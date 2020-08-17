@@ -1368,6 +1368,7 @@ you should place your code here."
     (defun my/no-org-links () (org-link-minor-mode -1))
     (add-hook 'sh-mode-hook 'my/no-org-links))
 
+  (setq org-indent-indentation-per-level 2)
   (when (require 'org-indent-mode nil 'noerror)
     (add-hook 'org-mode-hook 'org-indent-mode)
     (setq org-indent-indentation-per-level 2))
@@ -1403,6 +1404,8 @@ you should place your code here."
     (defun my/hide ()
       (interactive)
       (org-cycle-hide-drawers 'all))
+    (add-hook 'org-mode-hook 'my/hide)
+
     (setq meta-org (concat org-directory "/meta.org"))
     (setq vocab-org (concat org-directory "/vocab.org"))
     (setq cards-org (concat org-directory "/cards.org"))
@@ -1436,7 +1439,7 @@ you should place your code here."
                                            :headline "CHESS")))
                               ("personal"
                                :keys "p"
-                               :headline "Personal")
+                               :headline "Generic")
                               ("dots"
                                :keys "d"
                                :headline "Dots")
@@ -1600,14 +1603,23 @@ you should place your code here."
 
       (org-super-agenda-mode)
 
+      ;; Default agenda is a work agenda
       (setq org-super-agenda-groups
             '(;; Each group has an implicit boolean OR operator between its selectors.
+              (:discard (:category ("Dots" "Meta")))
+              (:discard (:and (:category "Daily" :scheduled future)))
+              (:name "Personal"
+                     :category "Personal"
+                     :order 9)
               (:name "(Waiting)"
                      :todo "WAIT"
-                     :order 9)
+                     :order 8)
+              (:name "(Scheduled)"
+                     :and (:scheduled t :not (:scheduled today))
+                     :order 7)
               (:name "Daily"
-                     :scheduled today
-                     :category "daily"
+                     :and (:scheduled today :category "Daily")
+                     :and (:scheduled past :category "Daily")
                      :order 1)
               (:name "Today"
                      :scheduled today
@@ -1615,54 +1627,35 @@ you should place your code here."
                      :deadline past
                      :deadline today
                      :order 2)
-              (:name "(Scheduled)"
-                     :scheduled t
-                     :order 10)
-              (:name "Important !"
+              (:name "Reply"
+                     :tag "reply"
+                     :order 4)
+              (:name "Important!"
                      :and (:priority "A"
                                      :scheduled nil)
                      :order 3)
-              (:auto-parent t :order 7)
+              (:auto-parent t :order 5)
               (:name "Low effort"
                      :effort< "0:20"
                      :order 8)))
-      ;; SPC a o o w
+
+      ;; SPC a o o p
       (setq org-agenda-custom-commands
-            '(("w" "Work" alltodo ""
+            '(("p" "Personal" alltodo ""
                ((org-super-agenda-groups
                  '(;; Each group has an implicit boolean OR operator between its selectors.
-                   (:discard
-                    (:and (:file-path "todo.org" :category ("Dots" "Meta"))))
-                   (:name "Personal"
-                          :category "Personal"
-                          :order 9)
+                   (:discard (:not (:file-path "todo.org")))
+                   (:discard (:tag "work"))
                    (:name "(Waiting)"
                           :todo "WAIT"
-                          :order 8)
-                   (:name "Daily"
-                          :scheduled today
-                          :category "daily"
-                          :order 1)
-                   (:name "Today"
-                          :scheduled today
-                          :scheduled past
-                          :deadline past
-                          :deadline today
-                          :order 2)
-                   (:name "Reply"
-                          :tag "reply"
-                          :order 4)
-                   (:name "(Scheduled)"
-                          :scheduled t
-                          :order 7)
+                          :order 9)
                    (:name "Important!"
-                          :and (:priority "A"
-                                          :scheduled nil)
-                          :order 3)
-                   (:auto-parent t :order 5)
-                   (:name "Low effort"
-                          :effort< "0:20"
-                          :order 8))))))))
+                          :and (:priority "A" :scheduled nil)
+                          :order 1)
+                   (:name "Personal"
+                          :tag "personal"
+                          :order 4)
+                   (:auto-parent t :order 7))))))))
 
 ;;;;;; org-ref
 
