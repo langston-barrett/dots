@@ -149,7 +149,7 @@ mate-dev-run() {
          --rm --net=host \
          --mount type=bind,src=$PWD,dst=/x \
          -w /x -it mate-dev \
-         bash -c "$*"
+         bash -c "$@"
 }
 
 mate-shake() {
