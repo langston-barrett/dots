@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: markdown
+# name: mark*
+# contributor: Langston Barrett
+# --
+#+begin_src markdown
+#+end_src

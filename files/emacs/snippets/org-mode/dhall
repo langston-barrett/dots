@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: dhall
+# name: dhall*
+# contributor: Langston Barrett
+# --
+#+begin_src dhall
+#+end_src

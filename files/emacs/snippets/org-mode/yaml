@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: yaml
+# name: yaml*
+# contributor: Langston Barrett
+# --
+#+begin_src yaml
+#+end_src
