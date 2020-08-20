@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    python37Packages.python-language-server
     clang
     docker-compose
     llvm
