@@ -1533,6 +1533,18 @@ you should place your code here."
           '(("langston@galois.com" .  "~/org/calendars/galois.org")
             ("bbarrett909@gmail.com" . "~/org/calendars/personal.org")))
 
+;;;;;; publish
+
+    (setq org-export-backends '(ascii html md latex))
+    (defun my/org-publish-to-markdown (plist filename pub-dir)
+      "A variant of `org-html-publish-to-html' for publishing markdown."
+      (interactive)
+      (org-publish-org-to 'md filename
+                          (concat "." (or (plist-get plist :markdown-extension)
+                                          "md"))
+                          plist pub-dir))
+
+
 ;;;;;; roam
 
     ;; "This variable needs to be set before any calls to Org-roam functions,
