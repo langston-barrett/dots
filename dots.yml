@@ -107,10 +107,6 @@
         dst: "{{ home }}/.emacs.d/private/org-roam"
         mode: "0750"
         minimal: true
-      - src: emacs/outshine
-        dst: "{{ home }}/.emacs.d/private/outshine"
-        mode: "0750"
-        minimal: true
       - src: emacs/snippets
         dst: "{{ home }}/.emacs.d/private/snippets"
         mode: "0750"
