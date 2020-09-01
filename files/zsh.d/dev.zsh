@@ -144,12 +144,12 @@ alias rack-inabox='docker pull interran/rack-box:v1.0 && docker run --rm --detac
 # Mate
 
 mate-shake() {
-  docker run --env CI_COMMIT_SHA=fake --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- "$1" -- "${@:2}"
+  docker run --env CI_COMMIT_SHA=fake --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j$(nproc) -- "$1" -- "${@:2}"
 
 }
 
 mate-pytest-one() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j4 -- pytests -- -vv -x -k "$1"
+  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j$(nproc) -- pytests -- -vv -x -k "$1"
 }
 
 mate-pytest-debug() {
@@ -157,7 +157,7 @@ mate-pytest-debug() {
 }
 
 mate-pytest-one-integration() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j4 -- pytests -- -vv -x -k $1"
+  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- -vv -x -k $1"
 }
 
 # use mate-shake bench
