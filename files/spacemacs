@@ -660,6 +660,12 @@ you should place your code here."
     (interactive)
     (ansi-term "/run/current-system/sw/bin/zsh"))
 
+  (defun my/increment-number-at-point ()
+    (interactive)
+    (skip-chars-backward "0-9")
+    (unless (looking-at "[0-9]+") (error "No number at point"))
+    (replace-match (number-to-string (1+ (string-to-number (match-string 0))))))
+
   (setq helm-ag-use-agignore t)
 
   ;; bigger fringes
@@ -1363,6 +1369,9 @@ you should place your code here."
 
 ;;;;; Org
 
+  ;; "This variable needs to be set before org.el is loaded."
+  (setq org-export-backends '(ascii html md latex))
+
   (when (require 'org-link-minor-mode nil 'noerror)
     (add-hook 'prog-mode-hook 'org-link-minor-mode)
     (defun my/no-org-links () (org-link-minor-mode -1))
@@ -1535,7 +1544,6 @@ you should place your code here."
 
 ;;;;;; publish
 
-    (setq org-export-backends '(ascii html md latex))
     (defun my/org-publish-to-markdown (plist filename pub-dir)
       "A variant of `org-html-publish-to-html' for publishing markdown."
       (interactive)

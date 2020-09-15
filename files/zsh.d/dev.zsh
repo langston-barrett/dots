@@ -47,6 +47,10 @@ alias gri='EDITOR=vi git rebase -i'
 alias grv='git remote -v'
 alias gs='git status'
 alias gss='git status --short'
+alias gwl='git worktree list'
+alias gwa='git worktree add'
+alias gwm='git worktree move'
+alias gwr='git worktree remove'
 
 function github_clone { git clone "https://github.com/${1}"; }
 function git_clone_mine { git clone "https://github.com/siddharthist/${1}"; }
