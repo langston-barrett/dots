@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+alias jq_clipboard="xsel -ob | jq | xsel -ib"
+
 # Delete all merged git branches. Use caution, and only use on master.
 # http://goo.gl/r9Bos0
 clean_merged() {
