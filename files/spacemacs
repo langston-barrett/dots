@@ -83,12 +83,17 @@ This function should only modify configuration layer settings."
      (python :variables python-backend 'lsp)
      hy
 
-     ;; (haskell :variables haskell-enable-hindent-style "fundamental"
-     ;;          haskell-completion-backend 'hie)
-     ;; lsp
-     (haskell :variables ; haskell-enable-hindent-style "fundamental"
-                         haskell-completion-backend 'dante
-                         haskell-enable-hindent nil)
+     (haskell :variables
+              haskell-enable-hindent-style "fundamental"
+              haskell-completion-backend 'lsp
+              haskell-process-suggest-remove-import-lines nil
+              lsp-haskell-process-path-hie "haskell-language-server-wrapper")
+     ;; (haskell :variables
+     ;;          haskell-enable-hindent-style "fundamental"
+     ;;          haskell-completion-backend 'lsp)
+     ;; (haskell :variables ; haskell-enable-hindent-style "fundamental"
+     ;;                     haskell-completion-backend 'dante
+     ;;                     haskell-enable-hindent nil)
      ;; (latex :variables
      ;;        latex-build-command "LatexMk"
      ;;        latex-enable-auto-fill t)
