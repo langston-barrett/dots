@@ -8,6 +8,7 @@
     ../../roles/server.nix
 
     ../../audio.nix
+    ../../bluetooth.nix
     ../../dev.nix
     ../../networking.nix
     ../../steam.nix
