@@ -80,7 +80,10 @@ in {
     nixos.enable = true;
   };
 
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    extraOptions = "--dns 8.8.8.8 --dns 8.8.4.4";
+  };
 
   services.syncthing = {
     enable = false;
