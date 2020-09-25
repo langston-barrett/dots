@@ -27,6 +27,10 @@
     };
   };
 
+  services.picom = {
+    enable = true;
+  };
+
   security.apparmor.profiles =
     let writeDenyProfile =
           import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
@@ -44,7 +48,7 @@
     xcompmgr = {
       description = "Use xcompmgr compositor";
       serviceConfig = graphical // {
-        enable = true;
+        enable = false;
         ExecStart = "${pkgs.xcompmgr}/bin/xcompmgr -c";
         Restart = "always";
         RestartSec = "5s";

@@ -592,6 +592,9 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; (load-file (let ((coding-system-for-read 'utf-8))
   ;;              (shell-command-to-string "agda-mode locate")))
 
+  ;; "This variable needs to be set before org.el is loaded."
+  (setq org-export-backends '(ascii html md latex))
+
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "stable.melpa.org/packages/"))
   (add-to-list 'package-pinned-packages '(ensime . "melpa-stable"))
 
@@ -1338,7 +1341,7 @@ you should place your code here."
     (add-hook 'elfeed-search-mode-hook
               'spacemacs/toggle-centered-point-on)
 
-    (add-to-list 'elfeed-search-face-alist '(haskell (:foreground "red")))
+    ;; (add-to-list 'elfeed-search-face-alist '(haskell (:foreground "red")))
 
     (defun my/elfeed-hydra-hook ()
       (when (equal major-mode 'elfeed-search-mode)
@@ -1551,12 +1554,10 @@ you should place your code here."
 
     (defun my/org-publish-to-markdown (plist filename pub-dir)
       "A variant of `org-html-publish-to-html' for publishing markdown."
-      (interactive)
       (org-publish-org-to 'md filename
                           (concat "." (or (plist-get plist :markdown-extension)
                                           "md"))
                           plist pub-dir))
-
 
 ;;;;;; roam
 
@@ -1632,7 +1633,8 @@ you should place your code here."
       (setq org-super-agenda-groups
             '(;; Each group has an implicit boolean OR operator between its selectors.
               (:discard (:category ("Dots" "Meta")))
-              (:discard (:and (:category "Daily" :scheduled future)))
+              (:discard (:and (:category "Start" :scheduled future)))
+              (:discard (:and (:category "End" :scheduled future)))
               (:name "Personal"
                      :category "Personal"
                      :order 9)
@@ -1642,10 +1644,14 @@ you should place your code here."
               (:name "(Scheduled)"
                      :and (:scheduled t :not (:scheduled today))
                      :order 7)
-              (:name "Daily"
-                     :and (:scheduled today :category "Daily")
-                     :and (:scheduled past :category "Daily")
+              (:name "Start"
+                     :and (:scheduled today :category "Start")
+                     :and (:scheduled past :category "Start")
                      :order 1)
+              (:name "End"
+                     :and (:scheduled today :category "End")
+                     :and (:scheduled past :category "End")
+                     :order 5)
               (:name "Today"
                      :scheduled today
                      :scheduled past
@@ -2267,9 +2273,9 @@ will not be modified."
     (setq undo-tree-enable-undo-in-region nil)
 
     ;; Cobbled together from:
-                                        ; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
-                                        ; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
-                                        ; TODO: n is void?
+    ;; https://github.com/abo-abo/helm-make/blob/e72cdacecb46421dfbde9febdc352a5f06425176/helm-make.el#L377
+    ;; https://github.com/ProofGeneral/PG/blob/c54b17d14e57eb77093ec0006d2db5e9e3754902/coq/coq.el#L1800
+    ;; TODO: n is void?
     (defun my/coq-compile-projectile ()
       (interactive)
       (require 'projectile)
@@ -2291,6 +2297,24 @@ will not be modified."
 ;;;;; Python
 
   (with-eval-after-load 'python
+
+    (defun my/search-replace (find-str replacement-str)
+      (save-excursion
+        (goto-char 0)
+        (while (not (equal nil (search-forward find-str nil t)))
+          (replace-match replacement-str))))
+    (defun my/python-dict-to-json ()
+      (interactive)
+      (my/search-replace "{'" "{\"")
+      (my/search-replace "'}" "\"}")
+      (my/search-replace "['" "[\"")
+      (my/search-replace "']" "\"]")
+      (my/search-replace "'," "\",")
+      (my/search-replace "':" "\":")
+      (my/search-replace ": '" ": \"")
+      (my/search-replace ", '" ", \"")
+      (my/search-replace ": False" ": false")
+      (my/search-replace ": True," ": true,"))
 
     ;; TODO: only do this if typing is imported? or something
     ;; (setq-default flycheck-enabled-checkers '(flycheck-mypy))
@@ -2505,6 +2529,42 @@ This function is called at the very end of Spacemacs initialization."
  '(safe-local-variable-values
    (quote
     ((org-publish-project-alist
+      ("this" :components
+       ("org" "pdf" "img"))
+      ("org" :base-directory "." :base-extension "fake" :publishing-function my/org-publish-to-markdown :publishing-directory "meta/export/chess-mate-pointer-analysis" :include
+       ("chess-mate-pointer-analysis.org"))
+      ("pdf" :base-directory "bib/pdf" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/bib/pdf" :include
+       ("pointer-tutorial.pdf" "strictly-declarative.pdf" "doop2souffle.pdf" "hybrid-context-sensitivity.pdf" "pick-your-contexts.pdf" "context-transformations.pdf" "introspective-analysis.pdf" "principled-context-sensitivity.pdf"))
+      ("img" :base-directory "img" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/img" :include
+       ("souffle-compiler.png" "pointer-analysis-montague.svg")))
+     (org-publish-project-alist
+      ("this" :components
+       ("org" "pdf" "img"))
+      ("org" :base-directory "." :base-extension "fake" :publishing-function my/org-publish-to-markdown :publishing-directory "meta/export/chess-mate-pointer-analysis" :include
+       ("chess-mate-pointer-analysis.org"))
+      ("pdf" :base-directory "bib/pdf" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/bib/pdf" :include
+       ("pointer-tutorial.pdf" "strictly-declarative.pdf" "doop2souffle.pdf" "hybrid-context-sensitivity.pdf" "pick-your-contexts.pdf" "context-transformations.pdf" "introspective-analysis.pdf" "principled-context-sensitivity.pdf"))
+      ("img" :base-directory "img" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/img" :include
+       ("souffle-compiler.png")))
+     (org-publish-project-alist
+      ("this" :components
+       ("org" "pdf" "img"))
+      ("org" :base-directory "." :base-extension "fake" :publishing-function my/org-publish-to-markdown :publishing-directory "meta/export/chess-mate-pointer-analysis" :with-tags nil :include
+       ("chess-mate-pointer-analysis.org"))
+      ("pdf" :base-directory "bib/pdf" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/bib/pdf" :include
+       ("pointer-tutorial.pdf" "strictly-declarative.pdf" "doop2souffle.pdf" "hybrid-context-sensitivity.pdf" "pick-your-contexts.pdf" "context-transformations.pdf" "introspective-analysis.pdf" "principled-context-sensitivity.pdf"))
+      ("img" :base-directory "img" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/img" :include
+       ("souffle-compiler.png")))
+     (org-publish-project-alist
+      ("this" :components
+       ("org" "pdf" "css" "img"))
+      ("org" :base-directory "." :base-extension "fake" :publishing-function my/org-publish-to-markdown :publishing-directory "meta/export/chess-mate-pointer-analysis" :with-tags nil :include
+       ("chess-mate-pointer-analysis.org"))
+      ("pdf" :base-directory "bib/pdf" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/bib/pdf" :include
+       ("pointer-tutorial.pdf" "strictly-declarative.pdf" "doop2souffle.pdf" "hybrid-context-sensitivity.pdf" "pick-your-contexts.pdf" "context-transformations.pdf" "introspective-analysis.pdf" "principled-context-sensitivity.pdf"))
+      ("img" :base-directory "img" :base-extension "fake" :publishing-function org-publish-attachment :publishing-directory "meta/export/chess-mate-pointer-analysis/img" :include
+       ("souffle-compiler.png")))
+     (org-publish-project-alist
       ("this" :components
        ("org" "pdf" "css" "img"))
       ("org" :base-directory "." :base-extension "fake" :publishing-function org-html-publish-to-html :publishing-directory "meta/export/chess-mate-pointer-analysis" :include

@@ -8,8 +8,6 @@ exec dropbox start
 exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec --no-startup-id nm-applet
-exec systemctl --user start xcompmgr
-exec systemctl --user start kdeconnect
 
 # ** variables
 
@@ -39,7 +37,7 @@ bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
-bindsym $mod+Shift+Return exec alacritty
+bindsym $mod+Shift+Return exec xterm
 bindsym $mod+Return exec urxvt
 #bindsym $mod+Shift+Return exec urxvt
 # bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'

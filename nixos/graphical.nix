@@ -61,7 +61,6 @@ in {
       #hack-font             # great monospaced font
       #helvetica-neue-lt-std # classic
       fira-code
-      font-awesome
       lato
       libre-caslon
       noto-fonts-emoji      # emoji

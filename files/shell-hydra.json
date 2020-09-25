@@ -68,6 +68,18 @@
                 "cmd": ["i3-msg", "focus right"]
             },
             {
+                "key": "G",
+                "desc": "increase gaps",
+                "exit": true,
+                "cmd": ["i3-msg", "gaps", "inner", "all", "plus", "20"]
+            },
+            {
+                "key": "g",
+                "desc": "decrease gaps",
+                "exit": true,
+                "cmd": ["i3-msg", "gaps", "inner", "all", "minus", "20"]
+            },
+            {
                 "key": "w",
                 "desc": "go to workspace",
                 "keys": [
