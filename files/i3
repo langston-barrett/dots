@@ -4,6 +4,7 @@
 # ** startup
 
 exec_always polybar -r top
+exec_always polybar -r external
 exec dropbox start
 exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
@@ -108,17 +109,20 @@ client.background       #ffffff
 
 # *** gaps
 
-smart_gaps on
-gaps inner 15
-gaps outer 0
+# smart_gaps on
+gaps inner 20
+gaps top -10
+gaps bottom 0
+gaps left 20
+gaps right 20
 
 # ** workspaces
 
 # switch to workspace
-bindsym $mod+a workspace a
-bindsym $mod+s workspace s
-bindsym $mod+d workspace d
-bindsym $mod+f workspace f
+bindsym $mod+a workspace 3
+bindsym $mod+s workspace 2
+bindsym $mod+d workspace 1
+bindsym $mod+f workspace 0
 
 # bindsym $mod+1 workspace 1
 # bindsym $mod+2 workspace 2
@@ -132,24 +136,24 @@ bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
 # move focused container to workspace
-bindsym $mod+Shift+a move container to workspace a
-bindsym $mod+Shift+s move container to workspace s
-bindsym $mod+Shift+d move container to workspace d
-bindsym $mod+Shift+f move container to workspace f
-bindsym $mod+1 workspace "brittle"
-bindsym $mod+2 workspace "chess"
-bindsym $mod+3 workspace "email"
-bindsym $mod+4 workspace "organize"
+bindsym $mod+Shift+a move container to workspace 3
+bindsym $mod+Shift+s move container to workspace 2
+bindsym $mod+Shift+d move container to workspace 1
+bindsym $mod+Shift+f move container to workspace 0
+bindsym $mod+1 workspace a
+bindsym $mod+2 workspace s
+bindsym $mod+3 workspace d
+bindsym $mod+4 workspace f
 # bindsym $mod+1 workspace 1
 # bindsym $mod+2 workspace 2
 # bindsym $mod+3 workspace 3
 # bindsym $mod+4 workspace 4
 # bindsym $mod+5 workspace 5
 
-bindsym $mod+Shift+1 move container to workspace "brittle"
-bindsym $mod+Shift+2 move container to workspace "chess"
-bindsym $mod+Shift+3 move container to workspace "email"
-bindsym $mod+Shift+4 move container to workspace "organize"
+bindsym $mod+Shift+1 move container to workspace "11"
+bindsym $mod+Shift+2 move container to workspace "22"
+bindsym $mod+Shift+3 move container to workspace "33"
+bindsym $mod+Shift+4 move container to workspace "44"
 # bindsym $mod+Shift+1 move container to workspace 1
 # bindsym $mod+Shift+2 move container to workspace 2
 # bindsym $mod+Shift+3 move container to workspace 3

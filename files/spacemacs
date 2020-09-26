@@ -679,6 +679,8 @@ you should place your code here."
   ;; bigger fringes
   (setq-default left-fringe-width 16)
   (setq-default right-fringe-width 16)
+  ;; fake header line for space between top of frame and buffer text
+  (setq header-line-format " ")
 
   ;; saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
@@ -764,6 +766,17 @@ you should place your code here."
     (interactive)
     (let ((inhibit-read-only t))
       (ansi-color-apply-on-region (point-min) (point-max))))
+
+
+;;;;; spaceline
+
+  (with-eval-after-load 'spaceline
+    (setq spaceline-purpose-p nil)
+    (setq spaceline-major-mode-p nil)
+    (setq spaceline-minor-mode-p nil)
+    (setq spaceline-buffer-size-p nil)
+    (setq spaceline-buffer-position-p nil)
+    (setq spaceline-buffer-encoding-abbrev-p nil))
 
 ;;;;; helm-dash
 
@@ -962,6 +975,7 @@ you should place your code here."
       (spacemacs/toggle-truncate-lines-off))
 
     (defun my/window-configuration-change-hook ()
+      (set-window-margins (selected-window) 2 2)
       (if (and (= (my/count-windows) 1) (> (window-body-width) olivetti-body-width))
           (my/single-window-mode-on)
           (my/single-window-mode-off)))

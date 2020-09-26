@@ -30,6 +30,7 @@
   services.picom = {
     enable = true;
   };
+  services.unclutter.enable = true;
 
   security.apparmor.profiles =
     let writeDenyProfile =
