@@ -158,6 +158,9 @@
       - src: spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
         graphical: true
+      - src: spotify.desktop
+        dst: "{{ home }}/.local/share/applications/spotify.desktop"
+        graphical: true
       - src: ssh
         dst: "{{ home }}/.ssh/config"
       - src: sway
