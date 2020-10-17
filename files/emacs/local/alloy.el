@@ -52,14 +52,31 @@
   "How to highlight Alloy built-in operators."
   :group 'alloy)
 
+(defface alloy-type-face
+  '((t (:inherit font-lock-constant-face)))
+  "How to highlight types (names of signatures)."
+  :group 'alloy)
+
 ;;; Highlighting
 
 (defconst alloy-keywords
   '(;; Declarations
+    "abstract"
     "assert"
+    "extends"
     "fun"
     "pred"
     "sig"
+
+    "run"
+    "check"
+
+    ;; Multiplicity
+    "all"
+    "lone"
+    "one"
+    "set"
+    "some"
     ))
 
 (defvar alloy--keyword-regexp
@@ -77,17 +94,22 @@
   "Regular expression for Alloy keyword highlighting.")
 
 (defconst alloy-operators
-  '("." "->" "~" "*" "^" "+" "-" "&") ; TODO others?
+  '("." "->" "~" "*" "^" "+" "-" "&" ":>" "<:") ; TODO others?
   "Operators to highlight in Alloy.")
 
 (defvar alloy--operator-regexp
   (regexp-opt alloy-operators)
   "Regular expression for Alloy operator highlighting.")
 
+(defvar alloy--type-regexp
+  (rx (char upper) (+ alphanumeric))
+  "Regular expression for Alloy operator highlighting.")
+
 (defvar alloy-font-lock-defaults
   `(((,alloy--keyword-regexp . 'alloy-keyword-face)
      (,alloy--constant-regexp . 'alloy-constant-face)
-     (,alloy--operator-regexp . 'alloy-operator-face)
+     ;; (,alloy--operator-regexp . 'alloy-operator-face)
+     ;; (,alloy--type-regexp . 'alloy-type-face)
      )
     nil nil nil
     (font-lock-extend-after-change-region-function . alloy--extend-after-change-region-function))

@@ -1640,8 +1640,13 @@ you should place your code here."
               (todo . " %i %-5e")
               (tags . " %i %-12:c")
               (search . " %i %-12:c")))
+      (setq org-columns-default-format-for-agenda
+            "%40ITEM %3PRIORITY %TODO %5EFFORT %17DEADLINE")
 
       (org-super-agenda-mode)
+
+      (defun before-four-p (item)
+        (>= 16 (string-to-number (format-time-string "%H"))))
 
       ;; Default agenda is a work agenda
       (setq org-super-agenda-groups
@@ -1649,15 +1654,14 @@ you should place your code here."
               (:discard (:category ("Dots" "Meta")))
               (:discard (:and (:category "Start" :scheduled future)))
               (:discard (:and (:category "End" :scheduled future)))
+              (:discard (:and (:scheduled today :category "End" :pred before-four-p)))
+              (:discard (:and (:scheduled past :category "End" :pred before-four-p)))
               (:name "Personal"
                      :category "Personal"
                      :order 9)
               (:name "(Waiting)"
                      :todo "WAIT"
                      :order 8)
-              (:name "(Scheduled)"
-                     :and (:scheduled t :not (:scheduled today))
-                     :order 7)
               (:name "Start"
                      :and (:scheduled today :category "Start")
                      :and (:scheduled past :category "Start")
@@ -1666,6 +1670,9 @@ you should place your code here."
                      :and (:scheduled today :category "End")
                      :and (:scheduled past :category "End")
                      :order 5)
+              (:name "(Scheduled)"
+                     :and (:scheduled t :not (:scheduled today))
+                     :order 7)
               (:name "Today"
                      :scheduled today
                      :scheduled past
@@ -2256,6 +2263,10 @@ will not be modified."
 
   (when (require 'agda2-mode nil 'noerror)
     (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
+
+;;;;; Alloy
+
+  (require 'alloy)
 
 ;;;;; Coq
 
