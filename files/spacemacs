@@ -1630,16 +1630,23 @@ you should place your code here."
 ;;;;;; agenda
 
     (with-eval-after-load 'org-agenda
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode
-        "."  'spacemacs/org-agenda-transient-state/body)
+      (spacemacs/set-leader-keys-for-major-mode 'org-agenda-mode
+        "."  'spacemacs/org-agenda-transient-state/body
+        "tc" 'org-agenda-columns)
+
       (setq org-agenda-files (list (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
-      (setq org-agenda-prefix-format
-            '((agenda . " %i %-5e %?-12t% s")
-              (todo . " %i %-5e")
-              (tags . " %i %-12:c")
-              (search . " %i %-12:c")))
+      (require 'langston-org)
+
+      (setq
+       org-agenda-prefix-format
+       '((agenda . " %i %-5e %?-12t% ")
+         (todo . " %-5e %?-12t%?s") ;; this one applies to super-agenda
+         (tags . " %i %-12:c")
+         (search . " %i %-12:c")))
+
+      ;; (setq org-agenda-remove-times-when-in-prefix nil)
       (setq org-columns-default-format-for-agenda
             "%40ITEM %3PRIORITY %TODO %5EFFORT %17DEADLINE")
 
@@ -1657,23 +1664,29 @@ you should place your code here."
               (:discard (:and (:scheduled today :category "End" :pred before-four-p)))
               (:discard (:and (:scheduled past :category "End" :pred before-four-p)))
               (:name "Personal"
+                     :transformer my/org-agenda-append-deadline
                      :category "Personal"
                      :order 9)
               (:name "(Waiting)"
+                     :transformer my/org-agenda-append-deadline
                      :todo "WAIT"
                      :order 8)
               (:name "Start"
+                     :transformer my/org-agenda-append-deadline
                      :and (:scheduled today :category "Start")
                      :and (:scheduled past :category "Start")
                      :order 1)
               (:name "End"
+                     :transformer my/org-agenda-append-deadline
                      :and (:scheduled today :category "End")
                      :and (:scheduled past :category "End")
                      :order 5)
               (:name "(Scheduled)"
+                     :transformer my/org-agenda-append-deadline
                      :and (:scheduled t :not (:scheduled today))
                      :order 7)
               (:name "Today"
+                     :transformer my/org-agenda-append-deadline
                      :scheduled today
                      :scheduled past
                      :deadline past
@@ -1686,7 +1699,8 @@ you should place your code here."
                      :and (:priority "A"
                                      :scheduled nil)
                      :order 3)
-              (:auto-parent t :order 5)
+              (:auto-parent t
+                            :order 5)
               (:name "Low effort"
                      :effort< "0:20"
                      :order 8)))

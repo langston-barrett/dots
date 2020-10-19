@@ -1,0 +1,17 @@
+* TODO [#C] Do a thing
+   DEADLINE: <2020-10-20 Tue>
+  :PROPERTIES:
+  :CREATED:  [2020-09-25 Fri 09:39]
+  :END:
+
+Do thing.
+
+** TODO Do sub-thing
+   DEADLINE: <2020-10-20 Tue>
+  :PROPERTIES:
+  :CREATED:  [2020-09-25 Fri 09:39]
+  :END:
+
+Do sub-thing
+
+* TODO [#A] No deadline
