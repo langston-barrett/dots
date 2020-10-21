@@ -151,28 +151,76 @@ alias rack-inabox='docker pull interran/rack-box:v1.0 && docker run --rm --detac
 
 mate-dev-run() {
   docker run \
-         --env CI_COMMIT_SHA=fake \
-         --rm --net=host \
+         --rm \
+         --net=host \
          --mount type=bind,src=$PWD,dst=/x \
-         -w /x -it mate-dev \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev \
          bash -c "$@"
 }
 
+mate-img-run() {
+  docker pull "${2:-artifactory.galois.com:5004/mate-dev:master}"
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         "${2:-artifactory.galois.com:5004/mate-dev:master}" \
+         bash -c "${1:-bash}"
+}
+
 mate-shake() {
-  docker run --env CI_COMMIT_SHA=fake --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j$(nproc) -- "$1" -- "${@:2}"
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev \
+         ./shake.sh -j$(nproc) -- "$1" -- "${@:2}"
 
 }
 
 mate-pytest-one() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev ./shake.sh -j$(nproc) -- pytests -- -vv -x -k "$1"
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev \
+         ./shake.sh -j$(nproc) -- pytests -- -vv -x -k "$1"
 }
 
 mate-pytest-debug() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev bash -c "source source.sh && cd frontend && pytest -vv --pdb -n0 -x -k $1"
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev \
+         bash -c "source source.sh && cd frontend && pytest -vv --pdb -n0 -x -k $1"
 }
 
 mate-pytest-one-integration() {
-  docker run --rm --net=host --mount type=bind,src=$PWD,dst=/x -w /x -it mate-dev bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- --show-capture=all -vv -x -k $1"
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev \
+         bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- --show-capture=all -vv -x -k $1"
 }
 
 # use mate-shake bench

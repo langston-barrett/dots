@@ -3,11 +3,11 @@
 # * i3
 # ** startup
 
-exec_always polybar -r top
 exec dropbox start
 exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec --no-startup-id nm-applet
+exec steam
 
 # ** variables
 
@@ -37,8 +37,8 @@ bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
-bindsym $mod+Shift+Return exec xterm
-bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec alacritty
+bindsym $mod+Shift+Return exec urxvt
 #bindsym $mod+Shift+Return exec urxvt
 # bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'
 bindsym $mod+Shift+c kill
@@ -177,11 +177,6 @@ bindsym $mod+r mode "resize"
 # smart_borders on
 
 # ** i3bar
-
-bar {
-    status_command bash ~/code/dots/files/battery.sh
-    mode invisible
-}
 
 # bar {
 #   i3bar_command i3bar -t
