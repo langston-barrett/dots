@@ -679,6 +679,8 @@ you should place your code here."
   ;; bigger fringes
   (setq-default left-fringe-width 16)
   (setq-default right-fringe-width 16)
+  ;; fake header line for space between top of frame and buffer text
+  (setq header-line-format " ")
 
   ;; saw-script
   (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
@@ -764,6 +766,17 @@ you should place your code here."
     (interactive)
     (let ((inhibit-read-only t))
       (ansi-color-apply-on-region (point-min) (point-max))))
+
+
+;;;;; spaceline
+
+  (with-eval-after-load 'spaceline
+    (setq spaceline-purpose-p nil)
+    (setq spaceline-major-mode-p nil)
+    (setq spaceline-minor-mode-p nil)
+    (setq spaceline-buffer-size-p nil)
+    (setq spaceline-buffer-position-p nil)
+    (setq spaceline-buffer-encoding-abbrev-p nil))
 
 ;;;;; helm-dash
 
@@ -962,6 +975,7 @@ you should place your code here."
       (spacemacs/toggle-truncate-lines-off))
 
     (defun my/window-configuration-change-hook ()
+      (set-window-margins (selected-window) 2 2)
       (if (and (= (my/count-windows) 1) (> (window-body-width) olivetti-body-width))
           (my/single-window-mode-on)
           (my/single-window-mode-off)))
@@ -1616,18 +1630,30 @@ you should place your code here."
 ;;;;;; agenda
 
     (with-eval-after-load 'org-agenda
-      (spacemacs/set-leader-keys-for-major-mode 'org-mode
-        "."  'spacemacs/org-agenda-transient-state/body)
+      (spacemacs/set-leader-keys-for-major-mode 'org-agenda-mode
+        "."  'spacemacs/org-agenda-transient-state/body
+        "tc" 'org-agenda-columns)
+
       (setq org-agenda-files (list (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
-      (setq org-agenda-prefix-format
-            '((agenda . " %i %-5e %?-12t% s")
-              (todo . " %i %-5e")
-              (tags . " %i %-12:c")
-              (search . " %i %-12:c")))
+      (require 'langston-org)
+
+      (setq
+       org-agenda-prefix-format
+       '((agenda . " %i %-5e %?-12t% ")
+         (todo . " %-5e %?-12t%?s") ;; this one applies to super-agenda
+         (tags . " %i %-12:c")
+         (search . " %i %-12:c")))
+
+      ;; (setq org-agenda-remove-times-when-in-prefix nil)
+      (setq org-columns-default-format-for-agenda
+            "%40ITEM %3PRIORITY %TODO %5EFFORT %17DEADLINE")
 
       (org-super-agenda-mode)
+
+      (defun before-four-p (item)
+        (>= 16 (string-to-number (format-time-string "%H"))))
 
       ;; Default agenda is a work agenda
       (setq org-super-agenda-groups
@@ -1635,24 +1661,32 @@ you should place your code here."
               (:discard (:category ("Dots" "Meta")))
               (:discard (:and (:category "Start" :scheduled future)))
               (:discard (:and (:category "End" :scheduled future)))
+              (:discard (:and (:scheduled today :category "End" :pred before-four-p)))
+              (:discard (:and (:scheduled past :category "End" :pred before-four-p)))
               (:name "Personal"
+                     :transformer my/org-agenda-append-deadline
                      :category "Personal"
                      :order 9)
               (:name "(Waiting)"
+                     :transformer my/org-agenda-append-deadline
                      :todo "WAIT"
                      :order 8)
-              (:name "(Scheduled)"
-                     :and (:scheduled t :not (:scheduled today))
-                     :order 7)
               (:name "Start"
+                     :transformer my/org-agenda-append-deadline
                      :and (:scheduled today :category "Start")
                      :and (:scheduled past :category "Start")
                      :order 1)
               (:name "End"
+                     :transformer my/org-agenda-append-deadline
                      :and (:scheduled today :category "End")
                      :and (:scheduled past :category "End")
                      :order 5)
+              (:name "(Scheduled)"
+                     :transformer my/org-agenda-append-deadline
+                     :and (:scheduled t :not (:scheduled today))
+                     :order 7)
               (:name "Today"
+                     :transformer my/org-agenda-append-deadline
                      :scheduled today
                      :scheduled past
                      :deadline past
@@ -1665,7 +1699,8 @@ you should place your code here."
                      :and (:priority "A"
                                      :scheduled nil)
                      :order 3)
-              (:auto-parent t :order 5)
+              (:auto-parent t
+                            :order 5)
               (:name "Low effort"
                      :effort< "0:20"
                      :order 8)))
@@ -2242,6 +2277,10 @@ will not be modified."
 
   (when (require 'agda2-mode nil 'noerror)
     (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
+
+;;;;; Alloy
+
+  (require 'alloy)
 
 ;;;;; Coq
 

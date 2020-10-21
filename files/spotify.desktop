@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Spotify
+GenericName=Music
+Comment=Music
+Exec=spotify --force-device-scale-factor=1.5 %F
+# Icon=/home/siddharthist/.emacs.d/core/banners/img/spacemacs.png
+Type=Application
+Terminal=false
+Categories=Music;
+StartupWMClass=Spotify

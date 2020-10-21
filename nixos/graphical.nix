@@ -60,6 +60,7 @@ in {
       powerline-fonts
       #hack-font             # great monospaced font
       #helvetica-neue-lt-std # classic
+      fantasque-sans-mono   # https://computecuter.com/
       fira-code
       lato
       libre-caslon

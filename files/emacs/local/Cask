@@ -1,0 +1,9 @@
+(source gnu)
+(source melpa)
+
+(package-file "langston-org.el")
+
+(depends-on "dash")
+
+(development
+ (depends-on "buttercup")) ; BDD test framework for Emacs
