@@ -153,7 +153,7 @@ mate-dev-run() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -167,7 +167,7 @@ mate-img-run() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -180,7 +180,7 @@ mate-shake() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -194,7 +194,7 @@ mate-pytest-one() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -207,7 +207,7 @@ mate-pytest-debug() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -220,7 +220,7 @@ mate-pytest-one-integration() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
