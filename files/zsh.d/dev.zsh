@@ -145,7 +145,7 @@ setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
 # RACK
 
-alias rack-inabox='docker pull interran/rack-box:v1.0 && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:v1.0'
+alias rack-inabox='docker pull interran/rack-box:v2.9 && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:v2.9'
 
 # Mate
 
@@ -153,6 +153,7 @@ mate-dev-run() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -166,6 +167,7 @@ mate-img-run() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -178,6 +180,7 @@ mate-shake() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -191,6 +194,7 @@ mate-pytest-one() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -203,6 +207,7 @@ mate-pytest-debug() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -215,6 +220,7 @@ mate-pytest-one-integration() {
   docker run \
          --rm \
          --net=host \
+         --mount type=bind,srd=~/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
