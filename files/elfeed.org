@@ -52,5 +52,4 @@
 **** [[https://www.snellman.net/blog/rss-lisp.xml][Lisp]]
 *** [[https://kate.io/feed.xml][Kate Murphy]]
 *** [[https://blog.nelhage.com/atom.xml][Made of Bugs]]
-*** [[https://rachelbythebay.com/w/atom.xml][rachelbythebay]]
 *** [[https://buttondown.email/hillelwayne/rss][Hillel Wayne Newsletter]]
