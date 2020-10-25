@@ -99,8 +99,16 @@
       - src: mutt
         dst: "{{ home }}/.mutt"
         mode: "0750"
+      - src: emacs/alloy
+        dst: "{{ home }}/.emacs.d/private/alloy"
+        mode: "0750"
+        minimal: true
       - src: emacs/local
         dst: "{{ home }}/.emacs.d/private/local"
+        mode: "0750"
+        minimal: true
+      - src: emacs/myorg
+        dst: "{{ home }}/.emacs.d/private/myorg"
         mode: "0750"
         minimal: true
       - src: emacs/org-roam

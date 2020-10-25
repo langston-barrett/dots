@@ -99,7 +99,6 @@ This function should only modify configuration layer settings."
      ;;        latex-enable-auto-fill t)
      markdown
      org
-     org-roam
      outshine
      rust
      ;; saw-script
@@ -111,7 +110,12 @@ This function should only modify configuration layer settings."
      ;;        scala-enable-eldoc nil) ;; type at point (sometimes freezes)
 
      shell-scripts ; enable shellcheck linting. TODO requires shellcheck.
-     yaml)
+     yaml
+
+     ;; My layers
+     alloy
+     myorg
+     org-roam)
 
 ;;;; Additional packages
 
@@ -120,13 +124,14 @@ This function should only modify configuration layer settings."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
-   '(evil-fringe-mark
+   '(doct
+     evil-fringe-mark
      emojify
      ialign ; interactive align-regexp
      smart-hungry-delete ; delete all whitespace at once
      direnv              ; direnv + nix
      math-symbols ; easily insert unicode latex macros
-     dhall-mode
+     ;; dhall-mode
      lispy
      lispyville
      ;; all-the-icons
@@ -135,31 +140,20 @@ This function should only modify configuration layer settings."
      prop-menu ; needed for saw-script-mode
      helm-dash
      ;; pocket-reader
+     ;; markdown-preview-eww
 
      ;; UI
      cheatsheet ; self-explanatory
-     helpful    ; better elisp help
+     ;; helpful    ; better elisp help
      dimmer     ; dim inactive buffers
      olivetti   ; centering the only active window
      prism      ; color blocks by depth
-     sr-speedbar
+     ;; sr-speedbar
      (outline-toc
       :location (recipe :fetcher github
                         :repo "abingham/outline-toc.el"))
 
-     ;; On ELPA, but fails to install from there?
-     ;; ORG
-     ;; ox-gfm       ; github markdown export for org
-     doct
-     org-super-agenda
-     org-board ; link archiving
-     link-hint ; TODO: keybindings
-     org-noter
-     org-sidebar
-     org-make-toc
-     org-gcal
-
-     flycheck-mypy
+     ;; flycheck-mypy
      ;; doom-themes
      dracula-theme
 
@@ -780,6 +774,8 @@ you should place your code here."
 
 ;;;;; helm-dash
 
+  ;; TODO: Use actual dash layer
+
   (with-eval-after-load 'helm-dash
     (setq helm-dash-browser-func 'eww)
     (require 'xdg)
@@ -811,7 +807,7 @@ you should place your code here."
           (list
            "Haskell"
            "SQLAlchemy"
-           "JavaScript"
+           ;; "JavaScript"
            "Python 3"
            "HTML"))
 
@@ -1558,6 +1554,7 @@ you should place your code here."
                                         "** Back"
                                         "Wiktionary:")))))))
 
+
 ;;;;;; org-gcal
 
     (setq org-gcal-file-alist
@@ -1637,6 +1634,7 @@ you should place your code here."
       (setq org-agenda-files (list (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
+      ;; TODO move to myorg layer
       (require 'langston-org)
 
       (setq
@@ -1648,80 +1646,7 @@ you should place your code here."
 
       ;; (setq org-agenda-remove-times-when-in-prefix nil)
       (setq org-columns-default-format-for-agenda
-            "%40ITEM %3PRIORITY %TODO %5EFFORT %17DEADLINE")
-
-      (org-super-agenda-mode)
-
-      (defun before-four-p (item)
-        (>= 16 (string-to-number (format-time-string "%H"))))
-
-      ;; Default agenda is a work agenda
-      (setq org-super-agenda-groups
-            '(;; Each group has an implicit boolean OR operator between its selectors.
-              (:discard (:category ("Dots" "Meta")))
-              (:discard (:and (:category "Start" :scheduled future)))
-              (:discard (:and (:category "End" :scheduled future)))
-              (:discard (:and (:scheduled today :category "End" :pred before-four-p)))
-              (:discard (:and (:scheduled past :category "End" :pred before-four-p)))
-              (:name "Personal"
-                     :transformer my/org-agenda-append-deadline
-                     :category "Personal"
-                     :order 9)
-              (:name "(Waiting)"
-                     :transformer my/org-agenda-append-deadline
-                     :todo "WAIT"
-                     :order 8)
-              (:name "Start"
-                     :transformer my/org-agenda-append-deadline
-                     :and (:scheduled today :category "Start")
-                     :and (:scheduled past :category "Start")
-                     :order 1)
-              (:name "End"
-                     :transformer my/org-agenda-append-deadline
-                     :and (:scheduled today :category "End")
-                     :and (:scheduled past :category "End")
-                     :order 5)
-              (:name "(Scheduled)"
-                     :transformer my/org-agenda-append-deadline
-                     :and (:scheduled t :not (:scheduled today))
-                     :order 7)
-              (:name "Today"
-                     :transformer my/org-agenda-append-deadline
-                     :scheduled today
-                     :scheduled past
-                     :deadline past
-                     :deadline today
-                     :order 2)
-              (:name "Reply"
-                     :tag "reply"
-                     :order 4)
-              (:name "Important!"
-                     :and (:priority "A"
-                                     :scheduled nil)
-                     :order 3)
-              (:auto-parent t
-                            :order 5)
-              (:name "Low effort"
-                     :effort< "0:20"
-                     :order 8)))
-
-      ;; SPC a o o p
-      (setq org-agenda-custom-commands
-            '(("p" "Personal" alltodo ""
-               ((org-super-agenda-groups
-                 '(;; Each group has an implicit boolean OR operator between its selectors.
-                   (:discard (:not (:file-path "todo.org")))
-                   (:discard (:tag "work"))
-                   (:name "(Waiting)"
-                          :todo "WAIT"
-                          :order 9)
-                   (:name "Important!"
-                          :and (:priority "A" :scheduled nil)
-                          :order 1)
-                   (:name "Personal"
-                          :tag "personal"
-                          :order 4)
-                   (:auto-parent t :order 7))))))))
+            "%40ITEM %3PRIORITY %TODO %5EFFORT %17DEADLINE"))
 
 ;;;;;; org-ref
 
@@ -1882,13 +1807,6 @@ will not be modified."
       ;; "wh"  'org-wiki-panel
       ;; "ws"  'org-wiki-switch-root
 
-
-      ;; org-brain
-      ;; these go in with org-roam
-      "rac" 'org-brain-add-child
-      "rap" 'org-brain-add-parent
-      "raf" 'org-brain-add-friendship
-
       ;; org-time-stamp
       "oTi" 'org-time-stamp
       "oTI" 'org-time-stamp-inactive
@@ -1899,20 +1817,11 @@ will not be modified."
       ;; helm-org-rifle (added upstream)
       ;; "r"   'helm-org-rifle
 
-      ;; org-board
-      "Ba"   'org-board-archive
-      "BA"   'org-board-archive-dry-run
-
-      ;; org-board
-      "Ba"   'org-board-archive
-      "BA"   'org-board-archive-dry-run
-
       ;; org-subtree
       "sc"   'org-cut-subtree
       "sy"   'org-copy-subtree
       "sp"   'org-paste-subtree
-      "sm"   'org-mark-subtree
-      ))
+      "sm"   'org-mark-subtree))
 
 ;;;;; C/C++
 
@@ -2277,10 +2186,6 @@ will not be modified."
 
   (when (require 'agda2-mode nil 'noerror)
     (add-to-list 'auto-mode-alist '("\\.lagda.md\\'" . agda2-mode)))
-
-;;;;; Alloy
-
-  (require 'alloy)
 
 ;;;;; Coq
 

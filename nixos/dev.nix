@@ -2,6 +2,12 @@
 
 {
   environment.systemPackages = with pkgs; [
+    entr
+
+    # For Emacs markdown-preview-eww
+    ruby
+    rubyPackages.redcarpet
+
     python37Packages.python-language-server
     clang
     docker-compose

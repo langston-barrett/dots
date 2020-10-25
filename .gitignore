@@ -5,6 +5,7 @@ inspiration
 **/.vagrant
 *.ovpn
 .yas-compiled-snippets.el
+*.elc
 
 files/zsh.d/zaw
 files/emacs/local/llvm-mode.el
