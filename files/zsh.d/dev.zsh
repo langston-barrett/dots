@@ -162,6 +162,19 @@ mate-dev-run() {
          bash -c "$@"
 }
 
+mate-dist-run() {
+    docker run \
+           --rm \
+           --net=host \
+           --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+           --mount type=bind,src=$PWD,dst=/x \
+           --workdir=/x \
+           --interactive \
+           --tty \
+           mate-dist \
+           bash -c "$@"
+}
+
 mate-img-run() {
   docker pull "${2:-artifactory.galois.com:5004/mate-dev:master}"
   docker run \
@@ -227,6 +240,34 @@ mate-pytest-one-integration() {
          --tty \
          mate-dev \
          bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- --show-capture=all -vv -x -k $1"
+}
+
+mate-compose() {
+    sudo -g docker docker-compose -f docker-compose.postgres.yml -f docker-compose.override.yml "${@}"
+}
+
+mate-dev-docker-ssh() {
+    docker exec -w /x -it $(docker ps | grep mate-dev | awk '{print $1}') "${@}"
+}
+
+mate-lint-entr() {
+    fd . \
+       --extension py \
+       --extension cpp \
+       --extension c \
+       --extension h \
+       --extension hpp \
+       --exclude submodules \
+       --exclude misc \
+       | entr -c -s 'source ~/.zsh.d/dev.zsh && mate-shake lint'
+}
+
+mate-lint-entr-py() {
+    fd . \
+       --extension py \
+       --exclude submodules \
+       --exclude misc \
+        | entr -c -s 'source ~/.zsh.d/dev.zsh && mate-shake lint-py'
 }
 
 # use mate-shake bench
