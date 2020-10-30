@@ -207,7 +207,6 @@ mate-pytest-one() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -220,7 +219,6 @@ mate-pytest-debug() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
@@ -233,7 +231,6 @@ mate-pytest-one-integration() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \

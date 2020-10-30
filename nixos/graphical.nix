@@ -23,8 +23,7 @@ in {
     alacritty
     anki
     baobab
-    firefox
-    kcolorchooser
+    # kcolorchooser
     master.dropbox
     master.signal-desktop
     qutebrowser
@@ -48,6 +47,7 @@ in {
     enableGhostscriptFonts = true;
     fontconfig.dpi = 192;
     fonts = with pkgs; [
+      # comfortaa
       # fira-code, freefont-ttf, ubuntu-font-family
 
       tex-gyre-bonum-math   # latex math font

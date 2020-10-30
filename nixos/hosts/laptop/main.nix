@@ -28,17 +28,13 @@
   programs.java.enable = true;
 
   environment.systemPackages = with pkgs; [
-    beets
+    # beets
     calibre
-    chromium
-    comfortaa
     gimp
     keynav
     kdeconnect
     maim
     mu
-    musescore
-    oxygenfonts
     redshift
     spotify
     tmux

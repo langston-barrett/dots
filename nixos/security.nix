@@ -1,6 +1,10 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
-{
+let hardened =
+      (import <nixpkgs/nixos/modules/profiles/hardened.nix> {
+        inherit config lib pkgs;
+      });
+in {
   # Encrypted DNS queries
   # services.dnscrypt-proxy = {
     # enable = true;
@@ -10,7 +14,17 @@
   # Opportunisticly encrypt TCP traffic
   # networking.tcpcrypt.enable = true;
 
+  boot = {
+    # Obscure network protocols and old or rare filesystems
+    inherit (hardened.boot) blacklistedKernelModules;
+  };
+
   security = {
+    inherit (hardened.security)
+      # "Restrict process information to the owning user."
+      hideProcessInformation
+      # Whether to prevent replacing the running kernel image.
+      protectKernelImage;
 
     polkit = {
       enable = true;
@@ -31,9 +45,6 @@
     sudo = {
       enable = true;
     };
-
-    # "Restrict process information to the owning user."
-    hideProcessInformation = true;
 
     # auditd.enable = true;
     apparmor = {

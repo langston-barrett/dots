@@ -764,13 +764,13 @@ you should place your code here."
 
 ;;;;; spaceline
 
-  (with-eval-after-load 'spaceline
-    (setq spaceline-purpose-p nil)
-    (setq spaceline-major-mode-p nil)
-    (setq spaceline-minor-mode-p nil)
-    (setq spaceline-buffer-size-p nil)
-    (setq spaceline-buffer-position-p nil)
-    (setq spaceline-buffer-encoding-abbrev-p nil))
+  (setq powerline-scale 1.0)
+  (setq spaceline-purpose-p nil)
+  (setq spaceline-major-mode-p nil)
+  (setq spaceline-minor-modes-p nil)
+  (setq spaceline-buffer-size-p nil)
+  (setq spaceline-buffer-position-p nil)
+  (setq spaceline-buffer-encoding-abbrev-p nil)
 
 ;;;;; helm-dash
 
@@ -1700,7 +1700,7 @@ you should place your code here."
       ;; (add-hook 'org-babel-post-tangle-hook
       ;;           '(lambda () (indent-region (point-min) (point-max))))
 
-      (fci-mode nil) ; Enable fill column indicator, it looks hectic
+      ; (fci-mode nil) ; Disable fill column indicator, it looks hectic
       (setq fill-column 80) ; Set fill column to 80
       (auto-fill-mode t) ; Automatic line wrapping at fill column
 

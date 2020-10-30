@@ -1,7 +1,8 @@
 # -*- mode: nix -*-
 { config, pkgs, ... }:
 
-{
+let variables = import ./variables.nix;
+in {
   imports = [
     ./hardware-configuration.nix
 
@@ -34,42 +35,33 @@
   networking.hostName = "langston-x1"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
-    beets
+    # beets
     # calibre
     # chromium
-    comfortaa
     # gimp
     # keynav
     # kdeconnect
     maim
     mu
     # musescore
-    oxygenfonts
     redshift
     spotify
     tmux
     vlc
-    # ympd
-
-    # python development
-    # python
-    # pythonPackages.importmagic
   ];
 
   # Just testing
   services.postgresql = {
-    enable = false;
+    enable = true;
     ensureUsers = [
       {
-        name = "superuser";
+        name = variables.username;
         ensurePermissions = {
           "ALL TABLES IN SCHEMA public" = "ALL PRIVILEGES";
         };
       }
     ];
   };
-
-
 
   # This value determines the NixOS release with which your system is to be
   # compatible, in order to avoid breaking some software such as database

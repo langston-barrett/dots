@@ -4,8 +4,8 @@
   environment.systemPackages = with pkgs; [
     arc-theme
     moka-icon-theme
-    paper-gtk-theme
-    paper-icon-theme
+    # paper-gtk-theme
+    # paper-icon-theme
   ];
 
   environment.variables = {
