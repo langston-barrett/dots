@@ -98,7 +98,8 @@ This function should only modify configuration layer settings."
      ;;        latex-build-command "LatexMk"
      ;;        latex-enable-auto-fill t)
      markdown
-     org
+     org-roam
+     (org :variables org-enable-roam-support t)
      outshine
      rust
      ;; saw-script
@@ -114,8 +115,7 @@ This function should only modify configuration layer settings."
 
      ;; My layers
      alloy
-     myorg
-     org-roam)
+     (myorg :variables myorg-enable-roam-server nil))
 
 ;;;; Additional packages
 
@@ -1631,6 +1631,8 @@ you should place your code here."
         "."  'spacemacs/org-agenda-transient-state/body
         "tc" 'org-agenda-columns)
 
+      (setq org-agenda-hide-tags-regexp (rx (* anything)))
+
       (setq org-agenda-files (list (concat org-directory "/practices.org")
                                    (concat org-directory "/todo.org")))
 
@@ -1675,15 +1677,15 @@ you should place your code here."
 
     (org-babel-do-load-languages
      'org-babel-load-languages
-     '((coq        . t)
-       (dot        . t)
+     '((coq . t)
+       (dot . t)
        (emacs-lisp . t)
-       (haskell    . t)
-       (java       . t)
-       (python     . t)
-       (plantuml   . t)
-       (shell      . t)
-       ))
+       (haskell . t)
+       (java . t)
+       (plantuml . t)
+       (python . t)
+       (shell . t)
+       (sql . t)))
 
 ;;;;;; misc
 

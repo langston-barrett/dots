@@ -2,7 +2,32 @@
 (require 'langston-org)
 
 (describe
- "Finding items"
+ "my/org-element-map-file"
+ (it
+  "works"
+  (expect
+   (my/org-element-map-file
+    "test/agenda.org"
+    'headline
+    (lambda (elt) (org-element-property :priority elt)))
+   :to-equal
+   (list ?C ?A))))
+
+(describe
+ "my/org-element-map-agenda"
+ (it
+  "works"
+  (expect
+   (progn
+     (setq-local org-agenda-files (list "test/agenda.org"))
+     (my/org-element-map-agenda
+      'headline
+      (lambda (elt) (org-element-property :priority elt))))
+   :to-equal
+   (list ?C ?A))))
+
+(describe
+ "Finding items 0"
  (it
   "works"
   (expect
@@ -10,6 +35,18 @@
    :not
    :to-be
    nil)))
+
+;; (describe
+;;  "Finding items"
+;;  (it
+;;   "works"
+;;   (expect
+;;    (progn
+;;      (setq-local org-agenda-files (list "test/agenda.org"))
+;;      (my/find-agenda-item-2 "TODO Do sub-thing" 'identity))
+;;    :not
+;;    :to-be
+;;    nil)))
 
 (describe
  "Fetching deadlines"

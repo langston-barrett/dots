@@ -1,19 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs; [ steam ];
+  programs.steam.enable = true;
 
-  hardware = {
-    steam-hardware.enable  = true;
-    pulseaudio.support32Bit = true;
-    opengl = {
-      enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
-    };
-  };
-
-  # https://support.steampowered.com/kb_article.php 
+  # https://support.steampowered.com/kb_article.php
   # UDP remote port 27000--27100: Game traffic
   # UDP local port 27031-27036: Remote Play
   # TCP local port 27036: Remote Play
