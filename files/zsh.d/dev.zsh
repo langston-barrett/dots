@@ -145,7 +145,7 @@ setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
 # RACK
 
-alias rack-inabox='docker pull interran/rack-box:v2.9 && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:v2.9'
+alias rack-inabox='docker pull interran/rack-box:v3.0 && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:v3.0'
 
 # Mate
 
