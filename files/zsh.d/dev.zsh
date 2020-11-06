@@ -227,6 +227,18 @@ mate-pytest-debug() {
          bash -c "source source.sh && cd frontend && pytest -vv --pdb -n0 -x -k $1"
 }
 
+mate-pytest-debug-integration() {
+    docker run \
+           --rm \
+           --net=host \
+           --mount type=bind,src=$PWD,dst=/x \
+           --workdir=/x \
+           --interactive \
+           --tty \
+           mate-dev \
+           bash -c "source source.sh && cd frontend && MATE_INTEGRATION_TESTS=1 pytest -vv --pdb -n0 -x -k $1"
+}
+
 mate-pytest-one-integration() {
   docker run \
          --rm \
