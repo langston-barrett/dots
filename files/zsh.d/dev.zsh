@@ -279,6 +279,22 @@ mate-lint-entr-py() {
         | entr -c -s 'source ~/.zsh.d/dev.zsh && mate-shake lint-py'
 }
 
+mate-shell-example-1() {
+    mate-shake build
+    ws=deleteme.workspace
+    \rm -rf "${ws}"
+    docker run \
+           --rm \
+           --net=host \
+           --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+           --mount type=bind,src=$PWD,dst=/x \
+           --workdir=/x \
+           --interactive \
+           --tty \
+           mate-dev \
+           bash -c "source source.sh && mate -w ${ws} compile frontend/test/programs/example_1.c && mate -w ${ws} build && mate -w ${ws} shell"
+}
+
 # use mate-shake bench
 
 alias mate-docker-pull='docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist && docker image prune'
