@@ -63,44 +63,82 @@
 ;;           title
 ;;           (funcall callable elt)))))))
 
-(defun my/find-agenda-item (item callable &optional scope)
+(defun my/find-agenda-item (item &optional scope)
   (let* ((splitted (-drop 1 (split-string (string-trim item))))
          ;; The following drop the TODO state and priority
          (joined1 (mapconcat 'identity splitted " "))
          (joined2 (mapconcat 'identity (-drop 1 splitted) " ")))
     (-filter
      (lambda (entry)
-       (let ((title (caddr entry)))
+       (let ((title (org-element-property :raw-value (nth 1 entry))))
          (or (equal title joined1)
              (equal title joined2))))
      (org-map-entries
-      '(lambda ()
-         (let ((elt (org-element-at-point)))
-           (list
-            (current-buffer)
-            (org-element-property :begin elt)
-            (org-element-property :raw-value elt)
-            (funcall callable elt))))
+      '(lambda () (list (current-buffer) (org-element-at-point)))
       nil
       (or scope 'agenda)
       'archive ;; skip archived
       'comment)))) ;; skip comments
 
-(defun my/get-item-deadline (item)
-  (nth 3 (car
-          (my/find-agenda-item
-            item
-            (lambda (element) (org-element-property :deadline element))))))
+(setq my/org-agenda-transformers
+      (list 'my/deadline-transformer
+            'my/blocked-transformer))
+
+;;(defun my/test-transformer (text element) (concat text " TEST"))
+
+;; (defun my/trim-transformer (text element)
+;;   (concat "   " (string-trim-left text)))
+
+(defun my/org-apply-agenda-transformers-rec (text element transformers)
+  (if (equal nil transformers)
+      text
+    (my/org-apply-agenda-transformers-rec
+     (funcall (car transformers)
+              text
+              element)
+     element
+     (cdr transformers))))
+
+(defun my/org-apply-agenda-transformers-explicit (item transformers)
+  (my/org-apply-agenda-transformers-rec
+   item
+   (nth 1 (car (my/find-agenda-item item)))
+   transformers))
+
+(defun my/org-apply-agenda-transformers (item)
+  (my/org-apply-agenda-transformers-explicit item my/org-agenda-transformers))
+
+(defun my/deadline-transformer (text element)
+  (concat
+   text
+   " "
+   (my/org-format-deadline (org-element-property :deadline element))))
+
+(defun my/gray-transformer (text element)
+  (propertize text 'face '(:foreground "gray")))
+
+(defun my/blocked-transformer (text element)
+  (if (not (equal nil (org-element-property :BLOCKED element)))
+      (my/gray-transformer text element)
+      text))
 
 (defun my/org-format-deadline (timestamp)
   (when timestamp
-    (mapconcat
-     'number-to-string
-     (list
-      (org-element-property :year-start timestamp)
-      (org-element-property :month-start timestamp)
-      (org-element-property :day-start timestamp))
-     "-")))
+    (propertize
+     (mapconcat
+      'number-to-string
+      (list
+       (org-element-property :year-start timestamp)
+       (org-element-property :month-start timestamp)
+       (org-element-property :day-start timestamp))
+      "-")
+     'face
+     '(:foreground "orange"))))
+
+;; TODO: Remove these
+
+(defun my/get-item-deadline (item)
+  (org-element-property :deadline (nth 1 (car (my/find-agenda-item item)))))
 
 (defun my/org-agenda-append-deadline (item)
   (concat

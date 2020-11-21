@@ -27,55 +27,24 @@
    (list ?C ?A))))
 
 (describe
- "Finding items 0"
+ "Finding items"
  (it
   "works"
   (expect
-   (my/find-agenda-item "TODO Do sub-thing" 'identity (list "test/agenda.org"))
+   (my/find-agenda-item "TODO Do sub-thing" (list "test/agenda.org"))
    :not
    :to-be
    nil)))
 
-;; (describe
-;;  "Finding items"
-;;  (it
-;;   "works"
-;;   (expect
-;;    (progn
-;;      (setq-local org-agenda-files (list "test/agenda.org"))
-;;      (my/find-agenda-item-2 "TODO Do sub-thing" 'identity))
-;;    :not
-;;    :to-be
-;;    nil)))
-
 (describe
- "Fetching deadlines"
+ "Applying transformers"
 
  (it
   "works for a headline with a deadline"
   (expect
    (progn
      (setq-local org-agenda-files (list "test/agenda.org"))
-     (my/get-item-deadline "TODO Do sub-thing"))
+     (my/org-apply-agenda-transformers "TODO Do sub-thing"))
    :not
-   :to-be
-   nil))
-
- (it
-  "works for a headline with a deadline and priority"
-  (expect
-   (progn
-     (setq-local org-agenda-files (list "test/agenda.org"))
-     (my/get-item-deadline "TODO [#C] Do a thing"))
-   :not
-   :to-be
-   nil))
-
- (it
-  "doesn't work for headlines without a deadline"
-  (expect
-   (progn
-     (setq-local org-agenda-files (list "test/agenda.org"))
-     (my/get-item-deadline "TODO [#A] No deadline"))
    :to-be
    nil)))
