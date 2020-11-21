@@ -638,7 +638,8 @@ you should place your code here."
   (defun my/revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
     (interactive)
-    (revert-buffer :ignore-auto :noconfirm))
+    (revert-buffer :ignore-auto :noconfirm)
+    (my/display-ansi-colors))
 
   (spacemacs/set-leader-keys
     ;; 'o' is the "user key"

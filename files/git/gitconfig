@@ -68,3 +68,5 @@
 	sslVerify = false
 [gitlab "gitlab-ext.galois.com/api/v4"]
 	user = langston
+[pull]
+	ff = only
