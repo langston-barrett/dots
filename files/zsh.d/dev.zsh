@@ -28,6 +28,7 @@ alias gbD='git branch -D'
 alias gc='git checkout'
 alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
+alias gcmm='git commit -m more'
 alias gca='EDITOR=vi git commit --amend'
 alias gcb='git checkout -b'
 alias gd='git diff'
@@ -132,6 +133,7 @@ alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
 alias docker='sudo -g docker docker'
 alias lock='systemctl start physlock'
+alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
 GPG_TTY=$(tty)
 export GPG_TTY

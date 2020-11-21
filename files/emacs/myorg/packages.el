@@ -75,6 +75,12 @@
     (progn
       (defun before-four-p (item)
         (>= 16 (string-to-number (format-time-string "%H"))))
+      (defun my/transform-each (parent)
+        (-update-at 3 (lambda (list) (-map 'my/org-apply-agenda-transformers list)) parent))
+      (defun my/transform-plus-gray (item)
+        (my/org-apply-agenda-transformers-explicit
+         item
+         (cons 'my/gray-transformer my/org-agenda-transformers)))
       (org-super-agenda-mode)
       (setq
        org-super-agenda-groups
@@ -83,50 +89,58 @@
          (:discard (:and (:category "End" :scheduled future)))
          (:discard (:and (:scheduled today :category "End" :pred before-four-p)))
          (:discard (:and (:scheduled past :category "End" :pred before-four-p)))
+         (:name "Meta"
+                :transformer my/org-apply-agenda-transformers
+                :category "Meta"
+                :order 11)
+         (:name "Dots"
+                :transformer my/org-apply-agenda-transformers
+                :category "Dots"
+                :order 12)
          (:name "Personal"
-                :transformer my/org-agenda-append-deadline
+                :transformer my/org-apply-agenda-transformers
                 :category "Personal"
                 :order 9)
          (:name "(Waiting)"
-                :transformer my/org-agenda-append-deadline
+                :transformer my/org-apply-agenda-transformers
                 :todo "WAIT"
                 :order 8)
          (:name "Start"
-                :transformer my/org-agenda-append-deadline
+                :transformer my/org-apply-agenda-transformers
                 :and (:scheduled today :category "Start")
                 :and (:scheduled past :category "Start")
                 :order 1)
          (:name "End"
-                :transformer my/org-agenda-append-deadline
+                :transformer my/org-apply-agenda-transformers
                 :and (:scheduled today :category "End")
                 :and (:scheduled past :category "End")
                 :order 5)
-         (:name "(Scheduled)"
-                :transformer my/org-agenda-append-deadline
-                :and (:scheduled t :not (:scheduled today))
-                :order 7)
          (:name "Today"
-                :transformer my/org-agenda-append-deadline
+                :transformer my/org-apply-agenda-transformers
                 :scheduled today
                 :scheduled past
                 :deadline past
                 :deadline today
                 :order 2)
+         (:name "(Scheduled)"
+                :transformer my/transform-plus-gray
+                :and (:scheduled t)
+                :order 7)
          (:name "Reply"
+                :transformer my/org-apply-agenda-transformers
                 :tag "reply"
                 :order 4)
          (:name "Important!"
+                :transformer my/org-apply-agenda-transformers
                 :and (:priority "A"
                                 :scheduled nil)
                 :order 3)
-         (:name "Meta"
-                :category "Meta"
-                :order 11)
-         (:name "Dots"
-                :category "Dots"
-                :order 12)
          (:auto-parent t
+                       ;; TODO
+                       ;; :transformer my/org-agenda-append-deadline
+                       :transformer my/transform-each
                        :order 5)
          (:name "Low effort"
+                :transformer my/org-apply-agenda-transformers
                 :effort< "0:20"
                 :order 8))))))

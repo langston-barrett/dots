@@ -45,5 +45,5 @@ Host big-wifi
 
 Host big
   User langston
-  HostName 192.168.0.170
+  HostName 192.168.0.171
   IdentityFile ~/.ssh/id_ed25519
