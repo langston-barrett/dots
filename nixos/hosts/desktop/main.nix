@@ -34,9 +34,9 @@
     videoDrivers = [ "nvidia" ];
     displayManager = {
       defaultSession = "none+i3";
+      autoLogin.enable = true;
+      autoLogin.user = "langston";
       lightdm.enable = true;
-      lightdm.autoLogin.enable = true;
-      lightdm.autoLogin.user = "langston";
     };
     windowManager.i3 = {
       enable = true;

@@ -4,6 +4,7 @@
 {
   imports = [
     ../common.nix
+    ../monitoring.nix
   ];
 
   environment.systemPackages = with pkgs; [
