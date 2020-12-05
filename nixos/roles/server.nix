@@ -4,7 +4,7 @@
 {
   imports = [
     ../common.nix
-    ../monitoring.nix
+    # ../monitoring.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -15,8 +15,8 @@
   services = {
     openssh = {
       enable = true;
-      forwardX11 = true;  # notifications
-      ports = [ 22 ];  # TODO: change
+      forwardX11 = false;  # notifications
+      ports = [ 9988 ];
       permitRootLogin = "no";
       passwordAuthentication = false;
       challengeResponseAuthentication = false;

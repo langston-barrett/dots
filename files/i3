@@ -10,6 +10,8 @@ exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
 exec --no-startup-id nm-applet
 exec steam
+# Low grade user service:
+exec bash ~/code/dots/files/scripts/in-perpetuity.sh ~/code/dots/files/scripts/public-ip.sh
 
 # ** variables
 

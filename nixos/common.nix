@@ -52,11 +52,11 @@ in {
     # Use cachix binary caches
     binaryCaches = [
       "https://cache.nixos.org/"
-      "https://hie-nix.cachix.org"
+      # "https://hie-nix.cachix.org"
       # "http://fryingpan.dev.galois.com/hydra"
     ];
     binaryCachePublicKeys = [
-      "hie-nix.cachix.org-1:EjBSHzF6VmDnzqlldGXbi0RM3HdjfTU3yDRi9Pd0jTY="
+      # "hie-nix.cachix.org-1:EjBSHzF6VmDnzqlldGXbi0RM3HdjfTU3yDRi9Pd0jTY="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "fryingpan.dev.galois.com-1:z0mUoDyQ+o8E4PEIOGb3UaT40EAmSte7vidUvAJdjmU="
     ];
