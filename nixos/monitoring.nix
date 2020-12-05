@@ -13,20 +13,22 @@
     security.adminPassword = "admin";
     users.allowSignUp = true;
     dataDir = "/var/lib/grafana";
-    provision.datasources = [
-      # May require manual setup too
-      {
-        access = "direct";
-        isDefault = true;
-        type = "prometheus";
-        url = "http://localhost:9001";
-      }
-      {
-        access = "direct";
-        type = "loki";
-        url = "http://localhost:3100";
-      }
-    ];
+    provision = {
+      datasources = [
+        # May require manual setup too
+        {
+          access = "direct";
+          isDefault = true;
+          type = "prometheus";
+          url = "http://localhost:9001";
+        }
+        {
+          access = "direct";
+          type = "loki";
+          url = "http://localhost:3100";
+        }
+      ];
+    };
   };
 
 
