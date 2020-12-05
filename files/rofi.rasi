@@ -1,7 +1,7 @@
 /* -*- mode: css; -*- */
 configuration {
 	modi: "window,drun";
-	width: 50;
+	width: 30;
 	lines: 5;
 	columns: 1;
 	font: "Open Sans 24";

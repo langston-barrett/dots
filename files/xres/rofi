@@ -3,6 +3,8 @@
 ! Enable the extended coloring options
 rofi.color-enabled:     true
 
+rofi.bw: 0
+
 !                       bg          border    separator
 rofi.color-window:      #dd282A36,  blu2,     blu2
 
