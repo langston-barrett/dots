@@ -47,3 +47,10 @@ Host big
   User langston
   HostName 192.168.0.171
   IdentityFile ~/.ssh/id_ed25519
+
+Host oxygen
+  User langston
+  HostName oxygen.proj.galois.com
+  IdentityFile ~/.ssh/id_ed25519
+  PasswordAuthentication no
+  PreferredAuthentications publickey,keyboard-interactive,password
