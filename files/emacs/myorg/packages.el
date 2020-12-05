@@ -7,11 +7,17 @@
     org-super-agenda
     org-roam-server
     (org-roam-server :toggle myorg-enable-roam-server)
+    (org-pretty-table :location
+                      (recipe :fetcher github :repo "Fuco1/org-pretty-table"))
     ;; ox-gfm       ; github markdown export for org
     ;; link-hint ; TODO: keybindings
     ;; org-gcal
     ;; org-sidebar
     ))
+
+(defun myorg/init-org-pretty-table ()
+  (use-package org-pretty-table
+    :defer t))
 
 (defun myorg/init-org-board ()
   (use-package org-board
