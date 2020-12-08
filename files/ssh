@@ -50,6 +50,12 @@ Host big
   Port 9988
   IdentityFile ~/.ssh/id_ed25519
 
+Host big-external
+  User langston
+  HostName 24.22.76.243
+  Port 9988
+  IdentityFile ~/.ssh/id_ed25519
+
 Host oxygen
   User langston
   HostName oxygen.proj.galois.com

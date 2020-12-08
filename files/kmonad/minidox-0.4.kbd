@@ -1,0 +1,40 @@
+;; -*- mode: prog -*-
+
+(defcfg
+  input  (device-file
+          "/dev/input/by-id/usb-That-Canadian_MiniDox_0-event-kbd")
+  output (uinput-sink
+          "My KMonad output"
+          "/run/current-system/sw/bin/sleep 1 && /run/current-system/sw/bin/setxkbmap -option compose:ralt")
+  cmp-seq ralt
+  ;; fallthrough true
+  allow-cmd false
+)
+
+#|
+  _    _    _    _    _              _    _    _    _    _
+  _    _    _    _    _              _    _    _    _    _
+  _    _    _    _    _              _    _    _    _    _
+                 _         _    _         _
+|#
+
+(defsrc
+  q    w    e    r    t              y    u    i    o    p
+  a    s    d    f    g              ;    h    j    k    l
+  z    x    c    v    b              /    n    m    ,    .
+                 lctl lalt bspc spc  rsft ret
+)
+
+
+(defalias
+  ;; @sbs  = TN bspc lsft       // tap-next that is either a shift, or a backspace
+  ;; @ssp  = TH 300 spc rsft    // tap-hold that is either a cntrl, or a space
+  ;; @ale  = TN esc lalt    //
+  ;; @lre  = TN ret LT-symb //
+  ;; @tct  = TN tab rctl
+  ;; @l    = LT-symb
+)
+
+;; Local Variables:
+;; comment-start: ;;
+;; End:

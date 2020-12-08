@@ -14,14 +14,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Crypto!!
-  boot.initrd.luks.devices = [
-    {
-      name = "root";
+  boot.initrd.luks.devices = {
+    root = {
       device = "/dev/disk/by-uuid/445eed41-be61-44fa-9cd0-ffea26dea921";
       preLVM = true;
       allowDiscards = true;
-    }
-  ];
+    };
+  };
 
   networking.hostName = "langston-nixos";
 
