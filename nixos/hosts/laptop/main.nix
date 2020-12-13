@@ -69,8 +69,8 @@
       remote-cert-tls server
       comp-lzo yes
     '';
-    up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
-    down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
+    # up = "echo nameserver $nameserver | ${pkgs.openresolv}/sbin/resolvconf -m 0 -a $dev";
+    # down = "${pkgs.openresolv}/sbin/resolvconf -d $dev";
   };
 
   services.openvpn.servers.galois-onsite = {

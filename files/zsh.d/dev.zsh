@@ -129,6 +129,9 @@ alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/kmonad/m
 
 ## Generic
 
+alias sshb='ssh big'
+alias sshbe='ssh big-external'
+
 alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
 alias docker='sudo -g docker docker'

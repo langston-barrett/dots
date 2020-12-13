@@ -31,6 +31,10 @@
       enable = true;
       enableSshSupport = true;
     };
+
+    dropbox = {
+      enable = true;
+    };
   };
 
   # programs.home-manager = {
@@ -40,9 +44,9 @@
   programs = {
     gpg.enable = true;
 
-    password-store = {
-      enable = true;
-    };
+    # password-store = {
+    #   enable = true;
+    # };
 
     zsh = {
       enable = true;
