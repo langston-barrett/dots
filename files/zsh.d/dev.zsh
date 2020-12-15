@@ -135,6 +135,7 @@ alias sshbe='ssh big-external'
 alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
 alias docker='sudo -g docker docker'
+alias docker-compose='sudo -g docker docker-compose'
 alias lock='systemctl start physlock'
 alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
