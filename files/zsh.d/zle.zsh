@@ -22,6 +22,8 @@ fzf-history() {
 zle -N fzf-history
 bindkey '^R^R' fzf-history
 
+# i ----------------------------------------------------------------------------
+
 insert-clipboard() {
   zle_append_to_buffer "$(xsel -o)"
 }
@@ -52,8 +54,32 @@ fzf-insert-show-bindings() {
 zle -N fzf-insert-show-bindings
 bindkey -M vicmd ' i' fzf-insert-show-bindings
 
+# s ----------------------------------------------------------------------------
+
+# TODO
+ssh-big() {
+  zle -U "ssh big"
+  # zle accept-and-hold
+  # zle -Rc
+  # zle reset-prompt
+}
+zle -N ssh-big
+bindkey -M vicmd ' sb' ssh-big
+
+ssh-pi() { ssh pi; }
+zle -N ssh-pi
+bindkey -M vicmd ' sp' ssh-pi
+
+ssh-show-bindings() {
+  zle -R "" "b: big" "p: pi"
+}
+zle -N ssh-show-bindings
+bindkey -M vicmd ' s' ssh-show-bindings
+
+# ------------------------------------------------------------------------------
+
 show-bindings() {
-  zle -R "" "i: insert"
+  zle -R "" "i: insert" "s: ssh"
 }
 zle -N show-bindings
 bindkey -M vicmd ' ' show-bindings
