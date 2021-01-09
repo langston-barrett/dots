@@ -80,7 +80,7 @@
     :init
     (progn
       (defun before-four-p (item)
-        (>= 16 (string-to-number (format-time-string "%H"))))
+        (< 16 (string-to-number (format-time-string "%H"))))
       (defun my/transform-each (parent)
         (-update-at 3 (lambda (list) (-map 'my/org-apply-agenda-transformers list)) parent))
       (defun my/transform-plus-gray (item)
