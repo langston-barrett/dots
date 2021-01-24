@@ -35,6 +35,7 @@
     dropbox = {
       enable = true;
     };
+
   };
 
   # programs.home-manager = {
@@ -81,6 +82,24 @@
   systemd = {
     user = {
       timers = {
+      };
+
+      services.org-server = {
+        Service = {
+          WorkingDirectory = "/home/langston/org/meta/export/all";
+          ExecStart = ''
+            ${pkgs.python3}/bin/python3 -m http.server 9008
+          '';
+        };
+      };
+
+      services.herms-server = {
+        Service = {
+          WorkingDirectory = "/home/langston/org/meta/export/herms";
+          ExecStart = ''
+            ${pkgs.caddy}/bin/caddy file-server -listen 0.0.0.0:9002
+          '';
+        };
       };
     };
   };

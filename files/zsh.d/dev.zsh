@@ -230,7 +230,7 @@ mate-pytest-debug() {
          --interactive \
          --tty \
          mate-dev \
-         bash -c "source source.sh && cd frontend && pytest -vv --pdb -n0 -x -k $1"
+         bash -c "source source.sh && cd frontend && pytest --capture=no -vv --pdb -n0 -x -k $1"
 }
 
 mate-pytest-debug-integration() {

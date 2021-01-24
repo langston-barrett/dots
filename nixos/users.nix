@@ -37,6 +37,7 @@ in {
         openssh.authorizedKeys.keys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAzKzNdP1IRtpGMvEl2vgcSRSNBUw6bqxDoLLUcdhrY phone"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAVTLXwaK6r+lfbDQONTYbJmayYBg+AAqxEa4hWAf8K laptop"
         ];
         extraGroups = [
           "networkmanager"

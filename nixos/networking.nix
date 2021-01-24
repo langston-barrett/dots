@@ -27,7 +27,11 @@
     # Open ports for KDE Connect
     firewall = {
       allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
-      allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+      allowedTCPPortRanges = [
+        { from = 1714; to = 1764; }
+        # Herms server, other misc:
+        { from = 9000; to = 9003; }
+      ];
     };
   };
 }
