@@ -273,6 +273,7 @@
         group: "{{ username }}"
         mode: "0640"
       with_items:
+        - project: crucible
         - project: klister
 
     - name: clone qutebrowser dracula theme
