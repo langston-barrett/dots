@@ -5,6 +5,8 @@ mkShell {
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${zlib}/lib
   '';
   buildInputs =  [
+    clang_10
+    llvm_10
     yices
     z3
     (haskell.packages.ghc884.ghcWithHoogle (hpkgs: with hpkgs; []))
