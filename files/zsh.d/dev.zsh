@@ -310,3 +310,7 @@ alias mate-clean-submodule-integration-framework='pushd submodules/integration_f
 
 alias restart_qute='kill -9 $(pgrep qutebrowser) && qutebrowser 2>&1 > /dev/null & disown'
 alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
+
+# Haskell
+
+alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=~/code/dots/hlint.yaml src"'
