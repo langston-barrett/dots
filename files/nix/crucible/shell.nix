@@ -13,6 +13,7 @@ mkShell {
     haskellPackages.haskell-language-server
     haskellPackages.ghcid
     haskellPackages.cabal-install
+    haskellPackages.hlint
     zlib
   ];
 }
