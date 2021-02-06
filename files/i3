@@ -13,15 +13,15 @@ exec --no-startup-id nm-applet
 # ** variables
 
 # See https://github.com/Kyczan/dotfiles
-set_from_resource   $bg i3.bgrnd #282A36    # background
-set_from_resource   $fg i3.fgrnd #FFFFFF    # foreground
-set_from_resource   $in i3.inact #676E7D    # inactive
-set_from_resource   $ur i3.urgen #E53935    # urgent
-set_from_resource   $tr i3.trans FF         # transparency
+set_from_resource $bg i3.bgrnd #282A36    # background
+set_from_resource $fg i3.fgrnd #FFFFFF    # foreground
+set_from_resource $in i3.inact #676E7D    # inactive
+set_from_resource $ur i3.urgen #E53935    # urgent
+set_from_resource $tr i3.trans FF         # transparency
 
 # ** general
 
-# Super. Alt is Mod1.
+# Alt is Mod1.
 set $mod Mod1
 
 # Mouse+mod floats & drags
@@ -79,19 +79,65 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3
 
 # ** navigation
 
+set $left h
+set $down j
+set $up k
+set $right l
+set $workspace0 f
+set $workspace1 d
+set $workspace2 s
+set $workspace3 a
+
+# colemak:
+# set $left n
+# set $down e
+# set $up i
+# set $right o
+# set $workspace0 t
+# set $workspace1 s
+# set $workspace2 r
+# set $workspace3 a
+
 # *** focus
 
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
 
 # *** move
 
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# ** workspaces
+
+# switch to workspace
+bindsym $mod+$workspace3 workspace 3
+bindsym $mod+$workspace2 workspace 2
+bindsym $mod+$workspace1 workspace 1
+bindsym $mod+$workspace0 workspace 0
+
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+$workspace3 move container to workspace 3
+bindsym $mod+Shift+$workspace2 move container to workspace 2
+bindsym $mod+Shift+$workspace1 move container to workspace 1
+bindsym $mod+Shift+$workspace0 move container to workspace 0
+
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
 
 # ** appearance
 
@@ -116,64 +162,15 @@ gaps bottom 0
 gaps left 20
 gaps right 20
 
-# ** workspaces
-
-# switch to workspace
-bindsym $mod+a workspace 3
-bindsym $mod+s workspace 2
-bindsym $mod+d workspace 1
-bindsym $mod+f workspace 0
-
-# bindsym $mod+1 workspace 1
-# bindsym $mod+2 workspace 2
-# bindsym $mod+3 workspace 3
-# bindsym $mod+4 workspace 4
-# bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
-
-# move focused container to workspace
-bindsym $mod+Shift+a move container to workspace 3
-bindsym $mod+Shift+s move container to workspace 2
-bindsym $mod+Shift+d move container to workspace 1
-bindsym $mod+Shift+f move container to workspace 0
-bindsym $mod+1 workspace a
-bindsym $mod+2 workspace s
-bindsym $mod+3 workspace d
-bindsym $mod+4 workspace f
-# bindsym $mod+1 workspace 1
-# bindsym $mod+2 workspace 2
-# bindsym $mod+3 workspace 3
-# bindsym $mod+4 workspace 4
-# bindsym $mod+5 workspace 5
-
-bindsym $mod+Shift+1 move container to workspace "11"
-bindsym $mod+Shift+2 move container to workspace "22"
-bindsym $mod+Shift+3 move container to workspace "33"
-bindsym $mod+Shift+4 move container to workspace "44"
-# bindsym $mod+Shift+1 move container to workspace 1
-# bindsym $mod+Shift+2 move container to workspace 2
-# bindsym $mod+Shift+3 move container to workspace 3
-# bindsym $mod+Shift+4 move container to workspace 4
-# bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
-
 # ** resize
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
   # These bindings trigger as soon as you enter the resize mode
-  bindsym h resize shrink width 2 px or 2 ppt
-  bindsym j resize grow height 2 px or 2 ppt
-  bindsym k resize shrink height 2 px or 2 ppt
-  bindsym l resize grow width 2 px or 2 ppt
+  bindsym $left resize shrink width 2 px or 2 ppt
+  bindsym $down resize grow height 2 px or 2 ppt
+  bindsym $up resize shrink height 2 px or 2 ppt
+  bindsym $right resize grow width 2 px or 2 ppt
 
   bindsym Escape mode "default"
 }
