@@ -313,4 +313,4 @@ alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
 
 # Haskell
 
-alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=~/code/dots/hlint.yaml src"'
+alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=$HOME/code/dots/files/hlint.yaml src"'

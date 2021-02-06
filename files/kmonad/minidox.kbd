@@ -81,6 +81,14 @@ LAYER base
   z    x    c    v    b              down n    m    pgup pgdn
                  @l   @ale @sbs @ssp @tct @lre
 
+// colemak:
+
+// LAYER base
+//   q    w    f    p    g              .    j    l    u    y
+//   a    r    s    t    d              h    n    e    i    o
+//   z    x    c    v    b              down k    m    pgup pgdn
+//                  @l   @ale @sbs @ssp @tct @lre
+
 // *** symb
 
 LAYER symb

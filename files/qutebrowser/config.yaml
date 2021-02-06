@@ -12,8 +12,18 @@ zoom.default: "125%"
 # https://wiki.archlinux.org/index.php/Qutebrowser
 # https://panopticlick.eff.org/
 content.webgl: false
-content.canvas_reading: false
+# content.canvas_reading: false
 content.headers.user_agent: "Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0"
 content.headers.accept_language: "en-US,en;q=0.5"
 content.headers.custom:
   accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+
+# :config-diff
+# 'https://gitlab-ext.galois.com':
+#   content.notifications: true
+# 'https://mattermost.galois.com':
+#   content.notifications: true
+# 'https://calendar.google.com':
+#   content.notifications: true
+# 'https://mail.google.com':
+#   content.notifications: true
