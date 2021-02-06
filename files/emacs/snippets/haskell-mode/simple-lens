@@ -1,0 +1,6 @@
+#name : simple lens
+#contributor : Langston Barrett <langston.barrett@gmail.com>
+# --
+import Control.Lens (Simple, Lens, lens)
+${1:field} :: Simple Lens ${2} F
+$1 = lens _$1 (\s v -> s { _$1 = v })
