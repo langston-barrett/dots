@@ -44,7 +44,6 @@ in {
     maim
     mu
     # musescore
-    redshift
     spotify
     tmux
     vlc

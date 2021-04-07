@@ -34,7 +34,6 @@
     kdeconnect
     maim
     mu
-    redshift
     spotify
     tmux
     vlc
