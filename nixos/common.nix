@@ -5,10 +5,6 @@
 { config, pkgs, ... }:
 
 let variables = import ./hosts/this/variables.nix;
-    myEmacs =
-      with pkgs; (emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
-        #epkgs.emacsql-sqlite
-      ]);
 in {
   imports = [
     ./security.nix
@@ -29,13 +25,7 @@ in {
   };
 
   environment.systemPackages = with pkgs; [
-    myEmacs
   ] ++ import ./minimal.nix { inherit pkgs; };
-
-  services.emacs = {
-    enable = true;
-    package = myEmacs;
-  };
 
   # Time
   time.timeZone = "America/Los_Angeles";

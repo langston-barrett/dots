@@ -5,6 +5,14 @@
     fasd
   ];
 
+  nixpkgs.overlays = [
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+    }))
+  ];
+
+  manual.manpages.enable = false;
+
   services = {
     dunst = {
       enable = true;
@@ -19,6 +27,8 @@
       };
     };
 
+    # emacs.enable = true;
+
     lorri.enable = true;
 
     kbfs = {
@@ -31,11 +41,6 @@
       enable = true;
       enableSshSupport = true;
     };
-
-    dropbox = {
-      enable = true;
-    };
-
   };
 
   # programs.home-manager = {
@@ -48,6 +53,12 @@
     # password-store = {
     #   enable = true;
     # };
+
+    emacs = {
+      enable = true;
+      package = pkgs.emacsGcc;
+      extraPackages = (epkgs: [ epkgs.vterm ] );
+    };
 
     zsh = {
       enable = true;

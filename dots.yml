@@ -126,6 +126,8 @@
         outside: yes
       - src: eshell-aliases
         dst: "{{ home }}/.emacs.d/eshell/alias"
+      - src: nix.conf
+        dst: "{{ xdg_config_home }}/nix/nix.conf"
       - src: offlineimaprc
         dst: "{{ home }}/.offlineimaprc"
       - src: pet/config.toml
