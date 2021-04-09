@@ -33,7 +33,8 @@ for_window [title="hydra"] move position center
 for_window [class="conky"] floating enable
 
 bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
-bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+bindsym $mod+Shift+space exec i3-dmenu-desktop
+# bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
 # bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
@@ -58,25 +59,6 @@ bindsym XF86MonBrightnessUp exec light -A 5
 bindsym XF86AudioLowerVolume exec bash -c "pactl set-sink-volume 0 '-5%' && pactl set-sink-volume 1 '-5%' || true"
 bindsym XF86AudioRaiseVolume exec bash -c "pactl set-sink-volume 0 '+5%' && pactl set-sink-volume 1 '+5%' || true"
 
-# change container layout (stacked, tabbed, toggle split)
-bindsym $mod+t layout stacking
-# bindsym $mod+t layout tabbed
-# bindsym $mod+Shift+s layout toggle split
-
-# toggle tiling / floating
-bindsym $mod+Shift+O floating toggle
-
-# change focus between tiling / floating windows
-bindsym $mod+u focus mode_toggle
-
-#bindsym $mod+a focus parent # focus the parent container
-#bindsym $mod+d focus child  # focus the child container
-
-# Reload, restart, and kill i3
-bindsym $mod+Shift+w reload
-bindsym $mod+Shift+r restart
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
-
 # ** navigation
 
 set $left h
@@ -87,6 +69,13 @@ set $workspace0 f
 set $workspace1 d
 set $workspace2 s
 set $workspace3 a
+set $resize r
+set $stack t
+set $split y
+set $float O
+set $reload w
+set $restart r
+set $exit e
 
 # colemak:
 # set $left n
@@ -97,6 +86,13 @@ set $workspace3 a
 # set $workspace1 s
 # set $workspace2 r
 # set $workspace3 a
+# set $resize p
+# set $stack g
+# set $split j
+# set $float U
+# set $reload w
+# set $restart f
+# set $exit q
 
 # *** focus
 
@@ -138,6 +134,27 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
+# ** layouts
+
+# change container layout (stacked, tabbed, toggle split)
+bindsym $mod+$stack layout stacking
+bindsym $mod+Shift+$split layout toggle split
+# bindsym $mod+t layout tabbed
+
+# toggle tiling / floating
+bindsym $mod+Shift+$float floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+u focus mode_toggle
+
+#bindsym $mod+a focus parent # focus the parent container
+#bindsym $mod+d focus child  # focus the child container
+
+# Reload, restart, and kill i3
+bindsym $mod+Shift+$reload reload
+bindsym $mod+Shift+$restart restart
+bindsym $mod+Shift+$exit exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
+
 
 # ** appearance
 
@@ -174,7 +191,7 @@ mode "resize" {
 
   bindsym Escape mode "default"
 }
-bindsym $mod+r mode "resize"
+bindsym $mod+$resize mode "resize"
 # smart_borders on
 
 # ** i3bar
