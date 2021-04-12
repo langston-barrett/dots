@@ -130,6 +130,7 @@ This function should only modify configuration layer settings."
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages
    '(doct
+     csv-mode
      evil-fringe-mark
      emojify
      ialign ; interactive align-regexp
@@ -608,7 +609,8 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  (require 'souffle-mode)
+
+  (use-package souffle)
   (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode))
 
 ;;;;; General
@@ -656,6 +658,11 @@ you should place your code here."
     "obr"  'my/revert-buffer-no-confirm
     "obR"  'my/revert-buffer-ansi-colors)
 
+  (setq history-length 100)
+  (put 'minibuffer-history 'history-length 50)
+  (put 'evil-ex-history 'history-length 50)
+  (put 'kill-ring 'history-length 25)
+
   ;; Use C-r for backwards terminal search, even in evil mode
   (defun my/setup-term-mode ()
     (evil-local-set-key 'normal (kbd "<prior>") 'scroll-up)
@@ -687,8 +694,9 @@ you should place your code here."
   (setq header-line-format " ")
 
   ;; saw-script
-  (add-to-list 'load-path "/home/siddharthist/.emacs.d/private/local/")
-  (require 'saw-script nil 'noerror)
+  (add-to-list 'load-path "/home/siddharthist/.config/spacemacs/private/local/")
+  (use-package saw-script
+    :mode "\\.saw\\'")
 
   ;; https://bit.ly/2OrfDO0
   ;; (when (require 'hungry-delete nil 'noerror)
@@ -1144,12 +1152,14 @@ you should place your code here."
 
 ;;;;; cheatsheet
 
-  (when (require 'cheatsheet nil 'noerror)
-    ;; (require 'my-cheatsheet)
+  (use-package cheatsheet
+    :commands cheatsheet-show
+    :init
     (spacemacs/set-leader-keys
       ;; 'o' is the "user key"
       ;; 'C' for 'cheatsheet'
-      "oC"  'cheatsheet-show))
+      "oC"  'cheatsheet-show)
+    (require 'my-cheatsheet))
 
 ;;;;; (Ma)git
 
@@ -1186,8 +1196,7 @@ you should place your code here."
     "ois"  'math-symbols-insert
 
     ;; fonts
-    "oFd"  'spacemacs/scale-down-font
-    "oFu"  'spacemacs/scale-up-font
+    "oF"  'text-scale-adjust
 
     ;; emoji
     "oEi"  'emojify-insert-emoji
