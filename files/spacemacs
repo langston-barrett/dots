@@ -609,10 +609,6 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-
-  (use-package souffle)
-  (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode))
-
 ;;;;; General
 
   (setq-default tab-width 4)
@@ -2129,8 +2125,8 @@ will not be modified."
 
 ;;;;; Souffle
 
-  (when (require 'souffle-mode nil 'noerror)
-    (add-to-list 'auto-mode-alist '("\\.dl\\'" . souffle-mode)))
+  (use-package souffle
+    :mode "\\.dl\\'")
 
 ;;;;; Racket
 
