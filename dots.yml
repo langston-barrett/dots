@@ -276,6 +276,7 @@
         mode: "0640"
       with_items:
         - project: crucible
+        - project: herms
         - project: klister
 
     - name: clone qutebrowser dracula theme

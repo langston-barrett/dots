@@ -1,4 +1,4 @@
-{ ghc ? "ghc8104"
+{ ghc ? "ghc901"
 , unstableHaskell ? true
 }:
 
@@ -16,11 +16,9 @@ in pkgs.mkShell {
     pkgs.yices
     pkgs.z3
 
-    (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
+    (hPkgs.haskell.packages.${ghc}.ghcWithPackages (hpkgs: with hpkgs; []))
     # hPkgs.haskell-language-server
-    hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
-    hPkgs.haskellPackages.hlint
     hPkgs.haskellPackages.cabal-install
     pkgs.zlib  # needed for Haskell
   ];

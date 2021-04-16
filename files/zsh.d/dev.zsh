@@ -21,6 +21,14 @@ commit_to_new_branch() {
   git push
 }
 
+sorted_diff() {
+    file1=$(mktemp)
+    file2=$(mktemp)
+    bat "${1}" | sort > "${file1}"
+    bat "${2}" | sort > "${file2}"
+    diff "${file1}" "${file2}"
+}
+
 ## Git
 alias ga='git add'
 alias gb='git branch'
@@ -134,8 +142,6 @@ alias sshbe='ssh big-external'
 
 alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
-alias docker='sudo -g docker docker'
-alias docker-compose='sudo -g docker docker-compose'
 alias lock='systemctl start physlock'
 alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
@@ -149,11 +155,18 @@ setopt HIST_IGNORE_SPACE    # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
-# RACK
+# Docker
 
-alias rack-inabox='docker pull interran/rack-box:dev && docker run --rm --detach -p 80:80 -p 3030:3030 -p 12050-12092:12050-12092 interran/rack-box:dev'
+alias docker='sudo -g docker docker'
+alias docker-compose='sudo -g docker docker-compose'
 
-# Mate
+docker-ssh() {
+    images=$(docker ps --format "{{.ID}} {{.Image}}")
+    image=$(fzf <<< "${images}" | awk '{ print $1 }')
+    [[ -n "${image}" ]] && docker exec -it "${image}" bash
+}
+
+# MATE
 
 mate-dev-run() {
   docker run \
@@ -258,11 +271,15 @@ mate-pytest-one-integration() {
 }
 
 mate-compose() {
-    sudo -g docker docker-compose -f docker-compose.postgres.yml -f docker-compose.override.yml "${@}"
+    sudo -g docker docker-compose -f docker-compose.yml -f docker-compose.override.yml "${@}"
 }
 
 mate-dev-docker-ssh() {
     docker exec -w /x -it $(docker ps | grep mate-dev | awk '{print $1}') "${@}"
+}
+
+mate-dist-docker-ssh() {
+    docker exec -it $(docker ps | grep mate-dist | awk '{print $1}') "${@}"
 }
 
 mate-lint-entr() {

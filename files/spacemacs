@@ -2125,7 +2125,7 @@ will not be modified."
 
 ;;;;; Souffle
 
-  (use-package souffle
+  (use-package souffle-mode
     :mode "\\.dl\\'")
 
 ;;;;; Racket

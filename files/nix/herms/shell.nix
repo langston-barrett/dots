@@ -1,4 +1,4 @@
-{ ghc ? "ghc8104"
+{ ghc ? "ghc884"
 , unstableHaskell ? true
 }:
 
@@ -11,12 +11,7 @@ in pkgs.mkShell {
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.zlib}/lib
   '';
   buildInputs =  [
-    pkgs.clang_8
-    pkgs.llvm_8
-    pkgs.yices
-    pkgs.z3
-
-    (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
+    (hPkgs.haskell.packages.${ghc}.ghcWithPackages (hpkgs: with hpkgs; []))
     # hPkgs.haskell-language-server
     hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
