@@ -4,13 +4,6 @@
 StrictHostKeyChecking ask
 UsePrivilegedPort no
 
-Host vm-36-3c.eic.galois.com
-  User galois
-  ForwardAgent yes
-  PreferredAuthentications publickey,keyboard-interactive,password
-  ControlMaster auto
-  ControlPath ~/.ssh/vm-%r@%h:%p
-
 # options applied for Galois hosts
 Host *.galois.com
   ForwardAgent yes
@@ -18,17 +11,6 @@ Host *.galois.com
   ForwardX11Trusted yes
   PreferredAuthentications publickey,keyboard-interactive,password
   VerifyHostKeyDNS ask
-
-Host vagrant
-  HostName 127.0.0.1
-  User vagrant
-  Port 2222
-  UserKnownHostsFile /dev/null
-  StrictHostKeyChecking no
-  PasswordAuthentication no
-  IdentityFile /home/siddharthist/code/sfe/.vagrant/machines/default/virtualbox/private_key
-  IdentitiesOnly yes
-  LogLevel FATAL
 
 Host 192.168.0.*
   PreferredAuthentications publickey,keyboard-interactive,password

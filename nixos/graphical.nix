@@ -74,13 +74,13 @@ in {
     ];
   };
 
-  location = {
-    latitude = location.latitude;
-    longitude = location.longitude;
-  };
+  # location = {
+  #   latitude = location.latitude;
+  #   longitude = location.longitude;
+  # };
 
   services.redshift = {
-    enable = true;
+    enable = false;
   };
 
   systemd.user.services = {
