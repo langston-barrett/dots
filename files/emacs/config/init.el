@@ -13,7 +13,10 @@
 (my/load "ui.el")
 (my/load "lang/c.el")
 (my/load "lang/lisp.el")
+(my/load "lang/haskell.el")
 (my/load "projects/mate.el")
+;; (my/load "eshell.el")
+(my/load "vterm.el")
 
 ;;; General
 
@@ -270,67 +273,6 @@
                 '(saw-script-mode . saw-script-ignore-function))
   (add-to-list 'symbol-overlay-ignore-functions
                 '(haskell-mode . haskell-ignore-function)))
-
-;;; eshell
-
-(with-eval-after-load 'eshell
-  (setq eshell-prompt-function
-        (lambda ()
-          (concat
-            "┌─["
-            "]──["
-            (propertize (format-time-string "%H:%M" (current-time)) 'face `(:foreground "yellow"))
-            "]──["
-            (replace-regexp-in-string "^/home/my/" "~/" (eshell/pwd))
-            "]\n"
-            "└─"
-            (if (= (user-uid) 0) "# " "> ")
-            )))
-
-  (setq eshell-aliases-file "~/.emacs.d/eshell/alias") ; TODO: change this
-
-  (if (boundp 'eshell-visual-commands)
-      (add-to-list 'eshell-visual-commands "ghcid")
-    (setq eshell-visual-commands
-          '("ghcid" "matterhorn" "mpw" "less" "more" "top" "htop")))
-
-
-  ;; Use C-r for backwards terminal search, even in evil mode
-  (defun my/eshell-hook ()
-    (when (require 'helm-shell-history nil 'noerror)
-      (spacemacs/set-leader-keys-for-major-mode 'eshell-mode
-        "h"  'helm-shell-history))
-    (evil-local-set-key 'insert (kbd "C-r") 'helm-eshell-history))
-  (add-hook 'eshell-mode-hook 'my/eshell-hook))
-
-;;; vterm
-
-;; http://ergoemacs.org/emacs/elisp_read_file_content.html
-(defun my/read-lines (filePath)
-  "Return a list of lines of a file at filePath."
-  (with-temp-buffer
-    (insert-file-contents filePath)
-    (split-string (buffer-string) "\n" t)))
-
-(defun my/insert-from-zsh-history ()
-  (interactive)
-  (kill-new
-    (helm :sources (helm-build-sync-source "zsh history"
-                    :candidates (my/read-lines "~/.zsh_history")
-                    :fuzzy-match t)
-          :buffer "*zsh history*")))
-
-
-(with-eval-after-load 'vterm
-  (spacemacs/set-leader-keys-for-major-mode 'vterm-mode
-    "ih" 'my/insert-from-zsh-history
-    "c"  'vterm-copy-mode)
-  (spacemacs/set-leader-keys-for-major-mode 'vterm-copy-mode
-    "c"  'vterm-copy-mode-done)
-  (defun my/vterm-mode-hook ()
-    (evil-local-set-key 'normal "P" 'vterm-yank)
-    (evil-local-set-key 'normal "p" 'vterm-yank))
-  (add-hook 'vterm-mode-hook 'my/vterm-mode-hook))
 
 ;;; cheatsheet
 
@@ -611,70 +553,6 @@
 (use-package souffle-mode
   :mode "\\.dl\\'")
 
-;;; Haskell
-
-;; TODO: ag with prefix: save excursion, write "data" or "newtype" at end of file
-;; select it with a region, call helm-do-ag, delete text, return to origin
-
-(with-eval-after-load 'haskell
-
-  ;; Dante
-  (setq dante-command-line '("nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante"))
-  (setq dante-repl-command-line '("nix-shell" "nix/shell.nix" "--pure" "--run" "cabal repl --builddir=dist/dante"))
-  (defun my/dante-mode-hook ()
-    (flycheck-add-next-checker 'haskell-dante '(warning . haskell-hlint)))
-  (add-hook 'dante-mode-hook 'my/dante-mode-hook)
-
-  ;; Set the Haskell mode outline header syntax to be "-- *"
-  ;; https://gist.github.com/alphapapa/0f76ffe9792fffecb017
-  (defun my/haskell-mode-outline-hook ()
-    (setq outshine-preserve-delimiter-whitespace t)
-    (setq outline-regexp
-          (rx
-            ;; Outline headings
-            (and (* space)
-                (one-or-more (syntax comment-start))
-                (* space)
-                (group (one-or-more "\*"))
-                (* space)))))
-
-  (defun my/haskell-mode-pragma-hook ()
-    ;; (spacemacs/toggle-whitespace-cleanup-off)
-    (when (require 'haskell-pragma nil 'noerror)
-      (haskell-pragma-mode)
-      (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
-        "ip"  'haskell-pragma-add-other-extension)))
-
-  (add-hook 'haskell-mode-hook 'my/haskell-mode-outline-hook)
-  (add-hook 'haskell-mode-hook 'my/haskell-mode-pragma-hook)
-  ;; (spacemacs/set-leader-keys-for-major-mode 'haskell-mode
-  ;;   "gg"  'dumb-jump-go)
-
-  ;; More align rules for Haskell
-  ;; https://bit.ly/2Rn92GA
-  ;; https://bit.ly/2Oh0lvt
-  (with-eval-after-load 'align
-    ;; Align EOL comments TODO: moves comment-only lines
-    ;; (add-to-list 'align-rules-list
-    ;;              '(haskell-eol-comment
-    ;;                (regexp . "\\(\\s-+\\)--\\s-+")
-    ;;                (modes . haskell-modes)))
-    ;; Align arrow operators
-    (add-to-list 'align-rules-list
-                  '(haskell-eol-comment
-                    (regexp . "\\(\\s-+\\)\\(>>>\\|<<<\\|&&&\\|\\*\\*\\*\\)\\s-+")
-                    (modes . haskell-modes)))
-    ;; Align if/then/else
-    (add-to-list 'align-rules-list
-                  '(haskell-ite
-                    (regexp . "\\(\\s-+\\)\\(if\|then\|else\\)\\s-+")
-                    (modes . haskell-modes)))
-    ;; Align on applicative delimiters
-    (add-to-list 'align-rules-list
-                  '(haskell-applicative
-                    (regexp . "\\(\\s-+\\)\\(<$>\\|<\\*>\\)\\s-+")
-                    (modes . haskell-modes)))))
-
 ;;; Java
 
 ;; Formatting really screws things up in weird ways.
@@ -739,7 +617,7 @@
       (goto-char (region-beginning))
       (insert "(* begin hide *)\n")))
 
-                                      ; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
+  ;; undo-tree and proof-general do NOT work together, this makes the breakage more tolerable
   (setq undo-tree-enable-undo-in-region nil)
 
   ;; Cobbled together from:
@@ -764,40 +642,6 @@
 (add-hook 'sh-mode-hook '(lambda () (setq sh-basic-offset 2
                                           sh-indentation 2)))
 
-;;; Python
-
-(with-eval-after-load 'python
-
-  ;; TODO: only do this if typing is imported? or something
-  ;; (setq-default flycheck-enabled-checkers '(flycheck-mypy))
-  ;; (when (require 'flycheck-mypy nil 'noerror)
-  ;;   (flycheck-add-next-checker 'python-flake8 'python-mypy t))
-
-  (setq lsp-pyls-plugins-pyflakes-enabled nil)
-  (setq lsp-pyls-plugins-pycodestyle-enabled nil)
-  (defun my/set-flycheck-error-level ()
-    (setq flycheck-navigation-minimum-level 'error)
-    (setq flycheck-error-list-minimum-level 'error))
-  (add-hook 'python-mode-hook 'my/set-flycheck-error-level)
-
-  ;; TODO: Why doesn't this work?
-  ;; (flycheck-select-checker 'python-pycompile)
-
-  (custom-set-variables
-    '(flycheck-python-flake8-executable "python3")
-    '(flycheck-python-pycompile-executable "python3")
-    '(flycheck-python-pylint-executable "python3"))
-
-  (defun my/insert-print ()
-    (interactive)
-    (insert "print(\"~\"*40, _)"))
-  (spacemacs/set-leader-keys-for-major-mode 'python-mode
-    "ip" 'my/insert-print))
-
-;; Jump to top-level definitions
-;; (spacemacs/set-leader-keys-for-major-mode 'python-mode
-;;   (completing-read prompt candidates nil t)
-;;   "gt"  '(lambda () (interactive) (helm-ag-this-file)))
 
 ;;; LaTeX
 
