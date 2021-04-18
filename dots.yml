@@ -173,6 +173,9 @@
       - src: spotify.desktop
         dst: "{{ home }}/.local/share/applications/spotify.desktop"
         graphical: true
+      - src: scripts/bin
+        dst: "{{ xdg_config_home }}/bin"
+        mode: "0750"
       - src: ssh
         dst: "{{ home }}/.ssh/config"
       - src: sway

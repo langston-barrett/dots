@@ -50,8 +50,13 @@ bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
 
 # allow ctrl-a and ctrl-e to move to beginning/end of line
-bindkey '^k' up-line-or-history
-bindkey '^j' down-line-or-history
+#
+# bizarrely, these interfere with emacs + vterm
+# https://github.com/hlissner/doom-emacs/issues/3546
+if [[ -z ${INSIDE_EMACS} ]]; then
+  bindkey '^k' up-line-or-history
+  bindkey '^j' down-line-or-history
+fi
 function use-j-k() {
   if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then
     notify-send "you can use ctrl-j and ctrl-k"

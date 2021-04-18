@@ -22,7 +22,10 @@
     "c"  'vterm-copy-mode)
   (spacemacs/set-leader-keys-for-major-mode 'vterm-copy-mode
     "c"  'vterm-copy-mode-done)
+
   (defun my/vterm-mode-hook ()
     (evil-local-set-key 'normal "P" 'vterm-yank)
-    (evil-local-set-key 'normal "p" 'vterm-yank))
+    (evil-local-set-key 'normal "p" 'vterm-yank)
+    (olivetti-tentative-mode -1))
+
   (add-hook 'vterm-mode-hook 'my/vterm-mode-hook))

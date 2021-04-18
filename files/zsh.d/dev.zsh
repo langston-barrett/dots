@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+export PATH=$PATH:$HOME/.config/bin
+
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
 # Delete all merged git branches. Use caution, and only use on master.
