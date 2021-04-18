@@ -17,6 +17,7 @@
 (my/load "projects/mate.el")
 ;; (my/load "eshell.el")
 (my/load "vterm.el")
+;; (my/load "exwm.el")
 
 ;;; General
 

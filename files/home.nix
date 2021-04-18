@@ -1,6 +1,14 @@
 { pkgs, ... }:
 
-{
+let
+  myEmacs =
+    with pkgs; (emacsPackagesNgGen emacsGcc).emacsWithPackages (epkgs: [
+      #epkgs.emacsql-sqlite
+      epkgs.exwm
+      epkgs.vterm
+      epkgs.pdf-tools
+    ]);
+in {
   home.packages = with pkgs; [
     fasd
   ];
@@ -11,11 +19,20 @@
     }))
   ];
 
-  manual.manpages.enable = false;
+  manual.manpages.enable = false; # TODO try re-enabling
+
+  xsession = {
+    enable = false;
+    windowManager.command = ''
+      pkill .emacs
+      ${myEmacs}/bin/emacs --daemon -f exwm-enable &> /tmp/emacs || i3
+      exec ${myEmacs}/bin/emacsclient -c &> /tmp/emacs || i3
+    '';
+  };
 
   services = {
     dunst = {
-      enable = true;
+      enable = false;
       settings = {
         global = {
           geometry = "500-30+50";
@@ -56,8 +73,7 @@
 
     emacs = {
       enable = true;
-      package = pkgs.emacsGcc;
-      extraPackages = (epkgs: [ epkgs.vterm ] );
+      package = myEmacs;
     };
 
     zsh = {
