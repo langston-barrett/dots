@@ -336,8 +336,11 @@
   ;; 'x' for text
   "oxa"  'ialign-interactive-align)
 
+;; TODO: Work in terminal?
 (evil-define-key 'insert prog-mode-map
   (kbd "<S-return>") 'hippie-expand)
+(evil-define-key 'normal prog-mode-map
+  (kbd "RET") 'hippie-expand)
 
 ;;; Ediff
 
@@ -552,7 +555,102 @@
 ;;; Souffle
 
 (use-package souffle-mode
-  :mode "\\.dl\\'")
+  :mode "\\.dl\\'"
+  :config
+
+  ;; Compilation
+  (add-to-list
+   'compilation-error-regexp-alist-alist
+   '(souffle-error
+     "\\(Error:\\).+in file\\s-+\\([^ ]+\\)\\s-+at line \\([0-9]+\\)"
+     2 ;; Which match is the file?
+     3 ;; Which match is the line (can be dotted pair of (start . end))
+     nil ;; Which match is the column?
+     2 ;; 2 = error, 1 = warning, 0 = info
+     2 ;; Which match should have the hyperlink face applied
+     (1 "compilation-error"))) ;; Additional faces to apply to matches
+  (cl-pushnew 'souffle-error compilation-error-regexp-alist)
+
+  ;; Go-to-definition
+
+  (with-eval-after-load 'dumb-jump
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+    (add-to-list
+     'dumb-jump-find-rules
+     '(:language
+       "souffle"
+       :type "function"
+       :supports ("ag" "grep" "rg" "git-grep")
+       :regex "\\\.decl\\b\\s*JJJ\\j\\("
+       :tests (".decl foo")
+       :not (".type bar")))
+    (add-to-list
+     'dumb-jump-find-rules
+     '(:language
+       "souffle"
+       :type "type"
+       :supports ("ag" "grep" "rg" "git-grep")
+       :regex "\\\.type\\b\\s*JJJ\\j\\s*\\="
+       :tests (".type foo")
+       :not (".decl bar")))
+    (spacemacs/set-leader-keys-for-major-mode 'souffle-mode
+      "gg" 'xref-find-definitions))
+
+  ;; Company-mode
+
+  (defconst
+    souffle-decl-keywords
+    '("init"
+      "comp"
+      "decl"
+      "type"
+      "input"
+      "output"))
+
+  (defconst
+    souffle-type-keywords
+    '("number"
+      "symbol"
+      "unsigned"
+      "float"))
+
+  (defconst
+    souffle-io-keywords
+    '("stdin"
+      "stdout"
+      "json"
+      "file"))
+
+  (defconst
+    souffle-other-keywords
+    '("nil"
+      "choice-domain"))
+
+  (defconst
+    souffle-keywords
+    (append
+     souffle-decl-keywords
+     souffle-io-keywords
+     souffle-type-keywords
+     souffle-other-keywords))
+
+  (defun my/souffle-company-backend (command &optional arg &rest ignored)
+    (interactive (list 'interactive))
+
+    (cl-case command
+      (interactive (company-begin-backend 'my/souffle-company-backend))
+      (prefix (and (eq major-mode 'souffle-mode)
+                   (company-grab-symbol)))
+      (candidates
+       (cl-remove-if-not
+        (lambda (c) (string-prefix-p arg c))
+        souffle-keywords))))
+
+  ;; Hook
+  (defun my/souffle-mode-hook ()
+    (add-to-list 'company-backends 'my/souffle-company-backend)
+    (require 'dumb-jump))
+  (add-hook 'souffle-mode-hook #'my/souffle-mode-hook))
 
 ;;; Java
 

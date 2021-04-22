@@ -25,3 +25,12 @@ vterm_cmd() {
 find_file() {
   vterm_cmd find-file "$(realpath "${@:-.}")"
 }
+
+if [[ ${INSIDE_EMACS} == vterm ]]; then
+
+  # vi/modal keybindings disrupt keys
+  bindkey -e
+
+  alias magit-status="emacsclient -ne '(magit-status)'"
+  function man() { emacsclient -ne "(man \"$1\")"; }
+fi

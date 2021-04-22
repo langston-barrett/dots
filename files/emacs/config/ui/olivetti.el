@@ -52,9 +52,9 @@
     ;; Stolen from darkroom
     (define-minor-mode olivetti-tentative-mode
       "Enters `olivetti-mode' when all other windows are deleted."
-      nil                                 ; init-value
-      nil                                 ; lighter
-      nil                                 ; keymap
+      nil                               ; init-value
+      nil                               ; lighter
+      nil                               ; keymap
       ;; always begin by removing the hook
       (remove-hook 'window-configuration-change-hook
                    'my/window-configuration-change-hook
@@ -85,7 +85,13 @@
     olivetti-tentative-mode
     olivetti-tentative-mode)
 
-  (global-olivetti-tentative-mode))
+  (global-olivetti-tentative-mode)
+
+  (defun my/display-olivetti-tentative-mode ()
+    (olivetti-tentative-mode -1))
+  (defun my/disable-olivetti-tentative-mode ()
+    (olivetti-tentative-mode -1))
+  (add-hook 'magit-log-mode-hook #'my/disable-olivetti-tentative-mode))
 
 (my/when-idle-med 'my/activate-olivetti)
 

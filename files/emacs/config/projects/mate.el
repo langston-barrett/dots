@@ -2,9 +2,12 @@
 ;;; MATE
 
 (defun mate-shake (tgt)
-  (let ((default-directory (concat "/sudo::" (projectile-project-root))))
+  (let ((default-directory
+          (if (string-prefix-p "/sudo::" (projectile-project-root))
+              (projectile-project-root)
+            (concat "/sudo::" (projectile-project-root)))))
     (compile
-      (mapconcat
+     (mapconcat
       'identity
       `("docker run --rm --net=host"
         "--mount type=bind,src=$PWD,dst=/x"
