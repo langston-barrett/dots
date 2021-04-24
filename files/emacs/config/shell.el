@@ -53,7 +53,6 @@
   "Track shell directory by inspecting procfs."
   nil nil nil
   (cond (shell-procfs-dirtrack-mode
-         ;; TODO not yet used
          (setq my/shell-procfs-dirtrack-tramp-prefix
                (if (tramp-tramp-file-p default-directory)
                    ;; (with-parsed-tramp-file-name default-directory parsed
