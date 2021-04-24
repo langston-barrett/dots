@@ -16,6 +16,8 @@
 (my/load "lang/haskell.el")
 (my/load "projects/mate.el")
 ;; (my/load "eshell.el")
+(my/load "tramp.el")
+(my/load "shell.el")
 (my/load "vterm.el")
 ;; (my/load "exwm.el")
 

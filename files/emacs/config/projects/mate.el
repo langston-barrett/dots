@@ -2,6 +2,7 @@
 ;;; MATE
 
 (defun mate-shake (tgt)
+  ;; TODO: Handle multi-hop TRAMP
   (let ((default-directory
           (if (string-prefix-p "/sudo::" (projectile-project-root))
               (projectile-project-root)

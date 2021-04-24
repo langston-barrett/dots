@@ -83,6 +83,7 @@ will not be modified."
     (org-map-entries 'org-archive-subtree "/DONE" 'file)
     (org-map-entries 'org-archive-subtree "/CANCELLED" 'file)))
 
+;; TODO: If current-kill is empty/not a URL, select from kill ring
 (defun my/org-insert-url-from-kill-ring ()
   (interactive)
   (save-excursion
