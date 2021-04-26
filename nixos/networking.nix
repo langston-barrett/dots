@@ -9,6 +9,7 @@
       interfaces = {
         pdx =
           let awk = "${pkgs.gawk}/bin/awk";
+              endpoint = "65.132.32.180";
           in {
           privateKeyFile = "/root/vpn/wg_pdx.private.key";
           address = [
@@ -17,10 +18,10 @@
           ];
           dns = ["10.20.10.1" "galois.com"];
           postUp = ''
-            ip route add 65.132.32.180 via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
+            ip route add ${endpoint} via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
           '';
           postDown = ''
-            ip route del 65.132.32.180 via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
+            ip route del ${endpoint} via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
           '';
           peers = [
             {
@@ -35,10 +36,34 @@
             }
           ];
         };
+        collo =
+          let awk = "${pkgs.gawk}/bin/awk";
+              endpoint = "64.16.52.138";
+          in {
+          privateKeyFile = "/root/vpn/wg_collo.private.key";
+          address = [ "10.10.10.87" ];
+          dns = ["10.10.10.1" "galois.com"];
+          postUp = ''
+            ip route add ${endpoint} via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
+          '';
+          postDown = ''
+            ip route del ${endpoint} via $(ip -o -4 route show to default | ${awk} '{print $3}') dev $(ip -o -4 route show to default | ${awk} '{print $5}')
+          '';
+          peers = [
+            {
+              publicKey = "9xqBm/8JNWWyfB2CG3LtETxO4LZJqvnu9HidfJXSukk=";
+              allowedIPs = [
+                "10.10.0.0/16"
+                "64.16.52.128/25"
+              ];
+              endpoint = "${endpoint}:31194";
+            }
+          ];
+        };
       };
     };
 
-    nameservers = [ "1.1.1.1" "8.8.8.8" "8.8.4.4" ];
+    nameservers = [ "8.8.8.8" "8.8.4.4" "1.1.1.1" ];
 
     # Use plasma-nm or nm-applet as a GUI
     # Use gnome-control-center or nmtui to configure networkmanager
@@ -46,10 +71,11 @@
       enable = true;
       dns = "dnsmasq";
       appendNameservers = [
-        "65.132.32.177"   #PDX
-        "65.132.32.132"   #PDX
-        "65.132.32.174"   #PDX
-        "64.56.102.67"    #DAY
+        "10.20.10.1" "galois.com"
+        # "65.132.32.177"   #PDX
+        # "65.132.32.132"   #PDX
+        # "65.132.32.174"   #PDX
+        # "64.56.102.67"    #DAY
       ];
     };
 
