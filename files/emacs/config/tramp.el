@@ -56,11 +56,28 @@
   "Mash a list of TRAMP hops together.
 
 >> (my/tramp-mash-hops '(\"ssh:host1\" \"ssh:user@host2\"))
-=> \"/ssh:host1|ssh:user@host2:/path\"
+=> \"/ssh:host1|ssh:user@host2:\"
 "
   (concat "/" (mapconcat 'identity hops "|") ":"))
 
 ;; https://www.emacswiki.org/emacs/TrampMode#h5o-16
+(defun my/tramp-add-sudo-or-sg (sudo-or-sg username path)
+  (if (tramp-tramp-file-p path)
+      ;; Hard case: It's multi-hop.
+      (let* ((hops (my/tramp-get-hops path))
+             (last-hop (car (last hops)))
+             (last-hop-host (my/tramp-get-host last-hop)))
+        (concat
+         (my/tramp-mash-hops
+          (seq-concatenate
+           'list
+           hops
+           (list (concat sudo-or-sg ":" username "@" last-hop-host))))
+         (tramp-file-local-name path)))
+
+      ;; Easy case: It's not multi-hop, so just add the sudo prefix.
+      (concat "/" sudo-or-sg ":" username "@localhost:" path)))
+
 (defun my/tramp-add-sudo (path)
   "Add a sudo to the front of a path, potentially making it multi-hop
 
@@ -68,16 +85,10 @@
 => \"/sudo::/var\"
 
 >> (my/tramp-add-sudo \"/ssh:host:/var\")
-=> \"/sudo::/var\"
+=> \"/ssh:host|sudo:host:/var\"
 "
-  (if (tramp-tramp-file-p path)
-      ;; Hard case: It's multi-hop.
-      (let* ((hops (my/tramp-get-hops path))
-             (last-hop (car (last hops)))
-             (last-hop-host (my/tramp-get-host last-hop)))
-        (my/tramp-mash-hops
-         (seq-concatenate 'list hops (list (concat "sudo:" last-hop-host)))))
+  (my/tramp-add-sudo-or-sg "sudo" "root" path))
 
-      ;; Easy case: It's not multi-hop, so just add the sudo prefix.
-      (concat "/sudo::" path)))
-
+;; TODO: Doesn't yet work with MATE - TRAMP bug?
+(defun my/tramp-add-sudo-g (path group)
+  (my/tramp-add-sudo-or-sg "sg" group path))

@@ -65,3 +65,13 @@
   (add-hook hook #'eros-mode))
 
 (add-hook 'emacs-lisp-mode-hook #'flycheck-mode)
+
+;;; Edebug
+
+;; TODO: Try out a REPL while debugging by adding/removing advice in the edebug-mode-hook:
+;; (defun my/ielm-edebug-eval-input (orig-func input-string &rest args)
+;;   "Wrapper function for evaluating expressions in an edebug context."
+;;   (apply orig-func (format "(edebug-eval-expression (quote %s))" input-string) args))
+;; (advice-add 'ielm-eval-input :around #'my/ielm-edebug-eval-input)
+
+;; TODO: Hydra for edebug-mode

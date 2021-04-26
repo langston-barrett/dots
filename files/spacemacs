@@ -155,6 +155,7 @@ This function should only modify configuration layer settings."
                         :repo "abingham/outline-toc.el"))
 
      ;; Emacs Lisp
+     helpful
      suggest
      eros
      doctest

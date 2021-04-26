@@ -46,6 +46,7 @@
 (setq-default evil-escape-key-sequence "hj")
 
 (spacemacs/set-leader-keys
+  "o SPC" #'repeat-complex-command
   ;; 'o' is the "user key"
   ;; 'b' for 'buffer'
   ;; 'r' for 'revert'
@@ -844,3 +845,9 @@
   "ii" 'my/smart-insert-import)
 (spacemacs/set-leader-keys-for-major-mode 'python-mode
   "ii" 'my/smart-insert-import)
+
+;;; Helpful
+
+(spacemacs/set-leader-keys
+  "hdf"  #'helpful-callable
+  "hdv"  #'helpful-variable)
