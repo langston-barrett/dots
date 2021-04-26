@@ -126,34 +126,39 @@ This function should only modify configuration layer settings."
    dotspacemacs-additional-packages
    '(doct
      csv-mode
-     noccur
+     noccur                             ; search in project
      evil-fringe-mark
-     emojify
-     ialign ; interactive align-regexp
-     smart-hungry-delete ; delete all whitespace at once
-     direnv              ; direnv + nix
-     math-symbols ; easily insert unicode latex macros
+     ialign                             ; interactive align-regexp
+     smart-hungry-delete                ; delete all whitespace at once
+     direnv                             ; direnv + nix
+     math-symbols                       ; easily insert unicode latex macros
      ;; dhall-mode
      lispy
      lispyville
      ;; all-the-icons
      ;; w3m
      ;; mmm-mode      ; markdown multi-mode
-     prop-menu ; needed for saw-script-mode
+     prop-menu                          ; needed for saw-script-mode
      helm-dash
      ;; pocket-reader
      ;; markdown-preview-eww
 
      ;; UI
-     cheatsheet ; self-explanatory
+     cheatsheet                         ; self-explanatory
      ;; helpful    ; better elisp help
-     dimmer     ; dim inactive buffers
-     olivetti   ; centering the only active window
-     prism      ; color blocks by depth
+     dimmer                             ; dim inactive buffers
+     olivetti                           ; centering the only active window
+     prism                              ; color blocks by depth
      ;; sr-speedbar
      (outline-toc
       :location (recipe :fetcher github
                         :repo "abingham/outline-toc.el"))
+
+     ;; Emacs Lisp
+     suggest
+     eros
+     doctest
+     buttercup
 
      multi-vterm
      ;; flycheck-mypy
@@ -164,6 +169,10 @@ This function should only modify configuration layer settings."
      ;;  :location (recipe :fetcher github
      ;;                    :repo "gelisam/klister"
      ;;                    :files '("klister.el")))
+
+     (doctest
+      :location (recipe :fetcher github
+                        :repo "riscy/doctest"))
 
      (symbol-overlay
       :location (recipe :fetcher github

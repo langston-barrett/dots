@@ -32,12 +32,6 @@
            (point))))
     (buffer-substring comint-last-output-start comint-last-output-end)))
 
-(defun my/get-tramp-prefix (str)
-  (substring
-   str
-   0
-   (+ 1 (string-search ":" str (+ 1 (string-search ":" str))))))
-
 (defun shell-procfs-dirtrack (str)
   (prog1 str
     (when (string-match comint-prompt-regexp str)

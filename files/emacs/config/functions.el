@@ -63,3 +63,19 @@
   (my/search-replace ", '" ", \"")
   (my/search-replace ": False" ": false")
   (my/search-replace ": True," ": true,"))
+
+;; http://ergoemacs.org/emacs/elisp_read_file_content.html
+(defun my/read-lines (file-path)
+  "Return a list of lines of a file at FILE-PATH."
+  (with-temp-buffer
+    (insert-file-contents file-path)
+    (split-string (buffer-string) "\n" t)))
+
+(defun my/insert-from-zsh-history ()
+  "Insert a line from ~/.zsh_history."
+  (interactive)
+  (kill-new
+   (helm :sources (helm-build-sync-source "zsh history"
+                    :candidates (my/read-lines "~/.zsh_history")
+                    :fuzzy-match t)
+         :buffer "*zsh history*")))

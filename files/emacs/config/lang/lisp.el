@@ -54,8 +54,14 @@
 
 (dolist (mode (list 'racket-mode 'emacs-lisp-mode))
   (spacemacs/set-leader-keys-for-major-mode mode
-    ">"   'sp-forward-slurp-sexp
-    "<"   'lispy-barf
-    "ic"  'lispy-clone
-    "xf"  'lispy-delete
-    "xb"  'lispy-delete-backward))
+    ">"   #'sp-forward-slurp-sexp
+    "<"   #'lispy-barf
+    "rr"  #'emr-show-refactor-menu
+    "ic"  #'lispy-clone
+    "xf"  #'lispy-delete
+    "xb"  #'lispy-delete-backward))
+
+(dolist (hook (list 'racket-mode-hook 'emacs-lisp-mode-hook))
+  (add-hook hook #'eros-mode))
+
+(add-hook 'emacs-lisp-mode-hook #'flycheck-mode)

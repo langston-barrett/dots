@@ -3,10 +3,7 @@
 
 (defun mate-shake (tgt)
   ;; TODO: Handle multi-hop TRAMP
-  (let ((default-directory
-          (if (string-prefix-p "/sudo::" (projectile-project-root))
-              (projectile-project-root)
-            (concat "/sudo::" (projectile-project-root)))))
+  (let ((default-directory (my/tramp-add-sudo default-directory)))
     (compile
      (mapconcat
       'identity
