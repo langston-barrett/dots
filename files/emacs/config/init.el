@@ -14,6 +14,7 @@
 (my/load "lang/c.el")
 (my/load "lang/lisp.el")
 (my/load "lang/haskell.el")
+(my/load "lang/souffle.el")
 (my/load "projects/mate.el")
 ;; (my/load "eshell.el")
 (my/load "tramp.el")
@@ -29,6 +30,10 @@
 (setq browse-url-generic-program "qutebrowser")
 
 (setq helm-ag-use-agignore t)
+(setq comp-async-report-warnings-errors nil)
+
+;; Show human-readable sizes in dired
+(setq dired-listing-switches "-alh")
 
 ;; Pretty sure these are about RAM usage
 (setq history-length 100)
@@ -99,6 +104,18 @@
 (when (require 'diff-hl-mode nil 'noerror)
   (global-diff-hl-mode 1))
 
+;;; scratch
+
+(defun my/scratch (mode)
+  (interactive
+   (list
+    (completing-read "Which? " '("markdown" "elisp" "fundamental"))))
+  (switch-to-buffer mode)
+  (cond
+   ((equal mode "markdown") (markdown-mode))
+   ((equal mode "elisp") (emacs-lisp-mode))
+   (t (fundamental-mode))))
+
 ;;; helm-dash
 
 ;; TODO: Use actual dash layer
@@ -108,35 +125,35 @@
   (require 'xdg)
   (setq helm-dash-docsets-path
         (concat
-          (xdg-data-home)
-          "/docsets"))
+         (xdg-data-home)
+         "/docsets"))
   (setq my/helm-dash-user-docsets
         (list
-          ;; "Beautiful_Soup" ;;
-          "Clang"
-          ;; "Coq" ;;
-          "emacs"
-          ;; "GNU_Make"
-          "HTTP"
-          "Hy"
-          ;; "Hypothesis" ;;
-          ;; "IntelASMx86"
-          "LLVM"
-          ;; "Linux_Man_Pages"
-          ;; "Org_Mode"
-          ;; "R5RS" ;;
-          "Requests"
-          ;; "Sphinx"
-          "Zsh"
-          "glibc"
-          "pytest"))
+         ;; "Beautiful_Soup" ;;
+         "Clang"
+         ;; "Coq" ;;
+         "emacs"
+         ;; "GNU_Make"
+         "HTTP"
+         "Hy"
+         ;; "Hypothesis" ;;
+         ;; "IntelASMx86"
+         "LLVM"
+         ;; "Linux_Man_Pages"
+         ;; "Org_Mode"
+         ;; "R5RS" ;;
+         "Requests"
+         ;; "Sphinx"
+         "Zsh"
+         "glibc"
+         "pytest"))
   (setq my/helm-dash-official-docsets
         (list
-          "Haskell"
-          "SQLAlchemy"
-          ;; "JavaScript"
-          "Python 3"
-          "HTML"))
+         "Haskell"
+         "SQLAlchemy"
+         ;; "JavaScript"
+         "Python 3"
+         "HTML"))
 
   (setq helm-dash-common-docsets
         (append my/helm-dash-official-docsets
@@ -202,14 +219,6 @@
 (custom-set-faces
   '(minimap-active-region-background ((t (:background "gray25")))))
 
-;;; speedbar/sb-imenu
-
-;; (when (require 'sb-imenu nil 'noerror)
-;;   (setq speedbar-initial-expansion-list-name "sb-imenu")
-;;   (defun my/speedbar-buffer-change-hook ()
-;;     (sb-imenu-refresh))
-;;   (add-hook 'buffer-list-update-hook #'my/speedbar-buffer-change-hook))
-
 ;;; outline-toc-mode
 
 (setq my/outline-modes (list 'org-mode 'markdown-mode))
@@ -222,14 +231,53 @@
           'append
           'global)
 
+;;; dired
+
+(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+
+;;; Occur
+
+;; https://oremacs.com/2015/01/26/occur-dwim/
+(defun occur-dwim ()
+  "Call `occur' with a sane default, chosen as the thing under point or selected region"
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+(with-eval-after-load 'replace
+  (defhydra my/occur-hydra ()
+    ("e" occur-edit-mode "edit")
+    ("E" occur-cease-edit "stop editing")
+    ("n" occur-next "next")
+    ("p" occur-prev "previous")
+    ("r" occur-rename-buffer "rename buffer")
+    ("RET" occur-mode-display-occurrence "go")
+    ("q" nil "quit" :exit t))
+  (spacemacs/set-leader-keys-for-major-mode 'occur-mode
+    "." #'my/occur-hydra/body
+    "e" #'occur-edit-mode
+    "E" #'occur-cease-edit
+    "n" #'occur-next
+    "p" #'occur-prev
+    "r" #'occur-rename-buffer
+    "RET" #'occur-mode-display-occurrence)
+  (add-hook 'occur-mode-hook #'my/occur-hydra/body))
+
 ;;; prism
 
 (with-eval-after-load 'prism
   (prism-set-colors
-    :lightens '(0 5 10)
-    :desaturations '(-2.5 0 2.5)
-    :colors (-map #'doom-color
-                  '(red orange yellow green blue violet))))
+   :lightens '(0 5 10)
+   :desaturations '(-2.5 0 2.5)
+   :colors (-map #'doom-color
+                 '(red orange yellow green blue violet))))
 (add-hook 'json-mode-hook 'prism-mode)
 
 ;;; symbol-overlay
@@ -500,16 +548,12 @@
     "." 'spacemacs/elfeed-transient-state/body)
 
   (add-hook 'elfeed-search-mode-hook
-            'spacemacs/elfeed-transient-state/body)
+            #'spacemacs/elfeed-transient-state/body)
   (add-hook 'elfeed-search-mode-hook
-            'spacemacs/toggle-centered-point-on)
+            #'spacemacs/toggle-centered-point-on)
 
   ;; (add-to-list 'elfeed-search-face-alist '(haskell (:foreground "red")))
-
-  (defun my/elfeed-hydra-hook ()
-    (when (equal major-mode 'elfeed-search-mode)
-      (spacemacs/elfeed-transient-state/body)))
-  (add-hook 'focus-in-hook 'my/elfeed-hydra-hook))
+  )
 
 ;; https://github.com/iqbalansari/dotEmacs/blob/master/config/rss.org
 ;; (defun my/elfeed-open-in-w3m ()
@@ -539,8 +583,6 @@
     "c"  'klister-run-current-buffer))
 
 ;;; C/C++
-
-
 ;;; Rust
 
 (with-eval-after-load 'rust
@@ -554,106 +596,6 @@
                 '(rust-match
                   (regexp . "=>")
                   (modes . rust-mode))))
-
-;;; Souffle
-
-(use-package souffle-mode
-  :mode "\\.dl\\'"
-  :config
-
-  ;; Compilation
-  (add-to-list
-   'compilation-error-regexp-alist-alist
-   '(souffle-error
-     "\\(Error:\\).+in file\\s-+\\([^ ]+\\)\\s-+at line \\([0-9]+\\)"
-     2 ;; Which match is the file?
-     3 ;; Which match is the line (can be dotted pair of (start . end))
-     nil ;; Which match is the column?
-     2 ;; 2 = error, 1 = warning, 0 = info
-     2 ;; Which match should have the hyperlink face applied
-     (1 "compilation-error"))) ;; Additional faces to apply to matches
-  (cl-pushnew 'souffle-error compilation-error-regexp-alist)
-
-  ;; Go-to-definition
-
-  (with-eval-after-load 'dumb-jump
-    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-    (add-to-list
-     'dumb-jump-find-rules
-     '(:language
-       "souffle"
-       :type "function"
-       :supports ("ag" "grep" "rg" "git-grep")
-       :regex "\\\.decl\\b\\s*JJJ\\j\\("
-       :tests (".decl foo")
-       :not (".type bar")))
-    (add-to-list
-     'dumb-jump-find-rules
-     '(:language
-       "souffle"
-       :type "type"
-       :supports ("ag" "grep" "rg" "git-grep")
-       :regex "\\\.type\\b\\s*JJJ\\j\\s*\\="
-       :tests (".type foo")
-       :not (".decl bar")))
-    (spacemacs/set-leader-keys-for-major-mode 'souffle-mode
-      "gg" 'xref-find-definitions))
-
-  ;; Company-mode
-
-  (defconst
-    souffle-decl-keywords
-    '("init"
-      "comp"
-      "decl"
-      "type"
-      "input"
-      "output"))
-
-  (defconst
-    souffle-type-keywords
-    '("number"
-      "symbol"
-      "unsigned"
-      "float"))
-
-  (defconst
-    souffle-io-keywords
-    '("stdin"
-      "stdout"
-      "json"
-      "file"))
-
-  (defconst
-    souffle-other-keywords
-    '("nil"
-      "choice-domain"))
-
-  (defconst
-    souffle-keywords
-    (append
-     souffle-decl-keywords
-     souffle-io-keywords
-     souffle-type-keywords
-     souffle-other-keywords))
-
-  (defun my/souffle-company-backend (command &optional arg &rest ignored)
-    (interactive (list 'interactive))
-
-    (cl-case command
-      (interactive (company-begin-backend 'my/souffle-company-backend))
-      (prefix (and (eq major-mode 'souffle-mode)
-                   (company-grab-symbol)))
-      (candidates
-       (cl-remove-if-not
-        (lambda (c) (string-prefix-p arg c))
-        souffle-keywords))))
-
-  ;; Hook
-  (defun my/souffle-mode-hook ()
-    (add-to-list 'company-backends 'my/souffle-company-backend)
-    (require 'dumb-jump))
-  (add-hook 'souffle-mode-hook #'my/souffle-mode-hook))
 
 ;;; Java
 
@@ -734,9 +676,7 @@
           (l (string-match ".v" n)))
       (if (not makefile)
           (error "No build file found for project %s" (projectile-project-root)))
-      (compile (concat "make " (substring n 0 l) ".vo"))))
-
-  )
+      (compile (concat "make " (substring n 0 l) ".vo")))))
 
 
 ;;; Shell
@@ -771,21 +711,6 @@
 (add-hook 'message-mode-hook 'msg-mode)
 (add-to-list 'auto-mode-alist '(".*mutt.*" . message-mode))
 
-;;; projects/compile
-
-(defun my/rack-mypy ()
-  (interactive)
-  (direnv-mode 1)
-  (compile "mypy .")
-  (switch-to-buffer (compilation-find-buffer))
-  (while (not (equal nil compilation-in-progress))
-    (sleep-for 0.25))
-  (if (equal nil (list 0))
-      (progn
-        (message "Compilation was successful!")
-        (kill-buffer))
-    (my/next-compilation-error)))
-
 ;;; eacl
 
 (eval-after-load 'grep
@@ -809,23 +734,24 @@
 
 ;; This doesn't work as a 'let' binding??
 ;; TODO: only consider files of the appropriate suffices
-(defun my/eacl-complete (s)
-  (progn (insert s)
-          (eacl-complete-line)))
+(eval-when-compile
+  (defsubst my/eacl-complete (s)
+    (insert s)
+    (eacl-complete-line)))
 
 (defun my/smart-insert-import ()
   (interactive)
   (evil-open-below 1)
   (evil-beginning-of-line)
-  (cond ((eq major-mode 'haskell-mode) (my/eacl-complete "import          "))
-        ((eq major-mode 'emacs-lisp-mode) (my/eacl-complete "(require "))
-        ((eq major-mode 'scala-mode) (my/eacl-complete "import "))
-        ((eq major-mode 'java-mode) (my/eacl-complete "import "))
-        ((eq major-mode 'python-mode) (my/eacl-complete "import "))
-        ((eq major-mode 'coq-mode) (my/eacl-complete "Require "))
-        ((eq major-mode 'rust-mode) (my/eacl-complete "use "))
-        ((eq major-mode 'c++-mode) (call-interactively 'my/c++-include))
-        ((eq major-mode 'c-mode) (call-interactively 'my/libc-include))))
+  (cond ((eq major-mode #'haskell-mode) (my/eacl-complete "import          "))
+        ((eq major-mode #'emacs-lisp-mode) (my/eacl-complete "\\(require "))
+        ((eq major-mode #'scala-mode) (my/eacl-complete "import "))
+        ((eq major-mode #'java-mode) (my/eacl-complete "import "))
+        ((eq major-mode #'python-mode) (my/eacl-complete "import "))
+        ((eq major-mode #'coq-mode) (my/eacl-complete "Require "))
+        ((eq major-mode #'rust-mode) (my/eacl-complete "use "))
+        ((eq major-mode #'c++-mode) (call-interactively 'my/c++-include))
+        ((eq major-mode #'c-mode) (call-interactively 'my/libc-include))))
 
 ;; 'i' for 'insert'
 ;; 'i' for 'import'
@@ -851,3 +777,7 @@
 (spacemacs/set-leader-keys
   "hdf"  #'helpful-callable
   "hdv"  #'helpful-variable)
+
+;; Local Variables:
+;; flycheck-disabled-checkers: (emacs-lisp-checkdoc)
+;; End:

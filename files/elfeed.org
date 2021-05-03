@@ -26,6 +26,7 @@
 *** [[https://with-emacs.com/rss.xml][with emacs]]
 *** [[https://www.reddit.com/r/orgmode/][org-mode subreddit]]
 *** [[https://emacs.cafe/feed.xml][emacs.cafe]]
+*** [[https://blog.tecosaur.com/tmio/rss.xml][This Month in Org]]
 ** Nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]

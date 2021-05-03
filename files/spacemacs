@@ -149,6 +149,7 @@ This function should only modify configuration layer settings."
      dimmer                             ; dim inactive buffers
      olivetti                           ; centering the only active window
      prism                              ; color blocks by depth
+     marginalia
      ;; sr-speedbar
      (outline-toc
       :location (recipe :fetcher github
@@ -668,6 +669,11 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;; https://github.com/syl20bnr/spacemacs/issues/8853
   ;; (load-file (let ((coding-system-for-read 'utf-8))
   ;;              (shell-command-to-string "agda-mode locate")))
+
+  (setq org-directory "~/org")
+  ;; "This variable needs to be set before any calls to Org-roam functions,
+  ;; including enabling org-roam-mode."
+  (setq org-roam-directory org-directory)
 
   ;; "This variable needs to be set before org.el is loaded."
   (setq org-export-backends '(ascii html md latex))

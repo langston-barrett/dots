@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# key: cl-defstruct
+# name: cl-defstruct
+# contributor: Langston Barrett
+# --
+(cl-defstruct
+  (${1:Name}
+    (:constructor packagename-make-${1}))
+  "${2:Docstring}"
+  (${3:Slots}
+  :type list
+  :readonly
+  :documentation "doc"))

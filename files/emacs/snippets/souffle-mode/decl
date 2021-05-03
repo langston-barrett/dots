@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: decl
+# name: decl
+# condition: (= (length ".decl") (current-column))
+# contributor: Langston Barrett
+# --
+.decl ${1:name}(${2:atoms}: ${3:types})

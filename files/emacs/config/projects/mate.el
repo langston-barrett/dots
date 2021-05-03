@@ -1,6 +1,9 @@
 ;; -*- lexical-binding: t; -*-
 ;;; MATE
 
+(eval-when-compile
+  (require 'cl-lib))
+
 (defun my/mate-docker-run (cmd)
   (let ((default-directory (my/tramp-add-sudo (projectile-project-root))))
     (compile
@@ -9,7 +12,7 @@
       `("docker run --rm --net=host"
         "--mount type=bind,src=$PWD,dst=/x"
         "--workdir /x"
-        "mate-dev"
+        "mate-dev-souffle"
         ,cmd)
       " "))))
 
@@ -23,6 +26,7 @@
 
 (defun my/mate-docker-run-and-then (cmd rest)
   (my/mate-docker-run cmd)
+  ;; There is also compilation-in-progress...
   (let ((proc (get-buffer-process (get-buffer "*compilation*"))))
     (when proc
       (set-process-sentinel
@@ -45,24 +49,48 @@
   ;; TODO:
   ;; - Default to current buffer file if it's a C file
   (my/mate-docker-run-and-then
-   (concat "clang -O1 -emit-llvm -c " file)
+   (concat "clang -O1 -fno-discard-value-names -emit-llvm -c " file)
    (lambda ()
      (my/mate-docker-run-and-then
       (concat "llvm-dis-10 " (concat (file-name-sans-extension file) ".bc"))
       (lambda ()
-        (find-file (concat (file-name-sans-extension file) ".ll")))))))
+        (find-file-existing (concat (file-name-sans-extension file) ".ll")))))))
+
+(defsubst my/directory-files-with-prefix (prefix dir)
+  (cl-loop
+   for file in (directory-files dir)
+   if (string-prefix-p "assert_" file)
+   collect file))
+
+(defsubst my/filter-nonempty (files)
+  "Find non-empty files in the list FILES."
+  (cl-loop
+   for file in files
+   if (let ((sz (file-attribute-size (file-attributes file))))
+        (and sz (> 0 sz)))
+   collect file))
 
 (defun my/mate-run-pointer-analysis (file)
   (interactive
    (list (my/select-file-with-suffix-from-project-root ".bc")))
-  (lexical-let ((root (projectile-project-root))
-                (file file))
+  (let* ((root (projectile-project-root))
+         (results (concat root "/.out/cache/pointer-analysis/" file ".results/")))
     (my/mate-shake-and-then
      (concat "run-souffle -- -- 1-callsite " file)
      (lambda ()
+       (dolist (file
+                (my/filter-nonempty
+                 (my/directory-files-with-prefix "assert_" results)))
+          (message "%s %s" "Assertion failed!" file))
        (funcall-interactively
         #'dired
         (concat root "/.out/cache/pointer-analysis/" file ".results/"))))))
+
+;; (defun my/mate-compile-to-bitcode-then-run-pointer-analysis (file)
+;;   (interactive
+;;    (list (my/select-file-with-suffix-from-project-root ".c")))
+;;   (my/mate-compile-to-bitcode file)
+;;   (my/mate-run-pointer-analysis (concat (file-name-sans-extension file) ".bc")))
 
 (defun my/mate-lint ()
   (interactive)
