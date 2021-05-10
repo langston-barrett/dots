@@ -20,12 +20,14 @@
 (my/load "tramp.el")
 (my/load "shell.el")
 (my/load "vterm.el")
+(my/load "launcher.el")
 ;; (my/load "exwm.el")
 
 ;;; General
 
 (setq-default tab-width 4)
 (setq evil-want-abbrev-expand-on-insert-exit nil)
+(setq evil-want-minibuffer t)
 (setq browse-url-browser-function 'browse-url-generic)
 (setq browse-url-generic-program "qutebrowser")
 
@@ -85,11 +87,11 @@
 
 (with-eval-after-load 'grep
   '(progn
-      (dolist (v '("dist-newstyle/"
+     (dolist (v '("dist-newstyle/"
                   "dist/"))
-        (add-to-list 'grep-find-ignored-directories v))
-      (dolist (v '("*log"))
-        (add-to-list 'grep-find-ignored-files v))))
+       (add-to-list 'grep-find-ignored-directories v))
+     (dolist (v '("*log"))
+       (add-to-list 'grep-find-ignored-files v))))
 
 (spacemacs/set-leader-keys
   ;; 'o' is the "user key"
@@ -197,11 +199,11 @@
 (with-eval-after-load 'git-gutter+
   (defun git-gutter+-remote-default-directory (dir file)
     (let* ((vec (tramp-dissect-file-name file))
-            (method (tramp-file-name-method vec))
-            (user (tramp-file-name-user vec))
-            (domain (tramp-file-name-domain vec))
-            (host (tramp-file-name-host vec))
-            (port (tramp-file-name-port vec)))
+           (method (tramp-file-name-method vec))
+           (user (tramp-file-name-user vec))
+           (domain (tramp-file-name-domain vec))
+           (host (tramp-file-name-host vec))
+           (port (tramp-file-name-port vec)))
       (tramp-make-tramp-file-name method user domain host port dir)))
 
   (defun git-gutter+-remote-file-path (dir file)
@@ -217,7 +219,7 @@
   (add-to-list 'minimap-major-modes 'org-mode))
 
 (custom-set-faces
-  '(minimap-active-region-background ((t (:background "gray25")))))
+ '(minimap-active-region-background ((t (:background "gray25")))))
 
 ;;; outline-toc-mode
 
@@ -225,15 +227,98 @@
 (defun my/outline-toc-mode-window-configuration-change-hook ()
   (if (member major-mode my/outline-modes)
       (outline-toc-mode 1)
-      (outline-toc-mode -1)))
+    (outline-toc-mode -1)))
 (add-hook 'window-configuration-change-hook
           'my/outline-toc-mode-window-configuration-change-hook
           'append
           'global)
 
+;;; avy
+
+(with-eval-after-load 'avy
+  ;; https://github.com/abo-abo/hydra/wiki/avy
+  (defhydra my/avy-hydra (:exit t :hint nil)
+    "
+ Line^^       Region^^        Goto
+----------------------------------------------------------
+ [_y_] yank   [_Y_] yank      [_j_] timed char  [_C_] char
+ [_m_] move   [_M_] move      [_w_] word        [_W_] any word
+ [_k_] kill   [_K_] kill      [_l_] line        [_L_] end of line"
+    ("j" avy-goto-char-timer)
+    ("C" avy-goto-char)
+    ("w" avy-goto-word-1)
+    ("W" avy-goto-word-0)
+    ("l" avy-goto-line)
+    ("L" avy-goto-end-of-line)
+    ("m" avy-move-line)
+    ("M" avy-move-region)
+    ("k" avy-kill-whole-line)
+    ("K" avy-kill-region)
+    ("y" avy-copy-line)
+    ("Y" avy-copy-region))
+  (spacemacs/set-leader-keys
+    "j SPC" #'my/avy-hydra/body))
+
 ;;; dired
 
-(add-hook 'dired-mode-hook #'dired-hide-details-mode)
+(with-eval-after-load 'dired
+  (add-hook 'dired-mode-hook #'dired-hide-details-mode)
+  ;; https://github.com/abo-abo/hydra/wiki/Dired
+  (defhydra my/dired-hydra (:hint nil :color pink)
+    "
+_+_ mkdir          _v_iew           _m_ark             _(_ details        _i_nsert-subdir    wdired
+_C_opy             _O_ view other   _U_nmark all       _)_ omit-mode      _$_ hide-subdir    C-x C-q : edit
+_D_elete           _o_pen other     _u_nmark           _l_ redisplay      _w_ kill-subdir    C-c C-c : commit
+_R_ename           _M_ chmod        _t_oggle           _g_ revert buf     _e_ ediff          C-c ESC : abort
+_Y_ rel symlink    _G_ chgrp        _E_xtension mark   _s_ort             _=_ pdiff
+_S_ymlink          ^ ^              _F_ind marked      _._ toggle hydra   \\ flyspell
+_r_sync            ^ ^              ^ ^                ^ ^                _?_ summary
+_z_ compress-file  _A_ find regexp
+_Z_ compress       _Q_ repl regexp
+
+T - tag prefix
+"
+    ("\\" dired-do-ispell)
+    ("(" dired-hide-details-mode)
+    (")" dired-omit-mode)
+    ("+" dired-create-directory)
+    ("=" diredp-ediff)         ;; smart diff
+    ("?" dired-summary)
+    ("$" diredp-hide-subdir-nomove)
+    ("A" dired-do-find-regexp)
+    ("C" dired-do-copy)        ;; Copy all marked files
+    ("D" dired-do-delete)
+    ("E" dired-mark-extension)
+    ("e" dired-ediff-files)
+    ("F" dired-do-find-marked-files)
+    ("G" dired-do-chgrp)
+    ("g" revert-buffer)        ;; read all directories again (refresh)
+    ("i" dired-maybe-insert-subdir)
+    ("l" dired-do-redisplay)   ;; relist the marked or singel directory
+    ("M" dired-do-chmod)
+    ("m" dired-mark)
+    ("O" dired-display-file)
+    ("o" dired-find-file-other-window)
+    ("Q" dired-do-find-regexp-and-replace)
+    ("R" dired-do-rename)
+    ("r" dired-do-rsynch)
+    ("S" dired-do-symlink)
+    ("s" dired-sort-toggle-or-edit)
+    ("t" dired-toggle-marks)
+    ("U" dired-unmark-all-marks)
+    ("u" dired-unmark)
+    ("v" dired-view-file)      ;; q to exit, s to search, = gets line #
+    ("w" dired-kill-subdir)
+    ("Y" dired-do-relsymlink)
+    ("z" diredp-compress-this-file)
+    ("Z" dired-do-compress)
+    ("q" nil)
+    ("." nil :color blue))
+
+  (spacemacs/set-leader-keys-for-major-mode 'dired-mode
+    "." #'my/dired-hydra/body)
+  ;; (add-hook 'dired-mode-hook #'my/dired-hydra/body)
+  )
 
 ;;; Occur
 
@@ -268,7 +353,9 @@
     "p" #'occur-prev
     "r" #'occur-rename-buffer
     "RET" #'occur-mode-display-occurrence)
-  (add-hook 'occur-mode-hook #'my/occur-hydra/body))
+  ;; (add-hook 'occur-mode-hook #'my/occur-hydra/body)
+  ;; (remove-hook 'occur-mode-hook #'my/occur-hydra/body)
+  )
 
 ;;; prism
 
@@ -306,7 +393,7 @@
 
   (when (boundp 'symbol-overlay-overlay-created-functions)
     (add-to-list 'symbol-overlay-overlay-created-functions
-                  'my/symbol-overlay-overlay-created-function))
+                 'my/symbol-overlay-overlay-created-function))
 
   (define-key symbol-overlay-map (kbd "g") 'symbol-overlay-jump-to-definition)
   (define-key symbol-overlay-map (kbd "?") 'symbol-overlay-map-help)
@@ -319,12 +406,12 @@
     (symbol-overlay-match-keyword-list symbol saw-script-keywords))
   (defun haskell-ignore-function (symbol)
     (symbol-overlay-match-keyword-list
-      symbol
-      '("let" "rec" "do" "in" "where" "module" "import")))
+     symbol
+     '("let" "rec" "do" "in" "where" "module" "import")))
   (add-to-list 'symbol-overlay-ignore-functions
-                '(saw-script-mode . saw-script-ignore-function))
+               '(saw-script-mode . saw-script-ignore-function))
   (add-to-list 'symbol-overlay-ignore-functions
-                '(haskell-mode . haskell-ignore-function)))
+               '(haskell-mode . haskell-ignore-function)))
 
 ;;; cheatsheet
 
@@ -450,20 +537,20 @@
   ;;                   (cons (cdr el) nil)))))
   (setq comparison-prettify-symbols-alist
         (mapvalues 'my/two-spaces
-                  '((">=" . ?≥)
-                    ("<=" . ?≤)
-                    ("==" . ?≟)
-                    ("/=" . ?≠)
-                    ("!=" . ?≠))))
+                   '((">=" . ?≥)
+                     ("<=" . ?≤)
+                     ("==" . ?≟)
+                     ("/=" . ?≠)
+                     ("!=" . ?≠))))
 
   ;; The commented-out versions are the "short" arrows, active are "long"
   (setq arrow-prettify-symbols-alist
         (mapvalues 'my/two-spaces
-                  '(("=>" . ?⟹) ;; ("=>" . ?⇒)
-                    ("<=" . ?⟸)
-                    ("->" . ?⟶) ;; ("->" . ?→)
-                    ("<-" . ?⟵) ;; ("<-" . ?←)
-                    )))
+                   '(("=>" . ?⟹) ;; ("=>" . ?⇒)
+                     ("<=" . ?⟸)
+                     ("->" . ?⟶) ;; ("->" . ?→)
+                     ("<-" . ?⟵) ;; ("<-" . ?←)
+                     )))
 
   ;; Not working :/
   ;; https://en.wikipedia.org/wiki/Percent-encoding#Percent-encoding_reserved_characters
@@ -474,37 +561,37 @@
 
   (setq bool-prettify-symbols-alist
         (mapvalues 'my/two-spaces
-                    '(("&&" . ?∧)
-                    ("||" . ?∨))))
+                   '(("&&" . ?∧)
+                     ("||" . ?∨))))
 
   (setq my/prettify-symbols-mode-alist
         `((haskell-mode
-            . (append
+           . (append
               comparison-prettify-symbols-alist
               arrow-prettify-symbols-alist
               bool-prettify-symbols-alist
               ;; (mapvalues 'my/three-spaces
               ;;            '(("<*>" . ?⊛)))
               (mapvalues 'my/two-spaces
-                          '(("<|" . ?⊲)     ; sequences/application in flow
-                            ("|>" . ?⊳)     ; sequences/application in flow
-                            (".>" . ?⋖)     ; composition in flow
-                            ("<." . ?⋗)     ; composition in flow
-                            ("::" . ?∷)))))
+                         '(("<|" . ?⊲)     ; sequences/application in flow
+                           ("|>" . ?⊳)     ; sequences/application in flow
+                           (".>" . ?⋖)     ; composition in flow
+                           ("<." . ?⋗)     ; composition in flow
+                           ("::" . ?∷)))))
           (org-mode
-            . ,(append
-                ;; percent-encoding-prettify-symbols
-                comparison-prettify-symbols-alist
-                arrow-prettify-symbols-alist
-                bool-prettify-symbols-alist
-                (mapvalues 'my/two-spaces '(("::" . ?∷)))))
-            (saw-script-mode . arrow-prettify-symbols-alist)))
+           . ,(append
+               ;; percent-encoding-prettify-symbols
+               comparison-prettify-symbols-alist
+               arrow-prettify-symbols-alist
+               bool-prettify-symbols-alist
+               (mapvalues 'my/two-spaces '(("::" . ?∷)))))
+          (saw-script-mode . arrow-prettify-symbols-alist)))
 
   (defun my/prettify-symbols ()
     (interactive)
     (prettify-symbols-mode -1)
     (let ((mode-prettify-symbols-alist
-            (alist-get major-mode my/prettify-symbols-mode-alist)))
+           (alist-get major-mode my/prettify-symbols-mode-alist)))
       (when (not (equal nil mode-prettify-symbols-alist))
         (setq-local prettify-symbols-alist
                     mode-prettify-symbols-alist)
@@ -588,14 +675,14 @@
 (with-eval-after-load 'rust
   ;; Align EOL comments
   (add-to-list 'align-rules-list
-                '(rust-eol-comment
-                  (regexp . "//")
-                  (modes . rust-mode)))
+               '(rust-eol-comment
+                 (regexp . "//")
+                 (modes . rust-mode)))
   ;; Align match
   (add-to-list 'align-rules-list
-                '(rust-match
-                  (regexp . "=>")
-                  (modes . rust-mode))))
+               '(rust-match
+                 (regexp . "=>")
+                 (modes . rust-mode))))
 
 ;;; Java
 
@@ -715,7 +802,7 @@
 
 (eval-after-load 'grep
   '(progn
-      (dolist (v '("node_modules"
+     (dolist (v '("node_modules"
                   "bower_components"
                   ".sass_cache"
                   ".cache"
@@ -723,14 +810,14 @@
                   ".out"
                   ".git"
                   "__pycache__"))
-        (add-to-list 'grep-find-ignored-directories v))
-      (dolist (v '("*.min.js"
+       (add-to-list 'grep-find-ignored-directories v))
+     (dolist (v '("*.min.js"
                   "*.bundle.js"
                   "*.min.css"
                   "*.json"
                   "*.bc"
                   "*.log"))
-        (add-to-list 'grep-find-ignored-files v))))
+       (add-to-list 'grep-find-ignored-files v))))
 
 ;; This doesn't work as a 'let' binding??
 ;; TODO: only consider files of the appropriate suffices

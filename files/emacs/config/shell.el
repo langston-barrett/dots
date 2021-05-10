@@ -14,9 +14,6 @@
 
 ;; TODO: Make TRAMP procfs directory tracking into a MELPA package
 
-(defvar my/shell-procfs-dirtrack-tramp-prefix "")
-(defvar my/shell-procfs-dirtrack-shell-pid "")
-
 (defun my/get-local-shell-pid ()
   (process-id
    (get-buffer-process
@@ -46,6 +43,10 @@
 (define-minor-mode shell-procfs-dirtrack-mode
   "Track shell directory by inspecting procfs."
   nil nil nil
+
+  (defvar-local my/shell-procfs-dirtrack-tramp-prefix "")
+  (defvar-local my/shell-procfs-dirtrack-shell-pid "")
+
   (cond (shell-procfs-dirtrack-mode
          (setq my/shell-procfs-dirtrack-tramp-prefix
                (if (tramp-tramp-file-p default-directory)
