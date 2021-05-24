@@ -114,6 +114,7 @@
           (helm-full-frame t)
           (helm-display-header-line nil)
           (helm-use-undecorated-frame-option nil))
+      (switch-to-buffer-other-frame (current-buffer))
       (helm :sources (list (my/launcher-source-path))
             :prompt ""
             :buffer "*launcher*")

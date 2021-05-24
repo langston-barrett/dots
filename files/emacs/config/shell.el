@@ -11,8 +11,17 @@
    'mode-line-buffer-identification
    '(:propertize (" " default-directory " ") face dired-directory)))
 
+;;;; Procfs
 
+;; NOTE: This has been difficult to get to work with TRAMP, so I use the prompt
+;; method below.
+;;
 ;; TODO: Make TRAMP procfs directory tracking into a MELPA package
+
+(defvar my/shell-procfs-dirtrack-tramp-prefix "")
+(defvar my/shell-procfs-dirtrack-shell-pid nil)
+(make-variable-buffer-local 'my/shell-procfs-dirtrack-tramp-prefix)
+(make-variable-buffer-local 'my/shell-procfs-dirtrack-shell-pid)
 
 (defun my/get-local-shell-pid ()
   (process-id
@@ -21,13 +30,18 @@
 
 (defun my/get-remote-shell-pid ()
   (interactive)
-  (comint-simple-send (get-buffer-process (current-buffer)) "echo $$\n")
-  (let ((comint-last-output-end
-         (save-excursion
-           (goto-char comint-last-output-start)
-           (evil-forward-word)
-           (point))))
-    (buffer-substring comint-last-output-start comint-last-output-end)))
+  (comint-simple-send (get-buffer-process (current-buffer)) "echo \" $$\"\n")
+  (save-excursion
+    (search-backward-regexp " [[:digit:]]+")
+    (string-to-number
+     (buffer-substring (match-beginning 0) (match-end 0)))))
+
+(defun my/shell-procfs-dirtrack-refresh-pid ()
+  (interactive)
+  (setq my/shell-procfs-dirtrack-shell-pid
+        (if (tramp-tramp-file-p default-directory)
+            (my/get-remote-shell-pid)
+          (my/get-local-shell-pid))))
 
 (defun shell-procfs-dirtrack (str)
   (prog1 str
@@ -38,7 +52,6 @@
                                 my/shell-procfs-dirtrack-shell-pid))))
         (when (tramp-handle-file-directory-p directory)
           (cd directory))))))
-
 
 (define-minor-mode shell-procfs-dirtrack-mode
   "Track shell directory by inspecting procfs."
@@ -55,10 +68,7 @@
                    ;;   )
                    (my/get-tramp-prefix default-directory)
                  ""))
-         (setq my/shell-procfs-dirtrack-shell-pid
-               (if (tramp-tramp-file-p default-directory)
-                   (my/get-remote-shell-pid)
-                 (my/get-local-shell-pid)))
+         (my/shell-procfs-dirtrack-refresh-pid)
          (when (bound-and-true-p shell-dirtrack-mode)
            (shell-dirtrack-mode 0))
          (when (bound-and-true-p dirtrack-mode)
@@ -68,6 +78,61 @@
         (t
          (remove-hook 'comint-preoutput-filter-functions
                       'shell-procfs-dirtrack t))))
+
+;; (add-hook 'shell-mode-hook #'shell-procfs-dirtrack-mode)
+
+;;;; Prompt
+
+;; In ZSH, try:
+;;
+;;     NEWLINE=$'\n'
+;;     PROMPT="%30000<<${NEWLINE}[/ssh:%n@%m:%0d]${NEWLINE}> "
+;;
+;; In Bash:
+;;
+;;     NEWLINE=$'\n'
+;;     PS1="${NEWLINE}[/ssh:\u@\h:\w]${NEWLINE}> "
+;;
+;; In Docker (TODO: Not working, docker-tramp hangs):
+;;
+;;     NEWLINE=$'\n'
+;;     CID=$(basename $(cat /proc/1/cpuset))
+;;     CID=${CID:0:12}
+;;     USER=$(whoami)
+;;     PS1="${NEWLINE}[/ssh:langston@big|sudo:root@big|docker:${USER}@${CID}:\w] ${NEWLINE}> "
+;;
+;; In Podman:
+;;
+;;     NEWLINE=$'\n'
+;;     CID=${CID:0:12}
+;;     USER=$(whoami)
+;;     PS1="${NEWLINE}[/ssh:langston@big|docker:${USER}@${CID}:\w] ${NEWLINE}> "
+;;
+;; Then:
+
+(setq dirtrack-list '("^\\[\\(/.+\\)\\]" 1 nil))
+(add-hook 'shell-mode-hook #'dirtrack-mode)
+(setq docker-tramp-docker-executable "podman")
+
+(defun my/local-zsh-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "PROMPT=\"%30000<<${NEWLINE}[%0d]${NEWLINE}> \""))
+
+(defun my/ssh-zsh-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "PROMPT=\"%30000<<${NEWLINE}[/ssh:%n@%m:%0d]${NEWLINE}> \""))
+
+(defun my/podman-bash-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "CID=${CID:0:12}\n"
+   "USER=$(whoami)\n"
+   "PS1=\"${NEWLINE}[/ssh:langston@big|docker:${USER}@${CID}:\w] ${NEWLINE}> \"\n"))
 
 ;;; Variables, Keybindings, and Hooks
 
@@ -87,11 +152,10 @@
     (shell)))
 
 (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
-(add-hook 'shell-mode-hook #'shell-procfs-dirtrack-mode)
 
 (defun my/shell-mode-hook ()
-  (evil-local-set-key 'normal "N" #'my/new-shell)
-  (evil-local-set-key 'normal "n" #'my/new-shell)
+  (evil-local-set-key 'normal "mN" #'my/new-shell)
+  (evil-local-set-key 'normal "mn" #'my/new-shell)
   (setq-local olivetti-body-width 140))
 
 (add-hook 'shell-mode-hook #'my/shell-mode-hook)

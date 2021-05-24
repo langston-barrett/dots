@@ -20,7 +20,8 @@
 (my/load "tramp.el")
 (my/load "shell.el")
 (my/load "vterm.el")
-(my/load "launcher.el")
+(my/load "os/launcher.el")
+(my/load "os/light.el")
 ;; (my/load "exwm.el")
 
 ;;; General
@@ -48,6 +49,8 @@
 
 ;; https://github.com/bbatsov/projectile/issues/1174
 (setq projectile-git-submodule-command "")
+
+(my/when-idle-very-low #'marginalia-mode)
 
 ;; Set escape keybinding to "hj"
 (setq-default evil-escape-key-sequence "hj")
@@ -105,6 +108,14 @@
 
 (when (require 'diff-hl-mode nil 'noerror)
   (global-diff-hl-mode 1))
+
+;;; abbrevs
+
+(add-hook 'prog-mode-hook 'abbrev-mode)
+(add-hook 'text-mode-hook 'abbrev-mode)
+(setq abbrev-suggest t)
+(setq abbrev-suggest-hint-threshold 4)
+(read-abbrev-file (concat my/emacs-dir "config/abbrevs.el"))
 
 ;;; scratch
 
@@ -413,17 +424,6 @@ T - tag prefix
   (add-to-list 'symbol-overlay-ignore-functions
                '(haskell-mode . haskell-ignore-function)))
 
-;;; cheatsheet
-
-(use-package cheatsheet
-  :commands cheatsheet-show
-  :init
-  (spacemacs/set-leader-keys
-    ;; 'o' is the "user key"
-    ;; 'C' for 'cheatsheet'
-    "oC"  'cheatsheet-show)
-  (require 'my-cheatsheet))
-
 ;;; (Ma)git
 
 ;; (add-to-list 'forge-alist '("gitlab-ext.galois.com" "gitlab-ext.galois.com/api/v4" "gitlab-ext.galois.com" forge-gitlab-repository))
@@ -716,6 +716,17 @@ T - tag prefix
   (add-hook 'focus-in-hook 'my/sbt-hydra-hook)
   (spacemacs/set-leader-keys-for-major-mode 'scala-mode
     "ee" 'ensime-print-errors-at-point))
+
+;;; Python
+
+(with-eval-after-load 'python
+  (setq lsp-python-ms-executable (executable-find "pyls"))
+  (lsp-register-client
+   (make-lsp-client
+    :new-connection (lsp-tramp-connection "pyls")
+    :major-modes '(python-mode)
+    :remote? t
+    :server-id 'pyls-remote)))
 
 ;;; Agda
 
