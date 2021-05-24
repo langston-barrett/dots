@@ -2,6 +2,8 @@
 
 export PATH=$PATH:$HOME/.config/bin
 
+cpr() { cp "${2}" "${1}"; }
+
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
 # Delete all merged git branches. Use caution, and only use on master.
@@ -159,8 +161,8 @@ setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
 # Docker
 
-alias docker='sudo -g docker docker'
-alias docker-compose='sudo -g docker docker-compose'
+# alias docker='sudo -g docker docker'
+# alias docker-compose='sudo -g docker docker-compose'
 
 docker-ssh() {
     images=$(docker ps --format "{{.ID}} {{.Image}}")
@@ -181,7 +183,20 @@ mate-dev-run() {
          --interactive \
          --tty \
          mate-dev \
-         bash -c "$@"
+         bash -c "${@:-bash}"
+}
+
+mate-dev-souffle-run() {
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev-souffle \
+         bash -c "${@:-bash}"
 }
 
 mate-dev-souffle-run() {
@@ -207,7 +222,7 @@ mate-dist-run() {
            --interactive \
            --tty \
            mate-dist \
-           bash -c "$@"
+           bash -c "${@:-bash}"
 }
 
 mate-img-run() {

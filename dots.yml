@@ -99,6 +99,8 @@
       - src: mutt
         dst: "{{ home }}/.mutt"
         mode: "0750"
+      - src: emacs/dir-locals/mate.el
+        dst: "{{ home }}/code/mate/main/.dir-locals.el"
       - src: emacs/alloy
         dst: "{{ home }}/.emacs.d/private/alloy"
         mode: "0750"

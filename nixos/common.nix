@@ -70,9 +70,15 @@ in {
     nixos.enable = true;
   };
 
-  virtualisation.docker = {
-    enable = true;
-    extraOptions = "--dns 8.8.8.8 --dns 8.8.4.4";
+  virtualisation = {
+    docker = {
+      enable = false;
+      extraOptions = "--dns 8.8.8.8 --dns 8.8.4.4";
+    };
+    podman = {
+      enable = true;
+      dockerCompat = true;
+    };
   };
 
   services.syncthing = {
