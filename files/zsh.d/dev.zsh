@@ -176,10 +176,24 @@ mate-dev-run() {
          --net=host \
          --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$PWD,dst=/x \
+         --mount type=tmpfs,dst=/tmp \
          --workdir=/x \
          --interactive \
          --tty \
          mate-dev \
+         bash -c "$@"
+}
+
+mate-dev-souffle-run() {
+  docker run \
+         --rm \
+         --net=host \
+         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=$PWD,dst=/x \
+         --workdir=/x \
+         --interactive \
+         --tty \
+         mate-dev-souffle \
          bash -c "$@"
 }
 

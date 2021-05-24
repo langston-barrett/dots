@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: enum
+# name: enum
+# contributor: Langston Barrett
+# --
+from enum import Enum, unique
+@unique
+class ${1:Name}(${2:str}, Enum):
+    """An enum."""
+    ${3:Title} = ${4:Value}

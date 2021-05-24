@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
-# key: fundamental
-# name: fund
+# key: llvm
+# name: llvm
 # contributor: Langston Barrett
 # --
-#+begin_src fundamental
+#+begin_src llvm
 #+end_src
