@@ -6,4 +6,5 @@
 (depends-on "dash")
 
 (development
- (depends-on "buttercup")) ; BDD test framework for Emacs
+ (depends-on "buttercup") ; BDD test framework for Emacs
+ )

@@ -2,7 +2,6 @@
 ;;; shell
 
 ;; TODO(lb): Try out https://github.com/mbriggs/emacs-pager
-;; TODO(lb): Can directory-tracking work in SSH sessions?
 
 ;;; Directory Tracking
 

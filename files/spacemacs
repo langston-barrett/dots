@@ -169,6 +169,10 @@ This function should only modify configuration layer settings."
      ;; doom-themes
      dracula-theme
 
+     (contract
+      :location (recipe :fetcher github
+                        :repo "langston-barrett/contract.el"))
+
      ;; (klister-mode
      ;;  :location (recipe :fetcher github
      ;;                    :repo "gelisam/klister"
