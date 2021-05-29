@@ -1,6 +1,8 @@
 ;; -*- lexical-binding: t; -*-
 ;;; shell
 
+(require 'ring)
+
 ;; TODO(lb): Try out https://github.com/mbriggs/emacs-pager
 
 ;;; Directory Tracking
@@ -233,3 +235,35 @@
 ;; TODO: Maybe apply to (the value of) comint-input-sender instead?
 (advice-add #'comint-simple-send :filter-args #'my/comint-intercept)
 ;; (advice-remove #'comint-simple-send #'my/comint-intercept)
+
+;;; Autosuggest
+
+(defun comint-autosuggest--input-bounds ()
+  (save-excursion
+    (goto-char (point-max))
+    (let ((last (point)))
+      (comint-bol)
+      (cons (point) last))))
+
+(defun comint-autosuggest--prefix ()
+  "Get current comint input."
+  (let ((bounds (comint-autosuggest--input-bounds)))
+    (buffer-substring-no-properties (car bounds) (cdr bounds))))
+
+(defun comint-autosuggest-completion-at-point ()
+  "Completion-at-point function.
+
+May be used with Company using the `company-capf' backend.
+
+TODO: Currently doesn't work after second word of command?"
+  (interactive)
+  (let ((bounds (comint-autosuggest--input-bounds)))
+    (when bounds
+      (list (car bounds)
+            (cdr bounds)
+            (ring-elements comint-input-ring)
+            :exclusive 'no))))
+
+(add-hook 'completion-at-point-functions
+          #'comint-autosuggest-completion-at-point
+          'append)
