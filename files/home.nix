@@ -2,12 +2,14 @@
 
 let
   myEmacs =
-    with pkgs; (emacsPackagesNgGen emacsGcc).emacsWithPackages (epkgs: [
+    with pkgs; ((emacsPackagesNgGen emacsGit).emacsWithPackages (epkgs: [
       #epkgs.emacsql-sqlite
       epkgs.exwm
       epkgs.vterm
       epkgs.pdf-tools
-    ]);
+    ])).overrideAttrs (attrs: {
+      propagatedBuildInputs = (attrs.propagatedBuildInputs or []) ++ [pkgs.binutils pkgs.gcc];
+    });
 in {
   home.packages = with pkgs; [
     fasd
@@ -44,7 +46,7 @@ in {
       };
     };
 
-    # emacs.enable = true;
+    emacs.enable = true;
 
     lorri.enable = true;
 

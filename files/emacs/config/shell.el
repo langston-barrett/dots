@@ -114,6 +114,12 @@
 (add-hook 'shell-mode-hook #'dirtrack-mode)
 (setq docker-tramp-docker-executable "podman")
 
+(defun my/local-bash-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "PS1=\"${NEWLINE}[\\w] ${NEWLINE}> \"\n"))
+
 (defun my/local-zsh-prompt ()
   (interactive)
   (insert
@@ -134,9 +140,25 @@
    "USER=$(whoami)\n"
    "PS1=\"${NEWLINE}[/ssh:langston@big|docker:${USER}@${CID}:\w] ${NEWLINE}> \"\n"))
 
+;;; Completion
+
+;; Ensure
+;;
+;;     export HISTCONTROL=ignoreboth
+;;
+(with-eval-after-load 'shell
+  ;; This does weird things to the ZSH prompt
+  (native-complete-setup-bash))
+
+(defun my/shell-completion-hook ()
+  (company-mode 1)
+  (setq-local company-backends '(company-native-complete company-capf)))
+
+(add-hook 'shell-mode-hook #'my/shell-completion-hook)
+
 ;;; Variables, Keybindings, and Hooks
 
-(setq shell-file-name "/run/current-system/sw/bin/zsh")
+(setq shell-file-name "/run/current-system/sw/bin/bash")
 
 (defun my/new-shell ()
   (interactive)
@@ -153,10 +175,14 @@
 
 (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
 
+(spacemacs/set-leader-keys-for-major-mode 'shell-mode
+  "N"  'my/new-shell)
+
 (defun my/shell-mode-hook ()
-  (evil-local-set-key 'normal "mN" #'my/new-shell)
-  (evil-local-set-key 'normal "mn" #'my/new-shell)
-  (setq-local olivetti-body-width 140))
+  (setq-local olivetti-body-width 140)
+  (if (string-suffix-p "zsh" shell-file-name)
+      (my/local-zsh-prompt)
+    (my/local-bash-prompt)))
 
 (add-hook 'shell-mode-hook #'my/shell-mode-hook)
 
@@ -208,5 +234,3 @@
 ;; TODO: Maybe apply to (the value of) comint-input-sender instead?
 (advice-add #'comint-simple-send :filter-args #'my/comint-intercept)
 ;; (advice-remove #'comint-simple-send #'my/comint-intercept)
-
-;; TODO: Source ~/.zsh.d/prompt?

@@ -132,6 +132,9 @@ This function should only modify configuration layer settings."
      smart-hungry-delete                ; delete all whitespace at once
      direnv                             ; direnv + nix
      math-symbols                       ; easily insert unicode latex macros
+     native-complete
+     company-native-complete
+
      ;; dhall-mode
      lispy
      lispyville

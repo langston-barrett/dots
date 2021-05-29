@@ -18,6 +18,7 @@
 *** [[http://justtesting.org/rss][Just Testing]]
 *** [[https://ryanglscott.github.io/feed.xml][Ryan G.L. Scott]]
 *** [[https://www.parsonsmatt.org/feed.xml][Matt Parsons]]
+*** [[https://frasertweedale.github.io/blog-fp/atom.xml][pureblog]]
 ** Emacs                                                              :emacs:
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
@@ -54,3 +55,4 @@
 *** [[https://kate.io/feed.xml][Kate Murphy]]
 *** [[https://blog.nelhage.com/atom.xml][Made of Bugs]]
 *** [[https://buttondown.email/hillelwayne/rss][Hillel Wayne Newsletter]]
+*** [[https://mypy-lang.blogspot.com/feeds/posts/default][The Mypy Blog]]

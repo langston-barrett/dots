@@ -7,4 +7,6 @@
     ("EMW" "Eric Woldridge" nil :count 0)
     ("RobW" "Rob Wiltbank" nil :count 0)
     ("NLS" "Nichole Schmanski" nil :count 0)
+    ("Garcia" "García" nil :count 0)
+    ("Marquez" "Márquez" nil :count 0)
    ))

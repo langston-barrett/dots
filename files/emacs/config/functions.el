@@ -71,11 +71,19 @@
     (insert-file-contents file-path)
     (split-string (buffer-string) "\n" t)))
 
+(defsubst my/helm-file-lines (path)
+  (helm :sources (helm-build-sync-source (file-name-base path)
+                   :candidates (my/read-lines path)
+                   :fuzzy-match t)
+        :buffer (string-join (list "*" path "*"))))
+
+;; TODO: Work with TRAMP
 (defun my/insert-from-zsh-history ()
   "Insert a line from ~/.zsh_history."
   (interactive)
-  (kill-new
-   (helm :sources (helm-build-sync-source "zsh history"
-                    :candidates (my/read-lines "~/.zsh_history")
-                    :fuzzy-match t)
-         :buffer "*zsh history*")))
+  (kill-new (my/helm-file-lines "~/.zsh_history")))
+
+(defun my/insert-from-bash-history ()
+  "Insert a line from ~/.bash_history."
+  (interactive)
+  (kill-new (my/helm-file-lines "~/.bash_history")))

@@ -39,10 +39,10 @@
 (setq dired-listing-switches "-alh")
 
 ;; Pretty sure these are about RAM usage
-(setq history-length 100)
+(setq history-length 2048)
 (put 'minibuffer-history 'history-length 50)
 (put 'evil-ex-history 'history-length 50)
-(put 'kill-ring 'history-length 25)
+(put 'kill-ring 'history-length 50)
 
 ;; Always reload log files from disk
 (add-to-list 'auto-mode-alist '("log" . auto-revert-mode))
@@ -330,6 +330,29 @@ T - tag prefix
     "." #'my/dired-hydra/body)
   ;; (add-hook 'dired-mode-hook #'my/dired-hydra/body)
   )
+
+(defun my/dired-run-shell-command (command)
+  "Run COMMAND on marked files. Any files not already open will be opened.
+After this command has been run, any buffers it's modified will remain
+open and unsaved."
+  (interactive "MRun shell command on marked files: ")
+  (shell-command (string-join (cons command (dired-get-marked-files)) " "))
+  (revert-buffer))
+
+(defun my/dired-trash-marked ()
+  (interactive)
+  (my/dired-run-shell-command "trash-put"))
+
+(defun my/dired-do-command (command)
+  "Run COMMAND on marked files. Any files not already open will be opened.
+After this command has been run, any buffers it's modified will remain
+open and unsaved."
+  (interactive "CRun on marked files M-x ")
+  (save-window-excursion
+    (mapc (lambda (filename)
+            (find-file filename)
+            (call-interactively command))
+          (dired-get-marked-files))))
 
 ;;; Occur
 
@@ -721,12 +744,13 @@ T - tag prefix
 
 (with-eval-after-load 'python
   (setq lsp-python-ms-executable (executable-find "pyls"))
-  (lsp-register-client
-   (make-lsp-client
-    :new-connection (lsp-tramp-connection "pyls")
-    :major-modes '(python-mode)
-    :remote? t
-    :server-id 'pyls-remote)))
+  (with-eval-after-load 'lsp
+    (lsp-register-client
+     (make-lsp-client
+      :new-connection (lsp-tramp-connection "pyls")
+      :major-modes '(python-mode)
+      :remote? t
+      :server-id 'pyls-remote))))
 
 ;;; Agda
 
