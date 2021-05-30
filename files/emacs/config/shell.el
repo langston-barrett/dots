@@ -1,6 +1,7 @@
 ;; -*- lexical-binding: t; -*-
 ;;; shell
 
+(require 'contract)
 (require 'ring)
 
 ;; TODO(lb): Try out https://github.com/mbriggs/emacs-pager
@@ -24,10 +25,13 @@
 (make-variable-buffer-local 'my/shell-procfs-dirtrack-tramp-prefix)
 (make-variable-buffer-local 'my/shell-procfs-dirtrack-shell-pid)
 
-(defun my/get-local-shell-pid ()
-  (process-id
-   (get-buffer-process
-    (current-buffer))))
+(contract-defun
+ my/get-local-shell-pid ()
+ :contract (contract-> (contract-maybe-c contract-nat-number-c))
+ (let ((proc (get-buffer-process (current-buffer))))
+   (if proc
+       (process-id proc)
+     nil)))
 
 (defun my/get-remote-shell-pid ()
   (interactive)
@@ -250,12 +254,14 @@
   (let ((bounds (comint-autosuggest--input-bounds)))
     (buffer-substring-no-properties (car bounds) (cdr bounds))))
 
+;; NOTE: Real "autosuggest" behavior of showing inline suggestions could be
+;; copied from `auto-complete'.
 (defun comint-autosuggest-completion-at-point ()
   "Completion-at-point function.
 
 May be used with Company using the `company-capf' backend.
 
-TODO: Currently doesn't work after second word of command?"
+TODO: seems to only work after a space."
   (interactive)
   (let ((bounds (comint-autosuggest--input-bounds)))
     (when bounds
@@ -267,3 +273,4 @@ TODO: Currently doesn't work after second word of command?"
 (add-hook 'completion-at-point-functions
           #'comint-autosuggest-completion-at-point
           'append)
+

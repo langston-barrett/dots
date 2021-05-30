@@ -9,4 +9,5 @@
     ("NLS" "Nichole Schmanski" nil :count 0)
     ("Garcia" "García" nil :count 0)
     ("Marquez" "Márquez" nil :count 0)
+    ("naive" "naïve" nil :count 0)
    ))
