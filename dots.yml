@@ -198,6 +198,10 @@
         graphical: true
       - src: Xresources
         dst: "{{ home }}/.Xresources"
+      - src: sh.d
+        dst: "{{ home }}/.sh.d"
+        mode: "0750"
+        minimal: true
       - src: zsh.d
         dst: "{{ home }}/.zsh.d"
         mode: "0750"

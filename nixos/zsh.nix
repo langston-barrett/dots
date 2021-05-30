@@ -19,7 +19,9 @@
             setopt xtrace prompt_subst
         fi
 
+        source_all_sh() {[[ -d $1 ]] && for f in $1/*.sh; do source "$f"; done; unset f;}
         source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "$f"; done; unset f;}
+        source_all_sh $HOME/.sh.d
         source_all $HOME/.zsh.d
 
         if [[ "$PROFILE_ZSH_STARTUP" == true ]]; then
@@ -31,6 +33,10 @@
 
     bash = {
       enableCompletion = true;
+      interactiveShellInit = ''
+        function source_all() { [[ -d $1 ]] && for f in $1/*.sh; do source "$f"; done; unset f; }
+        source_all $HOME/.sh.d
+      '';
     };
   };
 }
