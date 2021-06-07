@@ -1,4 +1,8 @@
-if [[ "${TERM}" == "tramp" ]]; then
+if [[ -n "${INSIDE_EMACS}" ]]; then
+  newline=$'\n'
+  PROMPT="%30000<<${newline}[%0d]${newline}> "
+  unset newline
+elif [[ "${TERM}" == "tramp" ]]; then
   PROMPT="%2~% >"
 elif [[ -z "${HYDRA}" ]]; then
   autoload -U promptinit && promptinit

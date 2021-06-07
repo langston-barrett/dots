@@ -131,6 +131,12 @@
    "NEWLINE=$'\\n'\n"
    "PROMPT=\"%30000<<${NEWLINE}[%0d]${NEWLINE}> \""))
 
+(defun my/ssh-bash-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "PS1=\"${NEWLINE}[/ssh:langston@big:\\w] ${NEWLINE}> \"\n"))
+
 (defun my/ssh-zsh-prompt ()
   (interactive)
   (insert
@@ -273,4 +279,3 @@ TODO: seems to only work after a space."
 (add-hook 'completion-at-point-functions
           #'comint-autosuggest-completion-at-point
           'append)
-

@@ -56,3 +56,5 @@
 *** [[https://blog.nelhage.com/atom.xml][Made of Bugs]]
 *** [[https://buttondown.email/hillelwayne/rss][Hillel Wayne Newsletter]]
 *** [[https://mypy-lang.blogspot.com/feeds/posts/default][The Mypy Blog]]
+*** [[https://alastairreid.github.io/feed.xml][Alastair Reid]]
+*** [[https://project-oak.github.io/rust-verification-tools/feed.xml][Rust Verification Tools]]

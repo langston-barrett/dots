@@ -36,6 +36,7 @@
       interactiveShellInit = ''
         function source_all() { [[ -d $1 ]] && for f in $1/*.sh; do source "$f"; done; unset f; }
         source_all $HOME/.sh.d
+        source_all $HOME/.bash.d
       '';
     };
   };
