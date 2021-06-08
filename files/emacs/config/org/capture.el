@@ -34,10 +34,12 @@
                                       ("chess"
                                        :keys "c"
                                        :headline "CHESS")
-                                      ("vulnerability triage"
+                                      ("vspells"
                                        :keys "v"
-                                       :headline "Vulnerability Triage")
-                                      ))
+                                       :headline "V-SPELLS")
+                                      ("vulnerability triage"
+                                       :keys "V"
+                                       :headline "Vulnerability Triage")))
                           ("personal"
                            :keys "p"
                            :headline "Generic")

@@ -187,7 +187,8 @@
 (add-hook 'shell-mode-hook #'add-mode-line-dirtrack)
 
 (spacemacs/set-leader-keys-for-major-mode 'shell-mode
-  "N"  'my/new-shell)
+  "N"  #'my/new-shell
+  "V"  #'vterm)
 
 (defun my/shell-mode-hook ()
   (setq-local olivetti-body-width 140)
