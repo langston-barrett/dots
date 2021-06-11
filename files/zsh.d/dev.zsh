@@ -103,133 +103,60 @@ docker-ssh() {
 
 # MATE
 
-mate-dev-run() {
+mate-run() {
   docker run \
          --rm \
          --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-         --mount type=bind,src=$PWD,dst=/x \
          --mount type=tmpfs,dst=/tmp \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev \
-         bash -c "${@:-bash}"
-}
-
-mate-dev-souffle-run() {
-  docker run \
-         --rm \
-         --net=host \
+         --env "PROMPT_EXTRA=${1} : " \
          --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=$HOME/code/dots/files/bash.d,dst=/root/.bash.d \
+         --mount type=bind,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
          --mount type=bind,src=$PWD,dst=/x \
          --workdir=/x \
          --interactive \
          --tty \
-         mate-dev-souffle \
-         bash -c "${@:-bash}"
+         "${1}" \
+         bash -c "${*[2, -1]}"
 }
 
-mate-dev-souffle-run() {
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev-souffle \
-         bash -c "$@"
-}
-
-mate-dist-run() {
-    docker run \
-           --rm \
-           --net=host \
-           --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-           --mount type=bind,src=$PWD,dst=/x \
-           --workdir=/x \
-           --interactive \
-           --tty \
-           mate-dist \
-           bash -c "${@:-bash}"
-}
-
-mate-img-run() {
-  docker pull "${2:-artifactory.galois.com:5004/mate-dev:master}"
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         "${2:-artifactory.galois.com:5004/mate-dev:master}" \
-         bash -c "${1:-bash}"
-}
+mate-dev-run() { mate-run mate-dev "${*:-bash}"; }
+mate-dist-run() { mate-run mate-dist "${*:-bash}"; }
 
 mate-shake() {
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev \
-         ./shake.sh -j$(nproc) -- "$1" -- "${@:2}"
-
+  mate-run \
+    mate-dev \
+    "./shake.sh -j$(nproc) -- \"${1}\" -- \"${@:2}\""
 }
 
 mate-pytest-one() {
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev \
-         ./shake.sh -j$(nproc) -- pytests -- -vv -x -k "$1"
+  mate-run \
+    mate-dev \
+    "./shake.sh -j$(nproc) -- pytests -- -vv -x -k \"${1}\""
 }
 
 mate-pytest-debug() {
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev \
-         bash -c "source source.sh && cd frontend && pytest --capture=no -vv --pdb -n0 -x -k $1"
+  mate-run \
+    mate-dev \
+    "./shake.sh -j$(nproc) -- pytests -- -vv -x -k \"${1}\""
+}
+
+mate-pytest-debug() {
+  mate-run \
+    mate-dev \
+    "bash -c \"source source.sh && cd frontend && pytest --capture=no -vv --pdb -n0 -x -k ${1}\""
 }
 
 mate-pytest-debug-integration() {
-    docker run \
-           --rm \
-           --net=host \
-           --mount type=bind,src=$PWD,dst=/x \
-           --workdir=/x \
-           --interactive \
-           --tty \
-           mate-dev \
-           bash -c "source source.sh && cd frontend && MATE_INTEGRATION_TESTS=1 pytest -vv --pdb -n0 -x -k $1"
+  mate-run \
+    mate-dev \
+    "bash -c \"source source.sh && cd frontend && MATE_INTEGRATION_TESTS=1 pytest -vv --pdb -n0 -x -k ${1}\""
 }
 
 mate-pytest-one-integration() {
-  docker run \
-         --rm \
-         --net=host \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
-         --interactive \
-         --tty \
-         mate-dev \
-         bash -c "MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- --show-capture=all -vv -x -k $1"
+  mate-run \
+    mate-dev \
+    "bash -c \"MATE_INTEGRATION_TESTS=1 ./shake.sh -j$(nproc) -- pytests -- --show-capture=all -vv -x -k ${1}\""
 }
 
 mate-compose() {
@@ -268,16 +195,9 @@ mate-shell-example-1() {
     mate-shake build
     ws=deleteme.workspace
     \rm -rf "${ws}"
-    docker run \
-           --rm \
-           --net=host \
-           --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-           --mount type=bind,src=$PWD,dst=/x \
-           --workdir=/x \
-           --interactive \
-           --tty \
-           mate-dev \
-           bash -c "source source.sh && mate -w ${ws} compile frontend/test/programs/example_1.c && mate -w ${ws} build && mate -w ${ws} shell"
+    mate-run \
+      mate-dev \
+      "bash -c \"source source.sh && mate -w ${ws} compile frontend/test/programs/example_1.c && mate -w ${ws} build && mate -w ${ws} shell\""
 }
 
 # use mate-shake bench
