@@ -62,6 +62,14 @@
 (defun my/mate-shake-and-then (tgt rest)
   (my/mate-docker-run-and-then (concat my/shake-str tgt) rest))
 
+(defun my/mate-llvm-as (file)
+  (interactive (list (my/select-file-with-suffix-from-project-root ".ll")))
+  ;; TODO:
+  ;; - Default to current buffer file if it's an LL file
+  (my/mate-docker-run-and-then
+   (string-join (list "llvm-as-10" file) " ")
+   (lambda () (message "Done! %s" file))))
+
 (defun my/mate-compile-to-bitcode (file cflags)
   (interactive
    (list
@@ -80,7 +88,7 @@
 (defsubst my/directory-files-with-prefix (prefix dir)
   (cl-loop
    for file in (directory-files dir)
-   if (string-prefix-p "assert_" file)
+   if (string-prefix-p prefix file)
    collect (concat (file-name-as-directory dir) file)))
 
 ;; Why does this not work...?
@@ -95,6 +103,21 @@
   "Find non-empty files in the list FILES."
   (cl-loop for file in files if (< 0 (my/file-size file)) collect file))
 
+(setq
+  my/mate-assertion-relevant-files-alist
+  '(("assert_gep.csv" . ("subset_gep.gep_var_points_to.csv"
+                         "subset_path_gep.gep_var_points_to.csv"
+                         "subset_gep.gep_points_to.csv"
+                         "subset_path_gep.gep_points_to.csv"
+                         "subset_gep.gep_indexes_from.csv"
+                         "subset_path_gep.gep_indexes_from.csv"))))
+
+(contract-defun
+ my/file-to-org-link
+ (file)
+ :contract (contract-> contract-string-c contract-string-c)
+ (format "- [[%s][%s]]" file (file-name-nondirectory file)))
+
 ;; TODO: Add a timestamp
 (defun my/mate-run-pointer-analysis (file)
   (interactive
@@ -104,7 +127,7 @@
           (expand-file-name
            (concat root "/.out/cache/pointer-analysis/" file ".results/"))))
     (my/mate-shake-and-then
-     (concat "run-souffle -- -- 1-callsite " file)
+     (concat "run-souffle -- -- insensitive " file)
      (lambda ()
        (let ((failing (my/filter-nonempty
                        (my/directory-files-with-prefix "assert_" results)))
@@ -116,7 +139,10 @@
          (switch-to-buffer (get-buffer-create buf-name))
          (org-mode)
          (insert
-          (format "* Pointer Analysis for %s" file)
+          (format
+           "* Pointer Analysis for [[%s][%s]]"
+           (concat (file-name-sans-extension file) ".ll")
+           file)
           "\n\n"
           (format "Results: [[%s]]" results)
           "\n\n"
@@ -124,10 +150,23 @@
           "\n\n"
           (mapconcat
            (lambda (file-name)
-             (format
-              "- [[%s][%s]]"
-              file-name
-              (file-name-nondirectory file-name)))
+             (concat
+              (my/file-to-org-link file-name)
+              (mapconcat
+               (lambda (relevant-file)
+                 (concat
+                  "\n  "
+                  (my/file-to-org-link
+                   (string-join
+                    (list (file-name-directory file-name) relevant-file)
+                    "/"))))
+               (alist-get
+                (file-name-nondirectory file-name)
+                my/mate-assertion-relevant-files-alist
+                nil
+                nil
+                #'equal)
+               "")))
            failing
            "\n")))))))
 
@@ -184,3 +223,23 @@
         (message "Compilation was successful!")
         (kill-buffer))
     (my/next-compilation-error)))
+
+(defun my/mate-send-relation-to-scratch ()
+  (interactive)
+  (let ((name (buffer-name))
+        (content (buffer-string)))
+    (save-excursion
+      (my/scratch "markdown")
+      (goto-char (point-max))
+      (insert (concat "\n`" name "`:\n"))
+      (insert (concat "```\n" content "\n```")))))
+
+(defun my/scratch (mode)
+  (interactive
+   (list
+    (completing-read "Which? " '("markdown" "elisp" "fundamental"))))
+  (switch-to-buffer mode)
+  (cond
+   ((equal mode "markdown") (markdown-mode))
+   ((equal mode "elisp") (emacs-lisp-mode))
+   (t (fundamental-mode))))

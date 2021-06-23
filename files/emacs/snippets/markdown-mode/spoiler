@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# key: spoiler
+# name: spoiler
+# contributor: Langston Barrett
+# --
+<details>
+<summary>Spoiler warning</summary>
+
+Note that it's important to have a space after the summary tag.
+
+</details>

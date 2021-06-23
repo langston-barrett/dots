@@ -54,6 +54,7 @@
 **** [[https://www.snellman.net/blog/rss-lisp.xml][Lisp]]
 *** [[https://kate.io/feed.xml][Kate Murphy]]
 *** [[https://blog.nelhage.com/atom.xml][Made of Bugs]]
+*** [[https://bugsareeasy.wordpress.com/feed/][Bugs Are Easy]]
 *** [[https://buttondown.email/hillelwayne/rss][Hillel Wayne Newsletter]]
 *** [[https://mypy-lang.blogspot.com/feeds/posts/default][The Mypy Blog]]
 *** [[https://alastairreid.github.io/feed.xml][Alastair Reid]]
