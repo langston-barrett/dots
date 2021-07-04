@@ -22,7 +22,9 @@ in {
   security = {
     inherit (hardened.security)
       # "Restrict process information to the owning user."
-      hideProcessInformation
+      # Only on NixOS < 21.05
+      # hideProcessInformation
+
       # Whether to prevent replacing the running kernel image.
       protectKernelImage;
 
@@ -49,7 +51,7 @@ in {
     # auditd.enable = true;
     apparmor = {
       enable = true;
-      confineSUIDApplications = true; # install apparmor profiles for SUID apps
+      # confineSUIDApplications = true; # install apparmor profiles for SUID apps
     };
   };
 }

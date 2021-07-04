@@ -5,11 +5,42 @@
 
 (defconst
   my/hosts
-  '("big"))
+  '("localhost"
+    "big"))
+
+;; TODO Rewrite with contract-one-of-c
+(defconst my/host-c
+  (contract-predicate
+   (lambda (host) (seq-find (lambda (item) (equal item host)) my/hosts))
+   "Expected a host, but got %s"
+   'my/host-c
+   nil
+   t))
+
+(defconst
+  my/users
+  '("langston"
+    "siddharthist"))
+
+;; TODO Rewrite with contract-one-of-c
+(defconst my/user-c
+  (contract-predicate
+   (lambda (user) (seq-find (lambda (item) (equal item user)) my/users))
+   "Expected a user, but got %s"
+   'my/user-c
+   nil
+   t))
 
 (defconst
   my/host-username-alist
-  '(("big" . "langston")))
+  '(("localhost" . "siddharthist")
+    ("big" . "langston")))
+
+(contract-defun
+ my/get-user-for-host
+ (host)
+ :contract (contract-> my/host-c my/user-c)
+ (alist-get host my/host-username-alist nil nil #'equal))
 
 (defun my/choose-host ()
   (interactive)
@@ -34,6 +65,38 @@
      :type string
      :readonly)))
 
+(defconst my/method-user-host-c
+  (contract-predicate
+   #'my/method-user-host-p
+   "Expected a method-user-host struct, but got %s"
+   'my/method-user-host-c
+   nil
+   t)
+  "Contract that checks that a value is a method-user-host struct.")
+
+(contract-defun
+ my/choose-method-user-host
+ ()
+ :contract (contract-> my/method-user-host-c)
+ (interactive)
+ (let ((host (completing-read "Host:" my/hosts)))
+   (my/make-method-user-host
+    :host host
+    :method (if (equal host "localhost") "sudo" "ssh")
+    :user (my/get-user-for-host host))))
+
+(contract-defun
+ my/squash-method-user-host
+ (method-user-host)
+ :contract (contract-> my/method-user-host-c contract-string-c)
+ (concat
+  "/"
+  (my/method-user-host-method method-user-host)
+  ":"
+  (my/method-user-host-user method-user-host)
+  "@"
+  (my/method-user-host-host method-user-host)))
+
 
 (defun my/get-tramp-prefix (path)
   "Get just the \"TRAMP part\" of a path.
@@ -50,12 +113,12 @@
  :contract (contract-> contract-string-c contract-string-c)
  (reverse (seq-drop (reverse str) 1)))
 
-
 (defconst my/tramp-file-c
-  (contract--make-first-order-contract
+  (contract-predicate
    #'tramp-tramp-file-p
-   "Expected a tramp file object, but got %s"
-   "contract-file-c"
+   "expected a tramp file object, but got %s"
+   'my/tramp-file-c
+   nil
    t)
   "Contract that checks that a value is a tramp file.")
 

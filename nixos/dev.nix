@@ -22,10 +22,12 @@
     python3Packages.python-language-server
   ];
 
-  security.apparmor.profiles =
-    let writeDenyProfile =
-          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
-    in [
-      (writeDenyProfile { path = pkgs.shellcheck; binary = "shellcheck"; })
-    ];
+  # TODO: Fix after NixOS 21.05 upgrade
+  # security.apparmor.policies =
+  #   let writeDenyProfile =
+  #         import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+  #   in {
+  #     shellcheck =
+  #       writeDenyProfile { path = pkgs.shellcheck; binary = "shellcheck"; }
+  #   };
 }

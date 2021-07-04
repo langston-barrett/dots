@@ -18,16 +18,17 @@
     xorg.xmodmap # swap l-ctrl and caps lock
   ];
 
-  security.apparmor.profiles =
-    let writeDenyProfile =
-          import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
-    in [
-      (writeDenyProfile { path = pkgs.xcompmgr; binary = "xcompmgr"; })
-      # TODO  test these
-      # (writeDenyProfile { path = pkgs.arandr; binary = "aspell"; })
-      # (writeDenyProfile { path = pkgs.xorg.xmodmap; binary = "xmodmap"; })
-      # (writeDenyProfile { path = pkgs.arandr; binary = "arandr"; })
-    ];
+  # TODO: Fix after NixOS 21.05 upgrade
+  # security.apparmor.policies =
+  #   let writeDenyProfile =
+  #         import ./functions/apparmor-deny-profile.nix { inherit pkgs; };
+  #   in [
+  #     (writeDenyProfile { path = pkgs.xcompmgr; binary = "xcompmgr"; })
+  #     # TODO  test these
+  #     # (writeDenyProfile { path = pkgs.arandr; binary = "aspell"; })
+  #     # (writeDenyProfile { path = pkgs.xorg.xmodmap; binary = "xmodmap"; })
+  #     # (writeDenyProfile { path = pkgs.arandr; binary = "arandr"; })
+  #   ];
 
   # TODO: Factor out into a module, open ports in firewall automatically
   systemd.user.services = {

@@ -173,10 +173,16 @@
 
 (defun my/new-shell ()
   (interactive)
-  (let ((current-prefix-arg 1))
+  (let* ((muh (my/choose-method-user-host))
+         (default-directory
+           (concat
+            (my/squash-method-user-host muh)
+            ":/home/"
+            (my/method-user-host-user muh)))
+         (current-prefix-arg 1))
+    (cd default-directory)
     (call-interactively #'shell)))
 
-;; TODO: Why does default-directory stay at host /tmp?
 (defun my/new-shell-big ()
   (interactive)
   (let ((host (my/choose-host))
@@ -192,6 +198,7 @@
 
 (defun my/shell-mode-hook ()
   (setq-local olivetti-body-width 140)
+  ;; TODO: Make the following conditional on default-directory for TRAMP
   (if (string-suffix-p "zsh" shell-file-name)
       (my/local-zsh-prompt)
     (my/local-bash-prompt)))

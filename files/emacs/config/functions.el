@@ -87,3 +87,5 @@
   "Insert a line from ~/.bash_history."
   (interactive)
   (kill-new (my/helm-file-lines "~/.bash_history")))
+
+(defalias 'my/title-case 'upcase-initials-region)

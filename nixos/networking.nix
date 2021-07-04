@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
+  # boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
   # boot.kernelModules = [ "wireguard" ];
 
   networking = {

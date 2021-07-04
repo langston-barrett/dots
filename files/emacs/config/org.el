@@ -22,6 +22,11 @@
 ;; including enabling org-roam-mode."
 (setq org-roam-directory org-directory)
 
+;; Don't auto-indent babel code blocks
+;; https://github.com/syl20bnr/spacemacs/issues/13255
+(setq org-src-preserve-indentation t)
+(setq org-edit-src-content-indentation 0)
+
 ;;;; Miscellaneous Packages
 
 (use-package org-link-minor-mode
