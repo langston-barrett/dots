@@ -38,9 +38,12 @@ for_window [class="^Emacs$" title="^Launcher$"] border pixel 1
 
 bindsym $mod+Tab fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
 
-bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
-bindsym $mod+Shift+space exec i3-dmenu-desktop
+# bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
+# bindsym $mod+Shift+space exec i3-dmenu-desktop
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+#bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
+bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 # Rofi firefox history
 # bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
