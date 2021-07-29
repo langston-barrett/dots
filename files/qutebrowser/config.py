@@ -1,6 +1,8 @@
 import dracula.draw
 import yaml
 
+config.load_autoconfig(False)
+
 with (config.configdir / 'config.yaml').open() as f:
     yaml_data = yaml.safe_load(f)
 
