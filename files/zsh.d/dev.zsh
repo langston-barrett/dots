@@ -200,4 +200,14 @@ mate-shell-example-1() {
       "bash -c \"source source.sh && mate -w ${ws} compile frontend/test/programs/example_1.c && mate -w ${ws} build && mate -w ${ws} shell\""
 }
 
+mate-build-challenge() {
+  mate-run "${2:-mate-dev}" \
+           bash -c \
+           "rm -rf w || true; \
+            source source.sh; \
+            mate -w w compile submodules/mate-tests/tests/${1:?'Challenge name required'}/challenge_src/; \
+            mate -w w build"
+  cp w/canonical.*.bc "${1}.bc"
+}
+
 # use mate-shake bench

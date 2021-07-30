@@ -12,6 +12,7 @@ sed -i 's/\([[:space:]]\)\+size 11.0/\1size 9.0/'    ~/code/dots/files/alacritty
 
 if pgrep qutebrowser; then
   qutebrowser ":set zoom.default 125%"
+  qutebrowser ":set fonts.default_size 16px"
 fi
 
 bash "$HOME/.config/i3/scripts/post.sh"
