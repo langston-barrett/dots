@@ -83,10 +83,7 @@
     (setq my/org-header
           (concat
            "#+TITLE: ${title}\n"
-           "#+SETUPFILE: meta/setup.org\n"
-           "#+BRAIN_PARENTS:\n"
-           "#+BRAIN_CHILDREN:\n"
-           "#+BRAIN_FRIENDS:\n"))
+           "#+SETUPFILE: meta/setup.org\n"))
 
     (setq org-roam-capture-templates
           `(("d" "default" plain (function org-roam--capture-get-point)

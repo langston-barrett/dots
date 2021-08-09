@@ -34,6 +34,38 @@ alias gwa='git worktree add'
 alias gwm='git worktree move'
 alias gwr='git worktree remove'
 
+# https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
+#
+# canff - test whether it is possible to fast-forward to
+# a given commit (which may be a branch name).  If given
+# no arguments, find the upstream of the current (HEAD) branch.
+
+upstream_name() {
+    git rev-parse --symbolic-full-name --abbrev-ref @{u}
+}
+
+canff() {
+  branch_name=main
+  if [ $# -gt 0 ]; then  # at least 1 argument given
+      branch_name="$1"
+      # make sure it is or can be converted to a commit ID.
+      git rev-parse -q --verify "${branch_name}^{commit}" >/dev/null || {
+          printf "%s: not a valid commit specifier\n" "${branch_name}"
+          return 1
+      }
+  else
+    # no arguments: find upstream, or bail out
+    branch_name=$(upstream_name) || return $?
+  fi
+  # now test whether git merge --ff-only could succeed on $b
+  if git merge-base --is-ancestor HEAD "${branch_name}"; then
+    echo "merge with ${branch_name} can fast-forward"
+  else
+    echo "merge with ${branch_name} cannot fast-forward"
+  fi
+}
+
+
 # systemd
 alias sys="sudo systemctl";
 alias syss="sudo systemctl status";

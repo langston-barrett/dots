@@ -17,6 +17,25 @@
           (apply 'delete-region remove)
           (insert description)))))
 
+(contract-defun
+ my/org-select-image
+ ()
+ :contract (contract-> contract-string-c)
+ (interactive)
+ ()
+ (completing-read
+  "Select image: "
+  (directory-files-recursively (concat org-directory "/img") ".")))
+
+(contract-defun
+ my/org-insert-image
+ ()
+ :contract (contract-> contract-any-c)
+ (interactive)
+ (insert "[[file:")
+ (insert (my/org-select-image))
+ (insert "]]"))
+
 (defun my/org-insert-link ()
   "Insert a link from the kill ring"
   (interactive)

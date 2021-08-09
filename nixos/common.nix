@@ -28,7 +28,7 @@ in {
   ] ++ import ./minimal.nix { inherit pkgs; };
 
   # Time
-  time.timeZone = "America/Los_Angeles";
+  time.timeZone = "America/New_York";
   services.localtime.enable = true;
 
   # Nix
