@@ -19,6 +19,7 @@
 # TODO: whitespace too
 [init]
     templatedir = /home/siddharthist/.config/git
+	defaultBranch = main
 
 ######## Credentials and URLs
 

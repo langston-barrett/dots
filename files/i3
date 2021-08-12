@@ -27,19 +27,25 @@ set $mod Mod1
 # Mouse+mod floats & drags
 floating_modifier $mod
 
-for_window [title="hydra"] floating enable
-for_window [title="hydra"] resize set 500 500
-for_window [title="hydra"] move position center
+for_window [title="^shell-hydra$"] floating enable
+for_window [title="^shell-hydra$"] resize set 500 500
+for_window [title="^shell-hydra$"] move position center
+for_window [title="^shell-hydra$"] border pixel 2
 for_window [class="conky"] floating enable
 for_window [class="^Emacs$" title="^Launcher$"] floating enable
-for_window [class="^Emacs$" title="^Launcher$"] resize set 1000 500
 for_window [class="^Emacs$" title="^Launcher$"] move position center
-for_window [class="^Emacs$" title="^Launcher$"] border pixel 1
+for_window [class="^Emacs$" title="^Launcher$"] focus
+for_window [class="^Emacs$" title="^Launcher$"] resize set 800 500; move position center
+for_window [class="^Emacs$" title="^Launcher$"] border pixel 2
 
-bindsym $mod+Tab fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
+# bindsym $mod+Tab fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
 
 # bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
 # bindsym $mod+Shift+space exec i3-dmenu-desktop
+# bindsym $mod+space fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
+bindsym $mod+Tab exec env HYDRA=1 alacritty --class shell-hydra --title shell-hydra, [title="shell-hydra"] focus
+# bindsym $mod+Shift+space exec i3-dmenu-desktop
+
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 #bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
 bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
@@ -166,6 +172,9 @@ bindsym $mod+Shift+$exit exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes'
 
 
 # ** appearance
+
+default_border pixel 2
+hide_edge_borders smart
 
 # Window titles
 font pango:Open Sans 3

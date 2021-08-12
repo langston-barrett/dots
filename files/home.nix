@@ -21,7 +21,7 @@ in {
     }))
   ];
 
-  manual.manpages.enable = false; # TODO try re-enabling
+  manual.manpages.enable = true;
 
   xsession = {
     enable = false;
