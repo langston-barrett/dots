@@ -18,7 +18,7 @@ in pkgs.mkShell {
 
     (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
     # hPkgs.haskell-language-server
-    hPkgs.haskellPackages.ormolu
+    # hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
     hPkgs.haskellPackages.hlint
     hPkgs.haskellPackages.cabal-install

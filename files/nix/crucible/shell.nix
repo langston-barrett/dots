@@ -1,5 +1,5 @@
 { ghc ? "ghc8104"
-, unstableHaskell ? true
+, unstableHaskell ? false
 }:
 
 let
@@ -17,7 +17,7 @@ in pkgs.mkShell {
     pkgs.z3
 
     (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
-    # hPkgs.haskell-language-server
+    hPkgs.haskell-language-server
     hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
     hPkgs.haskellPackages.hlint

@@ -96,6 +96,10 @@
         dst: "{{ xdg_config_home }}/i3/scripts/not-at-desk.sh"
         mode: "0750"
         graphical: true
+      - src: monitor/post.sh
+        dst: "{{ xdg_config_home }}/i3/scripts/post.sh"
+        mode: "0750"
+        graphical: true
       - src: emacs/dir-locals/mate.el
         dst: "{{ home }}/code/mate/main/.dir-locals.el"
       - src: emacs/alloy
