@@ -172,7 +172,8 @@ This function should only modify configuration layer settings."
 
      (contract
       :location (recipe :fetcher github
-                        :repo "langston-barrett/contract.el"))
+                        :repo "langston-barrett/contract.el"
+                        :ref "881bef7a69393a5cc46019567e292155dbea0198"))
 
      ;; (klister-mode
      ;;  :location (recipe :fetcher github

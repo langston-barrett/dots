@@ -169,7 +169,15 @@
 
 ;;; Variables, Keybindings, and Hooks
 
-(setq shell-file-name "/run/current-system/sw/bin/bash")
+(setq
+ candidate-shells
+ '("/run/current-system/sw/bin/bash"
+   "/bin/bash"
+   "/bin/sh"))
+
+(dolist (shell (reverse candidate-shells))
+  (when (file-exists-p shell)
+    (setq shell-file-name shell)))
 
 (defun my/new-shell ()
   (interactive)

@@ -6,6 +6,10 @@
 ;; (defconst my/config-dir (concat my/emacs-dir "config/"))
 ;; (defun my/load (path) (load-file (concat my/config-dir path)))
 
+;; TODO Why is this necessary?
+(unless (featurep 'contract)
+  (load "~/code/contract.el/contract.el"))
+
 (add-to-list 'load-path (concat my/emacs-dir "local/"))
 (my/load "idle.el")
 (my/load "org.el")

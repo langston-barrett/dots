@@ -72,6 +72,7 @@
         (width-px (nth 3 (nth 2 attrs))))
    (cond ((eq width-px 1920) 8)
          ((eq width-px 2560) 8)
+         ((> width-px 6000) 14)
          (t 12))))
 
 (defun my/recompute-font-size ()
