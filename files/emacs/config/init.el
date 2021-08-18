@@ -113,6 +113,21 @@
 (when (require 'diff-hl-mode nil 'noerror)
   (global-diff-hl-mode 1))
 
+;; TODO:
+;; (defun my/message-filter (&rest args)
+;;   (message "ARGS %s" args))
+;; (advice-add
+;;  #'message
+;;  :before-while
+;;  #'my/message-filter)
+;; (defadvice message (around my/message-filter activate)
+;;   (when-let* ((arg (ad-get-arg 0))
+;;               (_ (string-match
+;;                   (regexp-quote "Unable to load color \"unspecified-fg\"")
+;;                   arg)))
+;;     ()
+;;     ))
+
 ;;; abbrevs
 
 (add-hook 'prog-mode-hook 'abbrev-mode)
@@ -768,7 +783,7 @@ open and unsaved."
 
 ;; Coq key bindings:
 ;; - Use SPC-m-SPC instead of SPC-m-. for less pinky strain
-;; - Use SPC-gE to process to the end of the file. Good for finding out where one left off.
+;; - Use SPC-gE to process to the end of the file. Good for finding out where one left-arrow off.
 (spacemacs/set-leader-keys-for-major-mode 'coq-mode
   "gE"  '(lambda () (interactive) (progn (evil-goto-line) (proof-goto-point)))
   "SPC" 'proof-goto-point

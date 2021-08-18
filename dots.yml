@@ -290,6 +290,8 @@
     #     # - project: crucible
     #     # - project: herms
     #     # - project: klister
+          # - project: polymorph
+          # - project: taphos
 
     - name: clone qutebrowser dracula theme
       git:
