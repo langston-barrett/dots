@@ -38,6 +38,7 @@ in {
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBxEkxXoFPhuo8l3A+OpRGjbaXrdUFriIU71XjY7U9Ry"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAzKzNdP1IRtpGMvEl2vgcSRSNBUw6bqxDoLLUcdhrY phone"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAVTLXwaK6r+lfbDQONTYbJmayYBg+AAqxEa4hWAf8K laptop"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHKfYV86oCrLUKZqjB7H1tlCfY/qDgvvn3oYq/snjx/d langston@pop-os"
         ];
         extraGroups = [
           "networkmanager"
