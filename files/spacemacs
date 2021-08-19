@@ -201,6 +201,12 @@ This function should only modify configuration layer settings."
      (haskell-pragma
       :location (recipe :fetcher github
                         :repo "travitch/haskell-pragma.el"))
+
+     (haskell-pragma
+      :location (recipe :fetcher github
+                        :repo "kmonad/kbd-mode"
+                        :files '("lisp/kbd-mode.el")))
+
      ;; (k3-mode
      ;;  :location (recipe :fetcher github
      ;;                    :repo "kframework/k-editor-support"

@@ -176,8 +176,10 @@
       - src: scripts/bin
         dst: "{{ xdg_config_home }}/bin"
         mode: "0750"
+        minimal: true
       - src: ssh
         dst: "{{ home }}/.ssh/config"
+        minimal: true
       - src: sway
         dst: "{{ xdg_config_home }}/sway/config"
         graphical: true

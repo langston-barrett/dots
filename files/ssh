@@ -40,6 +40,13 @@ Host big-external
   Port 9988
   IdentityFile ~/.ssh/id_ed25519
 
+Host small
+  ControlMaster auto
+  User siddharthist
+  HostName 192.168.0.115
+  Port 9988
+  IdentityFile ~/.ssh/id_ed25519
+
 Host oxygen
   User langston
   HostName oxygen.proj.galois.com

@@ -10,6 +10,7 @@ with pkgs; [
   atool # "compress" command in ranger
   curl
   direnv
+  entr
   fasd
   fd
   file
