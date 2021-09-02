@@ -75,9 +75,14 @@
          ((> width-px 6000) 14)
          (t 12))))
 
+(defun my/set-frame-font-size (sz)
+  (interactive "nEnter font size: ")
+  (set-frame-font (format "Hack %s" sz)))
+
 (defun my/recompute-font-size ()
   (interactive)
-  (set-frame-font (format "Hack %s" (my/compute-font-size nil))))
+  (my/set-frame-font-size
+   (my/compute-font-size nil)))
 
 (contract-defun
  my/frame-width-px ()

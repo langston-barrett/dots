@@ -29,6 +29,18 @@
 
 (defvar my/cached-executables '())
 
+(contract-defun
+ my/collect-executables
+ (&optional path)
+ :contract (contract-> contract-sequence-c) ;; TODO more specific: list of abs paths
+ (apply
+   #'append
+   (cl-loop
+    for path in (split-string (if path path (getenv "PATH")) ":")
+    if (file-directory-p path)
+    ;; TODO: Only executable files
+    collect (directory-files path))))
+
 (defun my/launcher-source-path ()
   (helm-build-sync-source "Executables"
     :multimatch nil
@@ -36,13 +48,7 @@
     :candidates
     (lambda ()
       (unless my/cached-executables
-        (setq my/cached-executables
-              (apply
-               #'append
-               (cl-loop
-                for path in (split-string (getenv "PATH") ":")
-                if (file-directory-p path)
-                collect (directory-files path)))))
+        (setq my/cached-executables (my/collect-executables)))
       my/cached-executables)
     :action
     '(("Launch" .
@@ -115,6 +121,7 @@
           (helm-display-header-line nil)
           (helm-use-undecorated-frame-option nil))
       (switch-to-buffer-other-frame (current-buffer))
+      (my/recompute-font-size)
       (helm :sources (list (my/launcher-source-path))
             :prompt ""
             :buffer "*launcher*")
@@ -122,4 +129,5 @@
       ;; If we don't kill the buffer it messes up future state.
       (kill-buffer "*launcher*")
       ;; I don't want this to cause the main frame to flash
-      (x-urgency-hint (selected-frame) nil))))
+      (when (functionp #'x-urgency-hint)
+        (x-urgency-hint (selected-frame) nil)))))

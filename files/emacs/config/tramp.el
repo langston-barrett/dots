@@ -6,7 +6,8 @@
 (defconst
   my/hosts
   '("localhost"
-    "big"))
+    "big"
+    "small"))
 
 ;; TODO Rewrite with contract-one-of-c
 (defconst my/host-c
@@ -34,7 +35,8 @@
 (defconst
   my/host-username-alist
   '(("localhost" . "siddharthist")
-    ("big" . "langston")))
+    ("big" . "langston")
+    ("small" . "siddharthist")))
 
 (contract-defun
  my/get-user-for-host

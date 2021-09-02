@@ -71,21 +71,34 @@
     (insert-file-contents file-path)
     (split-string (buffer-string) "\n" t)))
 
-(defsubst my/helm-file-lines (path)
-  (helm :sources (helm-build-sync-source (file-name-base path)
-                   :candidates (my/read-lines path)
+(defsubst my/helm-file-lines (&rest paths)
+  (helm :sources (helm-build-sync-source (file-name-base (car paths))
+                   :candidates (seq-mapcat #'my/read-lines paths)
                    :fuzzy-match t)
-        :buffer (string-join (list "*" path "*"))))
+        :buffer (string-join (list "*" (car paths) "*"))))
 
 ;; TODO: Work with TRAMP
+;; TODO: Extract path to constant
 (defun my/insert-from-zsh-history ()
   "Insert a line from ~/.zsh_history."
   (interactive)
-  (kill-new (my/helm-file-lines "~/.zsh_history")))
+  (insert (my/helm-file-lines "~/.zsh_history")))
 
 (defun my/insert-from-bash-history ()
   "Insert a line from ~/.bash_history."
   (interactive)
-  (kill-new (my/helm-file-lines "~/.bash_history")))
+  (insert (my/helm-file-lines "~/.bash_history")))
+
+(defun my/insert-from-shell-history ()
+  "Insert a line from ~/.bash_history or ~/.zsh_history."
+  (interactive)
+  (insert (my/helm-file-lines "~/.bash_history" "~/.zsh_history")))
+
+(defun my/insert-from-small-shell-history ()
+  "Insert a line from ~/.bash_history or ~/.zsh_history."
+  (interactive)
+  (insert (my/helm-file-lines
+           "/ssh:siddharthist@small:/home/siddharthist/.bash_history"
+           "/ssh:siddharthist@small:/home/siddharthist/.zsh_history")))
 
 (defalias 'my/title-case 'upcase-initials-region)

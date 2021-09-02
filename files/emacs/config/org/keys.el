@@ -17,6 +17,8 @@
 
   "iu" 'my/org-insert-url-from-kill-ring
 
+  "ri" #'my/org-insert-file-link
+
   ;; org-wiki
   ;; "wI"  'org-wiki-index
   ;; "wil" 'org-wiki-insert-link

@@ -131,11 +131,17 @@
    "NEWLINE=$'\\n'\n"
    "PROMPT=\"%30000<<${NEWLINE}[%0d]${NEWLINE}> \""))
 
-(defun my/ssh-bash-prompt ()
+(defun my/big-bash-prompt ()
   (interactive)
   (insert
    "NEWLINE=$'\\n'\n"
    "PS1=\"${NEWLINE}[/ssh:langston@big:\\w] ${NEWLINE}> \"\n"))
+
+(defun my/small-bash-prompt ()
+  (interactive)
+  (insert
+   "NEWLINE=$'\\n'\n"
+   "PS1=\"${NEWLINE}[/ssh:langston@small:\\w] ${NEWLINE}> \"\n"))
 
 (defun my/ssh-zsh-prompt ()
   (interactive)

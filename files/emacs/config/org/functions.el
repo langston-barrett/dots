@@ -24,7 +24,7 @@
  (interactive)
  ()
  (completing-read
-  "Select image: "
+  "Select Org file: "
   (directory-files-recursively (concat org-directory "/img") ".")))
 
 (contract-defun
@@ -35,6 +35,16 @@
  (insert "[[file:")
  (insert (my/org-select-image))
  (insert "]]"))
+
+(contract-defun
+ my/org-select-org-file
+ ()
+ :contract (contract-> contract-string-c)
+ (interactive)
+ ()
+ (completing-read
+  "Select image: "
+  (directory-files-recursively org-directory "\.org$")))
 
 (defun my/org-insert-link ()
   "Insert a link from the kill ring"
@@ -61,6 +71,23 @@
              :allow-nest t))
       (insert "]["))))
 
+(defun my/org-insert-file-link ()
+  (interactive)
+  (save-excursion
+    (let* ((bounds (if (or (not (region-active-p))
+                           (region-noncontiguous-p))
+                       (bounds-of-thing-at-point 'word)
+                     (region-bounds)))
+           (begin (caar bounds))
+           (end (cdar bounds))
+           (text (buffer-substring begin end)))
+      (kill-region begin end)
+      (goto-char begin)
+      (insert "[[file:")
+      (insert (my/org-select-org-file))
+      (insert "][")
+      (insert text)
+      (insert "]]"))))
 
 ;; Add CREATED property (https://bit.ly/2OyePrR)
 (defvar org-created-property-name "CREATED"
