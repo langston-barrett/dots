@@ -47,6 +47,12 @@ Host small
   Port 9988
   IdentityFile ~/.ssh/id_ed25519
 
+Host phone
+  ControlMaster auto
+  HostName 192.168.0.198
+  Port 9988
+  IdentityFile ~/.ssh/id_ed25519
+
 Host oxygen
   User langston
   HostName oxygen.proj.galois.com

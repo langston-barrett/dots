@@ -72,6 +72,15 @@ else
             "bash scripts/run-ansible.sh"
 fi
 
+if [[ -f ~/.bashrc ]]; then
+  if ! grep "bash.d" ~/.zshrc >/dev/null 2>&1; then
+    echo "Old ~/.bashrc, remove to continue"
+    exit 1
+  fi
+else
+  ln -s "$(realpath files/bashrc)" ~/.bashrc
+fi
+
 if [[ -f ~/.zshrc ]]; then
   if ! grep "zsh.d" ~/.zshrc >/dev/null 2>&1; then
     echo "Old ~/.zshrc, remove to continue"
