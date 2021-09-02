@@ -145,12 +145,15 @@
       - src: qutebrowser/config.py
         dst: "{{ xdg_config_home }}/qutebrowser/config.py"
         graphical: true
+        minimal: true
       - src: qutebrowser/config.yaml
         dst: "{{ xdg_config_home }}/qutebrowser/config.yaml"
         graphical: true
+        minimal: true
       - src: qutebrowser/quickmarks
         dst: "{{ xdg_config_home }}/qutebrowser/quickmarks"
         graphical: true
+        minimal: true
       - src: ranger/commands.py
         dst: "{{ xdg_config_home }}/ranger/commands.py"
         minimal: true
@@ -179,6 +182,7 @@
         minimal: true
       - src: ssh
         dst: "{{ home }}/.ssh/config"
+        mode: "0600"
         minimal: true
       - src: sway
         dst: "{{ xdg_config_home }}/sway/config"
