@@ -54,8 +54,11 @@ else
     . "$HOME/.nix-profile/etc/profile.d/nix.sh"
   fi
 
+  sudo nix-channel --update
+  nix-channel --update
+
   if ! (nix-channel --list | grep "home-manager" >/dev/null 2>&1); then
-    nix-channel --add https://github.com/rycee/home-manager/archive/release-20.03.tar.gz home-manager
+    nix-channel --add https://github.com/rycee/home-manager/archive/release-21.05.tar.gz home-manager
     nix-channel --update
   fi
 
@@ -73,7 +76,7 @@ else
 fi
 
 if [[ -f ~/.bashrc ]]; then
-  if ! grep "bash.d" ~/.zshrc >/dev/null 2>&1; then
+  if ! grep "bash.d" ~/.bashrc >/dev/null 2>&1; then
     echo "Old ~/.bashrc, remove to continue"
     exit 1
   fi
