@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# key: spdx
+# name: spdx-mit
+# contributor: Langston Barrett
+# --
+# SPDX-License-Identifier: MIT

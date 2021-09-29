@@ -182,10 +182,11 @@
   (setq my/helm-dash-official-docsets
         (list
          "Haskell"
-         "SQLAlchemy"
+         ;; "SQLAlchemy"
          ;; "JavaScript"
          "Python 3"
-         "HTML"))
+         ;; "HTML"
+         ))
 
   (setq helm-dash-common-docsets
         (append my/helm-dash-official-docsets
@@ -195,13 +196,13 @@
   (when (boundp 'dash-docs-docsets)
     (setq-local dash-docs-docsets-backup dash-docs-docsets))
   (setq-local dash-docs-docsets (list docset))
-  (funcall-interactively helm-dash)
+  (funcall-interactively #'helm-dash)
   (when (boundp 'dash-docs-docsets)
     (setq-local dash-docs-docsets dash-docs-docsets-backup)))
 
 (defun my/helm-dash-python ()
   (interactive)
-  (my/helm-dash-single-docset "Python_3"))
+  (my/helm-dash-single-docset Python_3"))
 
 (defun my/helm-dash-haskell ()
   (interactive)
@@ -615,10 +616,10 @@ open and unsaved."
               ;; (mapvalues 'my/three-spaces
               ;;            '(("<*>" . ?⊛)))
               (mapvalues 'my/two-spaces
-                         '(("<|" . ?⊲)     ; sequences/application in flow
-                           ("|>" . ?⊳)     ; sequences/application in flow
-                           (".>" . ?⋖)     ; composition in flow
-                           ("<." . ?⋗)     ; composition in flow
+                         '(("<|" . ?⊲)  ; sequences/application in flow
+                           ("|>" . ?⊳)  ; sequences/application in flow
+                           (".>" . ?⋖)  ; composition in flow
+                           ("<." . ?⋗)  ; composition in flow
                            ("::" . ?∷)))))
           (org-mode
            . ,(append
@@ -639,9 +640,11 @@ open and unsaved."
                     mode-prettify-symbols-alist)
         (prettify-symbols-mode))))
 
-  (add-hook 'haskell-mode-hook 'my/prettify-symbols)
-  (add-hook 'org-mode-hook 'my/prettify-symbols)
-  (add-hook 'saw-script-mode-hook 'my/prettify-symbols))
+  ;; TODO: Fails with (wrong-type-argument listp append)
+  ;; (add-hook 'haskell-mode-hook 'my/prettify-symbols)
+  ;; (add-hook 'org-mode-hook 'my/prettify-symbols)
+  ;; (add-hook 'saw-script-mode-hook 'my/prettify-symbols)
+  )
 
 
 ;;; Elfeed

@@ -12,7 +12,7 @@ in pkgs.mkShell {
   '';
   buildInputs =  [
     (hPkgs.haskell.packages.${ghc}.ghcWithPackages (hpkgs: with hpkgs; []))
-    # hPkgs.haskell-language-server
+    hPkgs.haskell-language-server
     hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
     hPkgs.haskellPackages.hlint

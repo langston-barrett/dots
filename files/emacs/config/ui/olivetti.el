@@ -10,7 +10,11 @@
     (setq my/excluded-buffer-names
           (list " *OUTLINE-TOC*" "*SPEEDBAR*" "*Help*" "*org-roam*"))
     (setq my/excluded-buffer-prefixes
-          (list "org-sidebar" "<tree>" "HELM"))
+          (list
+           "org-sidebar"
+           "<tree>"
+           "HELM"
+           " *Minibuf"))
 
     (defun my/excluded-windows-filter (window)
       "Return true for any window that should be excluded"

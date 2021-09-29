@@ -48,6 +48,11 @@
   (setq org-brain-show-resources nil
         org-brain-path org-directory))
 
+(use-package org-appear-mode
+  :disabled
+  :config
+  (add-hook 'org-mode-hook 'org-appear-mode))
+
 ;;;; General Configuration
 
 (with-eval-after-load 'org

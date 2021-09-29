@@ -135,6 +135,7 @@ This function should only modify configuration layer settings."
      native-complete
      company-native-complete
      company-tabnine
+     org-appear
 
      ;; dhall-mode
      lispy
