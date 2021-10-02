@@ -79,6 +79,9 @@
       - src: i3status.conf
         dst: "{{ xdg_config_home }}/i3status/config"
         graphical: true
+      - src: inputrc
+        dst: "{{ home }}/.inputrc"
+        minimal: true
       - src: keynavrc
         dst: "{{ xdg_config_home }}/keynav/keynavrc"
         graphical: true

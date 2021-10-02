@@ -721,7 +721,9 @@ you should place your code here."
   (defconst my/emacs-dir (concat user-home-directory "code/dots/files/emacs/"))
   (defconst my/config-dir (concat my/emacs-dir "config/"))
   (defun my/load (path) (load-file (concat my/config-dir path)))
-  (my/load "init.el")) ;; end user-config
+  (my/load "init.el")
+
+  ) ;; end user-config
 
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.

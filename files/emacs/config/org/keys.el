@@ -4,7 +4,8 @@
   "oil"  'my/org-insert-link
   "orl"  'my/org-remove-link
   ;; org-noter
-  "on"   'org-noter)
+  "on"   'org-noter
+  "oos"  'my/helm-do-ag-org)
 
 (spacemacs/set-leader-keys-for-major-mode 'org-mode
 

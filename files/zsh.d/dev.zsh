@@ -31,9 +31,6 @@ sorted_diff() {
     diff "${file1}" "${file2}"
 }
 
-function github_clone { git clone "https://github.com/${1}"; }
-function git_clone_mine { git clone "https://github.com/siddharthist/${1}"; }
-
 # https://stackoverflow.com/questions/3231804/in-bash-how-to-add-are-you-sure-y-n-to-any-command-or-alias#32708121
 prompt_confirm() {
   while true; do

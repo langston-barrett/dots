@@ -140,3 +140,7 @@ will not be modified."
   (interactive)
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region (point-min) (point-max))))
+
+(defun my/helm-do-ag-org ()
+  (interactive)
+  (funcall-interactively #'helm-do-ag org-directory))

@@ -162,7 +162,7 @@
   (setq my/helm-dash-user-docsets
         (list
          ;; "Beautiful_Soup" ;;
-         "Clang"
+         ;; "Clang"
          ;; "Coq" ;;
          "emacs"
          ;; "GNU_Make"
@@ -202,7 +202,7 @@
 
 (defun my/helm-dash-python ()
   (interactive)
-  (my/helm-dash-single-docset Python_3"))
+  (my/helm-dash-single-docset "Python_3"))
 
 (defun my/helm-dash-haskell ()
   (interactive)

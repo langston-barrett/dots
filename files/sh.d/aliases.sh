@@ -34,6 +34,10 @@ alias gwa='git worktree add'
 alias gwm='git worktree move'
 alias gwr='git worktree remove'
 
+
+github_clone() { git clone "https://github.com/${1}"; }
+git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
+
 # https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
 #
 # canff - test whether it is possible to fast-forward to

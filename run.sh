@@ -54,7 +54,7 @@ else
     . "$HOME/.nix-profile/etc/profile.d/nix.sh"
   fi
 
-  sudo nix-channel --update
+  # sudo nix-channel --update
   nix-channel --update
 
   if ! (nix-channel --list | grep "home-manager" >/dev/null 2>&1); then
