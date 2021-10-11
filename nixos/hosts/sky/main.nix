@@ -4,6 +4,7 @@
   imports = [
       ./hardware-configuration.nix
 
+      ../../dev.nix
       ../../roles/server.nix
   ];
 
@@ -15,7 +16,7 @@
   i18n.defaultLocale = "en_US.UTF-8";
   users.users.langston = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "docker" "wheel" ]; # Enable ‘sudo’ for the user.
   };
   environment.systemPackages = with pkgs; [
     git
@@ -34,4 +35,3 @@
   system.stateVersion = "21.05"; # Did you read the comment?
 
 }
-

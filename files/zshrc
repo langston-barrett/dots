@@ -2,4 +2,14 @@ source_all_sh() {[[ -d $1 ]] && for f in $1/*.sh; do source "$f"; done; unset f;
 source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "$f"; done; unset f;}
 source_all_sh $HOME/.sh.d
 source_all $HOME/.zsh.d
+
+if ! [[ -d ~/.zsh/autosuggest ]]; then
+  git clone \
+    --single-branch \
+    --branch=master \
+    --depth=1 \
+    https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/autosuggest
+fi
+source ~/.zsh/autosuggest/zsh-autosuggestions.zsh
+
 if [ -e /home/langston/.nix-profile/etc/profile.d/nix.sh ]; then . /home/langston/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
