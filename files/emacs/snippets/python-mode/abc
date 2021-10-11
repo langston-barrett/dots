@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# key: abc
+# name: abc
+# contributor: Langston Barrett
+# --
+from abc import ABC
+class ${1:Name}(ABC):
+    """Doc."""
+    @abstractmethod
+    def meth(msg: str):
+        pass

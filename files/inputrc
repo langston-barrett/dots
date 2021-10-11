@@ -1,0 +1,3 @@
+# See "man bash", sections "Commands for ..."
+Control-k: previous-history
+Control-j: next-history

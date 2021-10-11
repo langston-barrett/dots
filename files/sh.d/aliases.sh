@@ -37,6 +37,9 @@ alias gwr='git worktree remove'
 
 github_clone() { git clone "https://github.com/${1}"; }
 git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
+git_remote_add_sky() {
+  git remote add sky "ssh://langston@sky/home/langston/code/${1}"
+}
 
 # https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
 #

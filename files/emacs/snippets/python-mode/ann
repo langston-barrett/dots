@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# key: ann
+# name: ann
+# contributor: Langston Barrett
+# --
+from __future__ import annotations
