@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: cpp
+# name: cpp
+# contributor: Langston Barrett
+# --
+```c++
+```
