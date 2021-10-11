@@ -50,8 +50,14 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   zle -N fzf-insert-directory
   bindkey -M vicmd ' id' fzf-insert-directory
 
+  fzf-insert-snippet() {
+    zle_append_to_buffer "$(\cat ~/code/dots/files/sh.d/snippets | fzf --layout=reverse)"
+  }
+  zle -N fzf-insert-snippet
+  bindkey -M vicmd ' is' fzf-insert-snippet
+
   fzf-insert-show-bindings() {
-    zle -R "" "c: clipboard" "d: directory" "f: file" "h: history"
+    zle -R "" "c: clipboard" "d: directory" "f: file" "h: history" "s: snippet"
   }
   zle -N fzf-insert-show-bindings
   bindkey -M vicmd ' i' fzf-insert-show-bindings
