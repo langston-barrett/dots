@@ -7,3 +7,7 @@ EDITOR=vi git rebase -i origin/master
 EDITOR=vi git rebase -i master
 EDITOR=vi git rebase -i upstream/master
 EDITOR=vi git rebase --continue
+cmake -S . -B build -G Ninja -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --jobs "$(nproc)" --build build --target install
+docker run --rm --interactive --tty --mount type=bind,src=$PWD,target=/work --workdir=/work foo bash
+fd '.*\.(cpp|h)$' src | xargs clang-format -i {} \;

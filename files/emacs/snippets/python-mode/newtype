@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: newtype
+# name: newtype
+# contributor: Langston Barrett
+# --
+from typing import NewType
+
+Ty = NewType("Ty", str)

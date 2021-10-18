@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: type
+# name: type_checking
+# contributor: Langston Barrett
+# --
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from foo import bar
