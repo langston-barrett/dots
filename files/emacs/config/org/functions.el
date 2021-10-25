@@ -38,13 +38,16 @@
 
 (contract-defun
  my/org-select-org-file
- ()
- :contract (contract-> contract-string-c)
+ (initial)
+ :contract (contract-> contract-string-c contract-string-c)
  (interactive)
  ()
  (completing-read
   "Select image: "
-  (directory-files-recursively org-directory "\.org$")))
+  (directory-files-recursively org-directory "\.org$")
+  nil
+  nil
+  initial))
 
 (defun my/org-insert-link ()
   "Insert a link from the kill ring"
@@ -80,11 +83,12 @@
                      (region-bounds)))
            (begin (caar bounds))
            (end (cdar bounds))
-           (text (buffer-substring begin end)))
+           (text (buffer-substring begin end))
+           (link (my/org-select-org-file (downcase text))))
       (kill-region begin end)
       (goto-char begin)
       (insert "[[file:")
-      (insert (my/org-select-org-file))
+      (insert link)
       (insert "][")
       (insert text)
       (insert "]]"))))

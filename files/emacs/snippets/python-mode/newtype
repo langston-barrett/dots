@@ -3,6 +3,44 @@
 # name: newtype
 # contributor: Langston Barrett
 # --
+from __future__ import annotations
+
+from dataclasses import dataclass
 from typing import NewType
 
-Ty = NewType("Ty", str)
+# Don't construct these values directly. Instead use one of the below
+# constructor functions.
+#
+# To help ensure you don't do this by mistake, import this module like so:
+#
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+#     from this_module import $1
+${1:Ty} = NewType("$1", ${2:str})
+
+@dataclass(frozen=True)
+class Invalid$1Error(ValueError):
+    value: $2
+
+    def __str__(self) -> str:
+        return f"Invalid $1: {self.value}"
+
+def validate_${1:$(downcase yas-text)}(x: $2) -> bool:
+    return True  # TODO
+
+def assert_${1:$(downcase yas-text)}(x: $2) -> $1:
+    assert validate_$1(x)
+    return $1(x)
+
+def maybe_${1:$(downcase yas-text)}(x: $2) -> $1 | None:
+if validate_${1:$(downcase yas-text)}(x):
+        return $1(x)
+    return None
+
+def throw_if_not_${1:$(downcase yas-text)}(x: $2) -> $1:
+    if validate_${1:$(downcase yas-text)}(x):
+        return $1(x)
+    raise Invalid$1Error(x)
+
+def unsafe_fast_${1:$(downcase yas-text)}(x: $2) -> $1:
+    return $1(x)

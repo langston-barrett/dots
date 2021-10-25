@@ -1,0 +1,37 @@
+# -*- mode: snippet -*-
+# key: derived-newtype
+# name: derived-newtype
+# contributor: Langston Barrett
+# --
+from __future__ import annotations
+
+from dataclasses import dataclass
+from typing import NewType
+
+from foo import ${1:Base}, assert_${1:$(downcase yas-text)} , throw_if_not_${1:$(downcase yas-text)} , unsafe_fast_${1:$(downcase yas-text)}
+
+
+# Don't construct these values directly. Instead use one of the below
+# constructor functions.
+#
+# To help ensure you don't do this by mistake, import this module like so:
+#
+# from typing import TYPE_CHECKING
+# if TYPE_CHECKING:
+#     from this_module import Size
+${2:Ty} = NewType("$2", $3)
+
+def assert_${2:$(downcase yas-text)}(x: $3) -> $2:
+    return $1(assert_${1:$(downcase yas-text)})
+
+def maybe_${2:$(downcase yas-text)}(x: $3) -> $2 | None:
+    mb = maybe_${1:$(downcase yas-text)}(x)
+    if mb is not None:
+          return $2(mb)
+    return None
+
+def throw_if_not_${2:$(downcase yas-text)}(x: $3) -> $2:
+    return $2(throw_if_not_${1:$(downcase yas-text)})
+
+def unsafe_fast_${2:$(downcase yas-text)}(x: $3) -> $2:
+     return $2(unsafe_fast_${1:$(downcase yas-text)}(x))

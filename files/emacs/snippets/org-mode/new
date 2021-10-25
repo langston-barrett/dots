@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: new
+# name: new
+# contributor: Langston Barrett
+# --
+#+TITLE: $1
+#+SETUPFILE: ./meta/setup.org
+
+* ${1:Title}
