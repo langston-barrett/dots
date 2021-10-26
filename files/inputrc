@@ -1,3 +1,11 @@
 # See "man bash", sections "Commands for ..."
 Control-k: previous-history
 Control-j: next-history
+
+# https://superuser.com/questions/95626/control-backspace-unix-kill-rubout-for-readline
+# Use Ctrl-V to find out what "Ctrl-backspace" sends
+Ctrl-H: backward-kill-word
+
+# Local Variables:
+# comment-start: "#"
+# End:

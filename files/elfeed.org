@@ -31,9 +31,13 @@
 ** Nix
 *** [[http://planet.nixos.org/atom.xml][NixOS Planet]]
 *** [[http://sandervanderburg.blogspot.com/feeds/posts/default][Sander van der Burg's blog]]
-** Static Analysis
+** Program Analysis
 *** [[http://angr.io/blog/][angr blog]]
 *** [[https://blog.trailofbits.com/feed/][trail of bits blog]]
+** Python
+*** [[http://www.python.org/dev/peps/peps.rss][Python PEPs]]
+*** [[https://mypy-lang.blogspot.com/feeds/posts/default][The Mypy Blog]]
+*** [[https://pschanely.github.io/feed.xml][Crosshair]]
 ** Other Tech
 *** [[http://google-opensource.blogspot.com/feeds/posts/default][Google Open Source Blog]]
 *** [[http://onethingwell.org/rss][One Thing Well]]
@@ -56,7 +60,6 @@
 *** [[https://blog.nelhage.com/atom.xml][Made of Bugs]]
 *** [[https://bugsareeasy.wordpress.com/feed/][Bugs Are Easy]]
 *** [[https://buttondown.email/hillelwayne/rss][Hillel Wayne Newsletter]]
-*** [[https://mypy-lang.blogspot.com/feeds/posts/default][The Mypy Blog]]
 *** [[https://alastairreid.github.io/feed.xml][Alastair Reid]]
 *** [[https://project-oak.github.io/rust-verification-tools/feed.xml][Rust Verification Tools]]
 *** [[http://www.quviq.com/category/blog/feed/][Blog – QuviQ]]
