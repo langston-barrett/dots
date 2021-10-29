@@ -44,7 +44,20 @@
 ######## Aliases
 
 [alias]
+	co = checkout
+	cob = checkout -b
+	comn = checkout main
+	coms = checkout master
+	dc = diff --cached
+	fa = fetch --all
 	pushf = push --force-with-lease
+	rem = remote -v
+	remotev = remote -v
+	rv = remote -v
+    s = status
+    re = rebase
+    rei = rebase -i
+    reim = rebase -i master
     prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
     undo = reset HEAD~1 --mixed
 

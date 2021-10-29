@@ -11,3 +11,4 @@ cmake -S . -B build -G Ninja -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" -DCMAKE
 cmake --jobs "$(nproc)" --build build --target install
 docker run --rm --interactive --tty --mount type=bind,src=$PWD,target=/work --workdir=/work foo bash
 fd '.*\.(cpp|h)$' src | xargs clang-format -i {} \;
+git grep 'foo' $(git rev-list --all)
