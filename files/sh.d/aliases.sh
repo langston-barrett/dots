@@ -4,7 +4,6 @@ alias jq_clipboard="xsel -ob | jq | xsel -ib"
 alias ga='git add'
 alias gb='git branch'
 alias gbD='git branch -D'
-alias gc='git checkout'
 alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
 alias gcmm='git commit -m .'
@@ -33,6 +32,18 @@ alias gwl='git worktree list'
 alias gwa='git worktree add'
 alias gwm='git worktree move'
 alias gwr='git worktree remove'
+
+git_choose_branch() {
+  git branch --all --format='%(refname:short)' | fzf
+}
+
+gc() {
+  if [[ -n "${1}" ]]; then
+    git checkout "$@"
+  else
+    git checkout $(git_choose_branch)
+  fi
+}
 
 
 github_clone() { git clone "https://github.com/${1}"; }
