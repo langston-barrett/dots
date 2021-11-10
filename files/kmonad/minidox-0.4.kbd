@@ -29,7 +29,7 @@
 
 (defalias
   sbs (tap-next bspc lsft) ;; tap-next that is either a shift, or a backspace
-  ale (tap-next esc lmet)
+  ale (tap-next esc lalt)
   lre (tap-next ret (layer-toggle symb))
   ssp (tap-hold 300 spc rsft)
   tct (tap-next tab rctl)

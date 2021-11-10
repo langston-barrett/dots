@@ -39,10 +39,10 @@ in {
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKAzKzNdP1IRtpGMvEl2vgcSRSNBUw6bqxDoLLUcdhrY phone"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICAVTLXwaK6r+lfbDQONTYbJmayYBg+AAqxEa4hWAf8K laptop"
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHKfYV86oCrLUKZqjB7H1tlCfY/qDgvvn3oYq/snjx/d langston@pop-os"
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOrqmadd1EpwGy5zj5Iyh0iD480HWN+4cqjW9UDhKaC langston@sem"
         ];
         extraGroups = [
           "networkmanager"
-          "sway"
           "uinput"
           "video"  # light
           "wheel"

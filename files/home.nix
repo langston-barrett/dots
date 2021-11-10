@@ -87,7 +87,7 @@ in {
         MPW_FULLNAME = "Langston Barrett";
         MPW_SITETYPE = "x";
         XDG_CONFIG_HOME = "$HOME/.config";
-        EDITOR = "emacs";
+        EDITOR = "vi";
       };
       shellAliases = {
         amiconnected = "while true; do if curl google.com &> /dev/null; then echo \"$(date +%H:%M) ~~~GOOD~~~\"; else echo \"$(date +%H:%M) ---BAD---\"; fi; sleep 5; done";

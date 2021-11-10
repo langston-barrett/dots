@@ -65,6 +65,9 @@ else
   if [[ -n $XDG_CONFIG_HOME ]]; then
     export XDG_CONFIG_HOME=$HOME/.config
   fi
+
+  chmod 0700 ~/.ssh
+
   # nix-shell default.nix  \
   #           --substituters "https://cache.nixos.org" \
   #           --run \

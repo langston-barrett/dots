@@ -17,11 +17,9 @@
 
   programs.light.enable = true;
 
-  services.xserver = {
+ services.xserver = {
     enable = true;
     layout = "us";
-
-    videoDrivers = [ "intel" ];
 
     monitorSection = ''
       DisplaySize   294 166
