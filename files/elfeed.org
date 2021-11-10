@@ -63,3 +63,4 @@
 *** [[https://alastairreid.github.io/feed.xml][Alastair Reid]]
 *** [[https://project-oak.github.io/rust-verification-tools/feed.xml][Rust Verification Tools]]
 *** [[http://www.quviq.com/category/blog/feed/][Blog – QuviQ]]
+*** [[https://www.ralfj.de/blog/][Ralf's Ramblings]]

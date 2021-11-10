@@ -91,4 +91,28 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   }
   zle -N show-bindings
   bindkey -M vicmd ' ' show-bindings
+
+  # ------------------------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  # autofzf
+
+  space() {
+    IFS=' ' read -A words <<< "${BUFFER}"
+    if [[ ${AUTOFZF} != 1 ]]; then
+      return
+    fi
+    if [[ "${words[1]}" == git ]]; then
+      if [[ "${words[2]}" == checkout ]]; then
+        zle_append_to_buffer " $(git_list_checkout_targets | fzf)"
+      fi
+    elif [[ "${words[1]}" == gc ]]; then
+      zle_append_to_buffer " $(git_list_checkout_targets | fzf)"
+    fi
+    zle_append_to_buffer "  "
+  }
+  zle -N space
+  export AUTOFZF=1
+
+  bindkey -M emacs " " space
+  bindkey -M viins " " space
 fi

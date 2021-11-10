@@ -6,9 +6,8 @@ UsePrivilegedPort no
 
 # options applied for Galois hosts
 Host *.galois.com
+  ControlMaster auto
   ForwardAgent yes
-  ForwardX11 yes
-  ForwardX11Trusted yes
   PreferredAuthentications publickey,keyboard-interactive,password
   VerifyHostKeyDNS ask
 
@@ -59,3 +58,16 @@ Host oxygen
   IdentityFile ~/.ssh/id_ed25519
   PasswordAuthentication no
   PreferredAuthentications publickey,keyboard-interactive,password
+
+Host sky
+  User langston
+  HostName vm-37-51.eic.galois.com
+  Port 9988
+  IdentityFile ~/.ssh/id_ed25519
+  LocalForward 8666 localhost:8666
+  LocalForward 8001 localhost:8001
+  LocalForward 8050 localhost:8050
+  LocalForward 9000 localhost:9000
+  PasswordAuthentication no
+  PreferredAuthentications publickey,keyboard-interactive,password
+  ControlMaster auto
