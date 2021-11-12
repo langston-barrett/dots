@@ -33,12 +33,12 @@ if [[ "${MODE_INDICATOR}" == "" ]]; then
 fi
 
 function vi_mode_prompt_info() {
-  echo "${${VI_KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}"
+  printf "${${VI_KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}\n"
 }
 
 # define right prompt, if it wasn't defined by a theme
 if [[ "$RPS1" == "" && "$RPROMPT" == "" ]]; then
-  RPS1='$(vi_mode_prompt_info)'
+  # RPS1='$(vi_mode_prompt_info)'
 fi
 
 # allow ctrl-r and ctrl-s to search the history

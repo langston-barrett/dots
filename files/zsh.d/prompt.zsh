@@ -1,4 +1,4 @@
-if [[ -n "${INSIDE_EMACS}" ]]; then
+if [[ -z "${INSIDE_EMACS}" ]]; then
   newline=$'\n'
   PROMPT="%30000<<${newline}[%0d]${newline}> "
   unset newline

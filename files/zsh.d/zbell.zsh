@@ -11,6 +11,11 @@
 # Written by Jean-Philippe Ouellet <jpo@vt.edu>
 # Made available under the ISC license.
 
+notify() {
+  # 2.5s
+  notify-send --expire-time=2500 "${1}"
+}
+
 # only do this if we're in an interactive shell
 [[ -o interactive ]] || return
 
@@ -55,7 +60,7 @@ zbell_end() {
 	done
 
 	if (( ! $has_ignored_cmd )) && (( ran_long )); then
-        notify-send "'${zbell_lastcmd}' finished after ${duration}s!"
+        notify "'${zbell_lastcmd}' finished after ${duration}s!"
 	fi
 }
 

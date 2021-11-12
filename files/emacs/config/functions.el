@@ -6,6 +6,11 @@
   (interactive)
   (revert-buffer :ignore-auto :noconfirm))
 
+(defun my/yank-paragraph ()
+  (interactive)
+  (mark-paragraph)
+  (evil-yank (mark) (point)))
+
 (defun my/revert-buffer-ansi-colors ()
   "Revert buffer without confirmation."
   (interactive)

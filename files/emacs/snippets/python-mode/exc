@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# key: exc
+# name: exception
+# contributor: Langston Barrett
+# --
+from dataclasses import dataclass
+@dataclass(frozen=True)
+class Err(Exception):
+    val: int
+    
+    def __str__(self) -> str:
+        return f"Error: {self.val}"

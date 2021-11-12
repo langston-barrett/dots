@@ -34,7 +34,7 @@ in {
 
   services = {
     dunst = {
-      enable = false;
+      enable = true;
       settings = {
         global = {
           geometry = "500-30+50";

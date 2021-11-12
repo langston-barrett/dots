@@ -62,6 +62,33 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   zle -N fzf-insert-show-bindings
   bindkey -M vicmd ' i' fzf-insert-show-bindings
 
+  # p ----------------------------------------------------------------------------
+
+  find_project_root() {
+    root=$(realpath ${1:-${PWD}})
+    while true; do
+      if [[ ${root} == "." ]]; then
+        printf "%s\n" "ERROR"
+        break
+      fi
+      if [[ ${root} == / ]] || [[ -f ${root}/.projectile ]] || [[ -d ${root}/.git  ]] || [[ -d ${root}/cabal.project  ]]; then
+        break
+      fi
+      root=$(dirname "${root}")
+    done
+    printf "${root}"
+  }
+
+  pf() { cd "$(\find "$(find_project_root)" -type d | fzf --height=10% --layout=reverse --prompt='>> ')"; }
+  zle -N pf
+  bindkey -M vicmd ' pf' pf
+
+  project-show-bindings() {
+    zle -R "" "f: pf"
+  }
+  zle -N project-show-bindings
+  bindkey -M vicmd ' p' project-show-bindings
+
   # s ----------------------------------------------------------------------------
 
   # TODO
@@ -87,28 +114,163 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   # ------------------------------------------------------------------------------
 
   show-bindings() {
-    zle -R "" "i: insert" "s: ssh"
+    zle -R "" "i: insert" "s: ssh" "p: project"
   }
   zle -N show-bindings
   bindkey -M vicmd ' ' show-bindings
 
   # ------------------------------------------------------------------------------
+  # -- bg
   # ------------------------------------------------------------------------------
-  # autofzf
+
+  fancy-ctrl-z () {
+    emulate -LR zsh
+    if [[ ${#BUFFER} -eq 0 ]]; then
+      bg
+      zle_append_to_buffer "fg && "
+    else
+      zle push-input
+    fi
+  }
+  zle -N fancy-ctrl-z
+  bindkey '^Z' fancy-ctrl-z
+
+  # ------------------------------------------------------------------------------
+  # -- autofzf
+  # ------------------------------------------------------------------------------
+
+  zle_choose() {
+    zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ')"
+  }
+
+  normal_space() {
+    BUFFER="${BUFFER:0:${CURSOR}} ${BUFFER:${CURSOR}}"
+    CURSOR="$((CURSOR+1))"
+    zle redisplay
+  }
 
   space() {
     IFS=' ' read -A words <<< "${BUFFER}"
+    # TODO: Only consider words that are before the cursor
+
     if [[ ${AUTOFZF} != 1 ]]; then
+      normal_space
       return
     fi
-    if [[ "${words[1]}" == git ]]; then
-      if [[ "${words[2]}" == checkout ]]; then
-        zle_append_to_buffer " $(git_list_checkout_targets | fzf)"
-      fi
-    elif [[ "${words[1]}" == gc ]]; then
-      zle_append_to_buffer " $(git_list_checkout_targets | fzf)"
+
+    exes=$(<<'EOT'
+bash
+cabal
+clang
+echo
+emacs
+ghcid
+git
+printf
+vi
+which
+zsh
+EOT
+)
+
+    if [[ "${BUFFER}" == "" ]]; then
+      zle_choose "${exes}"
+      return
     fi
-    zle_append_to_buffer "  "
+
+    normal_space
+
+    num_words="${#words[@]}"
+    if [[ "${words[1]}" == git ]]; then
+      if [[ "${num_words}" == 1 ]]; then
+        git_cmds=$(<<'EOT'
+add
+bisect
+branch
+checkout
+clone
+commit
+diff
+fetch
+grep
+init
+log
+merge
+mv
+pull
+push
+pushf
+rebase
+reset
+restore
+rm
+show
+stash
+status
+switch
+tag
+EOT
+)
+        zle_choose "${git_cmds}"
+      fi
+    fi
+
+    # git checkout
+    if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == checkout ]] && [[ "${num_words}" == 2 ]]; then
+      zle_choose "$(git_list_checkout_targets)"
+    elif [[ "${words[1]}" == gc ]] && [[ "${#words[@]}" == 1 ]]; then
+      zle_choose "$(git_list_checkout_targets)"
+    fi
+
+    # git pull
+    if [[ "${words[1]}" == git ]] && [[ "${#words[@]}" > 1 ]]; then
+      if [[ "${words[2]}" == pull ]] || [[ "${words[2]}" == pl ]]; then
+        if [[ "${#words[@]}" == 3 ]]; then
+          zle_choose "$(git remote show)"
+        elif [[ "${#words[@]}" == 4 ]]; then
+          zle_choose "$(git_list_checkout_targets)"
+        fi
+      fi
+    fi
+
+    if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == stash ]] && [[ "${num_words}" == 2 ]]; then
+      git_stash_cmds=$(<<'EOT'
+
+apply
+branch
+clear
+create
+drop
+list
+pop
+push
+show
+store
+EOT
+                )
+      zle_choose "${git_stash_cmds}"
+    fi
+
+
+    if [[ "${words[1]}" == cabal ]]; then
+      if [[ "${num_words}" == 1 ]]; then
+        cabal_cmds=$(<<'EOT'
+build
+check
+configure
+freeze
+get
+haddock
+info
+list
+repl
+run
+test
+EOT
+                )
+        zle_choose "${cabal_cmds}"
+      fi
+    fi
   }
   zle -N space
   export AUTOFZF=1

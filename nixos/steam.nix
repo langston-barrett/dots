@@ -2,6 +2,7 @@
 
 {
   programs.steam.enable = true;
+  hardware.opengl.enable = true;
 
   # https://support.steampowered.com/kb_article.php
   # UDP remote port 27000--27100: Game traffic
