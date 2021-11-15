@@ -127,3 +127,7 @@ alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
 # Haskell
 
 alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=$HOME/code/dots/files/hlint.yaml src"'
+
+for f in ~/org/code/dots/sh.d/*.sh; do
+  . "${f}"
+done

@@ -1,6 +1,7 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("asof" "As of Nov 2021," nil :count 0)
     ("todo" "TODO(lb):" nil :count 0)
     ("mb" "mv" nil :count 0)
     ("Souffle" "Soufflé" nil :count 0)
@@ -23,3 +24,7 @@ Replacements and Programmatic Hooks" nil :count 0)
     ("Appetit" "Appétit" nil :count 0)
     ("appetit" "appétit" nil :count 0)
    ))
+
+;; Local Variables:
+;; eval: (progn (defun my/read-abbrev-file () (read-abbrev-file "~/code/dots/files/emacs/config/abbrevs.el")) (add-hook 'after-save-hook #'my/read-abbrev-file nil t))
+;; End:

@@ -140,6 +140,7 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   # ------------------------------------------------------------------------------
 
   zle_choose() {
+    # zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ' --bind=space:print-query)"
     zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ')"
   }
 
@@ -201,12 +202,15 @@ pull
 push
 pushf
 rebase
+remote
 reset
 restore
+rev-parse
 rm
 show
 stash
 status
+submodule
 switch
 tag
 EOT
@@ -225,9 +229,9 @@ EOT
     # git pull
     if [[ "${words[1]}" == git ]] && [[ "${#words[@]}" > 1 ]]; then
       if [[ "${words[2]}" == pull ]] || [[ "${words[2]}" == pl ]]; then
-        if [[ "${#words[@]}" == 3 ]]; then
+        if [[ "${#words[@]}" == 2 ]]; then
           zle_choose "$(git remote show)"
-        elif [[ "${#words[@]}" == 4 ]]; then
+        elif [[ "${#words[@]}" == 3 ]]; then
           zle_choose "$(git_list_checkout_targets)"
         fi
       fi
@@ -244,6 +248,7 @@ drop
 list
 pop
 push
+remote
 show
 store
 EOT
@@ -251,6 +256,16 @@ EOT
       zle_choose "${git_stash_cmds}"
     fi
 
+    if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == clone ]] && [[ "${num_words}" == 2 ]]; then
+      git_clone_urls=$(<<'EOT'
+https://github.com/
+https://gitlab-ext.galois.com/
+https://gitlab-int.galois.com/
+https://github.com/NixOS/nixpkgs
+EOT
+                    )
+      zle_choose "${git_clone_urls}"
+    fi
 
     if [[ "${words[1]}" == cabal ]]; then
       if [[ "${num_words}" == 1 ]]; then
@@ -275,6 +290,6 @@ EOT
   zle -N space
   export AUTOFZF=1
 
-  bindkey -M emacs " " space
-  bindkey -M viins " " space
+  bindkey -M emacs "  " space
+  bindkey -M viins "  " space
 fi
