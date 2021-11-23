@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: pwd
+# name: pwd
+# contributor: Langston Barrett
+# --
+from typing import Final
+from os.path import dirname, realpath
+HERE: Final[str] = dirname(realpath(__file__))
+from pathlib import Path
+HERE: Final[Path] = Path(__file__).absolute().parent

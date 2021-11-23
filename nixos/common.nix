@@ -66,7 +66,10 @@ in {
 
   documentation = {
     dev.enable = true;
-    man.enable = true;
+    man = {
+      enable = true;
+      generateCaches = true;
+    };
     nixos.enable = true;
   };
 

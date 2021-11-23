@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# key: open
+# name: open
+# contributor: Langston Barrett
+# --
+with open(some_path, mode="r") as f:
+
+    f.readline()
+
+    for line in f:
+        print(line)
+
+    content = f.read(size=-1)
+
+    if f.seekable():
+        pos = f.tell()
+        f.seek(1, whence=0)
+
+    f.write(text)

@@ -164,21 +164,22 @@
          ;; "Beautiful_Soup" ;;
          ;; "Clang"
          ;; "Coq" ;;
-         "emacs"
+         ;; "emacs"
          ;; "GNU_Make"
-         "HTTP"
-         "Hy"
+         ;; "HTTP"
+         ;; "Hy"
          ;; "Hypothesis" ;;
          ;; "IntelASMx86"
-         "LLVM"
+         ;; "LLVM"
          ;; "Linux_Man_Pages"
          ;; "Org_Mode"
          ;; "R5RS" ;;
-         "Requests"
+         ;; "Requests"
          ;; "Sphinx"
-         "Zsh"
-         "glibc"
-         "pytest"))
+         ;; "Zsh"
+         ;; "glibc"
+         ;; "pytest"
+         ))
   (setq my/helm-dash-official-docsets
         (list
          "Haskell"

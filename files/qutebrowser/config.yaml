@@ -7,7 +7,7 @@ bindings.commands:
 content.images: true
 aliases:
   pocket: "open -t https://getpocket.com/edit?url={url}"
-zoom.default: "125%"
+zoom.default: "150%"
 
 # Avoid fingerprinting
 # https://wiki.archlinux.org/index.php/Qutebrowser

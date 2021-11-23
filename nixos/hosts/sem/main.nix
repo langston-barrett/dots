@@ -5,6 +5,7 @@ let variables = import ./variables.nix;
 in {
   imports = [
     ./hardware-configuration.nix
+    ./chess-openvpn.nix
 
     # <nixos-hardware/common/cpu/intel>
 

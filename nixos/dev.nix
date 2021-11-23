@@ -10,6 +10,7 @@
 
     clang
     docker-compose
+    patchutils
     llvm
     rr
     shellcheck

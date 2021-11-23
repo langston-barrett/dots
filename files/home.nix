@@ -3,9 +3,9 @@
 let
   myEmacs =
     with pkgs; ((emacsPackagesNgGen emacsGit).emacsWithPackages (epkgs: [
-      #epkgs.emacsql-sqlite
       epkgs.exwm
       epkgs.vterm
+      epkgs.emacs-libvterm
       epkgs.pdf-tools
     ])).overrideAttrs (attrs: {
       propagatedBuildInputs = (attrs.propagatedBuildInputs or []) ++ [pkgs.binutils pkgs.gcc];
@@ -46,7 +46,10 @@ in {
       };
     };
 
-    emacs.enable = true;
+    emacs = {
+      enable = true;
+      package = myEmacs;
+    };
 
     lorri.enable = true;
 

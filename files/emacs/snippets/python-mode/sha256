@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: sha256
+# name: sha256
+# contributor: Langston Barrett
+# --
+from hashlib import sha256
+sha256(data).hexdigest()
