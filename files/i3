@@ -218,6 +218,34 @@ mode "resize" {
 bindsym $mod+$resize mode "resize"
 # smart_borders on
 
+# ** exec
+
+set $execMode "Switch mode: [q]uit [d]isplay [f]ocus"
+bindsym $mod+x mode $execMode
+
+mode $execMode {
+    bindsym d mode $displayMode
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym q mode "default"
+}
+
+# ** display
+
+set $displayMode "Set display mode [d]esk [l]aptop"
+
+mode $displayMode {
+    bindsym d exec "~/.config/i3/scripts/at-desk.sh"; \
+                mode "default"
+    bindsym l exec "~/.config/i3/scripts/not-at-desk.sh"; \
+                mode "default"
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym q mode "default"
+}
+
 # ** i3bar
 
 # bar {
