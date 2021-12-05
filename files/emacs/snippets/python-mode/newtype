@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# key: ann
+# name: ann
+# contributor: Langston Barrett
+# --
+${1:Ty} = NewType("$1", int)

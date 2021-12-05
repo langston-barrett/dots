@@ -33,9 +33,14 @@ in {
       extraConfig = ''
         polkit.addRule(function(action, subject) {
             if (action.id == "org.freedesktop.systemd1.manage-units") {
-                if (action.lookup("unit") == "physlock.service") {
-                    var verb = action.lookup("verb");
-                    if (verb == "start") {
+                var unit = action.lookup("unit");
+                if (unit == "physlock.service") {
+                    if (action.lookup("verb") == "start") {
+                        return polkit.Result.YES;
+                    }
+                }
+                if (unit == "suspend.target") {
+                    if (action.lookup("verb") == "start") {
                         return polkit.Result.YES;
                     }
                 }

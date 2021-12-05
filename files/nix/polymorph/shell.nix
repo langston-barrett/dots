@@ -16,12 +16,13 @@ in pkgs.mkShell {
     pkgs.yices
     pkgs.z3
 
-    (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
-    hPkgs.haskell-language-server
-    hPkgs.haskellPackages.ormolu
-    hPkgs.haskellPackages.ghcid
-    hPkgs.haskellPackages.hlint
-    hPkgs.haskellPackages.cabal-install
     pkgs.zlib  # needed for Haskell
+    (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
+    hPkgs.haskellPackages.ghcid
+    hPkgs.haskellPackages.cabal-install
+
+    hPkgs.haskell-language-server
+    hPkgs.haskellPackages.hlint
+    # hPkgs.haskellPackages.ormolu
   ];
 }
