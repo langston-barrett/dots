@@ -44,21 +44,32 @@
 ######## Aliases
 
 [alias]
+	br = branch
 	co = checkout
 	cob = checkout -b
 	comn = checkout main
 	coms = checkout master
 	dc = diff --cached
 	fa = fetch --all
+	l = log
+	head = rev-parse HEAD
+	head- = rev-parse HEAD~
+	ph = push
+	phf = push --force-with-lease
+	pl = pull
+	plom = pull origin main
+	plomr = pull origin master
+	plou = pull upstream main
+	plour = pull upstream master
 	pushf = push --force-with-lease
 	rem = remote -v
 	remotev = remote -v
 	rv = remote -v
-    s = status
+    prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
     re = rebase
     rei = rebase -i
     reim = rebase -i master
-    prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
+    s = status
     undo = reset HEAD~1 --mixed
 
 ######## Conditional includes
