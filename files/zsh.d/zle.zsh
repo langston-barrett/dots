@@ -18,11 +18,122 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
     zle redisplay
   }
 
+  zle_write_buffer() {
+    BUFFER="${1}"
+    CURSOR=$#BUFFER
+    zle redisplay
+  }
+
   fzf-history() {
     zle -R "" "Use 'SPC i h'"
   }
   zle -N fzf-history
   bindkey '^R^R' fzf-history
+
+  # c ----------------------------------------------------------------------------
+
+  count_files_with_ext() { ls -1 *."${1}" 2>/dev/null | wc -l; }
+
+  cabal_compile_cmd() {
+    # TODO(lb): fzf target
+    printf "cabal build"
+  }
+
+  make_compile_cmd() {
+    # TODO(lb): fzf target
+    printf "cabal build"
+  }
+
+  compile_cmd() {
+    if [[ -f Makefile ]]; then
+      make_compile_cmd
+    elif [[ $(count_files_with_ext cabal) != 0 ]]; then
+      cabal_compile_cmd
+    fi
+  }
+
+  chk() {
+    # TODO(lb): cd to project root?
+    zle_write_buffer "$(lint_cmd) && $(compile_cmd) && $(test_cmd)"
+  }
+  zle -N chk
+  bindkey -M vicmd ' ck' chk
+
+  compile() {
+    # TODO(lb): cd to project root?
+    zle_write_buffer "$(compile_cmd)"
+  }
+  zle -N compile
+  bindkey -M vicmd ' cc' compile
+
+  cabal_lint_cmd() {
+    printf "hlint src test"
+  }
+
+  make_lint_cmd() {
+    # TODO(lb): fzf target
+    printf "make lint"
+  }
+
+  fd_src_cmd() {
+    if [[ -f Makefile ]]; then
+      printf "fd --extension c --extension h ."
+    elif [[ $(count_files_with_ext cabal) != 0 ]]; then
+      printf "fd --extension hs ."
+    fi
+  }
+
+  run_entr() {
+    # TODO(lb): cd to project root?
+    zle_write_buffer "$(fd_src_cmd) | entr -c -s \"$(lint_cmd) && $(compile_cmd)\""
+  }
+  zle -N run_entr
+  bindkey -M vicmd ' ce' run_entr
+
+  lint_cmd() {
+    if [[ -f Makefile ]]; then
+      make_lint_cmd
+    elif [[ $(count_files_with_ext cabal) != 0 ]]; then
+      cabal_lint_cmd
+    fi
+  }
+
+  lint() {
+    # TODO(lb): cd to project root?
+    zle_write_buffer "$(lint_cmd)"
+  }
+  zle -N lint
+  bindkey -M vicmd ' cl' lint
+
+  cabal_test_cmd() {
+    printf "cabal test"
+  }
+
+  make_test_cmd() {
+    # TODO(lb): fzf target
+    printf "make test"
+  }
+
+  test_cmd() {
+    if [[ -f Makefile ]]; then
+      make_test_cmd
+    elif [[ $(count_files_with_ext cabal) != 0 ]]; then
+      cabal_test_cmd
+    fi
+  }
+
+  tests() {
+    # TODO(lb): cd to project root?
+    zle_write_buffer "$(test_cmd)"
+  }
+  zle -N tests
+  bindkey -M vicmd ' ct' tests
+
+  compile-show-bindings() {
+    zle -R "" "c: compile" "k: check" "l: lint" "t: test"
+  }
+  zle -N compile-show-bindings
+  bindkey -M vicmd ' c' compile-show-bindings
 
   # i ----------------------------------------------------------------------------
 
@@ -79,7 +190,10 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
     printf "${root}"
   }
 
-  pf() { cd "$(\find "$(find_project_root)" -type d | fzf --height=10% --layout=reverse --prompt='>> ')"; }
+  pf() {
+    cd "$(\find "$(find_project_root)" -type d | fzf --height=10% --layout=reverse --prompt='>> ')"
+    zle redisplay
+  }
   zle -N pf
   bindkey -M vicmd ' pf' pf
 
@@ -114,7 +228,7 @@ if [[ -z ${INSIDE_EMACS} ]] || ! [[ ${INSIDE_EMACS} =~ ".*comint.*" ]]; then
   # ------------------------------------------------------------------------------
 
   show-bindings() {
-    zle -R "" "i: insert" "s: ssh" "p: project"
+    zle -R "" "c: compile" "i: insert" "s: ssh" "p: project"
   }
   zle -N show-bindings
   bindkey -M vicmd ' ' show-bindings

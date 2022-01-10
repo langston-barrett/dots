@@ -54,8 +54,8 @@ bindkey '^e' end-of-line
 # bizarrely, these interfere with emacs + vterm
 # https://github.com/hlissner/doom-emacs/issues/3546
 if [[ -z ${INSIDE_EMACS} ]]; then
-  bindkey '^k' up-line-or-history
-  bindkey '^j' down-line-or-history
+  # bindkey '^k' up-line-or-history
+  # bindkey '^j' down-line-or-history
 fi
 function use-j-k() {
   if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then

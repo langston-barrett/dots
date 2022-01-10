@@ -52,6 +52,7 @@
 *** [[https://www.evanjones.ca/index.rss][Evan Jones]]
 *** [[http://kamalmarhubi.com/blog/feed.xml][Kamal Marhubi]]
 *** [[https://blog.regehr.org/feed][Embedded in Academia - John Regehr]]
+*** [[https://joy.recurse.com/feed.atom][Recurse Center - Joy of Computing]]
 *** Juho Snellman
 **** [[https://www.snellman.net/blog/rss-history.xml][History]]
 **** [[https://www.snellman.net/blog/rss-networking.xml][Networking]]
@@ -64,3 +65,5 @@
 *** [[https://project-oak.github.io/rust-verification-tools/feed.xml][Rust Verification Tools]]
 *** [[http://www.quviq.com/category/blog/feed/][Blog – QuviQ]]
 *** [[https://www.ralfj.de/blog/][Ralf's Ramblings]]
+** Non-Tech
+**** [[https://www.calnewport.com/blog/feed/][Cal Newport]]

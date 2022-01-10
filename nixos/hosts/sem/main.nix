@@ -32,6 +32,8 @@ in {
 
   networking.hostName = "sem";
 
+  services.mullvad-vpn.enable = true;
+
   environment.systemPackages = with pkgs; [
     # beets
     # calibre

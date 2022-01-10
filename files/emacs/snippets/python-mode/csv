@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# key: csv
+# name: csv
+# contributor: Langston Barrett
+# --
+from csv import reader
+
+with open("file.csv", mode="r") as f:
+    lines = f.readlines()
+
+for line in reader(lines):
+    pass

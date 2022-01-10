@@ -24,5 +24,9 @@ in pkgs.mkShell {
     hPkgs.haskell-language-server
     hPkgs.haskellPackages.hlint
     # hPkgs.haskellPackages.ormolu
+
+    # vscode-ui
+    unstable.nodejs_latest
+    unstable.vscode
   ];
 }
