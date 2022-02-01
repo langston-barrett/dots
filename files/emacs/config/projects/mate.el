@@ -180,9 +180,41 @@
   (interactive)
   (mate-shake "lint"))
 
+(defun my/mate-lint-py ()
+  (interactive)
+  (mate-shake "lint-py"))
+
+(defun my/mate-lint-py-bellybutton ()
+  (interactive)
+  (mate-shake "lint-py-bellybutton"))
+
+(defun my/mate-lint-py-docformatter ()
+  (interactive)
+  (mate-shake "lint-py-docformatter"))
+
+(defun my/mate-lint-py-mypy ()
+  (interactive)
+  (mate-shake "lint-py-mypy"))
+
+(defun my/mate-lint-py-pylint ()
+  (interactive)
+  (mate-shake "lint-py-pylint"))
+
 (defun my/mate-format ()
   (interactive)
   (mate-shake "format"))
+
+(defun my/mate-format-black ()
+  (interactive)
+  (mate-shake "format-black"))
+
+(defun my/mate-format-docformatter ()
+  (interactive)
+  (mate-shake "format-docformatter"))
+
+(defun my/mate-format-isort ()
+  (interactive)
+  (mate-shake "format-isort"))
 
 (defun my/mate-build ()
   (interactive)
