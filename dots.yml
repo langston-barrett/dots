@@ -105,6 +105,8 @@
         graphical: true
       - src: emacs/dir-locals/mate.el
         dst: "{{ home }}/code/mate/main/.dir-locals.el"
+      - src: emacs/dir-locals/uc-crux.el
+        dst: "{{ home }}/code/polymorph/deps/crucible/.dir-locals.el"
       - src: emacs/alloy
         dst: "{{ home }}/.emacs.d/private/alloy"
         mode: "0750"
