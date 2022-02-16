@@ -92,3 +92,18 @@
    width-px))
 
 (add-hook 'window-size-change-functions #'my/compute-font-size)
+
+;; https://stackoverflow.com/questions/9725015/how-do-i-make-the-compilation-window-in-emacs-to-always-be-a-certain-size
+(setq split-height-threshold 0)
+(setq compilation-window-height 10)
+(defun my/compilation-hook ()
+  (when (not (get-buffer-window "*compilation*"))
+    (save-selected-window
+      (save-excursion
+        (let* ((w (split-window-vertically))
+               (h (window-height w)))
+          (select-window w)
+          (switch-to-buffer "*compilation*")
+          (shrink-window (- h compilation-window-height)))))))
+
+(add-hook 'compilation-mode-hook 'my/compilation-hook)

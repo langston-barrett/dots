@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: requests
+# name: requests
+# contributor: Langston Barrett
+# --
+from requests import get
+r = get(URL)
+r.text

@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# key: cloze
+# name: cloze
+# contributor: Langston Barrett
+# --
+*** [`(org-format-time-string "%Y-%m-%d %a %H:%M")`]
+:PROPERTIES:
+:CREATED: [`(org-format-time-string "%Y-%m-%d %a %H:%M")`]
+:ANKI_DECK: Default
+:ANKI_NOTE_TYPE: Cloze
+:END:
+**** Text
+
+${1:Card}

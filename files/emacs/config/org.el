@@ -42,12 +42,6 @@
   (add-hook 'org-mode-hook 'org-indent-mode)
   (setq org-indent-indentation-per-level 2))
 
-(use-package org-brain
-  :config
-  (defun aa2u-buffer () (aa2u (point-min) (point-max)))
-  (setq org-brain-show-resources nil
-        org-brain-path org-directory))
-
 (use-package org-appear-mode
   :disabled
   :config

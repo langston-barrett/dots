@@ -31,6 +31,7 @@ in {
   };
 
   networking.hostName = "sem";
+  services.logind.extraConfig = "RuntimeDirectorySize=8G";
 
   services.mullvad-vpn.enable = true;
 

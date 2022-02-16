@@ -2,7 +2,7 @@
 
 # options that should never be overridden
 StrictHostKeyChecking ask
-UsePrivilegedPort no
+# UsePrivilegedPort no
 
 # options applied for Galois hosts
 Host *.galois.com
@@ -52,6 +52,13 @@ Host phone
   Port 9988
   IdentityFile ~/.ssh/id_ed25519
 
+Host carbon
+  User langston
+  HostName carbon.proj.galois.com
+  # IdentityFile ~/.ssh/id_ed25519
+  # PasswordAuthentication no
+  # PreferredAuthentications publickey,keyboard-interactive,password
+
 Host oxygen
   User langston
   HostName oxygen.proj.galois.com
@@ -61,7 +68,8 @@ Host oxygen
 
 Host sky
   User langston
-  HostName vm-37-51.eic.galois.com
+  # HostName vm-37-51.eic.galois.com
+  HostName 192.168.61.185
   Port 9988
   IdentityFile ~/.ssh/id_ed25519
   LocalForward 8666 localhost:8666

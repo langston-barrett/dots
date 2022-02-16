@@ -1,0 +1,18 @@
+# -*- mode: snippet -*-
+# key: basic
+# name: basic
+# contributor: Langston Barrett
+# --
+*** $1
+:PROPERTIES:
+:CREATED: [`(org-format-time-string "%Y-%m-%d %a %H:%M")`]
+:ANKI_DECK: Default
+:ANKI_NOTE_TYPE: Basic
+:END:
+**** Front
+
+${1:Question}
+
+**** Back
+
+${2:Answer}

@@ -8,11 +8,11 @@ let
   hPkgs = if unstableHaskell then unstable else pkgs;
 in pkgs.mkShell {
   shellHook = ''
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.zlib}/lib
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.zlib}/lib:${pkgs.ncurses6}/lib
   '';
   buildInputs =  [
-    pkgs.clang_8
-    pkgs.llvm_8
+    pkgs.clang_11
+    pkgs.llvm_11
     pkgs.yices
     pkgs.z3
 
@@ -28,5 +28,11 @@ in pkgs.mkShell {
     # vscode-ui
     unstable.nodejs_latest
     unstable.vscode
+
+    # llvm
+    pkgs.cmake
+    pkgs.lld
+    pkgs.ncurses6
+    pkgs.ninja
   ];
 }
