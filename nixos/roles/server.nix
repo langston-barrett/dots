@@ -8,7 +8,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    tigervnc
+    # tigervnc
     tmux
   ];
 

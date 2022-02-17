@@ -5,7 +5,7 @@ let
     with pkgs; ((emacsPackagesNgGen emacsGit).emacsWithPackages (epkgs: [
       epkgs.exwm
       epkgs.vterm
-      epkgs.emacs-libvterm
+      # epkgs.emacs-libvterm
       epkgs.pdf-tools
     ])).overrideAttrs (attrs: {
       propagatedBuildInputs = (attrs.propagatedBuildInputs or []) ++ [pkgs.binutils pkgs.gcc];

@@ -115,18 +115,18 @@
  :contract (contract-> contract-string-c contract-string-c)
  (reverse (seq-drop (reverse str) 1)))
 
-(defconst my/tramp-file-c
-  (contract-predicate
-   #'tramp-tramp-file-p
-   "expected a tramp file object, but got %s"
-   'my/tramp-file-c
-   nil
-   t)
-  "Contract that checks that a value is a tramp file.")
+;; (defconst my/tramp-file-c
+;;   (contract-predicate
+;;    #'tramp-tramp-file-p
+;;    "expected a tramp file object, but got %s"
+;;    'my/tramp-file-c
+;;    nil
+;;    t)
+;;   "Contract that checks that a value is a tramp file.")
 
 (contract-defun
  my/tramp-get-hops (path)
- :contract (contract-> my/tramp-file-c contract-sequence-c)
+ :contract (contract-> contract-any-c contract-sequence-c)
  "Get a list of all the TRAMP hops in this path
 
 >> (my/tramp-get-hops \"/ssh:host1|ssh:user@host2:/path\")

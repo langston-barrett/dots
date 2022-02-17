@@ -1,4 +1,4 @@
-{ ghc ? "ghc8104"
+{ ghc ? "ghc8107"
 , unstableHaskell ? false
 }:
 

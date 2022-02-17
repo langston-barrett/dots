@@ -8,13 +8,12 @@
     ../../roles/server.nix
 
     ../../audio.nix
-    ../../bluetooth.nix
+    # ../../bluetooth.nix
     ../../dev.nix
+    ../../i3.nix
     ../../networking.nix
     ../../steam.nix
     ../../x.nix
-
-    ../../services/tigervnc.nix
   ];
 
   # Use the systemd-boot EFI boot loader.
@@ -38,18 +37,7 @@
       autoLogin.user = "langston";
       lightdm.enable = true;
     };
-    windowManager.i3 = {
-      enable = true;
-      package = pkgs.i3-gaps;
-    };
     # desktopManager.xfce.enable = true;
-  };
-
-  services.tigervnc = {
-    enable = true;
-    port = 5900;
-    xStartup = "${pkgs.qutebrowser}/bin/qutebrowser";
-    geometry = "2560x1440";
   };
 
   systemd = {

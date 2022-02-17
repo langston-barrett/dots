@@ -1,6 +1,6 @@
 (defconst myorg-packages
   '(org-board ; link archiving
-    org-brain
+    ;; org-brain
     org-make-toc
     ;; org-mind-map
     org-noter
@@ -26,20 +26,6 @@
     (spacemacs/set-leader-keys-for-major-mode 'org-mode
       "Ba"   'org-board-archive
       "BA"   'org-board-archive-dry-run)))
-
-;; (defun myorg/init-org-mind-map ()
-;;   (use-package org-mind-map
-;;     :init
-;;     (require 'ox-org)
-;;     :defer t
-;;     :config
-;;     (setq org-mind-map-engine "dot")       ; Default. Directed Graph
-;;     ;; (setq org-mind-map-engine "neato")  ; Undirected Spring Graph
-;;     ;; (setq org-mind-map-engine "twopi")  ; Radial Layout
-;;     ;; (setq org-mind-map-engine "fdp")    ; Undirected Spring Force-Directed
-;;     ;; (setq org-mind-map-engine "sfdp")   ; Multiscale version of fdp for the layout of large graphs
-;;     ;; (setq org-mind-map-engine "twopi")  ; Radial layouts
-;;     ))
 
 (defun myorg/init-org-make-toc ()
   (use-package org-make-toc

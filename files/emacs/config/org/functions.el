@@ -17,15 +17,15 @@
           (apply 'delete-region remove)
           (insert description)))))
 
-(contract-defun
- my/org-select-image
- ()
- :contract (contract-> contract-string-c)
- (interactive)
- ()
- (completing-read
-  "Select Org file: "
-  (directory-files-recursively (concat org-directory "/img") ".")))
+;; (contract-defun
+;;  my/org-select-image
+;;  ()
+;;  :contract (contract-> contract-string-c)
+;;  (interactive)
+;;  ()
+;;  (completing-read
+;;   "Select Org file: "
+;;   (directory-files-recursively (concat org-directory "/img") ".")))
 
 (contract-defun
  my/org-insert-image
