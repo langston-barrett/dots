@@ -34,5 +34,17 @@ in pkgs.mkShell {
     pkgs.lld
     pkgs.ncurses6
     pkgs.ninja
+    pkgs.lit
+
+    # blight
+    pkgs.python3
+    pkgs.python3Packages.click
+    pkgs.python3Packages.pip
+    pkgs.python3Packages.pydantic
+    pkgs.python3Packages.typing-extensions
+
+    # rust-analyzer, build-bom
+    pkgs.rustup
+    pkgs.rust-analyzer
   ];
 }

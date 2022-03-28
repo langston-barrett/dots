@@ -109,8 +109,8 @@ mate-run() {
          --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
          --mount type=bind,src=$HOME/code/dots/files/bash.d,dst=/root/.bash.d \
          --mount type=bind,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
-         --mount type=bind,src=$PWD,dst=/x \
-         --workdir=/x \
+         --mount type=bind,src=$PWD,dst=/mate \
+         --workdir=/mate \
          --interactive \
          --tty \
          "${1}" \
@@ -205,6 +205,12 @@ mate-build-challenge() {
             mate -w w compile submodules/mate-tests/tests/${1:?'Challenge name required'}/challenge_src/; \
             mate -w w build"
   cp w/canonical.*.bc "${1}.bc"
+}
+
+mate-dist-build() {
+  mate-docker-pull
+  mate-shake bdist
+  docker build --tag "${1}" --target=dist .
 }
 
 # use mate-shake bench

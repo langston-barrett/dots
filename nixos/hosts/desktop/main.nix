@@ -5,6 +5,8 @@
  imports = [
     ./hardware-configuration.nix
 
+    ./chess-openvpn.nix
+
     ../../roles/server.nix
 
     ../../audio.nix
@@ -24,6 +26,7 @@
   };
 
   networking.hostName = "big";
+  services.physlock.enable = true;
 
   environment.systemPackages = with pkgs; [
     glxinfo # driver query

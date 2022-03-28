@@ -1,4 +1,4 @@
-{ ghc ? "ghc8104"
+{ ghc ? "ghc8107"
 , unstableHaskell ? false
 }:
 
@@ -18,7 +18,6 @@ in pkgs.mkShell {
 
     (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
     hPkgs.haskell-language-server
-    hPkgs.haskellPackages.ormolu
     hPkgs.haskellPackages.ghcid
     hPkgs.haskellPackages.hlint
     hPkgs.haskellPackages.cabal-install

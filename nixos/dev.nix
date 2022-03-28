@@ -20,7 +20,7 @@
     # python3Packages.importmagic
     # TODO: Set up default config file
     # python3Packages.pylint
-    python3Packages.python-language-server
+    # python3Packages.python-language-server
   ];
 
   # TODO: Fix after NixOS 21.05 upgrade

@@ -46,7 +46,7 @@ in {
   fonts = {
     enableFontDir = false;
     enableGhostscriptFonts = true;
-    fontconfig.dpi = 192;
+    # fontconfig.dpi = 192;
     fonts = with pkgs; [
       # comfortaa
       # fira-code, freefont-ttf, ubuntu-font-family

@@ -8,6 +8,7 @@
 *** [[http://ezyang.tumblr.com/rss][ezyang]]
 *** [[http://semantic-domain.blogspot.com/feeds/posts/default][Semantic Domain]]
 *** [[https://www.williamjbowman.com/feeds/all.atom.xml][William J. Bowman]]
+*** [[https://esoteric.codes/rss][Esoteric.codes]]
 ** Coq
 *** [[http://coq-blog.clarus.me/rss.xml][Coq blog - Guillaume Claret]]
 *** [[http://poleiro.info/atom.xml][Poleiro: latest posts]]

@@ -75,16 +75,16 @@ in {
 
   virtualisation = {
     docker = {
-      enable = false;
-      extraOptions = "--dns 8.8.8.8 --dns 8.8.4.4";
-    };
-    podman = {
       enable = true;
-      dockerCompat = true;
-      dockerSocket = {
-        enable = true;
-      };
+      extraOptions = "--dns 8.8.8.8 --dns 8.8.4.4 --dns 1.1.1.1";
     };
+    # podman = {
+    #   enable = true;
+    #   dockerCompat = true;
+    #   dockerSocket = {
+    #     enable = true;
+    #   };
+    # };
   };
 
   services.syncthing = {
