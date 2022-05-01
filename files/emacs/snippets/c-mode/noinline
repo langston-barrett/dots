@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# key: noinline
+# name: noinline
+# contributor: Langston Barrett
+# --
+${1:Return} __attribute__((noinline)) ${2:Name}(${3:Args}) { ${4:Body} }

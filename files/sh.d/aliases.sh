@@ -117,7 +117,7 @@ alias lock='systemctl start physlock'
 alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
 alias mate-docker-pull='docker pull artifactory.galois.com:5004/mate-dev:master && docker tag artifactory.galois.com:5004/mate-dev:master mate-dev && docker pull artifactory.galois.com:5004/mate-dist:master && docker tag artifactory.galois.com:5004/mate-dist:master mate-dist && docker image prune'
-alias polymorph-docker-pull='docker pull artifactory.galois.com:5016/polymorph/polymorph-dist:latest && docker tag artifactory.galois.com:5016/polymorph/polymorph-dist:latest polymorph-dist'
+alias polymorph-docker-pull='docker pull artifactory.galois.com:5016/polymorph/dist:main && docker tag artifactory.galois.com:5016/polymorph/dist:main polymorph-dist'
 alias mate-clean-submodule-integration-framework='pushd submodules/integration_framework && sudo git clean -xdf && sudo git reset --hard HEAD && popd'
 
 # temporary

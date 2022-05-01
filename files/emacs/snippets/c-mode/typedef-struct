@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: typedef-struct
+# name: typedef-struct
+# contributor: Langston Barrett
+# --
+typedef struct ${1:StructName} {
+  ${3:Fields}
+} ${2:TypeName};
