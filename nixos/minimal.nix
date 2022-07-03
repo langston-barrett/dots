@@ -19,7 +19,7 @@ with pkgs; [
   gnumake
   htop
   jq
-  manpages
+  man-pages
   mpw
   nix-prefetch-git
   pet

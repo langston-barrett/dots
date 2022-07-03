@@ -51,10 +51,10 @@ in {
       # comfortaa
       # fira-code, freefont-ttf, ubuntu-font-family
 
-      tex-gyre-bonum-math   # latex math font
-      tex-gyre-schola-math  # latex math font
-      tex-gyre-pagella-math # latex math font
-      latinmodern-math      # latex math font
+      # tex-gyre-math.bonum   # latex math font
+      # tex-gyre-math.schola  # latex math font
+      # tex-gyre-math.pagella # latex math font
+      # latinmodern-math      # latex math font
 
       carlito               # calibri compatible, for office
       eb-garamond
@@ -66,7 +66,7 @@ in {
       lato
       libre-caslon
       noto-fonts-emoji      # emoji
-      opensans-ttf
+      open-sans
       overpass              # header
       oxygenfonts           # UI
       stix-otf              # latex math font

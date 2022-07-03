@@ -32,6 +32,8 @@ in {
     };
   };
 
+  services.logind.extraConfig = "RuntimeDirectorySize=8G";
+
   networking.hostName = "langston-x1"; # Define your hostname.
 
   environment.systemPackages = with pkgs; [
