@@ -1,0 +1,5 @@
+# name : wno-orphans
+# key : wno-orphans
+# contributor : Langston Barrett <langston.barrett@gmail.com>
+# --
+{-# OPTIONS_GHC -Wno-orphans #-}

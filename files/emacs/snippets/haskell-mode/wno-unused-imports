@@ -1,0 +1,5 @@
+# name : wno-unused-imports
+# key : wno-unused-imports
+# contributor : Langston Barrett <langston.barrett@gmail.com>
+# --
+{-# OPTIONS_GHC -Wno-unused-imports #-}
