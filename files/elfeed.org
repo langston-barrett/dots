@@ -20,6 +20,7 @@
 *** [[https://ryanglscott.github.io/feed.xml][Ryan G.L. Scott]]
 *** [[https://www.parsonsmatt.org/feed.xml][Matt Parsons]]
 *** [[https://frasertweedale.github.io/blog-fp/atom.xml][pureblog]]
+*** [[https://ravit.ch/rss.xml][Tristan Ravitch]]
 ** Emacs                                                              :emacs:
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]
