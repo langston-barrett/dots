@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: shell
+# name: shell
+# contributor: Langston Barrett
+# --
+SHELL := $(shell which bash)
+.SHELLFLAGS := -euco pipefail

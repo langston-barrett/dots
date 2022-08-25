@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: out
+# name: out
+# contributor: Langston Barrett
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+OUT := ./out
+
+$(OUT):
+	@mkdir -p "$@"

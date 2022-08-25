@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: phon
+# name: phon
+# contributor: Langston Barrett
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+.PHONY: ${1:target}
+$1: ${2:deps}
+	${3:body} "$<" > "$@"

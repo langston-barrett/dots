@@ -3,8 +3,9 @@
 # name: gadt
 # condition: (= (length "gadt") (current-column))
 # contributor: Langston Barrett
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
 # --
 data ${1:TyName} ${2:TyVars} where
-${3:Constructor} -> $1 $2
-$3 -> $1 $2
+  ${3:Constructor} -> $1 $2
+  $3 -> $1 $2
 deriving (Data, Eq, Functor, Generic, Generic1, Ord, Read, Show, Typeable)

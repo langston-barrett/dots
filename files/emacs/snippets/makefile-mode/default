@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# key: def
+# name: default
+# contributor: Langston Barrett
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+.DEFAULT: ${1:target}
+$1: ${2:deps}
