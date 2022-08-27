@@ -75,6 +75,19 @@ run_from_unstable () {
 
 }
 
+m () {
+  pushd
+  while ! [[ -f Makefile ]]; do
+    if [[ $(pwd) == "/" ]]; then
+      printf "No Makefile found\n"
+      return
+    fi
+    cd ..
+  done
+  make "$@"
+  popd
+}
+
 ## Generic
 
 GPG_TTY=$(tty)
@@ -118,6 +131,7 @@ mate-run() {
 }
 
 mate-dev-run() { mate-run mate-dev "${*:-bash}"; }
+mate-oss-run() { mate-run mate-dev "${*:-bash}"; }
 mate-dist-run() { mate-run mate-dist "${*:-bash}"; }
 
 mate-shake() {
@@ -214,3 +228,25 @@ mate-dist-build() {
 }
 
 # use mate-shake bench
+
+poly-run() {
+  echo "${*[1, -1]}"
+  docker run \
+         --rm \
+         --entrypoint "" \
+         --mount type=tmpfs,dst=/tmp \
+         --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+         --mount type=bind,src=$HOME/code/dots/files/bash.d,dst=/root/.bash.d \
+         --mount type=bind,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+         --mount type=bind,src=$PWD,dst=/polymorph \
+         --workdir=/polymorph \
+         --interactive \
+         --tty \
+         polymorph-dev \
+         bash -c "${*[1, -1]}"
+}
+
+poly-shake() {
+  poly-run \
+    "./shake.sh -j$(nproc) -- \"${1}\" -- \"${@:2}\""
+}
