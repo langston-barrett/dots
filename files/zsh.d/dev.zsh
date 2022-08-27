@@ -76,7 +76,7 @@ run_from_unstable () {
 }
 
 m () {
-  pushd
+  start=$(pwd)
   while ! [[ -f Makefile ]]; do
     if [[ $(pwd) == "/" ]]; then
       printf "No Makefile found\n"
@@ -85,7 +85,7 @@ m () {
     cd ..
   done
   make "$@"
-  popd
+  cd "${start}"
 }
 
 ## Generic
