@@ -28,6 +28,7 @@ in pkgs.mkShell {
     # vscode-ui
     unstable.nodejs_latest
     unstable.vscode
+    unstable.nodePackages.typescript-language-server
 
     # llvm
     pkgs.cmake

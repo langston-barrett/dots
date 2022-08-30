@@ -4,7 +4,10 @@ github-notifications https://github.com/notifications
 saw-script https://github.com/GaloisInc/saw-script/issues
 crucible https://github.com/GaloisInc/crucible/issues
 gmail https://mail.google.com/mail/u/0/#inbox
-mate https://gitlab-ext.galois.com/mate/MATE/issues
+mate-issues https://github.com/GaloisInc/MATE/issues
+mate-mrs https://github.com/GaloisInc/MATE/issues
+mate-home https://galoisinc.github.com/MATE
+mate-old https://gitlab-ext.galois.com/mate/MATE/issues
 wedlock https://github.com/trailofbits/llvm-wedlock
 nixos-manual-appendix-a https://nixos.org/nixos/manual/options.html
 chess https://github.com/trailofbits/chess

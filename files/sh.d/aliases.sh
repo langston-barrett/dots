@@ -120,7 +120,7 @@ alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
 alias mate-docker-pull='docker pull ghcr.io/galoisinc/mate-dev:main && docker tag ghcr.io/galoisinc/mate-dev:main mate-dev && docker pull ghcr.io/galoisinc/mate-dist:main && docker tag ghcr.io/galoisinc/mate-dist:main mate-dist && docker image prune'
 alias mate-docker-oss-pull='docker pull artifactory.galois.com:5004/mate-dev:open-source && docker tag artifactory.galois.com:5004/mate-dev:open-source mate-dev && docker pull artifactory.galois.com:5004/mate-dist:open-source && docker tag artifactory.galois.com:5004/mate-dist:open-source mate-dist && docker image prune'
-alias polymorph-docker-pull='docker pull artifactory.galois.com:5016/polymorph/dist:main && docker tag artifactory.galois.com:5016/polymorph/dist:main polymorph-dist && docker pull artifactory.galois.com:5016/polymorph/dist:dev && docker tag artifactory.galois.com:5016/polymorph/dist:dev polymorph-dev'
+alias polymorph-docker-pull='docker pull artifactory.galois.com:5016/polymorph/dist:main && docker tag artifactory.galois.com:5016/polymorph/dist:main polymorph-dist && docker pull artifactory.galois.com:5016/polymorph/dev:main && docker tag artifactory.galois.com:5016/polymorph/dev:main polymorph-dev'
 alias mate-clean-submodule-integration-framework='pushd submodules/integration_framework && sudo git clean -xdf && sudo git reset --hard HEAD && popd'
 alias d='sudo -g docker zsh'
 
