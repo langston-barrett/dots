@@ -21,6 +21,7 @@
 *** [[https://www.parsonsmatt.org/feed.xml][Matt Parsons]]
 *** [[https://frasertweedale.github.io/blog-fp/atom.xml][pureblog]]
 *** [[https://ravit.ch/rss.xml][Tristan Ravitch]]
+*** [[https://blog.poisson.chat/rss.xml][Lysxia]]
 ** Emacs                                                              :emacs:
 *** [[http://spacemacs.brianthicks.com/index.xml][Spacemacs Rocks]]
 *** [[http://endlessparentheses.com/atom.xml][endless parens]]

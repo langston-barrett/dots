@@ -95,7 +95,7 @@
       };
     };
 
-    nameservers = [ "8.8.8.8" "8.8.4.4" "1.1.1.1" ];
+    # nameservers = [ "8.8.8.8" "8.8.4.4" "1.1.1.1" ];
 
     # Use plasma-nm or nm-applet as a GUI
     # Use gnome-control-center or nmtui to configure networkmanager
@@ -103,7 +103,10 @@
       enable = true;
       dns = "dnsmasq";
       appendNameservers = [
-        "10.20.10.1" "galois.com"
+        # "8.8.8.8"
+        # "8.8.4.4"
+        "10.20.10.1"
+        "galois.com"
         # "65.132.32.177"   #PDX
         # "65.132.32.132"   #PDX
         # "65.132.32.174"   #PDX

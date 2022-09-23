@@ -3,7 +3,6 @@
 [user]
     name = Langston Barrett
     email = langston.barrett@gmail.com
-    signingkey = 5608B8E7A68F0445
 [core]
     excludesfile = /home/langston/.config/git/gitignore
 	autocrlf = false
@@ -13,6 +12,13 @@
     ui = auto
 [push]
     default = simple
+[sendemail]
+	smtpserver = smtp.gmail.com
+	smtpuser = langston.barrett@gmail.com
+	# smtpencryption = ssl
+	# smtpserverport = 465
+	smtpencryption = tls
+	smtpserverport = 587
 
 ######## Pre-commit hooks
 
@@ -31,6 +37,7 @@
     username = langston-barrett
 [credential "http://gitlab.com"]
     username = langston-barrett
+# cargo doesn't like this:
 [url "ssh://git@github.com/"]
     insteadOf = https://github.com/
 
@@ -49,6 +56,7 @@
 	cob = checkout -b
 	comn = checkout main
 	coms = checkout master
+	cp = cherry-pick
 	dc = diff --cached
 	fa = fetch --all
 	l = log
@@ -82,3 +90,8 @@
 	sslVerify = false
 [pull]
 	ff = only
+[safe]
+	directory = /px4
+	directory = /px4
+	directory = /px4/mavlink/include/mavlink/v2.0
+	directory = /px4/platforms/nuttx/NuttX/nuttx

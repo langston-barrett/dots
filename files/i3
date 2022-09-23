@@ -233,9 +233,11 @@ mode $execMode {
 
 # ** display
 
-set $displayMode "Set display mode [d]esk [l]aptop"
+set $displayMode "Set display mode [e]-ink [d]esk [l]aptop"
 
 mode $displayMode {
+    bindsym e exec "~/.config/i3/scripts/e-ink.sh"; \
+                mode "default"
     bindsym d exec "~/.config/i3/scripts/at-desk.sh"; \
                 mode "default"
     bindsym l exec "~/.config/i3/scripts/not-at-desk.sh"; \
