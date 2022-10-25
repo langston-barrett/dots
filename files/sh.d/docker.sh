@@ -1,5 +1,20 @@
 docker-here() {
-  docker run --rm -it --mount type=bind,src=$PWD,target=/work --workdir /work "${@}"
+  docker run \
+    --rm \
+    --interactive \
+    --tty \
+    --mount type=bind,src=$PWD,target=/work \
+    --workdir /work \
+    "${@}"
+}
+
+docker-dev() {
+  docker-here \
+    --env "PROMPT_EXTRA=${1} : " \
+    --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+    --mount type=bind,src=$HOME/code/dots/files/bash.d,dst=/root/.bash.d \
+    --mount type=bind,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+    "${@}"
 }
 
 docker-pull-tag() {

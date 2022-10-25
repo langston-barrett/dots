@@ -1,0 +1,15 @@
+# -*- mode: snippet -*-
+# name: par
+# key: par
+# --
+pids=""
+for i in foo bar; do
+  your_process "${i}" &
+  pids="${pids} ${!}"
+done
+unset i
+
+for p in ${pids}; do
+  wait "${p}"
+done
+unset pids p

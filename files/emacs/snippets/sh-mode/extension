@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: extension
+# key: ext*
+# --
+for file in *.html; do mv "$file" "${file%.html}.txt" done

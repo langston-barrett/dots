@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: heredoc
+# key: here*
+# --
+cat <<END
+foo
+bar
+END

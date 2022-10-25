@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: trap
+# key: trap
+# --
+tempfile=/tmp/tmpdata
+cleanup() { rm -f $tempfile; }
+always() { trap "${1}" EXIT HUP INT QUIT ABRT ALRM TERM; }
+always cleanup
+# or
+always 'rm -f'

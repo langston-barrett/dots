@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: apti
+# key: apti
+# --
+sudo apt-get install -y pkg

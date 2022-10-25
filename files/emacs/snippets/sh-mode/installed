@@ -1,0 +1,11 @@
+# -*- mode: snippet -*-
+# name: installed
+# key: inst*
+# --
+is_bin_on_path() { builtin type -P "${1}" &> /dev/null; }
+bail_if_not_installed() {
+  if ! is_bin_on_path "${1}"; then
+    echo "$0 requires ${1}, but it isn't on the PATH."
+    exit 1
+  fi
+}
