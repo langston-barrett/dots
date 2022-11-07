@@ -55,8 +55,8 @@ bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 # bindsym $mod+Return exec kitty
-bindsym $mod+Return exec urxvt
-# bindsym $mod+Return exec alacritty
+# bindsym $mod+Return exec urxvt
+bindsym $mod+Return exec alacritty
 bindsym $mod+Shift+Return exec bash -c "$HOME/.config/bin/emacs-vterm"
 #bindsym $mod+Shift+Return exec urxvt
 # bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'

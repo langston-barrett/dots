@@ -1,3 +1,4 @@
+alias ee="hx"
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
 ## Git

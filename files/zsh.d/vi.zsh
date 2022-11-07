@@ -49,13 +49,9 @@ bindkey '^s' history-incremental-search-forward
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
 
-# allow ctrl-a and ctrl-e to move to beginning/end of line
-#
-# bizarrely, these interfere with emacs + vterm
-# https://github.com/hlissner/doom-emacs/issues/3546
 if [[ -z ${INSIDE_EMACS} ]]; then
-  # bindkey '^k' up-line-or-history
-  # bindkey '^j' down-line-or-history
+  bindkey '^k' up-line-or-history
+  bindkey '^j' down-line-or-history
 fi
 function use-j-k() {
   if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then
@@ -63,6 +59,6 @@ function use-j-k() {
     last=${SECONDS}
   fi
 }
-zle -N use-j-k
-bindkey '^[OA' use-j-k
-bindkey '^[OB' use-j-k
+# zle -N use-j-k
+# bindkey '^[OA' use-j-k
+# bindkey '^[OB' use-j-k
