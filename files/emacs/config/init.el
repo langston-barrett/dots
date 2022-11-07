@@ -12,7 +12,7 @@
 
 (add-to-list 'load-path (concat my/emacs-dir "local/"))
 (my/load "idle.el")
-(my/load "org.el")
+;; (my/load "org.el")
 (my/load "functions.el")
 (my/load "ui.el")
 (my/load "lang/c.el")

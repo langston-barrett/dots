@@ -79,3 +79,10 @@ Host sky
   PasswordAuthentication no
   PreferredAuthentications publickey,keyboard-interactive,password
   ControlMaster auto
+
+Host remarkable
+  HostName 192.168.1.181
+  PreferredAuthentications keyboard-interactive,password
+  User root
+  PubkeyAcceptedAlgorithms +ssh-rsa
+  HostkeyAlgorithms +ssh-rsa

@@ -50,7 +50,6 @@ This function should only modify configuration layer settings."
      git    ; magit! SPC g m
      version-control
      pdf ; read pdfs, use with org-noter
-     github
      ;; (shell :variables
      ;;        shell-default-shell 'ansi-term
      ;;        shell-default-position 'bottom)
@@ -79,9 +78,9 @@ This function should only modify configuration layer settings."
      emacs-lisp
      ;; (python :variables python-enable-yapf-format-on-save t)
      ;; (python :variables python-formatter 'yapf) ; only on develop
-     lsp
+     (lsp :variables lsp-rust-server 'rust-analyzer)
+
      (python :variables python-backend 'lsp)
-     hy
 
      (haskell :variables
               haskell-enable-hindent-style "fundamental"
@@ -98,11 +97,10 @@ This function should only modify configuration layer settings."
      ;;        latex-build-command "LatexMk"
      ;;        latex-enable-auto-fill t)
      markdown
-     org-roam
-     (org :variables org-enable-roam-support t)
+     ;; (org :variables org-enable-roam-support t)
      outshine
      typescript
-     rust
+     (rust :variables rust-format-on-save t)
      ;; saw-script
      nixos
      ;; (java :variables java-backend 'lsp)
@@ -116,7 +114,8 @@ This function should only modify configuration layer settings."
 
      ;; My layers
      alloy
-     (myorg :variables myorg-enable-roam-server nil))
+     ;; (myorg :variables myorg-enable-roam-server nil)
+     )
 
 ;;;; Additional packages
 
@@ -729,7 +728,11 @@ you should place your code here."
   (defconst my/emacs-dir (concat user-home-directory "code/dots/files/emacs/"))
   (defconst my/config-dir (concat my/emacs-dir "config/"))
   (defun my/load (path) (load-file (concat my/config-dir path)))
+  ;; todo: debug
   (my/load "init.el")
+  ;; (defun my/set-frame-font-size (sz)
+  ;;   (interactive "nEnter font size: ")
+  ;;   (set-frame-font (format "Hack %s" sz)))
 
   ) ;; end user-config
 

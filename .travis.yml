@@ -1,2 +1,0 @@
-language: nix
-script: nix-shell --run "sh run.sh"

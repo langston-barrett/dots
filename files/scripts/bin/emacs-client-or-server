@@ -1,6 +1,0 @@
-#!/usr/bin/env zsh
-
-set -u
-
-emacsclient --create-frame --eval "${1:-(message \" \")}" || \
-  emacs --eval "${1:-(server-start)}" --eval "${1:-(message \" \")}" & disown

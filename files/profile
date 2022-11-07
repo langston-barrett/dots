@@ -1,3 +1,0 @@
-export XDG_DATA_DIRS=${XDG_DATA_DIRS}:/home/siddharthist/.nix-profile/share
-#export FONTCONFIG_FILE=/etc/fonts/fonts.conf 
-#. /home/siddharthist/.nix-profile/etc/profile.d/nix.sh

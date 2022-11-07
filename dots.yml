@@ -91,15 +91,15 @@
         dst: "{{ home }}/.latexmkrc"
       - src: matterhorn.ini
         dst: "{{ xdg_config_home }}/matterhorn/config.ini"
-      - src: monitor/at-desk.sh
+      - src: scripts/monitor/at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/at-desk.sh"
         mode: "0750"
         graphical: true
-      - src: monitor/not-at-desk.sh
+      - src: scripts/monitor/not-at-desk.sh
         dst: "{{ xdg_config_home }}/i3/scripts/not-at-desk.sh"
         mode: "0750"
         graphical: true
-      - src: monitor/post.sh
+      - src: scripts/monitor/post.sh
         dst: "{{ xdg_config_home }}/i3/scripts/post.sh"
         mode: "0750"
         graphical: true

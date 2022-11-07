@@ -37,7 +37,7 @@
     username = langston-barrett
 [credential "http://gitlab.com"]
     username = langston-barrett
-# cargo doesn't like this:
+# cargo doesn't like this, need to set CARGO_NET_GIT_FETCH_WITH_CLI
 [url "ssh://git@github.com/"]
     insteadOf = https://github.com/
 

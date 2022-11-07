@@ -29,12 +29,12 @@
 
 ;;;; Miscellaneous Packages
 
-(use-package org-link-minor-mode
-  :disabled
-  :config
-  (add-hook 'prog-mode-hook 'org-link-minor-mode)
-  (defun my/no-org-links () (org-link-minor-mode -1))
-  (add-hook 'sh-mode-hook 'my/no-org-links))
+;; (use-package org-link-minor-mode
+;;   :disabled
+;;   :config
+;;   (add-hook 'prog-mode-hook 'org-link-minor-mode)
+;;   (defun my/no-org-links () (org-link-minor-mode -1))
+;;   (add-hook 'sh-mode-hook 'my/no-org-links))
 
 (use-package org-indent-mode
   :disabled
@@ -167,7 +167,7 @@
 
   (add-hook 'org-mode-hook 'my/org-mode-hook)
 
-  (setq org-link-file-path-type 'relative)
+  ;; (setq org-link-file-path-type 'relative)
   (setq org-confirm-babel-evaluate nil
         org-src-fontify-natively   t
         org-src-tab-acts-natively  t)

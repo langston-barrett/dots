@@ -1,5 +1,5 @@
-{ ghc ? "ghc8107"
-, unstableHaskell ? false
+{ ghc ? "ghc924"
+, unstableHaskell ? true
 }:
 
 let
