@@ -1,6 +1,3 @@
 [submodule "nur"]
 	path = nur
 	url = https://github.com/langston-barrett/nur
-[submodule "deps/eww-layer"]
-	path = deps/eww-layer
-	url = https://github.com/coljamkop/eww-layer
