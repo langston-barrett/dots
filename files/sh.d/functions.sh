@@ -15,3 +15,11 @@ extract() {
     unzip "${f}"
   fi
 }
+
+read-json() {
+  f="${1}"
+  if [[ -z "${f}" ]]; then
+    f=$(fd --max-depth 1 --extension json | fzf)
+  fi
+  bat "${f}" | jq . | bat --file-name "${1}" --paging=always --language=json
+}
