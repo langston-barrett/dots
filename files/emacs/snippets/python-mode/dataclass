@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# key: dataclass
+# name: dataclass
+# contributor: Langston Barrett
+# --
+from dataclasses import dataclass, field
+@dataclass(frozen=True, order=True, slots=True)
+class C:
+    mylist: list[int] = field(default_factory=list)

@@ -80,5 +80,5 @@ batc() {
 }
 
 copy_last_command() {
-  echo "!!" | xsel -ib
+  printf "%s" "$history[$((HISTCMD-1))]" | xsel -ib
 }

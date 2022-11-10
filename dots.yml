@@ -175,10 +175,13 @@
       - src: spacemacs
         dst: "{{ home }}/.spacemacs"
         minimal: true
-      - src: spacemacs.desktop
+      - src: desktop/helix.desktop
+        dst: "{{ home }}/.local/share/applications/helix.desktop"
+        graphical: true
+      - src: desktop/spacemacs.desktop
         dst: "{{ home }}/.local/share/applications/spacemacs.desktop"
         graphical: true
-      - src: spotify.desktop
+      - src: desktop/spotify.desktop
         dst: "{{ home }}/.local/share/applications/spotify.desktop"
         graphical: true
       - src: scripts/bin

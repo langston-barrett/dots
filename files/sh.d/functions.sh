@@ -23,3 +23,12 @@ read-json() {
   fi
   bat "${f}" | jq . | bat --file-name "${1}" --paging=always --language=json
 }
+
+snip() {
+  cd ~/code/dots/files/emacs/snippets || true
+  fd --type f . | \
+    fzf --preview="cat {} | grep -v '^#'" | \
+    xargs bat | \
+    grep -v '^#' | \
+    xsel -ib
+}
