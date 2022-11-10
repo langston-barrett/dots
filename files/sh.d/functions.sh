@@ -16,6 +16,24 @@ extract() {
   fi
 }
 
+list-executables-on-path() {
+  for d in $(echo "${PATH}" | sed -e 's/\:/\ /g'); do
+    pushd "${d}" &> /dev/null || continue
+    fd . --type x --follow --max-depth 1
+    popd &> /dev/null || return
+  done
+}
+
+list-make-targets() {
+  make -qp | \
+    awk -F':' '/^[a-zA-Z0-9][^$#\/\t=]*:([^=]|$)/ {split($1,A,/ /);for(i in A)print A[i]}' | \
+    sort -u
+}
+
+list-man-pages() {
+  apropos . | awk '{ print $1 }' 
+}
+
 read-json() {
   f="${1}"
   if [[ -z "${f}" ]]; then
@@ -29,7 +47,7 @@ snip() {
   language=yaml
   if [[ -z "${1}" ]]; then
     d=$(fd --type d . | fzf --height=10% --layout=reverse)
-    cd "${d}"
+    cd "${d}" || true
   else
     cd "${1}"* || true
   fi

@@ -3,20 +3,30 @@
 # http://stratus3d.com/blog/2017/10/26/better-vi-mode-in-zshell/
 
 # Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
-# export KEYTIMEOUT=20
-
-# https://github.com/robbyrussell/oh-my-zsh/blob/master/plugins/vi-mode/vi-mode.plugin.zsh
+export KEYTIMEOUT=20
 
 # Updates editor information when the keymap changes.
-function zle-keymap-select() {
-  # update keymap variable for the prompt
-  VI_KEYMAP=$KEYMAP
-
+typeset -g VI_KEYMAP=main
+function zle-vi-set-mode() {
+  typeset -g VI_KEYMAP=${1:-main}
   zle reset-prompt
   zle -R
 }
 
+function zle-keymap-select() {
+  zle-vi-set-mode "${KEYMAP}"
+}
 zle -N zle-keymap-select
+
+function zle-line-init() {
+  zle-vi-set-mode "${KEYMAP}"
+}
+zle -N zle-line-init
+
+function zle-line-finish() {
+  zle-vi-set-mode "${KEYMAP}"
+}
+zle -N zle-line-finish
 
 function vi-accept-line() {
   VI_KEYMAP=main
@@ -33,7 +43,16 @@ if [[ "${MODE_INDICATOR}" == "" ]]; then
 fi
 
 function vi_mode_prompt_info() {
-  printf "${${VI_KEYMAP/vicmd/$MODE_INDICATOR}/(main|viins)/}\n"
+ case "${1:-${VI_KEYMAP:-main}}" in
+    main) printf "%s\n" "%{$fg[yellow]%}i%{$reset_color%}" ;;
+    viins) printf "%s\n" "%{$fg[yellow]%}i%{$reset_color%}" ;;
+    isearch) printf "isearch\n" ;;
+    command) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
+    vicmd) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
+    visual) printf "sel\n" ;;
+    viopp) printf "opp\n" ;;
+    *) printf "???\n" ;;
+  esac
 }
 
 # define right prompt, if it wasn't defined by a theme
@@ -43,6 +62,7 @@ fi
 
 # allow ctrl-r and ctrl-s to search the history
 bindkey '^r' history-incremental-search-backward
+bindkey -M vicmd '^r' history-incremental-search-backward
 bindkey '^s' history-incremental-search-forward
 
 # allow ctrl-a and ctrl-e to move to beginning/end of line

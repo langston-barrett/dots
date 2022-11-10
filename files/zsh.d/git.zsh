@@ -7,11 +7,3 @@ git_list_remote_branches() {
     done
   done
 }
-
-git_list_checkout_targets() {
-  printf \
-    "%s\n%s\n%s" \
-    "$(git branch --all --format='%(refname:short)')" \
-    "$(git_list_remote_branches)" \
-    "$(git tag -l)" | sort | uniq
-}

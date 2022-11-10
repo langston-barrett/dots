@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # The above is for Shellcheck
 
+for f in ~/.zsh.d/zle/*.zsh; do
+  source "${f}"
+done
+
 run_porcelain() {
   porcelain "$HOME/code/+personal/porcelain/conf"
   zle -Rc
@@ -141,23 +145,28 @@ bindkey -M vicmd ' c' compile-show-bindings
 # d ----------------------------------------------------------------------------
 
 dir-cd() {
+  bindkey -rM vicmd 'd'
   cd "$(\find $(pwd) -type d | fzf --height=10% --layout=reverse --prompt='>> ')"
 }
 zle -N dir-cd
 bindkey -M vicmd ' dd' dir-cd
 
 dir-pwd() {
+  bindkey -rM vicmd 'w'
   zle_append_to_buffer "$(pwd)"
 }
 zle -N dir-pwd
-bindkey -M vicmd ' dp' dir-pwd
+bindkey -M vicmd ' dw' dir-pwd
 
 dir-print-bindings() {
-  echo "d: cd" "p: pwd"
+  echo "d: cd" "w: pwd"
 }
 
 dir-show-bindings() {
+  bindkey -rM vicmd 'd'
   zle -R "" "$(dir-print-bindings)"
+  bindkey -M vicmd 'd' dir-cd
+  bindkey -M vicmd 'w' dir-pwd
 }
 zle -N dir-show-bindings
 bindkey -M vicmd ' d' dir-show-bindings
@@ -165,40 +174,73 @@ bindkey -M vicmd ' d' dir-show-bindings
 # i ----------------------------------------------------------------------------
 
 insert-clipboard() {
-  zle_append_to_buffer "$(xsel -o)"
+  bindkey -rM vicmd 'c'
+  zle_append_to_buffer "$(xsel -ob)"
 }
 zle -N insert-clipboard
 bindkey -M vicmd ' ic' insert-clipboard
 
+fzf-insert-directory() {
+  bindkey -rM vicmd 'd'
+  zle_append_to_buffer "$(fd --type d . | fzf --height=10% --layout=reverse --prompt='>> ')"
+}
+zle -N fzf-insert-directory
+bindkey -M vicmd ' id' fzf-insert-directory
+
+fzf-insert-file() {
+  bindkey -rM vicmd 'f'
+  zle_append_to_buffer "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='>> ')"
+}
+zle -N fzf-insert-file
+bindkey -M vicmd ' if' fzf-insert-file
+
 fzf-insert-history() {
+  bindkey -rM vicmd 'h'
   zle_append_to_buffer "$( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')"
 }
 zle -N fzf-insert-history
 bindkey -M vicmd ' ih' fzf-insert-history
 
-fzf-insert-file() {
-  zle_append_to_buffer "$(fd --type f . | fzf)"
+fzf-insert-project() {
+  bindkey -rM vicmd 'p'
+  zle_append_to_buffer "$(fd "$(find_project_root)" | fzf --height=10% --layout=reverse --prompt='>> ')"
 }
-zle -N fzf-insert-file
-bindkey -M vicmd ' if' fzf-insert-file
-
-fzf-insert-directory() {
-  zle_append_to_buffer "$(fd --type d . | fzf)"
-}
-zle -N fzf-insert-directory
-bindkey -M vicmd ' id' fzf-insert-directory
+zle -N fzf-insert-project
+bindkey -M vicmd ' ip' fzf-insert-project
 
 fzf-insert-snippet() {
+  bindkey -rM vicmd 's'
   zle_append_to_buffer "$(fzf --layout=reverse < ~/code/dots/files/sh.d/snippets)"
 }
 zle -N fzf-insert-snippet
 bindkey -M vicmd ' is' fzf-insert-snippet
 
+insert-print-bindings() {
+  echo "c: clipboard" "d: directory" "f: file" "h: history" "p: project" "s: snippet"
+}
+
 insert-show-bindings() {
-  zle -R "" "c: clipboard" "d: directory" "f: file" "h: history" "s: snippet"
+  bindkey -rM vicmd 'i'
+  bindkey -M vicmd 'i' vi-insert
+  zle -R "" "$(insert-print-bindings)"
+  bindkey -M vicmd 'c' insert-clipboard
+  bindkey -M vicmd 'd' fzf-insert-directory
+  bindkey -M vicmd 'f' fzf-insert-file
+  bindkey -M vicmd 'h' fzf-insert-history
+  bindkey -M vicmd 'p' fzf-insert-project
+  bindkey -M vicmd 's' fzf-insert-snippet
 }
 zle -N insert-show-bindings
 bindkey -M vicmd ' i' insert-show-bindings
+
+# l ----------------------------------------------------------------------------
+
+zle-clear() {
+  clear
+  zle redisplay
+}
+zle -N zle-clear
+bindkey -M vicmd ' l' zle-clear
 
 # p ----------------------------------------------------------------------------
 
@@ -217,45 +259,87 @@ find_project_root() {
   printf "${root}"
 }
 
-pf() {
-  cd "$(\find "$(find_project_root)" -type d | fzf --height=10% --layout=reverse --prompt='>> ')"
+project-cd() {
+  bindkey -rM vicmd 'c'
+  cd "$(fd --type d "$(find_project_root)" | fzf --height=10% --layout=reverse --prompt='>> ')"
   zle redisplay
 }
-zle -N pf
-bindkey -M vicmd ' pf' pf
+zle -N project-cd
+bindkey -M vicmd ' pc' project-cd
+
+project-editor() {
+  bindkey -rM vicmd 'e'
+  cd "$(find_project_root)"
+  ee
+}
+zle -N project-editor
+bindkey -M vicmd ' pe' project-editor
+
+project-file() {
+  bindkey -rM vicmd 'f'
+  cd "$(find_project_root)"
+  ee "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='>> ')"
+}
+zle -N project-file
+bindkey -M vicmd ' pf' project-file
+
+project-print-bindings() {
+  echo "c: cd" "e: editor" "f: file"
+}
 
 project-show-bindings() {
-  zle -R "" "f: pf"
+  bindkey -rM vicmd 'p'
+  zle -R "" "$(project-print-bindings)"
+  bindkey -M vicmd 'c' project-cd
+  bindkey -M vicmd 'e' project-editor
+  bindkey -M vicmd 'f' project-file
 }
 zle -N project-show-bindings
 bindkey -M vicmd ' p' project-show-bindings
 
 # s ----------------------------------------------------------------------------
 
-# TODO
-ssh-big() {
-  zle -U "ssh big"
-  # zle accept-and-hold
-  # zle -Rc
-  # zle reset-prompt
-}
-zle -N ssh-big
-bindkey -M vicmd ' sb' ssh-big
+# ssh
 
-ssh-pi() { ssh pi; }
-zle -N ssh-pi
-bindkey -M vicmd ' sp' ssh-pi
+# y ----------------------------------------------------------------------------
 
-ssh-show-bindings() {
-  zle -R "" "b: big" "p: pi"
+yank-last() {
+  bindkey -rM vicmd 'l'
+  copy_last_command
+  zle -R "" "copied '$(xsel -ob | head -n 1)'"
 }
-zle -N ssh-show-bindings
-bindkey -M vicmd ' s' ssh-show-bindings
+zle -N yank-last
+bindkey -M vicmd ' yl' yank-last
+
+yank-rerun() {
+  bindkey -rM vicmd 'r'
+  zle_append_to_buffer "$history[$((HISTCMD-1))] 2>&1 |& xsel -ib"
+}
+zle -N yank-rerun
+bindkey -M vicmd ' yr' yank-rerun
+
+yank-print-bindings() {
+  echo "l: last" "r: re-run"
+}
+
+yank-show-bindings() {
+  bindkey -rM vicmd 'y'
+  zle -R "" "$(yank-print-bindings)"
+  bindkey -M vicmd 'l' yank-last
+  bindkey -M vicmd 'r' yank-rerun
+}
+zle -N yank-show-bindings
+bindkey -M vicmd ' y' yank-show-bindings
 
 # ------------------------------------------------------------------------------
 
 show-bindings() {
-  zle -R "" "c: compile" "d: dir" "e: edit" "i: insert" "s: ssh" "p: project"
+  zle -R "" "c: compile" "d: dir" "e: edit" "i: insert" "s: ssh" "p: project" "y: yank"
+  bindkey -M vicmd 'c' compile-show-bindings
+  bindkey -M vicmd 'd' dir-show-bindings
+  bindkey -M vicmd 'i' insert-show-bindings
+  bindkey -M vicmd 'p' project-show-bindings
+  bindkey -M vicmd 'y' yank-show-bindings
 }
 zle -N show-bindings
 bindkey -M vicmd ' ' show-bindings
@@ -263,9 +347,10 @@ bindkey -M vicmd ' ' show-bindings
 # TODO
 help() {
   show-bindings
-  compile-show-bindings
-  show-bindings
-  ssh-show-bindings
+  printf "[c] "
+  compile-print-bindings
+  printf "[i] "
+  insert-print-bindings
 }
 
 # ------------------------------------------------------------------------------
@@ -283,163 +368,3 @@ fancy-ctrl-z () {
 }
 zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
-
-# ------------------------------------------------------------------------------
-# -- autofzf
-# ------------------------------------------------------------------------------
-
-zle_choose() {
-  # zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ' --bind=space:print-query)"
-  zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ')"
-}
-
-normal_space() {
-  BUFFER="${BUFFER:0:${CURSOR}} ${BUFFER:${CURSOR}}"
-  CURSOR="$((CURSOR+1))"
-  zle redisplay
-}
-
-space() {
-  IFS=' ' read -A words <<< "${BUFFER}"
-  # TODO: Only consider words that are before the cursor
-
-  if [[ ${AUTOFZF} != 1 ]]; then
-    normal_space
-    return
-  fi
-
-  exes=$(<<'EOT'
-bash
-cabal
-clang
-echo
-emacs
-ghcid
-git
-printf
-vi
-which
-zsh
-EOT
-)
-
-  if [[ "${BUFFER}" == "" ]]; then
-    zle_choose "${exes}"
-    return
-  fi
-
-  normal_space
-
-  num_words="${#words[@]}"
-  if [[ "${words[1]}" == git ]]; then
-    if [[ "${num_words}" == 1 ]]; then
-      git_cmds=$(<<'EOT'
-add
-bisect
-branch
-checkout
-clone
-commit
-diff
-fetch
-grep
-init
-log
-merge
-mv
-pull
-push
-pushf
-rebase
-remote
-reset
-restore
-rev-parse
-rm
-show
-stash
-status
-submodule
-switch
-tag
-EOT
-)
-      zle_choose "${git_cmds}"
-    fi
-  fi
-
-  # git checkout
-  if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == checkout ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
-  elif [[ "${words[1]}" == gc ]] && [[ "${#words[@]}" == 1 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
-  fi
-
-  # git pull
-  if [[ "${words[1]}" == git ]] && [[ "${#words[@]}" > 1 ]]; then
-    if [[ "${words[2]}" == pull ]] || [[ "${words[2]}" == pl ]]; then
-      if [[ "${#words[@]}" == 2 ]]; then
-        zle_choose "$(git remote show)"
-      elif [[ "${#words[@]}" == 3 ]]; then
-        zle_choose "$(git_list_checkout_targets)"
-      fi
-    fi
-  fi
-
-  if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == stash ]] && [[ "${num_words}" == 2 ]]; then
-    git_stash_cmds=$(<<'EOT'
-
-apply
-branch
-clear
-create
-drop
-list
-pop
-push
-remote
-show
-store
-EOT
-              )
-    zle_choose "${git_stash_cmds}"
-  fi
-
-  if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == clone ]] && [[ "${num_words}" == 2 ]]; then
-    git_clone_urls=$(<<'EOT'
-https://github.com/
-https://github.com/GaloisInc
-https://github.com/langston-barrett
-https://gitlab-ext.galois.com/
-https://gitlab-int.galois.com/
-https://github.com/NixOS/nixpkgs
-EOT
-                  )
-    zle_choose "${git_clone_urls}"
-  fi
-
-  if [[ "${words[1]}" == cabal ]]; then
-    if [[ "${num_words}" == 1 ]]; then
-      cabal_cmds=$(<<'EOT'
-build
-check
-configure
-freeze
-get
-haddock
-info
-list
-repl
-run
-test
-EOT
-              )
-      zle_choose "${cabal_cmds}"
-    fi
-  fi
-}
-zle -N space
-export AUTOFZF=1
-
-bindkey -M emacs "  " space
-bindkey -M viins "  " space

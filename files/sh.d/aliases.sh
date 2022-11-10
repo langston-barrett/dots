@@ -1,9 +1,14 @@
-alias ee="hx"
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
+ee() {
+  if [[ -n "${1}" ]]; then
+    hx "$@"
+  else
+    hx "$(fd . --type f --max-depth 5 | fzf --height=10% --layout=reverse --prompt='>> ')"
+  fi
+}
 
 ## Git
-alias ga='git add'
 alias gb='git branch'
 alias gbD='git branch -D'
 alias gcl='git clone --depth 20'
@@ -37,24 +42,32 @@ alias gwa='git worktree add'
 alias gwm='git worktree move'
 alias gwr='git worktree remove'
 
-git_choose_branch() {
-  git branch --all --format='%(refname:short)' | fzf
+ga() {
+  if [[ -n "${1}" ]]; then
+    git add "$@"
+  else
+    git add "$(git_list_add_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
+  fi
 }
 
 gc() {
   if [[ -n "${1}" ]]; then
     git checkout "$@"
   else
-    git checkout $(git_choose_branch)
+    git checkout "$(git_list_checkout_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
   fi
 }
 
+grb() {
+  if [[ -n "${1}" ]]; then
+    git rebase "$@"
+  else
+    git rebase "$(git_list_checkout_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
+  fi
+}
 
 github_clone() { git clone "https://github.com/${1}"; }
 git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
-git_remote_add_sky() {
-  git remote add sky "ssh://langston@sky/home/langston/code/${1}"
-}
 
 # https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
 #

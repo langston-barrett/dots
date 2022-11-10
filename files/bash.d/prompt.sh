@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 newline=$'\n'
 user="$(whoami)"
 if [[ "${user}" == langston ]] || [[ "${user}" == siddharthist ]]; then
