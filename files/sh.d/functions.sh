@@ -26,8 +26,18 @@ read-json() {
 
 snip() {
   cd ~/code/dots/files/emacs/snippets || true
+  language=yaml
+  if [[ -z "${1}" ]]; then
+    d=$(fd --type d . | fzf --height=10% --layout=reverse)
+    cd "${d}"
+  else
+    cd "${1}"* || true
+  fi
+  language=$(basename "$(pwd)")
+  language="${language%-mode}"
   fd --type f . | \
-    fzf --preview="cat {} | grep -v '^#'" | \
+    fzf --ansi --layout=reverse \
+      --preview="grep -v '^#' {} | bat --language=${language} --force-colorization" | \
     xargs bat | \
     grep -v '^#' | \
     xsel -ib
