@@ -5,15 +5,6 @@ for f in ~/.zsh.d/zle/*.zsh; do
   source "${f}"
 done
 
-run_porcelain() {
-  porcelain "$HOME/code/+personal/porcelain/conf"
-  zle -Rc
-  zle reset-prompt
-}
-zle -N run_porcelain
-
-bindkey '^F' run_porcelain
-
 zle_append_to_buffer() {
   BUFFER+="${1}"
   BUFFER="${BUFFER% }"
@@ -26,12 +17,6 @@ zle_write_buffer() {
   CURSOR=$#BUFFER
   zle redisplay
 }
-
-fzf-history() {
-  zle -R "" "Use 'SPC i h'"
-}
-zle -N fzf-history
-bindkey '^R^R' fzf-history
 
 # c ----------------------------------------------------------------------------
 
@@ -146,7 +131,7 @@ bindkey -M vicmd ' c' compile-show-bindings
 
 dir-cd() {
   bindkey -rM vicmd 'd'
-  cd "$(\find $(pwd) -type d | fzf --height=10% --layout=reverse --prompt='>> ')"
+  cd "$(\find $(pwd) -type d | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 zle -N dir-cd
 bindkey -M vicmd ' dd' dir-cd
@@ -182,35 +167,42 @@ bindkey -M vicmd ' ic' insert-clipboard
 
 fzf-insert-directory() {
   bindkey -rM vicmd 'd'
-  zle_append_to_buffer "$(fd --type d . | fzf --height=10% --layout=reverse --prompt='>> ')"
+  zle_append_to_buffer "$(fd --type d . | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 zle -N fzf-insert-directory
 bindkey -M vicmd ' id' fzf-insert-directory
 
+fzf-insert-exact-history() {
+  bindkey -rM vicmd 'e'
+  zle_append_to_buffer "$(list-history | fzf +s --exact --tac --height=10% --layout=reverse --prompt=''  --info=hidden| sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')"
+}
+zle -N fzf-insert-exact-history
+bindkey -M vicmd ' ie' fzf-insert-exact-history
+
 fzf-insert-file() {
   bindkey -rM vicmd 'f'
-  zle_append_to_buffer "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='>> ')"
+  zle_append_to_buffer "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 zle -N fzf-insert-file
 bindkey -M vicmd ' if' fzf-insert-file
 
 fzf-insert-history() {
   bindkey -rM vicmd 'h'
-  zle_append_to_buffer "$( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')"
+  zle_append_to_buffer "$(list-history | fzf +s --tac --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 zle -N fzf-insert-history
 bindkey -M vicmd ' ih' fzf-insert-history
 
 fzf-insert-project() {
   bindkey -rM vicmd 'p'
-  zle_append_to_buffer "$(fd "$(find_project_root)" | fzf --height=10% --layout=reverse --prompt='>> ')"
+  zle_append_to_buffer "$(fd "${PROJECT_ROOT}" | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 zle -N fzf-insert-project
 bindkey -M vicmd ' ip' fzf-insert-project
 
 fzf-insert-snippet() {
   bindkey -rM vicmd 's'
-  zle_append_to_buffer "$(fzf --layout=reverse < ~/code/dots/files/sh.d/snippets)"
+  zle_append_to_buffer "$(fzf --height=10% --layout=reverse --prompt='' --info=hidden < ~/code/dots/files/sh.d/snippets)"
 }
 zle -N fzf-insert-snippet
 bindkey -M vicmd ' is' fzf-insert-snippet
@@ -244,24 +236,9 @@ bindkey -M vicmd ' l' zle-clear
 
 # p ----------------------------------------------------------------------------
 
-find_project_root() {
-  root=$(realpath ${1:-${PWD}})
-  while true; do
-    if [[ ${root} == "." ]]; then
-      printf "%s\n" "ERROR"
-      break
-    fi
-    if [[ ${root} == / ]] || [[ -f ${root}/.projectile ]] || [[ -d ${root}/.git  ]] || [[ -d ${root}/cabal.project  ]]; then
-      break
-    fi
-    root=$(dirname "${root}")
-  done
-  printf "${root}"
-}
-
 project-cd() {
   bindkey -rM vicmd 'c'
-  cd "$(fd --type d "$(find_project_root)" | fzf --height=10% --layout=reverse --prompt='>> ')"
+  cd "$(fd --type d "${PROJECT_ROOT}" | fzf --height=10% --layout=reverse --prompt='')"
   zle redisplay
 }
 zle -N project-cd
@@ -269,7 +246,7 @@ bindkey -M vicmd ' pc' project-cd
 
 project-editor() {
   bindkey -rM vicmd 'e'
-  cd "$(find_project_root)"
+  cd "${PROJECT_ROOT}"
   ee
 }
 zle -N project-editor
@@ -277,8 +254,8 @@ bindkey -M vicmd ' pe' project-editor
 
 project-file() {
   bindkey -rM vicmd 'f'
-  cd "$(find_project_root)"
-  ee "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='>> ')"
+  cd "${PROJECT_ROOT}"
+  ee "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='')"
 }
 zle -N project-file
 bindkey -M vicmd ' pf' project-file
@@ -332,6 +309,10 @@ zle -N yank-show-bindings
 bindkey -M vicmd ' y' yank-show-bindings
 
 # ------------------------------------------------------------------------------
+
+autoload -U edit-command-line
+zle -N edit-command-line
+bindkey -M vicmd ' e' edit-command-line
 
 show-bindings() {
   zle -R "" "c: compile" "d: dir" "e: edit" "i: insert" "s: ssh" "p: project" "y: yank"

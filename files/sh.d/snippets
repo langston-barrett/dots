@@ -3,10 +3,10 @@ fd '.+\.(cpp|h)$' . | entr -adcs "clang-format file.cpp"
 git clone --jobs=$(nproc) https://github.com/langston-barrett/what
 git clone --jobs=$(nproc) --recurse-submodules https://github.com/GaloisInc/what
 ghcid "--command=cabal v2-repl test:foo-tests"
-EDITOR=vi git rebase -i origin/master
-EDITOR=vi git rebase -i master
-EDITOR=vi git rebase -i upstream/master
-EDITOR=vi git rebase --continue
+git rebase -i origin/master
+git rebase -i master
+git rebase -i upstream/master
+git rebase --continue
 cmake -S . -B build -G Ninja -DCMAKE_C_FLAGS="-g" -DCMAKE_CXX_FLAGS="-g" -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --jobs "$(nproc)" --build build --target install
 docker run --rm --interactive --tty --mount type=bind,src=$PWD,target=/work --workdir=/work foo bash

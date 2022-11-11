@@ -1,5 +1,6 @@
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
+export EDITOR=hx
 ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
@@ -8,13 +9,18 @@ ee() {
   fi
 }
 
+seds() {
+  sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
+}
+
 ## Git
+alias g='git'
 alias gb='git branch'
 alias gbD='git branch -D'
 alias gcl='git clone --depth 20'
 alias gcm='git commit -m'
 alias gcmm='git commit -m .'
-alias gca='EDITOR=vi git commit --amend'
+alias gca='git commit --amend'
 alias gcb='git checkout -b'
 alias gd='git diff'
 alias gds='git diff --cached'
@@ -31,7 +37,7 @@ alias gPp='git push -u origin'
 alias gPf='git push --force-with-lease'
 alias gr='git reset'
 alias grhm='git reset --hard origin/master'
-alias gri='EDITOR=vi git rebase -i'
+alias gri='git rebase -i'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
 alias grv='git remote -v'

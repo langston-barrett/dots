@@ -1,6 +1,6 @@
 zle_choose() {
   # zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ' --bind=space:print-query)"
-  zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ')"
+  zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
 }
 
 zle_append_to_buffer_newline() {
@@ -14,7 +14,7 @@ zle_append_to_buffer_newline() {
 
 zle_choose_space() {
   zle_append_to_buffer \
-    "$(printf "${1}" | fzf --expect=' ' --height=10% --layout=reverse --prompt='>> ' | tail -n 1)"
+    "$(printf "${1}" | fzf --expect=' ' --height=10% --layout=reverse --prompt='' --info=hidden | tail -n 1)"
 }
 
 normal_space() {
@@ -219,12 +219,13 @@ space() {
 
   # TODO: Only consider words that are before the cursor
   IFS=' ' read -A words <<< "${BUFFER}"
-  words="${words% }"
   normal_space
 
   num_words="${#words[@]}"
   if [[ "${words[1]}" == git ]]; then
     if [[ "${num_words}" == 1 ]]; then
+      # BUFFER=""
+      # zle redisplay
       zle_choose_space "$(git_cmds)"
     fi
   fi
@@ -255,7 +256,6 @@ zle -N space
 
 space-space() {
   IFS=' ' read -A words <<< "${BUFFER}"
-  words="${words% }"
   # TODO: Only consider words that are before the cursor
 
   if [[ ${AUTOFZF} != 1 ]]; then
@@ -364,3 +364,6 @@ bindkey -M emacs " " space
 bindkey -M viins " " space
 bindkey -M emacs "^H" space-space
 bindkey -M viins "^H" space-space
+
+# normal space during searches
+bindkey -M isearch " " magic-space
