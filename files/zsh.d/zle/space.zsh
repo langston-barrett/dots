@@ -1,6 +1,5 @@
-zle_choose() {
-  # zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='>> ' --bind=space:print-query)"
-  zle_append_to_buffer "$(printf "${1}" | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
+zlefzf() {
+   fzf --height=10% --layout=reverse --prompt='' --info=hidden "${@}"
 }
 
 zle_append_to_buffer_newline() {
@@ -12,9 +11,13 @@ zle_append_to_buffer_newline() {
   zle redisplay
 }
 
-zle_choose_space() {
-  zle_append_to_buffer \
-    "$(printf "${1}" | fzf --expect=' ' --height=10% --layout=reverse --prompt='' --info=hidden | tail -n 1)"
+zle_choose() {
+  zle_append_to_buffer "$(printf "${1}" | zlefzf --bind=space:print-query) "
+}
+
+# Choose something that is definitely in the provided list
+zle_choose_enum() {
+  zle_append_to_buffer "$(printf "${1}" | zlefzf --expect=' ' | tail -n 1) "
 }
 
 normal_space() {
@@ -226,29 +229,29 @@ space() {
     if [[ "${num_words}" == 1 ]]; then
       # BUFFER=""
       # zle redisplay
-      zle_choose_space "$(git_cmds)"
+      zle_choose_enum "$(git_cmds)"
     fi
   fi
 
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == stash ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose_space "$(git_stash_cmds)"
+    zle_choose_enum "$(git_stash_cmds)"
   fi
 
   if [[ "${words[1]}" == cabal ]]; then
     if [[ "${num_words}" == 1 ]]; then
-      zle_choose_space "$(cabal_cmds)"
+      zle_choose_enum "$(cabal_cmds)"
     fi
   fi
 
   if [[ "${words[1]}" == cargo ]]; then
     if [[ "${num_words}" == 1 ]]; then
-      zle_choose_space "$(cargo_cmds)"
+      zle_choose_enum "$(cargo_cmds)"
     fi
   fi
 
   if [[ "${words[1]}" == docker ]]; then
     if [[ "${num_words}" == 1 ]]; then
-      zle_choose_space "$(docker_cmds)"
+      zle_choose_enum "$(docker_cmds)"
     fi
   fi
 }
@@ -279,23 +282,23 @@ space-space() {
 
   # git add
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == add ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose "$(git_list_add_targets)"
+    zle_append_to_buffer "$(fzf-git-add)"
   elif [[ "${words[1]}" == ga ]] && [[ "${#words[@]}" == 1 ]]; then
-    zle_choose "$(git_list_add_targets)"
+    zle_append_to_buffer "$(fzf-git-add)"
   fi
 
   # git checkout
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == checkout ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
+    zle_choose "$(fzf-git-checkout)"
   elif [[ "${words[1]}" == gc ]] && [[ "${#words[@]}" == 1 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
+    zle_choose "$(fzf-git-checkout)"
   fi
 
   # git rebase
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == rebase ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
+    zle_choose "$(fzf-git-checkout)"
   elif [[ "${words[1]}" == grb ]] && [[ "${#words[@]}" == 1 ]]; then
-    zle_choose "$(git_list_checkout_targets)"
+    zle_choose "$(fzf-git-checkout)"
   fi
 
   # git pull
@@ -304,13 +307,13 @@ space-space() {
       if [[ "${#words[@]}" == 2 ]]; then
         zle_choose "$(git remote show)"
       elif [[ "${#words[@]}" == 3 ]]; then
-        zle_choose "$(git_list_checkout_targets)"
+        zle_choose "$(fzf-git-checkout)"
       fi
     fi
   fi
 
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == stash ]] && [[ "${num_words}" == 2 ]]; then
-    zle_choose_space "$(git_stash_cmds)"
+    zle_choose_enum "$(git_stash_cmds)"
   fi
 
   if [[ "${words[1]}" == git ]] && [[ "${words[2]}" == clone ]] && [[ "${num_words}" == 2 ]]; then
@@ -319,13 +322,13 @@ space-space() {
 
   if [[ "${words[1]}" == cabal ]]; then
     if [[ "${num_words}" == 1 ]]; then
-      zle_choose_space "$(cabal_cmds)"
+      zle_choose_enum "$(cabal_cmds)"
     fi
   fi
 
   if [[ "${words[1]}" == cargo ]]; then
     if [[ "${num_words}" == 1 ]]; then
-      zle_choose_space "$(cargo_cmds)"
+      zle_choose_enum "$(cargo_cmds)"
     fi
   fi
 
@@ -346,7 +349,7 @@ space-space() {
   fi
 
   if [[ "${words[1]}" == man ]] && [[ "${num_words}" == 1 ]]; then
-    zle_choose_space "$(list-man-pages)"
+    zle_choose_enum "$(list-man-pages)"
   fi
 
   if [[ "${words[1]}" == mv ]] && [[ "${num_words}" == 1 ]]; then

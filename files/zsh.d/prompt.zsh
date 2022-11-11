@@ -1,3 +1,6 @@
+# TODO: "transient prompt"
+# https://github.com/romkatv/powerlevel10k#transient-prompt
+
 autoload -U promptinit && promptinit
 autoload -U colors && colors
 setopt promptsubst
@@ -35,8 +38,44 @@ unset newline
 unset vi_prompt
 unset git_prompt
 
-newline() { printf '\n'; }
+newline() { 
+  printf '\n' 
+}
 add-zsh-hook preexec newline
+
+# https://superuser.com/questions/1389834/can-i-have-the-terminal-prompt-at-the-vertical-middle-of-a-window
+zmodload zsh/terminfo 
+PS1o="$PS1"
+function prompt_middle() { 
+  halfpage_down=""
+  for i in {1..${1}}; do
+    halfpage_down="$halfpage_down${terminfo[cud1]}"
+  done
+  halfpage_up=""
+  for i in {1..${1}}; do
+    halfpage_up="$halfpage_up${terminfo[cuu1]}"
+  done
+  PS1="%{${halfpage_down}${halfpage_up}%}$PS1o"; 
+}
+function prompt_float() { PS1="$PS1o"; }
+function prompt_height() {
+  if [[ ${LINES} -gt 60 ]]; then
+    prompt_middle $((LINES/2))
+  else
+    prompt_float
+  fi
+}
+prompt_height
+
+# Reset when changing window size. Currently leads to a bit of weirdness, but
+# nothing major.
+#
+# https://unix.stackexchange.com/questions/360600/reload-zsh-when-resizing-terminator-window
+TRAPWINCH() {
+  # https://github.com/romkatv/powerlevel10k/issues/563
+  printf '\n%.0s' {1..100}
+  prompt_height
+}
 
 # Unrelated: bind ctrl-backspace to delete previous word
 #bindkey '^H' backward-kill-word

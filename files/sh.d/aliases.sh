@@ -52,7 +52,7 @@ ga() {
   if [[ -n "${1}" ]]; then
     git add "$@"
   else
-    git add "$(git_list_add_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
+    git add "$(fzf-git-add)"
   fi
 }
 
@@ -60,7 +60,7 @@ gc() {
   if [[ -n "${1}" ]]; then
     git checkout "$@"
   else
-    git checkout "$(git_list_checkout_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
+    git checkout "$(fzf-git-checkout)"
   fi
 }
 
@@ -68,7 +68,7 @@ grb() {
   if [[ -n "${1}" ]]; then
     git rebase "$@"
   else
-    git rebase "$(git_list_checkout_targets | fzf --height=10% --layout=reverse --prompt='>> ')"
+    git rebase "$(fzf-git-checkout)"
   fi
 }
 

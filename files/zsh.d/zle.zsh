@@ -7,7 +7,6 @@ done
 
 zle_append_to_buffer() {
   BUFFER+="${1}"
-  BUFFER="${BUFFER% }"
   CURSOR=$#BUFFER
   zle redisplay
 }
@@ -280,6 +279,14 @@ bindkey -M vicmd ' p' project-show-bindings
 
 # y ----------------------------------------------------------------------------
 
+yank-cwd() {
+  bindkey -rM vicmd 'c'
+  pwd | xsel -ib
+}
+zle -N yank-cwd
+bindkey -M vicmd ' yc' yank-cwd
+
+
 yank-last() {
   bindkey -rM vicmd 'l'
   copy_last_command
@@ -302,6 +309,7 @@ yank-print-bindings() {
 yank-show-bindings() {
   bindkey -rM vicmd 'y'
   zle -R "" "$(yank-print-bindings)"
+  bindkey -M vicmd 'c' yank-cwd
   bindkey -M vicmd 'l' yank-last
   bindkey -M vicmd 'r' yank-rerun
 }
