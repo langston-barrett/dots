@@ -59,20 +59,6 @@ function vi_mode_prompt_info() {
 if [[ "$RPS1" == "" && "$RPROMPT" == "" ]]; then
   # RPS1='$(vi_mode_prompt_info)'
 fi
-
-# allow ctrl-r and ctrl-s to search the history
-bindkey '^r' history-incremental-search-backward
-bindkey -M vicmd '^r' history-incremental-search-backward
-bindkey '^s' history-incremental-search-forward
-
-# allow ctrl-a and ctrl-e to move to beginning/end of line
-bindkey '^a' beginning-of-line
-bindkey '^e' end-of-line
-
-if [[ -z ${INSIDE_EMACS} ]]; then
-  bindkey '^k' up-line-or-history
-  bindkey '^j' down-line-or-history
-fi
 function use-j-k() {
   if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then
     notify-send "you can use ctrl-j and ctrl-k"

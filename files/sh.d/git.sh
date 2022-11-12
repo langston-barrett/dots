@@ -11,10 +11,16 @@ git_list_add_targets_helper() {
 }
 
 git_list_add_targets() {
+  if ! [[ -d "${PROJECT_ROOT}/.git" ]]; then
+    return
+  fi
   git_list_add_targets_helper | sort | uniq
 }
 
 git_list_checkout_targets() {
+  if ! [[ -d "${PROJECT_ROOT}/.git" ]]; then
+    return
+  fi
   printf \
     "%s\n%s\n%s" \
     "$(git branch --all --format='%(refname:short)')" \

@@ -1,6 +1,3 @@
-# TODO: "transient prompt"
-# https://github.com/romkatv/powerlevel10k#transient-prompt
-
 autoload -U promptinit && promptinit
 autoload -U colors && colors
 setopt promptsubst
@@ -16,7 +13,7 @@ function in_nix_shell() {
 PROMPT_SEP=" : "
 
 git_prompt_info() {
-  if [[ -d .git ]] || [[ -d $(find_project_root)/.git ]]; then
+  if [[ -d .git ]] || [[ -d ${PROJECT_ROOT}/.git ]]; then
     ref=$(git symbolic-ref --short HEAD 2> /dev/null)
     if [[ -n "${ref}" ]]; then
       printf "%s%s" "${PROMPT_SEP}" "${ref}"
@@ -33,10 +30,9 @@ newline=$'\n'
 vi_prompt='$(vi_mode_prompt_info)'
 git_prompt='$(git_prompt_info)'
 PROMPT="${newline}[${vi_prompt}${PROMPT_SEP}${PROMPT_EXTRA}%3d${git_prompt}]${newline}${newline}"
+#PROMPT="$ "
 export PROMPT
 unset newline
-unset vi_prompt
-unset git_prompt
 
 newline() { 
   printf '\n' 
@@ -72,10 +68,12 @@ prompt_height
 #
 # https://unix.stackexchange.com/questions/360600/reload-zsh-when-resizing-terminator-window
 TRAPWINCH() {
-  # https://github.com/romkatv/powerlevel10k/issues/563
-  printf '\n%.0s' {1..100}
   prompt_height
+  zle -R
 }
+
+# https://github.com/romkatv/powerlevel10k/issues/563
+printf '\n%.0s' {1..100}
 
 # Unrelated: bind ctrl-backspace to delete previous word
 #bindkey '^H' backward-kill-word

@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 # The above is for Shellcheck
 
-for f in ~/.zsh.d/zle/*.zsh; do
-  source "${f}"
-done
+zlefzf() {
+   fzf --margin=0,0,0,"${#BUFFER}" \
+       --height=10% \
+       --layout=reverse \
+       --prompt='' \
+       --info=hidden \
+       --bind="bspace:backward-delete-char/eof" \
+       --bind="tab:replace-query" \
+       "${@}"
+}
 
 zle_append_to_buffer() {
   BUFFER+="${1}"
@@ -130,7 +137,7 @@ bindkey -M vicmd ' c' compile-show-bindings
 
 dir-cd() {
   bindkey -rM vicmd 'd'
-  cd "$(\find $(pwd) -type d | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
+  cd "$(\find $(pwd) -type d | zlefzf)"
 }
 zle -N dir-cd
 bindkey -M vicmd ' dd' dir-cd
@@ -166,42 +173,42 @@ bindkey -M vicmd ' ic' insert-clipboard
 
 fzf-insert-directory() {
   bindkey -rM vicmd 'd'
-  zle_append_to_buffer "$(fd --type d . | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
+  zle_append_to_buffer "$(fd --type d . | zlefzf)"
 }
 zle -N fzf-insert-directory
 bindkey -M vicmd ' id' fzf-insert-directory
 
 fzf-insert-exact-history() {
   bindkey -rM vicmd 'e'
-  zle_append_to_buffer "$(list-history | fzf +s --exact --tac --height=10% --layout=reverse --prompt=''  --info=hidden| sed -r 's/ *[0-9]*\*? *//' | sed -r 's/\\/\\\\/g')"
+  zle_append_to_buffer "$(list-history | zlefzf --tac)"
 }
 zle -N fzf-insert-exact-history
 bindkey -M vicmd ' ie' fzf-insert-exact-history
 
 fzf-insert-file() {
   bindkey -rM vicmd 'f'
-  zle_append_to_buffer "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
+  zle_append_to_buffer "$(fd --type f . | zlefzf)"
 }
 zle -N fzf-insert-file
 bindkey -M vicmd ' if' fzf-insert-file
 
 fzf-insert-history() {
   bindkey -rM vicmd 'h'
-  zle_append_to_buffer "$(list-history | fzf +s --tac --height=10% --layout=reverse --prompt='' --info=hidden)"
+  zle_append_to_buffer "$(list-history | zlefzf --tac)"
 }
 zle -N fzf-insert-history
 bindkey -M vicmd ' ih' fzf-insert-history
 
 fzf-insert-project() {
   bindkey -rM vicmd 'p'
-  zle_append_to_buffer "$(fd "${PROJECT_ROOT}" | fzf --height=10% --layout=reverse --prompt='' --info=hidden)"
+  zle_append_to_buffer "$(fd "${PROJECT_ROOT}" | zlefzf)"
 }
 zle -N fzf-insert-project
 bindkey -M vicmd ' ip' fzf-insert-project
 
 fzf-insert-snippet() {
   bindkey -rM vicmd 's'
-  zle_append_to_buffer "$(fzf --height=10% --layout=reverse --prompt='' --info=hidden < ~/code/dots/files/sh.d/snippets)"
+  zle_append_to_buffer "$(zlefzf < ~/code/dots/files/sh.d/snippets)"
 }
 zle -N fzf-insert-snippet
 bindkey -M vicmd ' is' fzf-insert-snippet
@@ -214,12 +221,12 @@ insert-show-bindings() {
   bindkey -rM vicmd 'i'
   bindkey -M vicmd 'i' vi-insert
   zle -R "" "$(insert-print-bindings)"
-  bindkey -M vicmd 'c' insert-clipboard
-  bindkey -M vicmd 'd' fzf-insert-directory
-  bindkey -M vicmd 'f' fzf-insert-file
-  bindkey -M vicmd 'h' fzf-insert-history
-  bindkey -M vicmd 'p' fzf-insert-project
-  bindkey -M vicmd 's' fzf-insert-snippet
+  # bindkey -M vicmd 'c' insert-clipboard
+  # bindkey -M vicmd 'd' fzf-insert-directory
+  # bindkey -M vicmd 'f' fzf-insert-file
+  # bindkey -M vicmd 'h' fzf-insert-history
+  # bindkey -M vicmd 'p' fzf-insert-project
+  # bindkey -M vicmd 's' fzf-insert-snippet
 }
 zle -N insert-show-bindings
 bindkey -M vicmd ' i' insert-show-bindings
@@ -277,11 +284,16 @@ bindkey -M vicmd ' p' project-show-bindings
 
 # ssh
 
+# T ----------------------------------------------------------------------------
+
+bindkey -M vicmd ' Ta' autosuggest-toggle
+
 # y ----------------------------------------------------------------------------
 
 yank-cwd() {
   bindkey -rM vicmd 'c'
   pwd | xsel -ib
+  zle -R "" "copied '$()'"
 }
 zle -N yank-cwd
 bindkey -M vicmd ' yc' yank-cwd
@@ -303,7 +315,7 @@ zle -N yank-rerun
 bindkey -M vicmd ' yr' yank-rerun
 
 yank-print-bindings() {
-  echo "l: last" "r: re-run"
+  echo "c: cwd" "l: last" "r: re-run"
 }
 
 yank-show-bindings() {

@@ -5,7 +5,7 @@ ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
   else
-    hx "$(fd . --type f --max-depth 5 | fzf --height=10% --layout=reverse --prompt='>> ')"
+    hx "$(fd . --type f --max-depth 5 | zlefzf)"
   fi
 }
 
@@ -13,15 +13,85 @@ seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
 }
 
+alias trailing="sed -i 's/[ \t]*$//'"
+
+# Works as a gentle reminder with alias expansion
+build_alias() {
+  alias "${1}"="${2}"
+  alias "${2}"="${1}"
+}
+
+## Build tools
+
+build_alias m make
+build_alias od objdump
+build_alias dk docker
+build_alias py python
+build_alias py3 python3
+
 ## Git
-alias g='git'
+
+# See also gitconfig aliases
+
+build_alias g 'git'
+
+# TODO: unused
+_GIT_ALIASES=(
+  "git,a,add"
+  "git,b,branch"
+  "git,bl,blame"
+  "git,cb,checkout -b"
+  "git,cl,clone --jobs 4"
+  "git,co,checkout"
+  "git,com,checkout main"
+  "git,cp,cherry-pick"
+  "git,cm,commit"
+  "git,cmm,commit --message "
+  "git,d,diff"
+  "git,ds,diff --cached"
+  "git,f,fetch"
+  "git,fa,fetch --all"
+  "git,i,init"
+  "git,hd,rev-parse HEAD"
+  "git,l,log"
+  "git,lsf,ls-files"
+  "git,m,merge"
+  "git,p,push"
+  "git,pf,push --force-with-lease"
+  "git,pl,pull"
+  "git,plm,pull mine"
+  "git,plo,pull origin"
+  "git,plu,pull upstream"
+  "git,r,reset"
+  "git,rh,reset --hard"
+  "git,rb,rebase"
+  "git,rbi,rebase --interactive"
+  "git,rc,rebase --continue"
+  "git,ra,rebase --abort"
+  "git,rv,remote --verbose"
+  "git,s,status"
+  "git,sh,stash"
+  "git,ss,status --short"
+  "git,su,submodule"
+  "git,sup,submodule update"
+  "git,supi,submodule update --init"
+  "git,t,tag"
+)
+
+alias ga='git add'
 alias gb='git branch'
+alias gbl='git blame'
 alias gbD='git branch -D'
-alias gcl='git clone --depth 20'
-alias gcm='git commit -m'
-alias gcmm='git commit -m .'
-alias gca='git commit --amend'
+alias gbr='git branch'
+alias gco='git checkout'
+alias gcom='git checkout main'
+alias gcp='git cherry-pick'
 alias gcb='git checkout -b'
+alias gcm='git commit -m'
+alias gcl='git clone --jobs 4'
+alias gcm='git commit'
+alias gcmm='git commit --message .'
+alias gca='git commit --amend'
 alias gd='git diff'
 alias gds='git diff --cached'
 alias gdm='git diff master'
@@ -29,48 +99,39 @@ alias gf='git fetch'
 alias gfa='git fetch --all'
 alias gFp='git pull origin'
 alias gFu='git pull upstream'
+alias gi='git init'
+alias ghd='git rev-parse HEAD'
+alias gl='git log'
+alias glsf='git ls-files'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gpl='git pull'
+alias gplm='git pull mine'
+alias gplo='git pull origin'
+alias gplu='git pull upstream'
 alias gm='git merge'
 alias gmum='git merge upstream/master'
-alias gp='git checkout master && git pull && git checkout -'
 alias gpum='git pull upstream master'
 alias gPp='git push -u origin'
 alias gPf='git push --force-with-lease'
 alias gr='git reset'
 alias grhm='git reset --hard origin/master'
-alias gri='git rebase -i'
+alias grb='git rebase'
+alias gri='git rebase --interactive'
 alias grc='git rebase --continue'
 alias gra='git rebase --abort'
-alias grv='git remote -v'
+alias grv='git remote --verbose'
 alias gs='git status'
+alias gsh='git stash'
 alias gss='git status --short'
+alias gsu='git submodule'
+alias gsup='git submodule update'
+alias gsupi='git submodule update --init'
+alias gt='git tag'
 alias gwl='git worktree list'
 alias gwa='git worktree add'
 alias gwm='git worktree move'
 alias gwr='git worktree remove'
-
-ga() {
-  if [[ -n "${1}" ]]; then
-    git add "$@"
-  else
-    git add "$(fzf-git-add)"
-  fi
-}
-
-gc() {
-  if [[ -n "${1}" ]]; then
-    git checkout "$@"
-  else
-    git checkout "$(fzf-git-checkout)"
-  fi
-}
-
-grb() {
-  if [[ -n "${1}" ]]; then
-    git rebase "$@"
-  else
-    git rebase "$(fzf-git-checkout)"
-  fi
-}
 
 github_clone() { git clone "https://github.com/${1}"; }
 git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
@@ -134,10 +195,8 @@ alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/kmonad/m
 alias sshb='ssh big'
 alias sshbe='ssh big-external'
 
-alias ag='ag --path-to-ignore ~/code/dots/files/agignore'
 alias makej='make -j$(nproc)'
 alias lock='systemctl start physlock'
-alias mattermost='bash ~/code/dots/files/scripts/mattermosts.sh'
 
 # temporary
 

@@ -25,7 +25,7 @@ list-executables-on-path() {
 }
 
 list-history() {
-  fc -l 1 | seds '^ [[:digit:]]*  ' ''
+  fc -l 1 | seds '^ *[[:digit:]]*\**  ' ''
 }
 
 list-make-targets() {
@@ -47,13 +47,13 @@ read-json() {
 }
 
 snip() {
-  cd ~/code/dots/files/emacs/snippets || true
+  pushd ~/code/dots/files/emacs/snippets || true
   language=yaml
   if [[ -z "${1}" ]]; then
     d=$(fd --type d . | fzf --height=10% --layout=reverse)
-    cd "${d}" || true
+    pushd "${d}" || true
   else
-    cd "${1}"* || true
+    pushd "${1}"* || true
   fi
   language=$(basename "$(pwd)")
   language="${language%-mode}"
@@ -63,4 +63,6 @@ snip() {
     xargs bat | \
     grep -v '^#' | \
     xsel -ib
+  popd || return
+  popd || return
 }
