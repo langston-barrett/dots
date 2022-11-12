@@ -2,6 +2,8 @@
 
 export PATH=$PATH:$HOME/.config/bin
 
+eval $(lesspipe.sh)
+
 cpr() { cp "${2}" "${1}"; }
 
 # Delete all merged git branches. Use caution, and only use on master.
@@ -73,19 +75,6 @@ function git() {
 run_from_unstable () {
   nix-shell -p "with import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { }; $1" --run "$1 & disown"
 
-}
-
-m () {
-  start=$(pwd)
-  while ! [[ -f Makefile ]]; do
-    if [[ $(pwd) == "/" ]]; then
-      printf "No Makefile found\n"
-      return
-    fi
-    cd ..
-  done
-  make "$@"
-  cd "${start}"
 }
 
 ## Generic

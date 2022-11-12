@@ -19,6 +19,7 @@ with pkgs; [
   gnumake
   htop
   jq
+  lesspipe
   man-pages
   mpw
   nix-prefetch-git
