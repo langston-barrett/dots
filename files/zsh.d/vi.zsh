@@ -1,9 +1,17 @@
 #!/usr/bin/env zsh
 
-# http://stratus3d.com/blog/2017/10/26/better-vi-mode-in-zshell/
+# Unbind all sequences starting with ESC
+#
+# See man zshzle.
+#
+# Unfortunately, unbinds arrow keys...
+#
+# bindkey -rpM viins '^['
 
 # Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
 export KEYTIMEOUT=20
+
+# http://stratus3d.com/blog/2017/10/26/better-vi-mode-in-zshell/
 
 # Updates editor information when the keymap changes.
 typeset -g VI_KEYMAP=main
@@ -20,6 +28,8 @@ zle -N zle-keymap-select
 
 function zle-line-init() {
   zle-vi-set-mode "${KEYMAP}"
+  # Always start in normal mode:
+  # zle -K vicmd
 }
 zle -N zle-line-init
 
@@ -49,6 +59,7 @@ function vi_mode_prompt_info() {
     isearch) printf "isearch\n" ;;
     command) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
     vicmd) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
+    spacezle) printf "%s\n" "%{$fg[green]%}n%{$reset_color%}" ;;
     visual) printf "sel\n" ;;
     viopp) printf "opp\n" ;;
     *) printf "???\n" ;;

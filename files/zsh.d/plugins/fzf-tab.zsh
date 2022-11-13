@@ -12,8 +12,13 @@ fi
 source "${plugin_dir}/fzf-tab/fzf-tab.plugin.zsh"
 
 tab() {
+  local start_col=0
+  if [[ "${#BUFFER}" -lt $((COLUMNS-32)) ]]; then
+    start_col="${#BUFFER}"
+  fi
+
   zstyle ":fzf-tab:*" fzf-flags \
-    --margin=0,0,0,"${#BUFFER}" \
+    --margin=0,0,0,"${start_col}" \
     --height=10% \
     --layout=reverse \
     --prompt='' \

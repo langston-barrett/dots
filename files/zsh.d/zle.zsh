@@ -2,26 +2,56 @@
 # The above is for Shellcheck
 
 zlefzf() {
-   fzf --margin=0,0,0,"${#BUFFER}" \
-       --height=10% \
-       --layout=reverse \
-       --prompt='' \
-       --info=hidden \
-       --bind="bspace:backward-delete-char/eof" \
-       --bind="tab:replace-query" \
-       "${@}"
+  local start_col=0
+  if [[ "${#BUFFER}" -lt $((COLUMNS-32)) ]]; then
+    start_col="${#BUFFER}"
+  fi
+
+  fzf --margin=0,0,0,"${start_col}" \
+      --height=10% \
+      --layout=reverse \
+      --prompt='' \
+      --info=hidden \
+      --bind="bspace:backward-delete-char/eof" \
+      --bind="tab:replace-query" \
+      "${@}"
+}
+
+zlefzff() {
+  zlefzf --preview 'preview.sh {}' "${@}"
 }
 
 zle_append_to_buffer() {
   BUFFER+="${1}"
-  CURSOR=$#BUFFER
+  CURSOR="${#BUFFER}"
   zle redisplay
 }
 
 zle_write_buffer() {
   BUFFER="${1}"
-  CURSOR=$#BUFFER
+  CURSOR="${#BUFFER}"
   zle redisplay
+}
+
+# zle_bind() {
+#   zle -N "${1}"
+#   bindkey -M vicmd " ${2}" "${1}"
+# }
+
+# Create a new keymap for spacezle. In vi command mode, space enters the new
+# keymap. ESC exits it.
+bindkey -N spacezle vicmd
+bindkey -M spacezle '^[' vi-cmd-mode
+spacezle-map() {
+  zle -K spacezle
+  show-bindings
+}
+zle -N spacezle-map
+bindkey -M vicmd ' ' spacezle-map
+
+zle_bind() {
+  zle -N "${1}"
+  bindkey -M spacezle "${2}" "${1}"
 }
 
 # c ----------------------------------------------------------------------------
@@ -124,11 +154,14 @@ zle -N tests
 bindkey -M vicmd ' ct' tests
 
 compile-print-bindings() {
-  echo "c: compile" "k: check" "l: lint" "t: test"
+  echo "c: compile"
+  echo "k: check"
+  echo "l: lint"
+  echo "t: test"
 }
 
 compile-show-bindings() {
-  zle -R "" "$(compile-print-bindings)"
+  zle -M "$(compile-print-bindings)"
 }
 zle -N compile-show-bindings
 bindkey -M vicmd ' c' compile-show-bindings
@@ -136,91 +169,97 @@ bindkey -M vicmd ' c' compile-show-bindings
 # d ----------------------------------------------------------------------------
 
 dir-cd() {
-  bindkey -rM vicmd 'd'
-  cd "$(\find $(pwd) -type d | zlefzf)"
+  cd "$(\find "${PWD}" -type d | zlefzf)" || true
 }
-zle -N dir-cd
-bindkey -M vicmd ' dd' dir-cd
+zle_bind dir-cd 'dd'
 
 dir-pwd() {
-  bindkey -rM vicmd 'w'
   zle_append_to_buffer "$(pwd)"
 }
-zle -N dir-pwd
-bindkey -M vicmd ' dw' dir-pwd
+zle_bind dir-pwd 'dw'
 
 dir-print-bindings() {
-  echo "d: cd" "w: pwd"
+  echo "d: cd"
+  echo "w: pwd"
 }
 
 dir-show-bindings() {
-  bindkey -rM vicmd 'd'
-  zle -R "" "$(dir-print-bindings)"
-  bindkey -M vicmd 'd' dir-cd
-  bindkey -M vicmd 'w' dir-pwd
+  zle -M "$(dir-print-bindings)"
 }
-zle -N dir-show-bindings
-bindkey -M vicmd ' d' dir-show-bindings
+zle_bind dir-show-bindings 'd'
+
+# q ----------------------------------------------------------------------------
+
+quit-quit() {
+  zle_append_to_buffer "exit"
+  zle vi-accept-line
+}
+zle_bind quit-quit 'qq'
+
+quit-reload() {
+  zle_append_to_buffer "exec zsh"
+  zle vi-accept-line
+}
+zle_bind quit-reload 'qr'
+
+quit-print-bindings() {
+  echo "q: quit"
+  echo "r: reload"
+}
+
+quit-show-bindings() {
+  zle -M "$(quit-print-bindings)"
+}
+zle_bind quit-show-bindings 'q'
 
 # i ----------------------------------------------------------------------------
 
 insert-clipboard() {
-  bindkey -rM vicmd 'c'
   zle_append_to_buffer "$(xsel -ob)"
 }
-zle -N insert-clipboard
-bindkey -M vicmd ' ic' insert-clipboard
+zle_bind insert-clipboard 'ic'
 
 fzf-insert-directory() {
-  bindkey -rM vicmd 'd'
   zle_append_to_buffer "$(fd --type d . | zlefzf)"
 }
-zle -N fzf-insert-directory
-bindkey -M vicmd ' id' fzf-insert-directory
+zle_bind fzf-insert-directory 'id'
 
 fzf-insert-exact-history() {
-  bindkey -rM vicmd 'e'
   zle_append_to_buffer "$(list-history | zlefzf --tac)"
 }
-zle -N fzf-insert-exact-history
-bindkey -M vicmd ' ie' fzf-insert-exact-history
+zle_bind fzf-insert-exact-history 'ie'
 
 fzf-insert-file() {
-  bindkey -rM vicmd 'f'
   zle_append_to_buffer "$(fd --type f . | zlefzf)"
 }
-zle -N fzf-insert-file
-bindkey -M vicmd ' if' fzf-insert-file
+zle_bind fzf-insert-file 'if'
 
 fzf-insert-history() {
-  bindkey -rM vicmd 'h'
   zle_append_to_buffer "$(list-history | zlefzf --tac)"
 }
-zle -N fzf-insert-history
-bindkey -M vicmd ' ih' fzf-insert-history
+zle_bind fzf-insert-history 'ih'
 
 fzf-insert-project() {
-  bindkey -rM vicmd 'p'
   zle_append_to_buffer "$(fd "${PROJECT_ROOT}" | zlefzf)"
 }
-zle -N fzf-insert-project
-bindkey -M vicmd ' ip' fzf-insert-project
+zle_bind fzf-insert-project 'ip'
 
 fzf-insert-snippet() {
-  bindkey -rM vicmd 's'
   zle_append_to_buffer "$(zlefzf < ~/code/dots/files/sh.d/snippets)"
 }
-zle -N fzf-insert-snippet
-bindkey -M vicmd ' is' fzf-insert-snippet
+zle_bind fzf-insert-snippet 'is'
 
 insert-print-bindings() {
-  echo "c: clipboard" "d: directory" "f: file" "h: history" "p: project" "s: snippet"
+  echo "c: clipboard"
+  echo "d: directory"
+  echo "f: file"
+  echo "h: history"
+  echo "p: project"
+  echo "s: snippet"
 }
 
 insert-show-bindings() {
-  bindkey -rM vicmd 'i'
-  bindkey -M vicmd 'i' vi-insert
-  zle -R "" "$(insert-print-bindings)"
+  zle -M "$(insert-print-bindings)"
   # bindkey -M vicmd 'c' insert-clipboard
   # bindkey -M vicmd 'd' fzf-insert-directory
   # bindkey -M vicmd 'f' fzf-insert-file
@@ -228,8 +267,7 @@ insert-show-bindings() {
   # bindkey -M vicmd 'p' fzf-insert-project
   # bindkey -M vicmd 's' fzf-insert-snippet
 }
-zle -N insert-show-bindings
-bindkey -M vicmd ' i' insert-show-bindings
+zle_bind insert-show-bindings 'i'
 
 # l ----------------------------------------------------------------------------
 
@@ -237,48 +275,38 @@ zle-clear() {
   clear
   zle redisplay
 }
-zle -N zle-clear
-bindkey -M vicmd ' l' zle-clear
+zle_bind zle-clear 'l'
 
 # p ----------------------------------------------------------------------------
 
 project-cd() {
-  bindkey -rM vicmd 'c'
-  cd "$(fd --type d "${PROJECT_ROOT}" | fzf --height=10% --layout=reverse --prompt='')"
+  cd "$(fd --type d "${PROJECT_ROOT}" | fzf --height=10% --layout=reverse --prompt='')" || true
   zle redisplay
 }
-zle -N project-cd
-bindkey -M vicmd ' pc' project-cd
+zle_bind project-cd 'pc'
 
 project-editor() {
-  bindkey -rM vicmd 'e'
-  cd "${PROJECT_ROOT}"
+  cd "${PROJECT_ROOT}" || truereturn
   ee
 }
-zle -N project-editor
-bindkey -M vicmd ' pe' project-editor
+zle_bind project-editor 'pe'
 
 project-file() {
-  bindkey -rM vicmd 'f'
-  cd "${PROJECT_ROOT}"
+  cd "${PROJECT_ROOT}" || return
   ee "$(fd --type f . | fzf --height=10% --layout=reverse --prompt='')"
 }
-zle -N project-file
-bindkey -M vicmd ' pf' project-file
+zle_bind project-file 'pf'
 
 project-print-bindings() {
-  echo "c: cd" "e: editor" "f: file"
+  echo "c: cd"
+  echo "e: editor"
+  echo "f: file"
 }
 
 project-show-bindings() {
-  bindkey -rM vicmd 'p'
-  zle -R "" "$(project-print-bindings)"
-  bindkey -M vicmd 'c' project-cd
-  bindkey -M vicmd 'e' project-editor
-  bindkey -M vicmd 'f' project-file
+  zle -M "$(project-print-bindings)"
 }
-zle -N project-show-bindings
-bindkey -M vicmd ' p' project-show-bindings
+zle_bind project-show-bindings 'p'
 
 # s ----------------------------------------------------------------------------
 
@@ -291,59 +319,63 @@ bindkey -M vicmd ' Ta' autosuggest-toggle
 # y ----------------------------------------------------------------------------
 
 yank-cwd() {
-  bindkey -rM vicmd 'c'
   pwd | xsel -ib
   zle -R "" "copied '$()'"
 }
-zle -N yank-cwd
-bindkey -M vicmd ' yc' yank-cwd
+zle_bind yank-cwd 'yc'
 
 
 yank-last() {
-  bindkey -rM vicmd 'l'
   copy_last_command
   zle -R "" "copied '$(xsel -ob | head -n 1)'"
 }
-zle -N yank-last
-bindkey -M vicmd ' yl' yank-last
+zle_bind yank-last 'yl'
 
 yank-rerun() {
-  bindkey -rM vicmd 'r'
   zle_append_to_buffer "$history[$((HISTCMD-1))] 2>&1 |& xsel -ib"
 }
-zle -N yank-rerun
-bindkey -M vicmd ' yr' yank-rerun
+zle_bind yank-rerun 'yr'
 
 yank-print-bindings() {
-  echo "c: cwd" "l: last" "r: re-run"
+  echo "c: cwd"
+  echo "l: last"
+  echo "r: re-run"
 }
 
 yank-show-bindings() {
-  bindkey -rM vicmd 'y'
-  zle -R "" "$(yank-print-bindings)"
-  bindkey -M vicmd 'c' yank-cwd
-  bindkey -M vicmd 'l' yank-last
-  bindkey -M vicmd 'r' yank-rerun
+  zle -M "$(yank-print-bindings)"
 }
-zle -N yank-show-bindings
-bindkey -M vicmd ' y' yank-show-bindings
+zle_bind yank-show-bindings 'y'
+
+# z ----------------------------------------------------------------------------
+
+zle-z() {
+  zle_append_to_buffer "z "
+  zle vi-insert
+}
+zle -N zle-z
+bindkey -M vicmd 'z' zle-z
 
 # ------------------------------------------------------------------------------
 
 autoload -U edit-command-line
-zle -N edit-command-line
-bindkey -M vicmd ' e' edit-command-line
+zle_bind edit-command-line 'e'
+
+print-bindings() {
+  echo "c: compile"
+  echo "d: dir"
+  echo "e: edit"
+  echo "i: insert"
+  echo "s: ssh"
+  echo "p: project"
+  echo "y: yank"
+  echo "z: z"
+}
 
 show-bindings() {
-  zle -R "" "c: compile" "d: dir" "e: edit" "i: insert" "s: ssh" "p: project" "y: yank"
-  bindkey -M vicmd 'c' compile-show-bindings
-  bindkey -M vicmd 'd' dir-show-bindings
-  bindkey -M vicmd 'i' insert-show-bindings
-  bindkey -M vicmd 'p' project-show-bindings
-  bindkey -M vicmd 'y' yank-show-bindings
+  zle -M "$(print-bindings)"
 }
-zle -N show-bindings
-bindkey -M vicmd ' ' show-bindings
+# zle_bind show-bindings ''
 
 # TODO
 help() {
