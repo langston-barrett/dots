@@ -16,6 +16,17 @@ extract() {
   fi
 }
 
+list-desktop-files() {
+  dirs="${XDG_DATA_HOME:-${HOME}/.local/share}:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+  for d in $(array ":" "${dirs}"); do
+    if [[ -d "${d}/applications" ]]; then
+      fd . "${d}/applications" --extension desktop | while read -r f; do
+        printf '%s\n' "${f}"
+      done
+    fi
+  done
+}
+
 list-executables-on-path() {
   for d in $(echo "${PATH}" | sed -e 's/\:/\ /g'); do
     pushd "${d}" &> /dev/null || continue

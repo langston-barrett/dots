@@ -1,13 +1,13 @@
-alias jq_clipboard="xsel -ob | jq | xsel -ib"
-
 export EDITOR=hx
 ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
   else
-    hx "$(fd . --type f --max-depth 5 | zlefzf)"
+    hx "$(fd . --type f --max-depth 5 | zlefzff)"
   fi
 }
+
+alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
 seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
@@ -21,8 +21,10 @@ build_alias() {
   alias "${2}"="${1}"
 }
 
-## Build tools
+## Tools
 
+build_alias cb cabal
+build_alias cg cargo
 build_alias m make
 build_alias od objdump
 build_alias dk docker
