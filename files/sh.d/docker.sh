@@ -3,7 +3,7 @@ docker-here() {
     --rm \
     --interactive \
     --tty \
-    --mount type=bind,src=$PWD,target=/work \
+    --mount type=bind,src=$PWD,dst=/work \
     --workdir /work \
     "${@}"
 }
@@ -12,8 +12,9 @@ docker-dev() {
   docker-here \
     --env "PROMPT_EXTRA=${1} : " \
     --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
-    --mount type=bind,src=$HOME/code/dots/files/bash.d,dst=/root/.bash.d \
-    --mount type=bind,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+    --mount type=bind,readonly=true,src=$HOME/.config/bash,dst=/root/.config/bash \
+    --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+    --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/root/.config/sh.d \
     "${@}"
 }
 
@@ -30,6 +31,11 @@ ccl-docker-pull() {
 mate-docker-pull() {
   docker-pull-tag ghcr.io/galoisinc/mate-dev mate-dev "${1}"
   docker-pull-tag ghcr.io/galoisinc/mate-dist mate-dist "${1}"
+}
+
+docker-pull-tag() {
+  docker pull "${1}:${3:-main}"
+  docker tag "${1}:${3:-main}" "${2}"
 }
 
 polymorph-docker-pull() {

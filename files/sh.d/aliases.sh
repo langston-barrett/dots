@@ -15,10 +15,13 @@ seds() {
 
 alias trailing="sed -i 's/[ \t]*$//'"
 
-# Works as a gentle reminder with alias expansion
 build_alias() {
   alias "${1}"="${2}"
-  alias "${2}"="${1}"
+
+  # Works as a gentle reminder with ZSH alias expansion on space
+  if [[ -n "${ZSH_NAME}" ]]; then
+    alias "${2}"="${1}"
+  fi
 }
 
 ## Tools
@@ -30,12 +33,13 @@ build_alias od objdump
 build_alias dk docker
 build_alias py python
 build_alias py3 python3
+build_alias tp trash-put
 
 ## Git
 
 # See also gitconfig aliases
 
-build_alias g 'git'
+build_alias g git
 
 # TODO: unused
 _GIT_ALIASES=(
@@ -138,16 +142,16 @@ alias gwr='git worktree remove'
 github_clone() { git clone "https://github.com/${1}"; }
 git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
 
-# https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
-#
-# canff - test whether it is possible to fast-forward to
-# a given commit (which may be a branch name).  If given
-# no arguments, find the upstream of the current (HEAD) branch.
 
 upstream_name() {
     git rev-parse --symbolic-full-name --abbrev-ref @{u}
 }
 
+# https://stackoverflow.com/questions/37648908/determine-if-a-merge-will-resolve-via-fast-forward
+#
+# canff - test whether it is possible to fast-forward to
+# a given commit (which may be a branch name).  If given
+# no arguments, find the upstream of the current (HEAD) branch.
 canff() {
   branch_name=main
   if [ $# -gt 0 ]; then  # at least 1 argument given
@@ -208,7 +212,3 @@ alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
 # Haskell
 
 alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=$HOME/code/dots/files/hlint.yaml src"'
-
-for f in ~/org/code/dots/sh.d/*.sh; do
-  . "${f}"
-done

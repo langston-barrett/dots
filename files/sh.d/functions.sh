@@ -71,6 +71,13 @@ list-man-pages() {
   apropos . | awk '{ print $1 }' 
 }
 
+mount-encrypted() {
+  labels=$(ls --color=never /dev/disk/by-label)
+  sudo cryptsetup luksOpen "${1}" encrypted
+  sudo mkdir -p "/mnt/${labels}"
+  sudo mount /dev/mapper/encrypted "/mnt/${labels}"
+}
+
 nix-run-from-unstable () {
   nix-shell -p "with import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { }; $1" --run "$1 & disown"
 }
@@ -87,6 +94,13 @@ prompt-confirm() {
   done
 }
 
+readlog() {
+  if [[ -z "$1" ]]; then
+    batp --plain log
+  fi
+  batp --plain "$1"
+}
+
 read-json() {
   f="${1}"
   if [[ -z "${f}" ]]; then
@@ -94,6 +108,9 @@ read-json() {
   fi
   bat "${f}" | jq . | bat --file-name "${1}" --paging=always --language=json
 }
+
+# Recursively find and replace
+sedr() { ag -g '.*' -0 | xargs -0 sed -E -i "$@"; }
 
 sorted-diff() {
     file1=$(mktemp)
@@ -122,4 +139,8 @@ snip() {
     xsel -ib
   popd || return
   popd || return
+}
+
+yank-file() {
+  bat "${1}" |& xsel -ib
 }

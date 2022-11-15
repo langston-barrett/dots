@@ -10,11 +10,12 @@ function in_nix_shell() {
   fi
 }
 
-PROMPT_SEP=" : "
+# NB: Spacing is a Unicode em-space
+PROMPT_SEP=" : "
 
 git_prompt_info() {
   if [[ -d .git ]] || [[ -d ${PROJECT_ROOT}/.git ]]; then
-    ref=$(git symbolic-ref --short HEAD 2> /dev/null)
+    ref=$(git-branch-name)
     if [[ -n "${ref}" ]]; then
       printf "%s%s" "${PROMPT_SEP}" "${ref}"
     fi
@@ -27,9 +28,8 @@ if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]]; then
 fi
 
 newline=$'\n'
-vi_prompt='$(vi_mode_prompt_info)'
 git_prompt='$(git_prompt_info)'
-PROMPT="${newline}[${vi_prompt}${PROMPT_SEP}${PROMPT_EXTRA}%3d${git_prompt}]${newline}${newline}"
+PROMPT="${newline}[${PROMPT_EXTRA}%3d${git_prompt}]${newline}${newline}"
 #PROMPT="$ "
 export PROMPT
 unset newline

@@ -36,26 +36,10 @@ function up() {
   fi
 }
 
-# mount encrypted disks
-mount_encrypted() {
-  labels=$(ls --color=never /dev/disk/by-label)
-  sudo cryptsetup luksOpen "${1}" encrypted
-  sudo mkdir -p "/mnt/${labels}"
-  sudo mount /dev/mapper/encrypted "/mnt/${labels}"
-}
-
-# Recursively find and replace
-sed_recurse() { ag -g '.*' -0 | xargs -0 sed -E -i "$@"; }
-
 # https://bit.ly/2ydBgfQ
 in_interactive_session() {
   [[ $- == *i* ]]
 }
-
-# https://github.com/andreafrancia/trash-cli
-alias tp='trash-put'
-alias tl='trash-list'
-alias rm='echo Use \\ rm or tp \(trash-put\)'
 
 # https://github.com/sharkdp/fd
 alias find='echo Use \\ rm or fd'
@@ -67,17 +51,6 @@ alias less='echo Use \\ less or batp'
 export BAT_PAGER='less'
 
 alias weather='curl wttr.in/PDX'
-
-readlog() {
-  if [[ -z "$1" ]]; then
-    batp --plain log
-  fi
-  batp --plain "$1"
-}
-
-batc() {
-  bat "$1" |& xsel -ib
-}
 
 copy_last_command() {
   printf "%s" "$history[$((HISTCMD-1))]" | xsel -ib
