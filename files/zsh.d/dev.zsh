@@ -4,55 +4,6 @@ export PATH=$PATH:$HOME/.config/bin
 
 eval $(lesspipe.sh)
 
-cpr() { cp "${2}" "${1}"; }
-
-# Delete all merged git branches. Use caution, and only use on master.
-# http://goo.gl/r9Bos0
-clean_merged() {
-  git branch --merged | grep -v "\*" \
-    | grep -v master \
-    | xargs -n 1 git branch -d
-}
-
-# Commit staged changes to a new branch and push it
-# Args:
-# 1. Base branch
-# 2. Message
-commit_to_new_branch() {
-  rand=$(tr -dc 'a-zA-Z0-9' < /dev/urandom | fold -w 16 | head -n 1)
-  git checkout -b "$rand" "$1"
-  git commit -m "$2"
-  git push
-}
-
-sorted_diff() {
-    file1=$(mktemp)
-    file2=$(mktemp)
-    bat "${1}" | sort > "${file1}"
-    bat "${2}" | sort > "${file2}"
-    diff "${file1}" "${file2}"
-}
-
-# https://stackoverflow.com/questions/3231804/in-bash-how-to-add-are-you-sure-y-n-to-any-command-or-alias#32708121
-prompt_confirm() {
-  while true; do
-    read -r -n 1 -p "${1:-Continue?} [y/n]: " REPLY
-    case $REPLY in
-      [yY]) echo ; return 0 ;;
-      [nN]) echo ; return 1 ;;
-      *) printf " \033[31m %s \n\033[0m" "invalid input"
-    esac
-  done
-}
-
-function git_delete_untracked {
-  for f in $(git ls-files --others --exclude-standard); do
-    if prompt_confirm "Want to delete $f?"; then
-      tp "$f"
-    fi
-  done
-}
-
 function git() {
   if [[ "$1" == "push" ]]; then
     branch=$(git rev-parse --abbrev-ref HEAD)
@@ -72,22 +23,10 @@ function git() {
   fi
 }
 
-run_from_unstable () {
-  nix-shell -p "with import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { }; $1" --run "$1 & disown"
-
-}
-
 ## Generic
 
 GPG_TTY=$(tty)
 export GPG_TTY
-
-setopt HIST_IGNORE_DUPS     # Don't record an entry that was just recorded again.
-setopt HIST_IGNORE_ALL_DUPS # Delete old recorded entry if new entry is a duplicate.
-setopt HIST_FIND_NO_DUPS    # Do not display a line previously found.
-setopt HIST_IGNORE_SPACE    # Don't record an entry starting with a space.
-setopt HIST_SAVE_NO_DUPS    # Don't write duplicate entries in the history file.
-setopt HIST_REDUCE_BLANKS   # Remove superfluous blanks before recording entry.
 
 # Docker
 

@@ -1,3 +1,13 @@
+# Delete all merged git branches. Use caution, and only use on master.
+# http://goo.gl/r9Bos0
+clean-merged() {
+  git branch --merged | grep -v "\*" \
+    | grep -v "$(git-branch-name)" \
+    | xargs -n 1 git branch -d
+}
+
+cpr() { cp "${2}" "${1}"; }
+
 extract() {
   f="${1}"
   if [[ -z "${f}" ]]; then
@@ -14,6 +24,18 @@ extract() {
   elif [[ "${f}" == *zip ]]; then
     unzip "${f}"
   fi
+}
+
+git-branch-name() {
+  git symbolic-ref --short HEAD 2> /dev/null
+}
+
+git-delete-untracked() {
+  for f in $(git ls-files --others --exclude-standard); do
+    if prompt-confirm "Want to delete $f?"; then
+      tp "$f"
+    fi
+  done
 }
 
 list-desktop-files() {
@@ -49,12 +71,36 @@ list-man-pages() {
   apropos . | awk '{ print $1 }' 
 }
 
+nix-run-from-unstable () {
+  nix-shell -p "with import (fetchTarball https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz) { }; $1" --run "$1 & disown"
+}
+
+# https://stackoverflow.com/questions/3231804/
+prompt-confirm() {
+  while true; do
+    read -r -n 1 -p "${1:-Continue?} [y/n]: " REPLY
+    case $REPLY in
+      [yY]) echo ; return 0 ;;
+      [nN]) echo ; return 1 ;;
+      *) printf " \033[31m %s \n\033[0m" "invalid input"
+    esac
+  done
+}
+
 read-json() {
   f="${1}"
   if [[ -z "${f}" ]]; then
     f=$(fd --max-depth 1 --extension json | fzf)
   fi
   bat "${f}" | jq . | bat --file-name "${1}" --paging=always --language=json
+}
+
+sorted-diff() {
+    file1=$(mktemp)
+    file2=$(mktemp)
+    bat "${1}" | sort > "${file1}"
+    bat "${2}" | sort > "${file2}"
+    diff "${file1}" "${file2}"
 }
 
 snip() {
