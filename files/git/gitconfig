@@ -1,4 +1,5 @@
-######## General
+# ---------------------------------------------------------
+# General
 
 [user]
     name = Langston Barrett
@@ -12,22 +13,17 @@
     ui = auto
 [push]
     default = simple
+	autoSetupRemote = true
+[pull]
+	ff = only
 [sendemail]
 	smtpserver = smtp.gmail.com
 	smtpuser = langston.barrett@gmail.com
-	# smtpencryption = ssl
-	# smtpserverport = 465
 	smtpencryption = tls
 	smtpserverport = 587
 
-######## Pre-commit hooks
-
-# TODO: whitespace too
-[init]
-    templatedir = /home/langston/.config/git
-	defaultBranch = main
-
-######## Credentials and URLs
+# ---------------------------------------------------------
+# Credentials and URLs
 
 [credential "https://github.com"]
     username = langston-barrett
@@ -40,58 +36,55 @@
 # cargo doesn't like this, need to set CARGO_NET_GIT_FETCH_WITH_CLI
 [url "ssh://git@github.com/"]
     insteadOf = https://github.com/
-
-#### Galois Gitlab
-
 [url "ssh://git@gitlab-int.galois.com/"]
     insteadOf = https://gitlab-int.galois.com/
 [url "ssh://git@gitlab-ext.galois.com/"]
     insteadOf = https://gitlab-ext.galois.com/
 
-######## Aliases
+# ---------------------------------------------------------
+# Aliases
 
+# See also ZSH aliases
 [alias]
-	br = branch
+	b = branch
+	bl = blame
 	co = checkout
-	cob = checkout -b
-	comn = checkout main
-	coms = checkout master
+	cb = checkout -b
+	com = checkout main
 	cp = cherry-pick
-	dc = diff --cached
+	ds = diff --cached
 	fa = fetch --all
+	i = init
 	l = log
-	head = rev-parse HEAD
-	head- = rev-parse HEAD~
-	ph = push
-	phf = push --force-with-lease
+	hd = rev-parse HEAD
+	p = push
+	pf = push --force-with-lease
 	pl = pull
-	plom = pull origin main
-	plomr = pull origin master
-	plou = pull upstream main
-	plour = pull upstream master
 	pushf = push --force-with-lease
-	rem = remote -v
-	remotev = remote -v
 	rv = remote -v
-    prup = "!f() { git fetch upstream pull/${1}/head:pr-${1}; git checkout pr-${1}; }; f"
-    re = rebase
-    rei = rebase -i
-    reim = rebase -i master
+    rb = rebase
+    rbi = rebase -i
     s = status
+    sh = stash
+    su = submodule
     undo = reset HEAD~1 --mixed
 
-######## Conditional includes
+# ---------------------------------------------------------
+# Delta
 
-# [includeIf "gitdir:~/code/v2v"]
-#     path = ~/.config/git/galois
-# [gitlab "gitlab-ext.galois.com/api/v4"]
-# 	user = langston
-[http]
-	sslVerify = false
-[pull]
-	ff = only
-[safe]
-	directory = /px4
-	directory = /px4
-	directory = /px4/mavlink/include/mavlink/v2.0
-	directory = /px4/platforms/nuttx/NuttX/nuttx
+[core]
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    # use n and N to move between diff sections
+    navigate = true
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+

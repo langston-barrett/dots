@@ -7,8 +7,9 @@
 
 with pkgs; [
   (aspellWithDicts (ds: with ds; [ en ]))
-  atool # "compress" command in ranger
+  bat
   curl
+  delta
   direnv
   entr
   fasd
@@ -23,10 +24,8 @@ with pkgs; [
   man-pages
   mpw
   nix-prefetch-git
-  pet
   python3
-  ranger
-  silver-searcher # ag
+  ripgrep
   tldr
   tree
   trash-cli
@@ -34,8 +33,7 @@ with pkgs; [
   wget
   zip
   zsh-completions
-] ++ lib.optional (pkgs ? "bat") pkgs.bat # only in newer nixos
-  ++ (if ! doC
+] ++ (if ! doC
      then []
      else [ gcc
             gdb

@@ -2,12 +2,6 @@
 
 {
   environment.systemPackages = with pkgs; [
-    entr
-
-    # For Emacs markdown-preview-eww
-    ruby
-    rubyPackages.redcarpet
-
     clang
     docker-compose
     patchutils
