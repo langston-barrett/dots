@@ -36,7 +36,11 @@ for f in ${XDG_CONFIG_HOME:-${HOME}/.config}/zsh/zsh.d/plugins/*.zsh; do
   zsh-defer source "${f}"
 done
 
-zsh-defer source ~/code/spacezle/src/spacezle.zsh
-zsh-defer source ~/code/zsh-contextual-abbrevs/src/contextual-abbrevs.zsh
+if [[ -d ~/code/spacezle ]]; then
+  zsh-defer source ~/code/spacezle/src/spacezle.zsh
+fi
+if [[ -d ~/code/zsh-contextual-abbrevs ]]; then
+  zsh-defer source ~/code/zsh-contextual-abbrevs/src/contextual-abbrevs.zsh
+fi
 
 # TODO: https://github.com/marlonrichert/zsh-autocomplete
