@@ -6,7 +6,7 @@ clean-merged() {
     | xargs -n 1 git branch -d
 }
 
-cpr() { cp "${2}" "${1}"; }
+pc() { cp "${2}" "${1}"; }
 
 extract() {
   f="${1}"
@@ -121,24 +121,27 @@ sorted-diff() {
 }
 
 snip() {
-  pushd ~/code/dots/files/emacs/snippets || true
+  pushd ~/code/dots/files/emacs/snippets > /dev/null || return
   language=yaml
   if [[ -z "${1}" ]]; then
-    d=$(fd --type d . | fzf --height=10% --layout=reverse)
-    pushd "${d}" || true
+    d=$(fd --type d . | fzf --info=hidden --height=10% --layout=reverse)
+    if [[ -z "${d}" ]]; then
+      return
+    fi
+    pushd "${d}" > /dev/null || return
   else
-    pushd "${1}"* || true
+    pushd "${1}"* > /dev/null || return
   fi
   language=$(basename "$(pwd)")
   language="${language%-mode}"
   fd --type f . | \
-    fzf --ansi --layout=reverse \
-      --preview="grep -v '^#' {} | bat --language=${language} --force-colorization" | \
+    fzf --ansi --info=hidden --layout=reverse \
+      --preview="grep -v '^#' {} | bat --style=plain --file-name={} --language=${language} --force-colorization" | \
     xargs bat | \
     grep -v '^#' | \
     xsel -ib
-  popd || return
-  popd || return
+  popd > /dev/null || return
+  popd > /dev/null || return
 }
 
 yank-file() {

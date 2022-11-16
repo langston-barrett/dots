@@ -15,6 +15,13 @@ seds() {
 
 alias trailing="sed -i 's/[ \t]*$//'"
 
+# For copy/pasting from websites
+if [[ -n "${ZSH_NAME}" ]]; then
+  undollar() { "${@}"; }
+  alias '$'='undollar'
+  alias '#'='undollar'
+fi
+
 build_alias() {
   alias "${1}"="${2}"
 
