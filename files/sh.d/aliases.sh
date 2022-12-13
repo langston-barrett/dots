@@ -40,7 +40,8 @@ build_alias od objdump
 build_alias dk docker
 build_alias py python
 build_alias py3 python3
-build_alias tp trash-put
+build_alias tr trash
+alias tp='trash put'
 
 ## Git
 

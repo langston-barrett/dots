@@ -110,7 +110,7 @@ read-json() {
 }
 
 # Recursively find and replace
-sedr() { ag -g '.*' -0 | xargs -0 sed -E -i "$@"; }
+sedr() { fd --type f -0 | xargs -0 sed -E -i "$@"; }
 
 sorted-diff() {
     file1=$(mktemp)

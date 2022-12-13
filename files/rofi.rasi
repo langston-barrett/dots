@@ -138,3 +138,4 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
+@theme "/home/langston/.local/share/rofi/themes/spotlight-dark.rasi"

@@ -1,10 +1,10 @@
 # Lazy-load fasd
 z() {
   if [[ -n "${ZSH_NAME}" ]]; then
-    eval "$(fasd --init posix-alias zsh-hook)"
+    eval "$(zoxide init zsh)"
   else
-    eval "$(fasd --init posix-alias bash-hook)"
+    eval "$(zoxide init bash)"
   fi
-  fasd_cd -d "$@"
+  z "${@}"
 }
 zz() { ssh -t "${1}" "eval $(fasd --init posix-alias bash-hook); fasd_cd -d ${2}; exec \${SHELL} -l"; }

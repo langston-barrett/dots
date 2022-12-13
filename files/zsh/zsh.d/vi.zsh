@@ -14,7 +14,11 @@
 # Make Vi mode transitions faster (KEYTIMEOUT is in hundredths of a second)
 #
 # Also be sure to set this in tmux.conf: `set -s escape-time 0`.
+#
+# https://github.com/softmoth/zsh-vim-mode#keytimeout
 export KEYTIMEOUT=20
+# Unbind double escape
+bindkey -rpM viins '^[^['
 
 vi_mode_set_cursor() {
   if [[ ${1:-${VI_KEYMAP}} == vicmd ]]; then

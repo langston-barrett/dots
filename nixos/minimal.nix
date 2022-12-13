@@ -1,6 +1,7 @@
 # This file contains a minimal set of packages for a development environment.
 
 { pkgs ? import <nixpkgs> { }
+, unstable ? import <unstable> { }
 , doC ? true
 , doHaskell ? false
 }:
@@ -12,7 +13,6 @@ with pkgs; [
   delta
   direnv
   entr
-  fasd
   fd
   file
   fzf
@@ -26,12 +26,13 @@ with pkgs; [
   nix-prefetch-git
   python3
   ripgrep
-  tldr
+  tealdeer # tldr
   tree
-  trash-cli
+  unstable.trashy
   unzip
   wget
   zip
+  zoxide
   zsh-completions
 ] ++ (if ! doC
      then []
