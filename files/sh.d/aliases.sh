@@ -212,6 +212,8 @@ alias sshbe='ssh big-external'
 alias makej='make -j$(nproc)'
 alias lock='systemctl start physlock'
 
+open() { xdg-open "${1}" & disown; }
+
 # temporary
 
 alias restart_qute='kill -9 $(pgrep qutebrowser) && qutebrowser 2>&1 > /dev/null & disown'

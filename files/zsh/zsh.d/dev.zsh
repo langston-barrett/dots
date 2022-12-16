@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 
+export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.config/bin
 
 eval $(lesspipe.sh)
