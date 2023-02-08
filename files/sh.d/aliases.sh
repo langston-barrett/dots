@@ -13,6 +13,12 @@ seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
 }
 
+llvm-dis-view() {
+  f="${1}"
+  shift 1
+  llvm-dis -o - "${f}" | bat --language=llvm --file-name="${f}.ll" "${@}"
+}
+
 alias trailing="sed -i 's/[ \t]*$//'"
 
 # For copy/pasting from websites

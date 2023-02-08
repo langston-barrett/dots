@@ -1,9 +1,14 @@
-docker-here() {
-  docker run \
+dockeri() {
+  sudo -g docker docker run \
     --rm \
     --interactive \
     --tty \
-    --mount type=bind,src=$PWD,dst=/work \
+    "${@}"
+}
+
+docker-here() {
+  dockeri \
+    --mount "type=bind,src=${PWD},dst=/work" \
     --workdir /work \
     "${@}"
 }
