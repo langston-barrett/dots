@@ -8,6 +8,10 @@ clean-merged() {
 
 pc() { cp "${2}" "${1}"; }
 
+slugify() {
+  sed -e 's/ /-/g' | tr '[:upper:]' '[:lower:]'
+}
+
 extract() {
   f="${1}"
   if [[ -z "${f}" ]]; then
