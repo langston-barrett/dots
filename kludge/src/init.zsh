@@ -1,10 +1,15 @@
 function kludge-space() {
-  out=$(kludge zle expand "${LBUFFER}" "${RBUFFER}")
-  if [ "${?}" -eq 0 ]; then
-    BUFFER=${out}
-    CURSOR=${#BUFFER}
+  if [[ "${BUFFER% }" == "${BUFFER}" ]] || [[ "${CURSOR}" != "${#BUFFER}" ]]; then
+    out=$(kludge zle expand "${LBUFFER}" "${RBUFFER}")
+    if [ "${?}" -eq 0 ]; then
+      BUFFER=${out}
+      CURSOR=${#BUFFER}
+    else
+      zle self-insert
+    fi
   else
-    zle self-insert
+    # If the user entered space twice, show applicable abbrevs
+    zle -M "$(kludge zle hint "${BUFFER% }")"
   fi
 }
 

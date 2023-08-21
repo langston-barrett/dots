@@ -13,6 +13,7 @@ pub(crate) struct Config {
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
     Expand { lbuf: String, rbuf: String },
+    Hint { buf: String },
     Init,
 }
 
@@ -29,37 +30,8 @@ struct Cmd {
     subs: Vec<Cmd>,
 }
 
-fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
-    let mut m = HashMap::with_capacity(cmds.len());
-    let mut bind = |k: String, mut v: String| {
-        debug!("binding '{k}' to '{v}'");
-        if m.contains_key(k.as_str()) {
-            panic!("Contained key! {k}");
-        }
-        if !v.ends_with(' ') {
-            v = format!("{v} ");
-        }
-        m.insert(k, v);
-    };
-    for c in cmds {
-        let short = c.short;
-        let long = c.long;
-        for (f, fl) in &c.flags {
-            let expanded = format!("{long} {}", fl.clone());
-            bind(format!("{short} {f}"), expanded.clone());
-            bind(format!("{long} {f}"), expanded);
-        }
-        for (k, v) in compile(c.subs) {
-            bind(format!("{short}{}", k), format!("{long} {v}"));
-            bind(format!("{long} {}", k), format!("{long} {v}"));
-        }
-        bind(short, long);
-    }
-    m
-}
-
-pub(crate) fn expand_pre(lbuf: String) -> Option<String> {
-    let cmds = vec![
+fn all_cmds() -> Vec<Cmd> {
+    vec![
         Cmd {
             short: String::from("cb"),
             long: String::from("cabal"),
@@ -95,17 +67,62 @@ pub(crate) fn expand_pre(lbuf: String) -> Option<String> {
             short: String::from("g"),
             long: String::from("git"),
             flags: HashMap::new(),
-            subs: vec![],
+            subs: vec![
+                Cmd {
+                    short: String::from("cm"),
+                    long: String::from("commit"),
+                    flags: HashMap::from([(String::from("m"), String::from("--message"))]),
+                    subs: vec![],
+                },
+                Cmd {
+                    short: String::from("r"),
+                    long: String::from("run"),
+                    flags: HashMap::new(),
+                    subs: vec![],
+                },
+            ],
         },
-    ];
-    let compiled = compile(cmds);
+    ]
+}
+
+fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
+    let mut m = HashMap::with_capacity(cmds.len());
+    let mut bind = |k: String, mut v: String| {
+        debug!("binding '{k}' to '{v}'");
+        if m.contains_key(k.as_str()) {
+            panic!("Contained key! {k}");
+        }
+        if !v.ends_with(' ') {
+            v = format!("{v} ");
+        }
+        m.insert(k, v);
+    };
+    for c in cmds {
+        let short = c.short;
+        let long = c.long;
+        for (f, fl) in &c.flags {
+            let expanded = format!("{long} {}", fl.clone());
+            bind(format!("{short} {f}"), expanded.clone());
+            bind(format!("{long} {f}"), expanded);
+        }
+        for (k, v) in compile(c.subs) {
+            bind(format!("{short}{}", k), format!("{long} {v}"));
+            bind(format!("{long} {}", k), format!("{long} {v}"));
+        }
+        bind(short, long);
+    }
+    m
+}
+
+pub(crate) fn expand_pre(lbuf: String) -> Option<String> {
+    let compiled = compile(all_cmds());
     if let Some(r) = compiled.get(lbuf.as_str()) {
         return Some(r.clone());
     }
     if lbuf == "ci" {
         let pwd = std::env::current_dir().ok()?;
         if pwd.file_name() == Some(OsStr::new("detect")) {
-            return Some(String::from(DETCK));
+            Some(String::from(DETCK))
         } else {
             None
         }
@@ -169,6 +186,14 @@ pub(crate) fn go(conf: Config) {
             if let Some(result) = expand(lbuf, rbuf) {
                 println!("{}", result);
                 exit(0);
+            }
+        }
+        Command::Hint { buf } => {
+            let compiled = compile(all_cmds());
+            for (k, v) in compiled {
+                if k.starts_with(&buf) {
+                    println!("{k} --> {v}");
+                }
             }
         }
         Command::Init => println!("{}", include_str!("init.zsh")),
