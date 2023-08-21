@@ -179,3 +179,11 @@ poly-shake() {
   poly-run \
     "./shake.sh -j$(nproc) -- \"${1}\" -- \"${@:2}\""
 }
+
+detck() {
+  cargo clippy --workspace --all-targets -- --deny warnings && \
+    cargo build --locked --all-targets --workspace && \
+    pushd dagx-libffi/test-data/c && make && popd && \
+    cargo test --locked --workspace --exclude demo1 --exclude dxezz && \
+    cargo test --locked --workspace -- demo1 dxezz --test-threads=1
+}

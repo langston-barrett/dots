@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export CARGO_NET_GIT_FETCH_WITH_CLI=true
+
 git_list_add_targets_helper() {
   modified="$(git ls-files --directory --deleted --modified --others)"
   for f in ${modified}; do

@@ -95,10 +95,16 @@ function use-j-k() {
 # bindkey '^[OA' use-j-k
 # bindkey '^[OB' use-j-k
 
+spacezle-append-to-buffer() {
+  BUFFER+="${1}"
+  CURSOR="${#BUFFER}"
+  zle redisplay
+}
 zle-z() {
-  zle_append_to_buffer "z "
+  spacezle-append-to-buffer "z "
   zle vi-insert
 }
 zle -N zle-z
 bindkey -M vicmd 'z' zle-z
 
+bindkey -M viins '^R' history-incremental-search-backward

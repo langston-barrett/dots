@@ -24,8 +24,8 @@ docker-dev() {
 }
 
 docker-pull-tag() {
-  docker pull "${1}:${3:-main}"
-  docker tag "${1}:${3:-main}" "${2}"
+  sudo -g docker docker pull "${1}:${3:-main}"
+  sudo -g docker docker tag "${1}:${3:-main}" "${2}"
 }
 
 ccl-docker-pull() {
@@ -39,8 +39,8 @@ mate-docker-pull() {
 }
 
 docker-pull-tag() {
-  docker pull "${1}:${3:-main}"
-  docker tag "${1}:${3:-main}" "${2}"
+  sudo -g docker docker pull "${1}:${3:-main}"
+  sudo -g docker docker tag "${1}:${3:-main}" "${2}"
 }
 
 polymorph-docker-pull() {

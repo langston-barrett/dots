@@ -39,8 +39,8 @@ done
 if [[ -d ~/code/spacezle ]]; then
   zsh-defer source ~/code/spacezle/src/spacezle.zsh
 fi
-if [[ -d ~/code/zsh-contextual-abbrevs ]]; then
-  zsh-defer source ~/code/zsh-contextual-abbrevs/src/contextual-abbrevs.zsh
-fi
+# if [[ -d ~/code/zsh-contextual-abbrevs ]]; then
+#   zsh-defer source ~/code/zsh-contextual-abbrevs/src/contextual-abbrevs.zsh
+# fi
 
 # TODO: https://github.com/marlonrichert/zsh-autocomplete

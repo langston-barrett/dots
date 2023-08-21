@@ -1,3 +1,7 @@
+# alias t='todo.sh'
+# alias ta='todo.sh add'
+# alias tl='todo.sh list'
+
 export EDITOR=hx
 ee() {
   if [[ -n "${1}" ]]; then
@@ -196,6 +200,12 @@ alias sysu="systemctl --user";
 alias sysus="systemctl --user status";
 alias sysur="systemctl --user restart";
 
+maxmem() {
+  gb="${1}"
+  shift
+  systemd-run --scope -p MemoryMax="${gb}G" --user "${@}"
+}
+
 ## Nix
 alias nb='nix-build'
 alias nba='nix-build -A'
@@ -222,7 +232,6 @@ open() { xdg-open "${1}" & disown; }
 
 # temporary
 
-alias restart_qute='kill -9 $(pgrep qutebrowser) && qutebrowser 2>&1 > /dev/null & disown'
 alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
 
 # Haskell

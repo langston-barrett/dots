@@ -1,0 +1,8 @@
+[package]
+name = "kludge"
+description = "Random bits of code for automation"
+version = "0.0.0"
+edition = "2021"
+
+[dependencies]
+clap = { features = ["derive"], version = "4" }
