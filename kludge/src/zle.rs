@@ -1,14 +1,16 @@
-use std::{ffi::OsStr, process::exit};
+use std::{collections::HashMap, ffi::OsStr, process::exit};
+
+use tracing::debug;
 
 use crate::build;
 
-#[derive(clap::Parser)]
+#[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
     #[command(subcommand)]
     pub(crate) cmd: Command,
 }
 
-#[derive(clap::Subcommand)]
+#[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
     Expand { lbuf: String, rbuf: String },
     Init,
@@ -20,7 +22,86 @@ pushd dagx-libffi/test-data/c && make && popd
 cargo test --locked --workspace --exclude demo1 --exclude dxezz
 cargo test --locked --workspace -- demo1 dxezz --test-threads=1";
 
-pub(crate) fn expand_pre(mut lbuf: String) -> Option<String> {
+struct Cmd {
+    short: String,
+    long: String,
+    flags: HashMap<String, String>,
+    subs: Vec<Cmd>,
+}
+
+fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
+    let mut m = HashMap::with_capacity(cmds.len());
+    let mut bind = |k: String, mut v: String| {
+        debug!("binding '{k}' to '{v}'");
+        if m.contains_key(k.as_str()) {
+            panic!("Contained key! {k}");
+        }
+        if !v.ends_with(' ') {
+            v = format!("{v} ");
+        }
+        m.insert(k, v);
+    };
+    for c in cmds {
+        let short = c.short;
+        let long = c.long;
+        for (f, fl) in &c.flags {
+            let expanded = format!("{long} {}", fl.clone());
+            bind(format!("{short} {f}"), expanded.clone());
+            bind(format!("{long} {f}"), expanded);
+        }
+        for (k, v) in compile(c.subs) {
+            bind(format!("{short}{}", k), format!("{long} {v}"));
+            bind(format!("{long} {}", k), format!("{long} {v}"));
+        }
+        bind(short, long);
+    }
+    m
+}
+
+pub(crate) fn expand_pre(lbuf: String) -> Option<String> {
+    let cmds = vec![
+        Cmd {
+            short: String::from("cb"),
+            long: String::from("cabal"),
+            flags: HashMap::new(),
+            subs: vec![
+                Cmd {
+                    short: String::from("b"),
+                    long: String::from("build"),
+                    flags: HashMap::new(),
+                    subs: vec![],
+                },
+                Cmd {
+                    short: String::from("r"),
+                    long: String::from("run"),
+                    flags: HashMap::new(),
+                    subs: vec![],
+                },
+            ],
+        },
+        Cmd {
+            short: String::from("cg"),
+            long: String::from("cargo"),
+            flags: HashMap::new(),
+            subs: vec![],
+        },
+        Cmd {
+            short: String::from("dk"),
+            long: String::from("sudo -g docker docker"),
+            flags: HashMap::new(),
+            subs: vec![],
+        },
+        Cmd {
+            short: String::from("g"),
+            long: String::from("git"),
+            flags: HashMap::new(),
+            subs: vec![],
+        },
+    ];
+    let compiled = compile(cmds);
+    if let Some(r) = compiled.get(lbuf.as_str()) {
+        return Some(r.clone());
+    }
     if lbuf == "ci" {
         let pwd = std::env::current_dir().ok()?;
         if pwd.file_name() == Some(OsStr::new("detect")) {
@@ -28,14 +109,10 @@ pub(crate) fn expand_pre(mut lbuf: String) -> Option<String> {
         } else {
             None
         }
-    } else if lbuf == "cb" {
-        Some(String::from("cabal "))
-    } else if lbuf == "cg" {
-        Some(String::from("cargo "))
-    } else if lbuf == "dk" {
-        Some(String::from("sudo -g docker docker "))
     } else if lbuf == "g" {
         Some(String::from("git "))
+    } else if lbuf == "gcm" || lbuf == "git cm" {
+        Some(String::from("git commit "))
     } else if lbuf == "gsh" {
         Some(String::from("git stash "))
     } else if lbuf == "grb" || lbuf == "git rb" {
