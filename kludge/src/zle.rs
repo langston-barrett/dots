@@ -1,8 +1,18 @@
-use std::{collections::HashMap, ffi::OsStr, process::exit};
+use std::{
+    collections::HashMap,
+    ffi::OsStr,
+    fs,
+    path::{Path, PathBuf},
+    process::exit,
+};
 
 use tracing::debug;
 
 use crate::build;
+
+mod extract;
+
+use extract::Cmd;
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
@@ -12,9 +22,35 @@ pub(crate) struct Config {
 
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
-    Expand { lbuf: String, rbuf: String },
-    Hint { buf: String },
+    Expand {
+        conf: PathBuf,
+        lbuf: String,
+        rbuf: String,
+    },
+    Extract {
+        cmd: String,
+        conf: Option<PathBuf>,
+    },
+    Hint {
+        #[arg(long, default_value_t = u8::MAX)]
+        max: u8,
+
+        conf: PathBuf,
+        buf: String,
+    },
     Init,
+}
+
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub(crate) struct ConfigFile {
+    #[allow(dead_code)]
+    cmds: Vec<Cmd>,
+}
+
+impl ConfigFile {
+    fn from_file<P: AsRef<Path>>(p: P) -> Self {
+        toml::from_str::<ConfigFile>(&fs::read_to_string(p).unwrap()).unwrap()
+    }
 }
 
 const DETCK: &str = "cargo clippy --workspace --all-targets -- --deny warnings
@@ -22,68 +58,6 @@ cargo build --locked --all-targets --workspace
 pushd dagx-libffi/test-data/c && make && popd
 cargo test --locked --workspace --exclude demo1 --exclude dxezz
 cargo test --locked --workspace -- demo1 dxezz --test-threads=1";
-
-struct Cmd {
-    short: String,
-    long: String,
-    flags: HashMap<String, String>,
-    subs: Vec<Cmd>,
-}
-
-fn all_cmds() -> Vec<Cmd> {
-    vec![
-        Cmd {
-            short: String::from("cb"),
-            long: String::from("cabal"),
-            flags: HashMap::new(),
-            subs: vec![
-                Cmd {
-                    short: String::from("b"),
-                    long: String::from("build"),
-                    flags: HashMap::new(),
-                    subs: vec![],
-                },
-                Cmd {
-                    short: String::from("r"),
-                    long: String::from("run"),
-                    flags: HashMap::new(),
-                    subs: vec![],
-                },
-            ],
-        },
-        Cmd {
-            short: String::from("cg"),
-            long: String::from("cargo"),
-            flags: HashMap::new(),
-            subs: vec![],
-        },
-        Cmd {
-            short: String::from("dk"),
-            long: String::from("sudo -g docker docker"),
-            flags: HashMap::new(),
-            subs: vec![],
-        },
-        Cmd {
-            short: String::from("g"),
-            long: String::from("git"),
-            flags: HashMap::new(),
-            subs: vec![
-                Cmd {
-                    short: String::from("cm"),
-                    long: String::from("commit"),
-                    flags: HashMap::from([(String::from("m"), String::from("--message"))]),
-                    subs: vec![],
-                },
-                Cmd {
-                    short: String::from("r"),
-                    long: String::from("run"),
-                    flags: HashMap::new(),
-                    subs: vec![],
-                },
-            ],
-        },
-    ]
-}
 
 fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
     let mut m = HashMap::with_capacity(cmds.len());
@@ -114,8 +88,9 @@ fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
     m
 }
 
-pub(crate) fn expand_pre(lbuf: String) -> Option<String> {
-    let compiled = compile(all_cmds());
+// TODO: Use config file!
+pub(crate) fn expand_pre(conf: ConfigFile, lbuf: String) -> Option<String> {
+    let compiled = compile(conf.cmds);
     if let Some(r) = compiled.get(lbuf.as_str()) {
         return Some(r.clone());
     }
@@ -164,7 +139,7 @@ ghcid --target=test:grease-tests")),
     }
 }
 
-pub(crate) fn expand(mut lbuf: String, rbuf: String) -> Option<String> {
+pub(crate) fn expand(conf: ConfigFile, mut lbuf: String, rbuf: String) -> Option<String> {
     if !rbuf.is_empty() {
         return None;
     }
@@ -177,22 +152,40 @@ pub(crate) fn expand(mut lbuf: String, rbuf: String) -> Option<String> {
             lbuf = String::from(post);
         }
     }
-    expand_pre(lbuf).map(|s| format!("{prefix}{s}"))
+    expand_pre(conf, lbuf).map(|s| format!("{prefix}{s}"))
 }
 
 pub(crate) fn go(conf: Config) {
     match conf.cmd {
-        Command::Expand { lbuf, rbuf } => {
-            if let Some(result) = expand(lbuf, rbuf) {
+        Command::Expand { conf, lbuf, rbuf } => {
+            let conf = ConfigFile::from_file(conf);
+            if let Some(result) = expand(conf, lbuf, rbuf) {
                 println!("{}", result);
                 exit(0);
             }
         }
-        Command::Hint { buf } => {
-            let compiled = compile(all_cmds());
+        Command::Extract { conf, cmd } => {
+            let conf = if let Some(conf) = conf {
+                extract::ConfigFile::from_file(conf)
+            } else {
+                extract::ConfigFile::default()
+            };
+            let cmd = extract::extract(conf, cmd);
+            let conf = ConfigFile { cmds: vec![cmd] };
+            println!("{}", toml::to_string(&conf).unwrap())
+        }
+        Command::Hint { conf, buf, max } => {
+            let conf = ConfigFile::from_file(conf);
+            let mut compiled = compile(conf.cmds).into_iter().collect::<Vec<_>>();
+            compiled.sort();
+            let mut seen = 0;
             for (k, v) in compiled {
                 if k.starts_with(&buf) {
+                    seen += 1;
                     println!("{k} --> {v}");
+                }
+                if seen >= max {
+                    break;
                 }
             }
         }

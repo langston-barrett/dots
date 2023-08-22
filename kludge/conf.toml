@@ -1,0 +1,1145 @@
+# see conf.sh
+[[cmds]]
+short = "cg"
+long = "cargo"
+
+[cmds.flags]
+q = "quiet"
+f = "frozen"
+con = "config"
+o = "offline"
+li = "list"
+vers = "version"
+verb = "verbose"
+lo = "locked"
+col = "color"
+e = "explain"
+h = "help"
+
+[[cmds.subs]]
+short = "up"
+long = "update"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ini"
+long = "init"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "p"
+long = "publish"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "un"
+long = "uninstall"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "t"
+long = "test"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "bu"
+long = "build"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "d"
+long = "doc"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ch"
+long = "check"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "n"
+long = "new"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ru"
+long = "run"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "s"
+long = "search"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ins"
+long = "install"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "a"
+long = "add"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "be"
+long = "bench"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cl"
+long = "clean"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "re"
+long = "remove"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds]]
+short = "g"
+long = "git"
+
+[cmds.flags]
+p = "paginate"
+
+[[cmds.subs]]
+short = "for-each-rep"
+long = "for-each-repo"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "check-m"
+long = "check-mailmap"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "verify-c"
+long = "verify-commit"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "verify-t"
+long = "verify-tag"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fetch"
+long = "fetch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "con"
+long = "config"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "send-p"
+long = "send-pack"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pack-o"
+long = "pack-objects"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ht"
+long = "http-backend"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "repa"
+long = "repack"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rea"
+long = "read-tree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ha"
+long = "hash-object"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "maili"
+long = "mailinfo"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "difft"
+long = "difftool"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sh-i"
+long = "sh-i18n"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cvsi"
+long = "cvsimport"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "credential-s"
+long = "credential-store"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "show-i"
+long = "show-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge-f"
+long = "merge-file"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "bun"
+long = "bundle"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sy"
+long = "symbolic-ref"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "da"
+long = "daemon"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ls-t"
+long = "ls-tree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "commit-g"
+long = "commit-graph"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fi"
+long = "filter-branch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "show"
+long = "show"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge-i"
+long = "merge-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "va"
+long = "var"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cvse"
+long = "cvsexportcommit"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "stat"
+long = "status"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "shor"
+long = "shortlog"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "gitk"
+long = "gitk"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "im"
+long = "imap-send"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ins"
+long = "instaweb"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge-t"
+long = "merge-tree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "mktr"
+long = "mktree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ci"
+long = "citool"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sp"
+long = "sparse-checkout"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "show-b"
+long = "show-branch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merget"
+long = "mergetool"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "no"
+long = "notes"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "p4"
+long = "p4"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sv"
+long = "svn"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ca"
+long = "cat-file"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "credential"
+long = "credential"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ap"
+long = "apply"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "send-e"
+long = "send-email"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "mkta"
+long = "mktag"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "an"
+long = "annotate"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fast-e"
+long = "fast-export"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "a"
+long = "add"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "credential-c"
+long = "credential-cache"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ind"
+long = "index-pack"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "clo"
+long = "clone"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pat"
+long = "patch-id"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "diff-t"
+long = "diff-tree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "checko"
+long = "checkout-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "for-each-ref"
+long = "for-each-ref"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "archiv"
+long = "archive"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "update-i"
+long = "update-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cherry-"
+long = "cherry-pick"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "gc"
+long = "gc"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cou"
+long = "count-objects"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "gr"
+long = "grep"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sh-s"
+long = "sh-setup"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "form"
+long = "format-patch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pus"
+long = "push"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "mu"
+long = "multi-pack-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "credential-n"
+long = "credential-netrc"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ra"
+long = "range-diff"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rb"
+long = "rebase"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ref"
+long = "reflog"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "check-r"
+long = "check-ref-format"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fs"
+long = "fsck"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "lf"
+long = "lfs"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "verify-p"
+long = "verify-pack"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fast-i"
+long = "fast-import"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "col"
+long = "column"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rev-l"
+long = "rev-list"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "l"
+long = "log"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rm"
+long = "rm"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "stas"
+long = "stash"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pul"
+long = "pull"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "am"
+long = "am"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "t"
+long = "tag"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ls-f"
+long = "ls-files"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cle"
+long = "clean"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "prune-"
+long = "prune-packed"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rev-p"
+long = "rev-parse"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "br"
+long = "branch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "wh"
+long = "whatchanged"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "mails"
+long = "mailsplit"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "gitw"
+long = "gitweb"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ini"
+long = "init"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "req"
+long = "request-pull"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "he"
+long = "help"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cvss"
+long = "cvsserver"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "bug"
+long = "bugreport"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "unpack-o"
+long = "unpack-objects"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "update-s"
+long = "update-server-info"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rest"
+long = "restore"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rese"
+long = "reset"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ge"
+long = "get-tar-commit-id"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "diff"
+long = "diff"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "na"
+long = "name-rev"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "de"
+long = "describe"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "show-r"
+long = "show-ref"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "diff-i"
+long = "diff-index"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "q"
+long = "quiltimport"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rer"
+long = "rerere"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "diff-f"
+long = "diff-files"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "wo"
+long = "worktree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pack-ref"
+long = "pack-refs"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ho"
+long = "hook"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "check-i"
+long = "check-ignore"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "pack-red"
+long = "pack-redundant"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "main"
+long = "maintenance"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cm"
+long = "commit"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "co"
+long = "checkout"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "update-r"
+long = "update-ref"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fetch-"
+long = "fetch-pack"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "rem"
+long = "remote"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "cherry"
+long = "cherry"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "sw"
+long = "switch"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "archim"
+long = "archimport"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "check-a"
+long = "check-attr"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "prune"
+long = "prune"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "int"
+long = "interpret-trailers"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "str"
+long = "stripspace"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "bl"
+long = "blame"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "repl"
+long = "replace"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "mv"
+long = "mv"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "bi"
+long = "bisect"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge-b"
+long = "merge-base"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "unpack-f"
+long = "unpack-file"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "gu"
+long = "gui"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "fm"
+long = "fmt-merge-msg"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "su"
+long = "submodule"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "wr"
+long = "write-tree"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge-o"
+long = "merge-one-file"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "ls-r"
+long = "ls-remote"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "reve"
+long = "revert"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "merge"
+long = "merge"
+subs = []
+
+[cmds.subs.flags]
+
+[[cmds.subs]]
+short = "commit-t"
+long = "commit-tree"
+subs = []
+
+[cmds.subs.flags]
+
