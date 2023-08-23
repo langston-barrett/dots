@@ -21,6 +21,7 @@ fn initialize_tracing(cli: &Cli) {
         .with_span_events(FmtSpan::NONE)
         .with_target(false)
         .with_max_level(verbosity_to_log_level(cli.verbose))
+        .with_writer(std::io::stderr)
         .init();
 }
 

@@ -1,3 +1,4 @@
+short = "g"
 # git help -a
 extra_subs = [
   "add",
@@ -36,7 +37,6 @@ extra_subs = [
   "cvsexportcommit",
   "cvsimport",
   "cvsserver",
-  "daemon",
   "describe",
   "diff",
   "diff-files",
@@ -148,8 +148,23 @@ extra_subs = [
 
 flags = {}
 
-subs.add = "a"
-subs.checkout = "co"
-subs.commit = "cm"
-subs.log = "l"
-subs.rebase = "rb"
+[subs.add]
+short = "a"
+
+[subs.checkout]
+short = "co"
+
+[subs.commit]
+short = "cm"
+
+[subs.filter-branch]
+stop = true
+
+[subs.log]
+short = "l"
+
+[subs.rebase]
+short = "rb"
+
+[subs.status]
+short = "s"

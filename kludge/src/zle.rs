@@ -43,7 +43,7 @@ pub(crate) enum Command {
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub(crate) struct ConfigFile {
-    #[allow(dead_code)]
+    #[serde(default)]
     cmds: Vec<Cmd>,
 }
 
@@ -63,8 +63,9 @@ fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
     let mut m = HashMap::with_capacity(cmds.len());
     let mut bind = |k: String, mut v: String| {
         debug!("binding '{k}' to '{v}'");
-        if m.contains_key(k.as_str()) {
-            panic!("Contained key! {k}");
+        if let Some(_existing) = m.get(k.as_str()) {
+            // TODO
+            // warn!("Map already contained key! {k} -> {existing}, {v}");
         }
         if !v.ends_with(' ') {
             v = format!("{v} ");
@@ -88,10 +89,10 @@ fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
     m
 }
 
-// TODO: Use config file!
 pub(crate) fn expand_pre(conf: ConfigFile, lbuf: String) -> Option<String> {
     let compiled = compile(conf.cmds);
     if let Some(r) = compiled.get(lbuf.as_str()) {
+        debug!("Expanding {lbuf} to {r}");
         return Some(r.clone());
     }
     if lbuf == "ci" {
@@ -152,7 +153,9 @@ pub(crate) fn expand(conf: ConfigFile, mut lbuf: String, rbuf: String) -> Option
             lbuf = String::from(post);
         }
     }
-    expand_pre(conf, lbuf).map(|s| format!("{prefix}{s}"))
+    let expanded = expand_pre(conf, lbuf);
+    debug!("expanded = {expanded:?}");
+    expanded.map(|s| format!("{prefix}{s}"))
 }
 
 pub(crate) fn go(conf: Config) {
@@ -163,6 +166,7 @@ pub(crate) fn go(conf: Config) {
                 println!("{}", result);
                 exit(0);
             }
+            exit(1)
         }
         Command::Extract { conf, cmd } => {
             let conf = if let Some(conf) = conf {
@@ -170,9 +174,10 @@ pub(crate) fn go(conf: Config) {
             } else {
                 extract::ConfigFile::default()
             };
-            let cmd = extract::extract(conf, cmd);
-            let conf = ConfigFile { cmds: vec![cmd] };
-            println!("{}", toml::to_string(&conf).unwrap())
+            if let Some(cmd) = extract::extract(conf, cmd) {
+                let conf = ConfigFile { cmds: vec![cmd] };
+                println!("{}", toml::to_string(&conf).unwrap())
+            }
         }
         Command::Hint { conf, buf, max } => {
             let conf = ConfigFile::from_file(conf);
@@ -191,5 +196,4 @@ pub(crate) fn go(conf: Config) {
         }
         Command::Init => println!("{}", include_str!("init.zsh")),
     }
-    exit(1)
 }

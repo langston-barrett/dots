@@ -1,8 +1,12 @@
+// TODO:
+// - Subs and flags must be jointly deconflicted
 use std::{
     collections::{HashMap, HashSet},
     path::Path,
     process::Command,
 };
+
+use tracing::debug;
 
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub(super) struct Cmd {
@@ -12,12 +16,18 @@ pub(super) struct Cmd {
     pub(super) subs: Vec<Cmd>,
 }
 
-// TODO recursive
-#[derive(Debug, Default, serde::Deserialize)]
+#[derive(Clone, Debug, Default, serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 pub(crate) struct ConfigFile {
+    short: Option<String>,
+    #[serde(default)]
     extra_subs: Vec<String>,
+    #[serde(default)]
     flags: HashMap<String, String>,
-    subs: HashMap<String, String>,
+    #[serde(default)]
+    stop: bool,
+    #[serde(default)]
+    subs: HashMap<String, ConfigFile>,
 }
 
 impl ConfigFile {
@@ -63,15 +73,20 @@ fn deconflict_flags(conf: &ConfigFile, flags: &[String]) -> HashMap<String, Stri
 
 fn deconflict_subs(conf: &ConfigFile, subs: &[String]) -> HashMap<String, String> {
     let mut result = HashMap::with_capacity(conf.subs.len());
-    let mut rest = Vec::with_capacity(subs.len() - conf.subs.len());
+    let mut rest = Vec::new();
+    let mut shorts = Vec::new();
     for string in subs.iter() {
-        if let Some(short) = conf.subs.get(string) {
-            result.insert(string.clone(), short.clone());
+        if let Some(sub_conf) = conf.subs.get(string) {
+            if let Some(short) = &sub_conf.short {
+                result.insert(string.clone(), short.clone());
+                shorts.push(short.clone());
+            } else {
+                rest.push(string.clone());
+            }
         } else {
             rest.push(string.clone());
         }
     }
-    let shorts = conf.subs.values().cloned().collect::<Vec<String>>();
     rest.extend(shorts.iter().cloned());
     result.extend(unique_prefixes(&rest));
     for short in shorts {
@@ -96,7 +111,10 @@ fn extract_sub(words: &[&str]) -> Option<String> {
                 || (words.len() > 2 && words[2].chars().next().unwrap().is_uppercase()))
             && first.is_ascii()
     {
-        let long = first.chars().filter(|c| *c != ',').collect::<String>();
+        let long = first
+            .chars()
+            .filter(|c| *c == '-' || c.is_alphanumeric())
+            .collect::<String>();
         return Some(long);
     }
     None
@@ -127,7 +145,7 @@ fn extract_opt(mut words: &[&str]) -> Option<Opt> {
     while !words.is_empty() {
         first = &words[0];
         words = &words[1..];
-        if !first.starts_with(LONG) {
+        if !first.starts_with(LONG) || first.len() <= LONG.len() {
             continue;
         }
         let mut opt = &first[LONG.len()..];
@@ -139,7 +157,7 @@ fn extract_opt(mut words: &[&str]) -> Option<Opt> {
         }
         let long = opt
             .chars()
-            .filter(|c| c.is_alphabetic())
+            .filter(|c| *c == '-' || c.is_alphanumeric())
             .collect::<String>();
         if long.len() <= 2 {
             continue;
@@ -194,36 +212,76 @@ fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Ve
     let flag_pairs = deconflict_flags(conf, opts.as_slice());
     let mut flags = HashMap::<String, String>::new();
     for (long, short) in flag_pairs.into_iter() {
+        if long == short {
+            debug!("Couldn't abbreviate {short}");
+        }
         if let Some(v) = flags.get(&short) {
             assert_eq!(*v, long);
         }
         flags.insert(short, long);
     }
+    subs = if conf.stop { Vec::new() } else { subs };
     (flags, subs)
 }
 
-fn help(cmd: &str) -> Option<String> {
-    let output = Command::new(cmd).arg("--help").output().unwrap();
+fn help(args: &[String]) -> Option<String> {
+    let mut builder = Command::new(&args[0]);
+    builder.args(&args[1..]).arg("--help");
+    debug!("Running {builder:?}");
+    let output = builder.output().unwrap();
+    if !output.status.success() {
+        return None;
+    }
     String::from_utf8(output.stdout).ok()
 }
 
-// TODO recur
-pub(super) fn extract(conf: ConfigFile, long: String) -> Cmd {
-    let h = help(&long).unwrap();
-    let (flags, subs) = extract_text(&conf, h);
-    Cmd {
-        short: String::from(long.chars().next().unwrap()),
+pub(super) fn extract_recursive(
+    mut prefix: Vec<String>,
+    conf: ConfigFile,
+    long: String,
+) -> Option<Cmd> {
+    prefix.push(long.clone());
+    let h = help(&prefix)?;
+    let (mut flags, subs0) = extract_text(&conf, h);
+
+    let mut subs = Vec::with_capacity(subs0.len());
+    // TODO: Fix enough bugs to allow recursion
+    if prefix.is_empty() {
+        for sub0 in subs0 {
+            let sub_conf = conf.subs.get(&sub0.long).cloned().unwrap_or_default();
+            if let Some(mut sub) = extract_recursive(prefix.clone(), sub_conf, sub0.long) {
+                sub.short = sub0.short; // already deconflicted
+                subs.push(sub);
+            }
+        }
+    } else {
+        subs.extend(subs0);
+    }
+
+    if !prefix.is_empty() {
+        // TODO just not good enough yet
+        flags = HashMap::new();
+    }
+    Some(Cmd {
+        short: conf
+            .short
+            .unwrap_or_else(|| String::from(long.chars().next().unwrap())),
         long,
         flags,
         subs,
-    }
+    })
+}
+
+// TODO recur
+pub(super) fn extract(conf: ConfigFile, long: String) -> Option<Cmd> {
+    extract_recursive(Vec::new(), conf, long)
 }
 
 #[cfg(test)]
 mod tests {
-    use std::path::PathBuf;
+    use std::{collections::HashMap, path::PathBuf};
 
-    use super::{extract_text, ConfigFile};
+    use super::{deconflict_subs, extract_text, ConfigFile};
 
     const CABAL_HELP: &str = r#"
 Command line interface to the Haskell Cabal infrastructure.
@@ -516,37 +574,111 @@ concept guides. See 'git help <command>' or 'git help <concept>'
 to read about a specific subcommand or concept.
 See 'git help git' for an overview of the system.";
 
-    #[test]
-    fn extract_cabal() {
-        let (flags, subs) = extract_text(&ConfigFile::default(), String::from(CABAL_HELP));
+    const GLAB_HELP: &str = "
+GLab is an open source GitLab CLI tool bringing GitLab to your command line
+
+USAGE
+  glab <command> <subcommand> [flags]
+
+CORE COMMANDS
+  alias:       Create, list and delete aliases
+  api:         Make an authenticated request to GitLab API
+  auth:        Manage glab's authentication state
+  check-update: Check for latest glab releases
+  ci:          Work with GitLab CI pipelines and jobs
+  completion:  Generate shell completion scripts
+  config:      Set and get glab settings
+  help:        Help about any command
+  issue:       Work with GitLab issues
+  label:       Manage labels on remote
+  mr:          Create, view and manage merge requests
+  release:     Manage GitLab releases
+  repo:        Work with GitLab repositories and projects
+  ssh-key:     Manage SSH keys
+  user:        Interact with user
+  variable:    Manage GitLab Project and Group Variables
+  version:     show glab version information
+
+FLAGS
+      --help      Show help for command
+  -v, --version   show glab version information
+
+ENVIRONMENT VARIABLES
+  GITLAB_TOKEN: an authentication token for API requests. Setting this avoids being
+  prompted to authenticate and overrides any previously stored credentials.
+  Can be set in the config with 'glab config set token xxxxxx'
+  
+  GITLAB_HOST or GL_HOST: specify the url of the gitlab server if self hosted (eg: https://gitlab.example.com). Default is https://gitlab.com.
+  
+  REMOTE_ALIAS or GIT_REMOTE_URL_VAR: git remote variable or alias that contains the gitlab url.
+  Can be set in the config with 'glab config set remote_alias origin'
+  
+  VISUAL, EDITOR (in order of precedence): the editor tool to use for authoring text.
+  Can be set in the config with 'glab config set editor vim'
+  
+  BROWSER: the web browser to use for opening links.
+  Can be set in the config with 'glab config set browser mybrowser'
+  
+  GLAMOUR_STYLE: environment variable to set your desired markdown renderer style
+  Available options are (dark|light|notty) or set a custom style
+  https://github.com/charmbracelet/glamour#styles
+  
+  NO_PROMPT: set to 1 (true) or 0 (false) to disable and enable prompts respectively
+  
+  NO_COLOR: set to any value to avoid printing ANSI escape sequences for color output.
+  
+  FORCE_HYPERLINKS: set to 1 to force hyperlinks to be output, even when not outputing to a TTY
+  
+  GLAB_CONFIG_DIR: set to a directory path to override the global configuration location 
+
+LEARN MORE
+  Use 'glab <command> <subcommand> --help' for more information about a command.
+
+FEEDBACK
+  Encountered a bug or want to suggest a feature?
+  Open an issue using 'glab issue create -R profclems/glab'";
+
+    fn go(conf: &ConfigFile, s: String) -> (Vec<(String, String)>, Vec<(String, String)>) {
+        let (flags, subs) = extract_text(conf, s);
         let mut subs = subs
             .iter()
-            .map(|s| (s.short.as_str(), s.long.as_str()))
+            .map(|s| (s.short.clone(), s.long.clone()))
             .collect::<Vec<_>>();
         subs.sort();
         let mut flags = flags
             .iter()
-            .map(|(k, v)| (k.as_str(), v.as_str()))
+            .map(|(k, v)| (k.clone(), v.clone()))
             .collect::<Vec<_>>();
         flags.sort();
+        (flags, subs)
+    }
+
+    #[test]
+    fn extract_cabal() {
+        let (flags, subs) = go(&ConfigFile::default(), String::from(CABAL_HELP));
         assert_eq!(
-            flags,
+            flags
+                .iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
-                ("a", "activerepositories"),
-                ("c", "configfile"),
-                ("d", "disablenix"),
-                ("e", "enablenix"),
+                ("a", "active-repositories"),
+                ("c", "config-file"),
+                ("d", "disable-nix"),
+                ("e", "enable-nix"),
                 ("help", "help"),
-                ("ht", "httptransport"),
-                ("i", "ignoreexpiry"),
+                ("ht", "http-transport"),
+                ("i", "ignore-expiry"),
                 ("ni", "nix"),
-                ("nu", "numericversion"),
-                ("s", "storedir"),
+                ("nu", "numeric-version"),
+                ("s", "store-dir"),
                 ("v", "version")
             ]
         );
         assert_eq!(
-            subs.as_slice(),
+            subs.iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("be", "bench"),
                 ("bu", "build"),
@@ -612,19 +744,12 @@ See 'git help git' for an overview of the system.";
 
     #[test]
     fn extract_cargo() {
-        let (flags, subs) = extract_text(&ConfigFile::default(), String::from(CARGO_HELP));
-        let mut subs = subs
-            .iter()
-            .map(|s| (s.short.as_str(), s.long.as_str()))
-            .collect::<Vec<_>>();
-        subs.sort();
-        let mut flags = flags
-            .iter()
-            .map(|(k, v)| (k.as_str(), v.as_str()))
-            .collect::<Vec<_>>();
-        flags.sort();
+        let (flags, subs) = go(&ConfigFile::default(), String::from(CARGO_HELP));
         assert_eq!(
-            flags,
+            flags
+                .iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("col", "color"),
                 ("con", "config"),
@@ -640,7 +765,9 @@ See 'git help git' for an overview of the system.";
             ]
         );
         assert_eq!(
-            subs.as_slice(),
+            subs.iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("a", "add"),
                 ("be", "bench"),
@@ -664,25 +791,18 @@ See 'git help git' for an overview of the system.";
 
     #[test]
     fn extract_docker() {
-        let (flags, subs) = extract_text(&ConfigFile::default(), String::from(DOCKER_HELP));
-        let mut subs = subs
-            .iter()
-            .map(|s| (s.short.as_str(), s.long.as_str()))
-            .collect::<Vec<_>>();
-        subs.sort();
-        let mut flags = flags
-            .iter()
-            .map(|(k, v)| (k.as_str(), v.as_str()))
-            .collect::<Vec<_>>();
-        flags.sort();
+        let (flags, subs) = go(&ConfigFile::default(), String::from(DOCKER_HELP));
         assert_eq!(
-            flags,
+            flags
+                .iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("conf", "config"),
                 ("cont", "context"),
                 ("d", "debug"),
                 ("h", "host"),
-                ("l", "loglevel"),
+                ("l", "log-level"),
                 ("tls", "tls"),
                 ("tlsca", "tlscacert"),
                 ("tlsce", "tlscert"),
@@ -692,14 +812,16 @@ See 'git help git' for an overview of the system.";
             ]
         );
         assert_eq!(
-            subs.as_slice(),
+            subs.iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("a", "attach"),
                 ("build", "build"),
                 ("builde", "builder"),
-                ("buildx", "buildx*"),
+                ("buildx", "buildx"),
                 ("comm", "commit"),
-                ("comp", "compose*"),
+                ("comp", "compose"),
                 ("conf", "config"),
                 ("conta", "container"),
                 ("conte", "context"),
@@ -759,21 +881,19 @@ See 'git help git' for an overview of the system.";
     #[test]
     fn extract_git() {
         let conf = ConfigFile::from_file(PathBuf::from("git.toml"));
-        let (flags, subs) = extract_text(&conf, String::from(GIT_HELP));
-        let mut subs = subs
-            .iter()
-            .map(|s| (s.short.as_str(), s.long.as_str()))
-            .collect::<Vec<_>>();
-        subs.sort();
-        let mut flags = flags
-            .iter()
-            .map(|(k, v)| (k.as_str(), v.as_str()))
-            .collect::<Vec<_>>();
-        flags.sort();
+        let (flags, subs) = go(&conf, String::from(GIT_HELP));
         // TODO: flags
-        assert_eq!(flags, [("p", "paginate")]);
         assert_eq!(
-            subs.as_slice(),
+            flags
+                .iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
+            [("p", "paginate")]
+        );
+        assert_eq!(
+            subs.iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
             [
                 ("a", "add"),
                 ("am", "am"),
@@ -811,7 +931,6 @@ See 'git help git' for an overview of the system.";
                 ("cvse", "cvsexportcommit"),
                 ("cvsi", "cvsimport"),
                 ("cvss", "cvsserver"),
-                ("da", "daemon"),
                 ("de", "describe"),
                 ("diff", "diff"),
                 ("diff-f", "diff-files"),
@@ -889,6 +1008,7 @@ See 'git help git' for an overview of the system.";
                 ("rev-p", "rev-parse"),
                 ("reve", "revert"),
                 ("rm", "rm"),
+                ("s", "status"),
                 ("send-e", "send-email"),
                 ("send-p", "send-pack"),
                 ("sh-i", "sh-i18n"),
@@ -899,8 +1019,7 @@ See 'git help git' for an overview of the system.";
                 ("show-i", "show-index"),
                 ("show-r", "show-ref"),
                 ("sp", "sparse-checkout"),
-                ("stas", "stash"),
-                ("stat", "status"),
+                ("sta", "stash"),
                 ("str", "stripspace"),
                 ("su", "submodule"),
                 ("sv", "svn"),
@@ -920,6 +1039,66 @@ See 'git help git' for an overview of the system.";
                 ("wo", "worktree"),
                 ("wr", "write-tree")
             ]
+        );
+    }
+
+    #[test]
+    fn extract_glab() {
+        let (flags, subs) = go(&ConfigFile::default(), String::from(GLAB_HELP));
+        assert_eq!(
+            flags
+                .iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
+            [("help", "help"), ("v", "version")]
+        );
+        assert_eq!(
+            subs.iter()
+                .map(|(k, v)| (k.as_str(), v.as_str()))
+                .collect::<Vec<_>>(),
+            [
+                ("al", "alias"),
+                ("ap", "api"),
+                ("au", "auth"),
+                ("ch", "check-update"),
+                ("ci", "ci"),
+                ("com", "completion"),
+                ("con", "config"),
+                ("h", "help"),
+                ("i", "issue"),
+                ("l", "label"),
+                ("m", "mr"),
+                ("rel", "release"),
+                ("rep", "repo"),
+                ("s", "ssh-key"),
+                ("u", "user"),
+                ("v", "variable")
+            ]
+        );
+    }
+
+    #[test]
+    fn deconflict() {
+        let conf = ConfigFile::default();
+        assert_eq!(deconflict_subs(&conf, &[]), HashMap::new());
+        assert_eq!(
+            deconflict_subs(&conf, &[String::from("foo")]),
+            HashMap::from([(String::from("foo"), String::from("f"))])
+        );
+        assert_eq!(
+            deconflict_subs(&conf, &[String::from("bar"), String::from("baz")]),
+            HashMap::from([
+                (String::from("bar"), String::from("bar")),
+                (String::from("baz"), String::from("baz"))
+            ])
+        );
+        let conf = ConfigFile::from_file(PathBuf::from("git.toml"));
+        assert_eq!(
+            deconflict_subs(&conf, &[String::from("show"), String::from("status")]),
+            HashMap::from([
+                (String::from("status"), String::from("s")),
+                (String::from("show"), String::from("sh"))
+            ])
         );
     }
 }
