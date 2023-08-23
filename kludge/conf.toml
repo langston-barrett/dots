@@ -1,1885 +1,850 @@
 # see conf.sh
-[[cmds]]
+[cmds.cabal]
 short = "cb"
-long = "cabal"
 
-[cmds.flags]
+[cmds.cabal.flags]
+di = "disable-nix"
+n = "numeric-version"
+ht = "http-transport"
+e = "enable-nix"
+de = "default-user-config"
+help = "help"
+i = "ignore-expiry"
+c = "config-file"
+v = "version"
 
-[[cmds.subs]]
-short = "v2-re"
-long = "v2-repl"
-subs = []
+[cmds.cabal.subs.bench]
+short = "be"
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "b"
-long = "build"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fr"
-long = "freeze"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "inf"
-long = "info"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-be"
-long = "v2-bench"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-bu"
-long = "v1-build"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-cop"
-long = "v1-copy"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "r"
-long = "run"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ini"
-long = "init"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-ru"
-long = "v1-run"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fe"
-long = "fetch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "get"
-long = "get"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-co"
-long = "v2-configure"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-h"
-long = "v2-haddock"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "t"
-long = "test"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-u"
-long = "v2-update"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-s"
-long = "v2-sdist"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ins"
-long = "install"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-con"
-long = "v1-configure"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ha"
-long = "haddock"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-f"
-long = "v2-freeze"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-reg"
-long = "v1-register"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "upl"
-long = "upload"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cl"
-long = "clean"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-h"
-long = "v1-haddock"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-bu"
-long = "v2-build"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-ru"
-long = "v2-run"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ch"
-long = "check"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.outdated]
 short = "o"
-long = "outdated"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-freeze]
+short = "v2-f"
 
-[[cmds.subs]]
-short = "v1-f"
-long = "v1-freeze"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "he"
-long = "help"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-cl"
-long = "v1-clean"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-be"
-long = "v1-bench"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "us"
-long = "user-config"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "hs"
-long = "hscolour"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-rep"
-long = "v1-repl"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "e"
-long = "exec"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "l"
-long = "list"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "be"
-long = "bench"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.gen-bounds]
 short = "gen"
-long = "gen-bounds"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.fetch]
+short = "fe"
 
-[[cmds.subs]]
-short = "v1-rec"
-long = "v1-reconfigure"
-subs = []
+[cmds.cabal.subs.v2-haddock]
+short = "v2-h"
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "upd"
-long = "update"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-e"
-long = "v2-exec"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-cl"
-long = "v2-clean"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v1-t"
-long = "v1-test"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v2-i"
-long = "v2-install"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "co"
-long = "configure"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "repo"
-long = "report"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.cabal]
 short = "ca"
-long = "cabal"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.upload]
+short = "upl"
 
-[[cmds.subs]]
-short = "v2-t"
-long = "v2-test"
-subs = []
+[cmds.cabal.subs.info]
+short = "inf"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.init]
+short = "ini"
 
-[[cmds.subs]]
-short = "s"
-long = "sdist"
-subs = []
+[cmds.cabal.subs.v1-repl]
+short = "v1-rep"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v1-freeze]
+short = "v1-f"
 
-[[cmds.subs]]
+[cmds.cabal.subs.v1-install]
 short = "v1-i"
-long = "v1-install"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.report]
+short = "repo"
 
-[[cmds.subs]]
-short = "repl"
-long = "repl"
-subs = []
+[cmds.cabal.subs.v1-haddock]
+short = "v1-h"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v1-clean]
+short = "v1-cl"
 
-[[cmds]]
-short = "cg"
-long = "cargo"
+[cmds.cabal.subs.v1-bench]
+short = "v1-be"
 
-[cmds.flags]
+[cmds.cabal.subs.v2-bench]
+short = "v2-be"
 
-[[cmds.subs]]
+[cmds.cabal.subs.v1-build]
+short = "v1-bu"
+
+[cmds.cabal.subs.install]
 short = "ins"
-long = "install"
-subs = []
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "re"
-long = "remove"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.clean]
 short = "cl"
-long = "clean"
-subs = []
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.sdist]
 short = "s"
-long = "search"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.exec]
+short = "e"
 
-[[cmds.subs]]
-short = "p"
-long = "publish"
-subs = []
+[cmds.cabal.subs.update]
+short = "upd"
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "be"
-long = "bench"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "un"
-long = "uninstall"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "d"
-long = "doc"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "n"
-long = "new"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "b"
-long = "build"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "a"
-long = "add"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.test]
 short = "t"
-long = "test"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-update]
+short = "v2-u"
 
-[[cmds.subs]]
+[cmds.cabal.subs.v2-configure]
+short = "v2-co"
+
+[cmds.cabal.subs.configure]
+short = "co"
+
+[cmds.cabal.subs.v2-exec]
+short = "v2-e"
+
+[cmds.cabal.subs.run]
 short = "r"
-long = "run"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v1-copy]
+short = "v1-cop"
 
-[[cmds.subs]]
-short = "ini"
-long = "init"
-subs = []
+[cmds.cabal.subs.v1-reconfigure]
+short = "v1-rec"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-sdist]
+short = "v2-s"
 
-[[cmds.subs]]
-short = "up"
-long = "update"
-subs = []
+[cmds.cabal.subs.v1-configure]
+short = "v1-con"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v1-test]
+short = "v1-t"
 
-[[cmds.subs]]
-short = "c"
-long = "check"
-subs = []
+[cmds.cabal.subs.get]
+short = "get"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v1-run]
+short = "v1-ru"
 
-[[cmds]]
-short = "gh"
-long = "gh"
-
-[cmds.flags]
-
-[[cmds.subs]]
-short = "ref"
-long = "reference"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gp"
-long = "gpg-key"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.build]
 short = "b"
-long = "browse"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-install]
+short = "v2-i"
 
-[[cmds.subs]]
-short = "rel"
-long = "release"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "f"
-long = "formatting"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sea"
-long = "search"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ac"
-long = "actions"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ap"
-long = "api"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "en"
-long = "environment"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rep"
-long = "repo"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "exi"
-long = "exit-codes"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "au"
-long = "auth"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ss"
-long = "ssh-key"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "p"
-long = "pr"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "w"
-long = "workflow"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ru"
-long = "run"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "i"
-long = "issue"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "al"
-long = "alias"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "com"
-long = "completion"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cod"
-long = "codespace"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ext"
-long = "extension"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gi"
-long = "gist"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "st"
-long = "status"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "m"
-long = "mintty"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "con"
-long = "config"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "h"
-long = "help"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "l"
-long = "label"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sec"
-long = "secret"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds]]
-short = "g"
-long = "git"
-
-[cmds.flags]
-
-[[cmds.subs]]
-short = "fs"
-long = "fsck"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cvse"
-long = "cvsexportcommit"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cherry"
-long = "cherry"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "verify-t"
-long = "verify-tag"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cou"
-long = "count-objects"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gr"
-long = "grep"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "repl"
-long = "replace"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gc"
-long = "gc"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "bl"
-long = "blame"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cm"
-long = "commit"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pus"
-long = "push"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pack-ref"
-long = "pack-refs"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "commit-g"
-long = "commit-graph"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "bug"
-long = "bugreport"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "commit-t"
-long = "commit-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "prune-"
-long = "prune-packed"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "l"
-long = "log"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "lf"
-long = "lfs"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ra"
-long = "range-diff"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "for-each-rep"
-long = "for-each-repo"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "mktr"
-long = "mktree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge-i"
-long = "merge-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "wr"
-long = "write-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "su"
-long = "submodule"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "unpack-o"
-long = "unpack-objects"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "difft"
-long = "difftool"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "co"
-long = "checkout"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "int"
-long = "interpret-trailers"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "am"
-long = "am"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "s"
-long = "status"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "mails"
-long = "mailsplit"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ini"
-long = "init"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fi"
-long = "filter-branch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ge"
-long = "get-tar-commit-id"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "br"
-long = "branch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rest"
-long = "restore"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "repa"
-long = "repack"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "no"
-long = "notes"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.haddock]
 short = "ha"
-long = "hash-object"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-clean]
+short = "v2-cl"
 
-[[cmds.subs]]
-short = "ap"
-long = "apply"
-subs = []
+[cmds.cabal.subs.v1-register]
+short = "v1-reg"
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "unpack-f"
-long = "unpack-file"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rb"
-long = "rebase"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sh-s"
-long = "sh-setup"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "archiv"
-long = "archive"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "va"
-long = "var"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merget"
-long = "mergetool"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fast-i"
-long = "fast-import"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "maili"
-long = "mailinfo"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "col"
-long = "column"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "diff-f"
-long = "diff-files"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "bun"
-long = "bundle"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge-t"
-long = "merge-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ls-r"
-long = "ls-remote"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "send-e"
-long = "send-email"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "check-m"
-long = "check-mailmap"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gitw"
-long = "gitweb"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ins"
-long = "instaweb"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sh-i"
-long = "sh-i18n"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rer"
-long = "rerere"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "archim"
-long = "archimport"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "de"
-long = "describe"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "p4"
-long = "p4"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "main"
-long = "maintenance"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "mv"
-long = "mv"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "diff-i"
-long = "diff-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge"
-long = "merge"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "mu"
-long = "multi-pack-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "reve"
-long = "revert"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fast-e"
-long = "fast-export"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ht"
-long = "http-backend"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ca"
-long = "cat-file"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "a"
-long = "add"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "check-a"
-long = "check-attr"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "t"
-long = "tag"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sta"
-long = "stash"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ci"
-long = "citool"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pack-o"
-long = "pack-objects"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.help]
 short = "he"
-long = "help"
-subs = []
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "diff"
-long = "diff"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rev-l"
-long = "rev-list"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "im"
-long = "imap-send"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fetch-"
-long = "fetch-pack"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sp"
-long = "sparse-checkout"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "bi"
-long = "bisect"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "verify-p"
-long = "verify-pack"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "update-s"
-long = "update-server-info"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sy"
-long = "symbolic-ref"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "req"
-long = "request-pull"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sw"
-long = "switch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "sv"
-long = "svn"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ind"
-long = "index-pack"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "checko"
-long = "checkout-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "for-each-ref"
-long = "for-each-ref"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gu"
-long = "gui"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cherry-"
-long = "cherry-pick"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "check-i"
-long = "check-ignore"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "na"
-long = "name-rev"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ls-t"
-long = "ls-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "clo"
-long = "clone"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rem"
-long = "remote"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cle"
-long = "clean"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pat"
-long = "patch-id"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rea"
-long = "read-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fetch"
-long = "fetch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "mkta"
-long = "mktag"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "verify-c"
-long = "verify-commit"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "wh"
-long = "whatchanged"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rm"
-long = "rm"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "q"
-long = "quiltimport"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cvsi"
-long = "cvsimport"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pul"
-long = "pull"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "show-b"
-long = "show-branch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "show"
-long = "show"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "form"
-long = "format-patch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "con"
-long = "config"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge-o"
-long = "merge-one-file"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "shor"
-long = "shortlog"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "gitk"
-long = "gitk"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "update-i"
-long = "update-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rese"
-long = "reset"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "show-i"
-long = "show-index"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "send-p"
-long = "send-pack"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "check-r"
-long = "check-ref-format"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "prune"
-long = "prune"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "an"
-long = "annotate"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "credential"
-long = "credential"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "credential-s"
-long = "credential-store"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "credential-c"
-long = "credential-cache"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "show-r"
-long = "show-ref"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "fm"
-long = "fmt-merge-msg"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rev-p"
-long = "rev-parse"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "pack-red"
-long = "pack-redundant"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "str"
-long = "stripspace"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "credential-n"
-long = "credential-netrc"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ls-f"
-long = "ls-files"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ho"
-long = "hook"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge-f"
-long = "merge-file"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "diff-t"
-long = "diff-tree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "merge-b"
-long = "merge-base"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ref"
-long = "reflog"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "cvss"
-long = "cvsserver"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "update-r"
-long = "update-ref"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "wo"
-long = "worktree"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds]]
-short = "gl"
-long = "glab"
-
-[cmds.flags]
-
-[[cmds.subs]]
-short = "h"
-long = "help"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "con"
-long = "config"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "i"
-long = "issue"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cabal.subs.check]
 short = "ch"
-long = "check-update"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.v2-repl]
+short = "v2-re"
 
-[[cmds.subs]]
+[cmds.cabal.subs.v2-build]
+short = "v2-bu"
+
+[cmds.cabal.subs.v2-run]
+short = "v2-ru"
+
+[cmds.cabal.subs.user-config]
+short = "us"
+
+[cmds.cabal.subs.repl]
+short = "repl"
+
+[cmds.cabal.subs.list]
 short = "l"
-long = "label"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cabal.subs.hscolour]
+short = "hs"
 
-[[cmds.subs]]
-short = "rel"
-long = "release"
-subs = []
+[cmds.cabal.subs.v2-test]
+short = "v2-t"
 
-[cmds.subs.flags]
+[cmds.cabal.subs.freeze]
+short = "fr"
 
-[[cmds.subs]]
-short = "com"
-long = "completion"
-subs = []
+[cmds.cargo]
+short = "cg"
 
-[cmds.subs.flags]
+[cmds.cargo.flags]
+li = "list"
+verb = "verbose"
+h = "help"
+lo = "locked"
+e = "explain"
+col = "color"
+o = "offline"
+con = "config"
+q = "quiet"
+f = "frozen"
+vers = "version"
 
-[[cmds.subs]]
-short = "al"
-long = "alias"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cargo.subs.search]
 short = "s"
-long = "ssh-key"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cargo.subs.init]
+short = "ini"
 
-[[cmds.subs]]
-short = "u"
-long = "user"
-subs = []
+[cmds.cargo.subs.remove]
+short = "re"
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "rep"
-long = "repo"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "v"
-long = "variable"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ap"
-long = "api"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "m"
-long = "mr"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "au"
-long = "auth"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "ci"
-long = "ci"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds]]
-short = "mdb"
-long = "mdbook"
-
-[cmds.flags]
-
-[[cmds.subs]]
-short = "w"
-long = "watch"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cargo.subs.build]
 short = "b"
-long = "build"
-subs = []
 
-[cmds.subs.flags]
-
-[[cmds.subs]]
-short = "co"
-long = "completions"
-subs = []
-
-[cmds.subs.flags]
-
-[[cmds.subs]]
+[cmds.cargo.subs.test]
 short = "t"
-long = "test"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cargo.subs.add]
+short = "a"
 
-[[cmds.subs]]
-short = "i"
-long = "init"
-subs = []
+[cmds.cargo.subs.new]
+short = "n"
 
-[cmds.subs.flags]
+[cmds.cargo.subs.check]
+short = "c"
 
-[[cmds.subs]]
-short = "h"
-long = "help"
-subs = []
+[cmds.cargo.subs.run]
+short = "r"
 
-[cmds.subs.flags]
+[cmds.cargo.subs.uninstall]
+short = "un"
 
-[[cmds.subs]]
+[cmds.cargo.subs.doc]
+short = "d"
+
+[cmds.cargo.subs.update]
+short = "up"
+
+[cmds.cargo.subs.publish]
+short = "p"
+
+[cmds.cargo.subs.install]
+short = "ins"
+
+[cmds.cargo.subs.clean]
 short = "cl"
-long = "clean"
-subs = []
 
-[cmds.subs.flags]
+[cmds.cargo.subs.bench]
+short = "be"
 
-[[cmds.subs]]
+[cmds.gh]
+short = "gh"
+
+[cmds.gh.flags]
+v = "version"
+help = "help"
+
+[cmds.gh.subs.secret]
+short = "sec"
+
+[cmds.gh.subs.formatting]
+short = "f"
+
+[cmds.gh.subs.api]
+short = "ap"
+
+[cmds.gh.subs.reference]
+short = "ref"
+
+[cmds.gh.subs.actions]
+short = "ac"
+
+[cmds.gh.subs.config]
+short = "con"
+
+[cmds.gh.subs.pr]
+short = "p"
+
+[cmds.gh.subs.exit-codes]
+short = "exi"
+
+[cmds.gh.subs.label]
+short = "l"
+
+[cmds.gh.subs.completion]
+short = "com"
+
+[cmds.gh.subs.help]
+short = "h"
+
+[cmds.gh.subs.extension]
+short = "ext"
+
+[cmds.gh.subs.ssh-key]
+short = "ss"
+
+[cmds.gh.subs.gpg-key]
+short = "gp"
+
+[cmds.gh.subs.browse]
+short = "b"
+
+[cmds.gh.subs.workflow]
+short = "w"
+
+[cmds.gh.subs.status]
+short = "st"
+
+[cmds.gh.subs.release]
+short = "rel"
+
+[cmds.gh.subs.run]
+short = "ru"
+
+[cmds.gh.subs.alias]
+short = "al"
+
+[cmds.gh.subs.codespace]
+short = "cod"
+
+[cmds.gh.subs.search]
+short = "sea"
+
+[cmds.gh.subs.repo]
+short = "rep"
+
+[cmds.gh.subs.auth]
+short = "au"
+
+[cmds.gh.subs.environment]
+short = "en"
+
+[cmds.gh.subs.mintty]
+short = "m"
+
+[cmds.gh.subs.issue]
+short = "i"
+
+[cmds.gh.subs.gist]
+short = "gi"
+
+[cmds.git]
+short = "g"
+
+[cmds.git.flags]
+p = "paginate"
+
+[cmds.git.subs.merge-file]
+short = "merge-f"
+
+[cmds.git.subs.shortlog]
+short = "shor"
+
+[cmds.git.subs.mktag]
+short = "mkta"
+
+[cmds.git.subs.var]
+short = "va"
+
+[cmds.git.subs.rev-parse]
+short = "rev-p"
+
+[cmds.git.subs.verify-tag]
+short = "verify-t"
+
+[cmds.git.subs.write-tree]
+short = "wr"
+
+[cmds.git.subs.cvsexportcommit]
+short = "cvse"
+
+[cmds.git.subs.merge-tree]
+short = "merge-t"
+
+[cmds.git.subs.verify-pack]
+short = "verify-p"
+
+[cmds.git.subs.worktree]
+short = "wo"
+
+[cmds.git.subs.ls-tree]
+short = "ls-t"
+
+[cmds.git.subs.clone]
+short = "clo"
+
+[cmds.git.subs.fast-import]
+short = "fast-i"
+
+[cmds.git.subs.interpret-trailers]
+short = "int"
+
+[cmds.git.subs.gitweb]
+short = "gitw"
+
+[cmds.git.subs.rev-list]
+short = "rev-l"
+
+[cmds.git.subs.cherry]
+short = "cherry"
+
+[cmds.git.subs.hash-object]
+short = "ha"
+
+[cmds.git.subs.clean]
+short = "cle"
+
+[cmds.git.subs.maintenance]
+short = "main"
+
+[cmds.git.subs.pull]
+short = "pul"
+
+[cmds.git.subs.check-ref-format]
+short = "check-r"
+
+[cmds.git.subs.verify-commit]
+short = "verify-c"
+
+[cmds.git.subs.send-pack]
+short = "send-p"
+
+[cmds.git.subs.mktree]
+short = "mktr"
+
+[cmds.git.subs.remote]
+short = "rem"
+
+[cmds.git.subs.p4]
+short = "p4"
+
+[cmds.git.subs.instaweb]
+short = "ins"
+
+[cmds.git.subs.restore]
+short = "rest"
+
+[cmds.git.subs.cherry-pick]
+short = "cherry-"
+
+[cmds.git.subs.am]
+short = "am"
+
+[cmds.git.subs.quiltimport]
+short = "q"
+
+[cmds.git.subs.show-index]
+short = "show-i"
+
+[cmds.git.subs.submodule]
+short = "su"
+
+[cmds.git.subs.repack]
+short = "repa"
+
+[cmds.git.subs.config]
+short = "con"
+
+[cmds.git.subs.check-mailmap]
+short = "check-m"
+
+[cmds.git.subs.fsck]
+short = "fs"
+
+[cmds.git.subs.merge-index]
+short = "merge-i"
+
+[cmds.git.subs.grep]
+short = "gr"
+
+[cmds.git.subs.diff-index]
+short = "diff-i"
+
+[cmds.git.subs.cvsimport]
+short = "cvsi"
+
+[cmds.git.subs.branch]
+short = "br"
+
+[cmds.git.subs.checkout]
+short = "co"
+
+[cmds.git.subs.commit-graph]
+short = "commit-g"
+
+[cmds.git.subs.multi-pack-index]
+short = "mu"
+
+[cmds.git.subs.add]
+short = "a"
+
+[cmds.git.subs.commit-tree]
+short = "commit-t"
+
+[cmds.git.subs.diff-files]
+short = "diff-f"
+
+[cmds.git.subs.difftool]
+short = "difft"
+
+[cmds.git.subs.init]
+short = "ini"
+
+[cmds.git.subs.imap-send]
+short = "im"
+
+[cmds.git.subs.prune]
+short = "prune"
+
+[cmds.git.subs.prune-packed]
+short = "prune-"
+
+[cmds.git.subs.pack-refs]
+short = "pack-ref"
+
+[cmds.git.subs.symbolic-ref]
+short = "sy"
+
+[cmds.git.subs.for-each-ref]
+short = "for-each-ref"
+
+[cmds.git.subs.check-attr]
+short = "check-a"
+
+[cmds.git.subs.http-backend]
+short = "ht"
+
+[cmds.git.subs.bundle]
+short = "bun"
+
+[cmds.git.subs.credential-store]
+short = "credential-s"
+
+[cmds.git.subs.diff]
+short = "diff"
+
+[cmds.git.subs.hook]
+short = "ho"
+
+[cmds.git.subs.merge-base]
+short = "merge-b"
+
+[cmds.git.subs.unpack-file]
+short = "unpack-f"
+
+[cmds.git.subs.credential]
+short = "credential"
+
+[cmds.git.subs.mailinfo]
+short = "maili"
+
+[cmds.git.subs.sh-setup]
+short = "sh-s"
+
+[cmds.git.subs.apply]
+short = "ap"
+
+[cmds.git.subs.show-branch]
+short = "show-b"
+
+[cmds.git.subs.revert]
+short = "reve"
+
+[cmds.git.subs.check-ignore]
+short = "check-i"
+
+[cmds.git.subs.unpack-objects]
+short = "unpack-o"
+
+[cmds.git.subs.fmt-merge-msg]
+short = "fm"
+
+[cmds.git.subs.column]
+short = "col"
+
+[cmds.git.subs.pack-objects]
+short = "pack-o"
+
+[cmds.git.subs.log]
+short = "l"
+
+[cmds.git.subs.bisect]
+short = "bi"
+
+[cmds.git.subs.status]
 short = "s"
-long = "serve"
-subs = []
 
-[cmds.subs.flags]
+[cmds.git.subs.gitk]
+short = "gitk"
+
+[cmds.git.subs.svn]
+short = "sv"
+
+[cmds.git.subs.update-server-info]
+short = "update-s"
+
+[cmds.git.subs.bugreport]
+short = "bug"
+
+[cmds.git.subs.ls-remote]
+short = "ls-r"
+
+[cmds.git.subs.rerere]
+short = "rer"
+
+[cmds.git.subs.fast-export]
+short = "fast-e"
+
+[cmds.git.subs.gui]
+short = "gu"
+
+[cmds.git.subs.rebase]
+short = "rb"
+
+[cmds.git.subs.archimport]
+short = "archim"
+
+[cmds.git.subs.cvsserver]
+short = "cvss"
+
+[cmds.git.subs.count-objects]
+short = "cou"
+
+[cmds.git.subs.update-index]
+short = "update-i"
+
+[cmds.git.subs.show]
+short = "show"
+
+[cmds.git.subs.mailsplit]
+short = "mails"
+
+[cmds.git.subs.fetch]
+short = "fetch"
+
+[cmds.git.subs.annotate]
+short = "an"
+
+[cmds.git.subs.fetch-pack]
+short = "fetch-"
+
+[cmds.git.subs.replace]
+short = "repl"
+
+[cmds.git.subs.whatchanged]
+short = "wh"
+
+[cmds.git.subs.merge-one-file]
+short = "merge-o"
+
+[cmds.git.subs.stripspace]
+short = "str"
+
+[cmds.git.subs.reset]
+short = "rese"
+
+[cmds.git.subs.sparse-checkout]
+short = "sp"
+
+[cmds.git.subs.checkout-index]
+short = "checko"
+
+[cmds.git.subs.merge]
+short = "merge"
+
+[cmds.git.subs.blame]
+short = "bl"
+
+[cmds.git.subs.show-ref]
+short = "show-r"
+
+[cmds.git.subs.notes]
+short = "no"
+
+[cmds.git.subs.filter-branch]
+short = "fi"
+
+[cmds.git.subs.send-email]
+short = "send-e"
+
+[cmds.git.subs.credential-cache]
+short = "credential-c"
+
+[cmds.git.subs.ls-files]
+short = "ls-f"
+
+[cmds.git.subs.lfs]
+short = "lf"
+
+[cmds.git.subs.request-pull]
+short = "req"
+
+[cmds.git.subs.sh-i18n]
+short = "sh-i"
+
+[cmds.git.subs.switch]
+short = "sw"
+
+[cmds.git.subs.commit]
+short = "cm"
+
+[cmds.git.subs.read-tree]
+short = "rea"
+
+[cmds.git.subs.archive]
+short = "archiv"
+
+[cmds.git.subs.for-each-repo]
+short = "for-each-rep"
+
+[cmds.git.subs.format-patch]
+short = "form"
+
+[cmds.git.subs.diff-tree]
+short = "diff-t"
+
+[cmds.git.subs.pack-redundant]
+short = "pack-red"
+
+[cmds.git.subs.help]
+short = "he"
+
+[cmds.git.subs.credential-netrc]
+short = "credential-n"
+
+[cmds.git.subs.mv]
+short = "mv"
+
+[cmds.git.subs.describe]
+short = "de"
+
+[cmds.git.subs.tag]
+short = "t"
+
+[cmds.git.subs.range-diff]
+short = "ra"
+
+[cmds.git.subs.name-rev]
+short = "na"
+
+[cmds.git.subs.reflog]
+short = "ref"
+
+[cmds.git.subs.gc]
+short = "gc"
+
+[cmds.git.subs.update-ref]
+short = "update-r"
+
+[cmds.git.subs.mergetool]
+short = "merget"
+
+[cmds.git.subs.get-tar-commit-id]
+short = "ge"
+
+[cmds.git.subs.stash]
+short = "sta"
+
+[cmds.git.subs.push]
+short = "pus"
+
+[cmds.git.subs.index-pack]
+short = "ind"
+
+[cmds.git.subs.rm]
+short = "rm"
+
+[cmds.git.subs.cat-file]
+short = "ca"
+
+[cmds.git.subs.citool]
+short = "ci"
+
+[cmds.git.subs.patch-id]
+short = "pat"
+
+[cmds.glab]
+short = "gl"
+
+[cmds.glab.flags]
+v = "version"
+help = "help"
+
+[cmds.glab.subs.check-update]
+short = "ch"
+
+[cmds.glab.subs.config]
+short = "con"
+
+[cmds.glab.subs.help]
+short = "h"
+
+[cmds.glab.subs.completion]
+short = "com"
+
+[cmds.glab.subs.api]
+short = "ap"
+
+[cmds.glab.subs.issue]
+short = "i"
+
+[cmds.glab.subs.ssh-key]
+short = "s"
+
+[cmds.glab.subs.variable]
+short = "v"
+
+[cmds.glab.subs.ci]
+short = "ci"
+
+[cmds.glab.subs.repo]
+short = "rep"
+
+[cmds.glab.subs.mr]
+short = "m"
+
+[cmds.glab.subs.auth]
+short = "au"
+
+[cmds.glab.subs.alias]
+short = "al"
+
+[cmds.glab.subs.release]
+short = "rel"
+
+[cmds.glab.subs.label]
+short = "l"
+
+[cmds.glab.subs.user]
+short = "u"
+
+[cmds.mdbook]
+short = "mdb"
+
+[cmds.mdbook.flags]
+h = "help"
+v = "version"
+
+[cmds.mdbook.subs.init]
+short = "i"
+
+[cmds.mdbook.subs.serve]
+short = "s"
+
+[cmds.mdbook.subs.watch]
+short = "w"
+
+[cmds.mdbook.subs.completions]
+short = "co"
+
+[cmds.mdbook.subs.help]
+short = "h"
+
+[cmds.mdbook.subs.clean]
+short = "cl"
+
+[cmds.mdbook.subs.test]
+short = "t"
+
+[cmds.mdbook.subs.build]
+short = "b"
 

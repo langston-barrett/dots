@@ -8,12 +8,24 @@ use std::{
 
 use tracing::debug;
 
+#[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
+pub(super) struct Cmds(pub(super) HashMap<String, Cmd>);
+
+impl Cmds {
+    fn is_empty(&self) -> bool {
+        self.0.is_empty()
+    }
+}
+
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub(super) struct Cmd {
     pub(super) short: String,
-    pub(super) long: String,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "HashMap::is_empty")]
     pub(super) flags: HashMap<String, String>,
-    pub(super) subs: Vec<Cmd>,
+    #[serde(default)]
+    #[serde(skip_serializing_if = "Cmds::is_empty")]
+    pub(super) subs: Cmds,
 }
 
 #[derive(Clone, Debug, Default, serde::Deserialize)]
@@ -168,7 +180,7 @@ fn extract_opt(mut words: &[&str]) -> Option<Opt> {
 }
 
 #[allow(dead_code)]
-fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Vec<Cmd>) {
+fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Cmds) {
     let mut opts = Vec::new();
     let mut sub_names = Vec::new();
     for mut line in text.lines() {
@@ -197,15 +209,17 @@ fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Ve
             .filter(|n| !existing.contains(*n))
             .cloned(),
     );
-    let mut subs = Vec::with_capacity(sub_names.len());
+    let mut subs = Cmds(HashMap::with_capacity(sub_names.len()));
     let sub_pairs = deconflict_subs(conf, sub_names.as_slice());
     for (long, short) in sub_pairs.into_iter() {
-        subs.push(Cmd {
-            short,
+        subs.0.insert(
             long,
-            flags: HashMap::new(),
-            subs: Vec::new(),
-        })
+            Cmd {
+                short,
+                flags: HashMap::new(),
+                subs: Cmds::default(),
+            },
+        );
     }
 
     let opts = opts.into_iter().map(|o| o.long).collect::<Vec<_>>();
@@ -220,7 +234,7 @@ fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Ve
         }
         flags.insert(short, long);
     }
-    subs = if conf.stop { Vec::new() } else { subs };
+    subs = if conf.stop { Cmds::default() } else { subs };
     (flags, subs)
 }
 
@@ -242,31 +256,26 @@ pub(super) fn extract_recursive(
 ) -> Option<Cmd> {
     prefix.push(long.clone());
     let h = help(&prefix)?;
-    let (mut flags, subs0) = extract_text(&conf, h);
+    let (flags, subs0) = extract_text(&conf, h);
 
-    let mut subs = Vec::with_capacity(subs0.len());
+    let mut subs = Cmds(HashMap::with_capacity(subs0.0.len()));
     // TODO: Fix enough bugs to allow recursion
     if prefix.is_empty() {
-        for sub0 in subs0 {
-            let sub_conf = conf.subs.get(&sub0.long).cloned().unwrap_or_default();
-            if let Some(mut sub) = extract_recursive(prefix.clone(), sub_conf, sub0.long) {
+        for (long, sub0) in subs0.0 {
+            let sub_conf = conf.subs.get(&long).cloned().unwrap_or_default();
+            if let Some(mut sub) = extract_recursive(prefix.clone(), sub_conf, long.clone()) {
                 sub.short = sub0.short; // already deconflicted
-                subs.push(sub);
+                subs.0.insert(long, sub);
             }
         }
     } else {
-        subs.extend(subs0);
+        subs.0.extend(subs0.0);
     }
 
-    if !prefix.is_empty() {
-        // TODO just not good enough yet
-        flags = HashMap::new();
-    }
     Some(Cmd {
         short: conf
             .short
             .unwrap_or_else(|| String::from(long.chars().next().unwrap())),
-        long,
         flags,
         subs,
     })
@@ -641,8 +650,9 @@ FEEDBACK
     fn go(conf: &ConfigFile, s: String) -> (Vec<(String, String)>, Vec<(String, String)>) {
         let (flags, subs) = extract_text(conf, s);
         let mut subs = subs
+            .0
             .iter()
-            .map(|s| (s.short.clone(), s.long.clone()))
+            .map(|(long, s)| (s.short.clone(), long.clone()))
             .collect::<Vec<_>>();
         subs.sort();
         let mut flags = flags

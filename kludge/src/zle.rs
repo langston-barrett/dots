@@ -12,7 +12,7 @@ use crate::build;
 
 mod extract;
 
-use extract::Cmd;
+use extract::Cmds;
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
@@ -44,7 +44,7 @@ pub(crate) enum Command {
 #[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub(crate) struct ConfigFile {
     #[serde(default)]
-    cmds: Vec<Cmd>,
+    cmds: Cmds,
 }
 
 impl ConfigFile {
@@ -59,8 +59,8 @@ pushd dagx-libffi/test-data/c && make && popd
 cargo test --locked --workspace --exclude demo1 --exclude dxezz
 cargo test --locked --workspace -- demo1 dxezz --test-threads=1";
 
-fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
-    let mut m = HashMap::with_capacity(cmds.len());
+fn compile(cmds: Cmds) -> HashMap<String, String> {
+    let mut m = HashMap::with_capacity(cmds.0.len());
     let mut bind = |k: String, mut v: String| {
         debug!("binding '{k}' to '{v}'");
         if let Some(_existing) = m.get(k.as_str()) {
@@ -72,9 +72,8 @@ fn compile(cmds: Vec<Cmd>) -> HashMap<String, String> {
         }
         m.insert(k, v);
     };
-    for c in cmds {
+    for (long, c) in cmds.0 {
         let short = c.short;
-        let long = c.long;
         for (f, fl) in &c.flags {
             let expanded = format!("{long} {}", fl.clone());
             bind(format!("{short} {f}"), expanded.clone());
@@ -174,8 +173,10 @@ pub(crate) fn go(conf: Config) {
             } else {
                 extract::ConfigFile::default()
             };
-            if let Some(cmd) = extract::extract(conf, cmd) {
-                let conf = ConfigFile { cmds: vec![cmd] };
+            if let Some(extracted) = extract::extract(conf, cmd.clone()) {
+                let conf = ConfigFile {
+                    cmds: Cmds(HashMap::from([(cmd, extracted)])),
+                };
                 println!("{}", toml::to_string(&conf).unwrap())
             }
         }
