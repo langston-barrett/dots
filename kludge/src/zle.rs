@@ -1,6 +1,5 @@
 use std::{
     collections::HashMap,
-    ffi::OsStr,
     fs,
     path::{Path, PathBuf},
     process::exit,
@@ -53,11 +52,14 @@ impl ConfigFile {
     }
 }
 
-const DETCK: &str = "cargo clippy --workspace --all-targets -- --deny warnings
+const DETECT_CI: &str = "cargo clippy --workspace --all-targets -- --deny warnings
 cargo build --locked --all-targets --workspace
 pushd dagx-libffi/test-data/c && make && popd
 cargo test --locked --workspace --exclude demo1 --exclude dxezz
 cargo test --locked --workspace -- demo1 dxezz --test-threads=1";
+
+const GREASE_CI: &str = "cabal build
+cabal run test:grease-tests --";
 
 fn compile(cmds: Cmds) -> HashMap<String, String> {
     let mut m = HashMap::with_capacity(cmds.0.len());
@@ -94,25 +96,17 @@ pub(crate) fn expand_pre(conf: ConfigFile, lbuf: String) -> Option<String> {
         debug!("Expanding {lbuf} to {r}");
         return Some(r.clone());
     }
+    // TODO: 'gcmm' -> fzf for staged directories
     if lbuf == "ci" {
         let pwd = std::env::current_dir().ok()?;
-        if pwd.file_name() == Some(OsStr::new("detect")) {
-            Some(String::from(DETCK))
+        let pwd_name = pwd.file_name().and_then(|n| n.to_str());
+        if pwd_name == Some("detect") {
+            Some(String::from(DETECT_CI))
+        } else if pwd_name == Some("grease") {
+            Some(String::from(GREASE_CI))
         } else {
             None
         }
-    } else if lbuf == "g" {
-        Some(String::from("git "))
-    } else if lbuf == "gcm" || lbuf == "git cm" {
-        Some(String::from("git commit "))
-    } else if lbuf == "gsh" {
-        Some(String::from("git stash "))
-    } else if lbuf == "grb" || lbuf == "git rb" {
-        Some(String::from("git rebase "))
-    } else if lbuf == "grs" || lbuf == "git rs" {
-        Some(String::from("git reset "))
-    } else if lbuf == "grv" || lbuf == "git rv" {
-        Some(String::from("git revert "))
     } else if lbuf == "gpt" {
         Some(String::from("chatgpt.sh --prompt '"))
     } else if lbuf == "t" {

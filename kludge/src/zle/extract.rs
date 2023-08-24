@@ -1,15 +1,22 @@
-// TODO:
-// - Subs and flags must be jointly deconflicted
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeMap, HashMap, HashSet},
     path::Path,
     process::Command,
 };
 
 use tracing::debug;
 
+/// For use with serde's [serialize_with] attribute
+fn ordered_map<S: serde::Serializer, K: Ord + serde::Serialize, V: serde::Serialize>(
+    value: &HashMap<K, V>,
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    let ordered: BTreeMap<_, _> = value.iter().collect();
+    serde::Serialize::serialize(&ordered, serializer)
+}
+
 #[derive(Debug, Default, serde::Deserialize, serde::Serialize)]
-pub(super) struct Cmds(pub(super) HashMap<String, Cmd>);
+pub(super) struct Cmds(#[serde(serialize_with = "ordered_map")] pub(super) HashMap<String, Cmd>);
 
 impl Cmds {
     fn is_empty(&self) -> bool {
@@ -22,6 +29,7 @@ pub(super) struct Cmd {
     pub(super) short: String,
     #[serde(default)]
     #[serde(skip_serializing_if = "HashMap::is_empty")]
+    #[serde(serialize_with = "ordered_map")]
     pub(super) flags: HashMap<String, String>,
     #[serde(default)]
     #[serde(skip_serializing_if = "Cmds::is_empty")]
@@ -32,6 +40,8 @@ pub(super) struct Cmd {
 #[serde(deny_unknown_fields)]
 pub(crate) struct ConfigFile {
     short: Option<String>,
+    #[serde(default)]
+    devowel: bool,
     #[serde(default)]
     extra_subs: Vec<String>,
     #[serde(default)]
@@ -48,12 +58,15 @@ impl ConfigFile {
     }
 }
 
-fn unique_prefixes(strings: &[String]) -> HashMap<String, String> {
+fn unique_prefixes(strings: &[String], denylist: &HashSet<&str>) -> HashMap<String, String> {
     let mut result = HashMap::with_capacity(strings.len());
     for string in strings.iter() {
         let mut pfx = String::new();
         for c in string.chars() {
             pfx.push(c);
+            if denylist.contains(pfx.as_str()) {
+                continue;
+            }
             let is_unique = strings.iter().filter(|s| s.starts_with(&pfx)).count() == 1;
             if is_unique {
                 break;
@@ -64,45 +77,94 @@ fn unique_prefixes(strings: &[String]) -> HashMap<String, String> {
     result
 }
 
-fn deconflict_flags(conf: &ConfigFile, flags: &[String]) -> HashMap<String, String> {
-    let mut result = HashMap::with_capacity(conf.flags.len());
-    let mut rest = Vec::with_capacity(flags.len() - conf.flags.len());
-    for string in flags.iter() {
-        if let Some(short) = conf.flags.get(string) {
-            result.insert(string.clone(), short.clone());
-        } else {
-            rest.push(string.clone());
+fn is_vowel(c: char) -> bool {
+    c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'
+}
+
+fn remove_vowels(strings: &[String]) -> HashMap<&str, String> {
+    let mut result = HashMap::with_capacity(strings.len());
+    let mut seen = HashSet::with_capacity(strings.len());
+    for string in strings.iter() {
+        if string.is_empty() {
+            continue;
         }
-    }
-    let shorts = conf.flags.values().cloned().collect::<Vec<String>>();
-    rest.extend(shorts.iter().cloned());
-    result.extend(unique_prefixes(&rest));
-    for short in shorts {
-        result.remove(&short);
+        let first = string.chars().next().unwrap();
+        if is_vowel(first) {
+            continue;
+        }
+        let vowelless = string.chars().filter(|c| !is_vowel(*c)).collect::<String>();
+        if seen.contains(&vowelless) {
+            result.remove(string.as_str());
+            continue;
+        }
+        result.insert(string.as_str(), vowelless.clone());
+        seen.insert(vowelless);
     }
     result
 }
 
-fn deconflict_subs(conf: &ConfigFile, subs: &[String]) -> HashMap<String, String> {
-    let mut result = HashMap::with_capacity(conf.subs.len());
-    let mut rest = Vec::new();
-    let mut shorts = Vec::new();
-    for string in subs.iter() {
-        if let Some(sub_conf) = conf.subs.get(string) {
-            if let Some(short) = &sub_conf.short {
-                result.insert(string.clone(), short.clone());
-                shorts.push(short.clone());
-            } else {
-                rest.push(string.clone());
-            }
+fn do_remove_vowels(strings: &[String]) -> Vec<String> {
+    let mut result = Vec::with_capacity(strings.len());
+    let mut shortened = remove_vowels(strings);
+    for s in strings {
+        result.push(if let Some(shorter) = shortened.remove(s.as_str()) {
+            shorter
         } else {
-            rest.push(string.clone());
+            s.clone()
+        });
+    }
+    result
+}
+
+// TODO: Optionally add a prefix '-' to all short versions of flags
+fn deconflict(conf: &ConfigFile, flags: &[String], subs: &[String]) -> HashMap<String, String> {
+    debug_assert!(flags.len() == HashSet::<&String>::from_iter(flags).len());
+    debug_assert!(subs.len() == HashSet::<&String>::from_iter(subs).len());
+
+    let total_len = flags.len() + subs.len();
+    let mut result = HashMap::with_capacity(total_len);
+    let mut rest = Vec::with_capacity(total_len - conf.flags.len());
+    let mut denylist = HashSet::with_capacity(conf.flags.len());
+
+    for flag in flags.iter() {
+        if let Some(short) = conf.flags.get(flag) {
+            debug_assert!(result.get(flag).is_none());
+            result.insert(flag.clone(), short.clone());
+            debug_assert!(!denylist.contains(short.as_str()));
+            denylist.insert(short.as_str());
+        } else {
+            debug_assert!(!rest.contains(flag));
+            rest.push(flag.clone());
         }
     }
-    rest.extend(shorts.iter().cloned());
-    result.extend(unique_prefixes(&rest));
-    for short in shorts {
-        result.remove(&short);
+    for sub in subs.iter() {
+        if let Some(sub_conf) = conf.subs.get(sub) {
+            if let Some(short) = &sub_conf.short {
+                debug_assert!(result.get(sub).is_none());
+                result.insert(sub.clone(), short.clone());
+                debug_assert!(!denylist.contains(short.as_str()));
+                denylist.insert(short.as_str());
+            } else {
+                // TODO: How to account for flags and subcommands with the same name?
+                // debug_assert!(!rest.contains(sub));
+                rest.push(sub.clone());
+            }
+        } else {
+            // TODO: How to account for flags and subcommands with the same name?
+            // debug_assert!(!rest.contains(sub));
+            rest.push(sub.clone());
+        }
+    }
+
+    if conf.devowel {
+        let rmvd = do_remove_vowels(rest.as_slice());
+        let pfxs = unique_prefixes(&rmvd, &denylist);
+        debug_assert_eq!(rmvd.len(), rest.len());
+        for (rmd, long) in rmvd.iter().zip(rest.iter()) {
+            result.insert(long.clone(), pfxs.get(rmd).unwrap().clone());
+        }
+    } else {
+        result.extend(unique_prefixes(&rest, &denylist));
     }
     result
 }
@@ -132,7 +194,7 @@ fn extract_sub(words: &[&str]) -> Option<String> {
     None
 }
 
-#[derive(Debug)]
+#[derive(Debug, Eq, Hash, PartialEq, PartialOrd)]
 struct Opt {
     #[allow(dead_code)]
     short: Option<String>,
@@ -181,8 +243,8 @@ fn extract_opt(mut words: &[&str]) -> Option<Opt> {
 
 #[allow(dead_code)]
 fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Cmds) {
-    let mut opts = Vec::new();
-    let mut sub_names = Vec::new();
+    let mut opts = HashSet::new();
+    let mut sub_names = HashSet::<String>::from_iter(conf.extra_subs.iter().cloned());
     for mut line in text.lines() {
         if !line.starts_with([' ', ' ']) {
             continue;
@@ -191,27 +253,27 @@ fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Cm
         let words = line.split_whitespace().collect::<Vec<_>>();
 
         if let Some(long) = extract_sub(words.as_slice()) {
-            sub_names.push(long);
+            sub_names.insert(long);
         }
 
         if !line.contains(['-', '-']) {
             continue;
         }
         if let Some(opt) = extract_opt(words.as_slice()) {
-            opts.push(opt);
+            opts.insert(opt);
         }
     }
 
-    let existing: HashSet<String> = HashSet::from_iter(sub_names.iter().cloned());
-    sub_names.extend(
-        conf.extra_subs
-            .iter()
-            .filter(|n| !existing.contains(*n))
-            .cloned(),
-    );
+    let sub_name_vec = Vec::from_iter(sub_names.iter().cloned());
+    let opt_names = opts.into_iter().map(|o| o.long).collect::<Vec<_>>();
+    let deconflicted = deconflict(conf, opt_names.as_slice(), sub_name_vec.as_slice());
+
     let mut subs = Cmds(HashMap::with_capacity(sub_names.len()));
-    let sub_pairs = deconflict_subs(conf, sub_names.as_slice());
-    for (long, short) in sub_pairs.into_iter() {
+    for long in sub_names {
+        let short = deconflicted.get(&long).unwrap().clone();
+        if long == short {
+            debug!("Couldn't abbreviate {short}");
+        }
         subs.0.insert(
             long,
             Cmd {
@@ -222,10 +284,9 @@ fn extract_text(conf: &ConfigFile, text: String) -> (HashMap<String, String>, Cm
         );
     }
 
-    let opts = opts.into_iter().map(|o| o.long).collect::<Vec<_>>();
-    let flag_pairs = deconflict_flags(conf, opts.as_slice());
     let mut flags = HashMap::<String, String>::new();
-    for (long, short) in flag_pairs.into_iter() {
+    for long in opt_names {
+        let short = deconflicted.get(&long).unwrap().clone();
         if long == short {
             debug!("Couldn't abbreviate {short}");
         }
@@ -290,7 +351,7 @@ pub(super) fn extract(conf: ConfigFile, long: String) -> Option<Cmd> {
 mod tests {
     use std::{collections::HashMap, path::PathBuf};
 
-    use super::{deconflict_subs, extract_text, ConfigFile};
+    use super::{deconflict, extract_text, ConfigFile};
 
     const CABAL_HELP: &str = r#"
 Command line interface to the Haskell Cabal infrastructure.
@@ -673,16 +734,16 @@ FEEDBACK
                 .collect::<Vec<_>>(),
             [
                 ("a", "active-repositories"),
-                ("c", "config-file"),
+                ("config-", "config-file"),
                 ("d", "disable-nix"),
-                ("e", "enable-nix"),
+                ("en", "enable-nix"),
                 ("help", "help"),
                 ("ht", "http-transport"),
-                ("i", "ignore-expiry"),
+                ("ig", "ignore-expiry"),
                 ("ni", "nix"),
                 ("nu", "numeric-version"),
-                ("s", "store-dir"),
-                ("v", "version")
+                ("st", "store-dir"),
+                ("ve", "version")
             ]
         );
         assert_eq!(
@@ -695,27 +756,27 @@ FEEDBACK
                 ("ca", "cabal"),
                 ("ch", "check"),
                 ("cl", "clean"),
-                ("co", "configure"),
-                ("e", "exec"),
+                ("configu", "configure"),
+                ("ex", "exec"),
                 ("fe", "fetch"),
                 ("fr", "freeze"),
                 ("gen", "gen-bounds"),
                 ("get", "get"),
                 ("haddock", "haddock"),
-                ("haddock-project", "haddock-project"),
-                ("he", "help"),
+                ("haddock-", "haddock-project"),
+                ("help", "help"),
                 ("hs", "hscolour"),
                 ("inf", "info"),
                 ("ini", "init"),
                 ("ins", "install"),
                 ("list", "list"),
                 ("list-", "list-bin"),
-                ("n", "new-haddock-project"),
+                ("ne", "new-haddock-project"),
                 ("o", "outdated"),
                 ("repl", "repl"),
                 ("repo", "report"),
                 ("ru", "run"),
-                ("s", "sdist"),
+                ("sd", "sdist"),
                 ("t", "test"),
                 ("un", "unpack"),
                 ("upd", "update"),
@@ -808,17 +869,17 @@ FEEDBACK
                 .map(|(k, v)| (k.as_str(), v.as_str()))
                 .collect::<Vec<_>>(),
             [
-                ("conf", "config"),
-                ("cont", "context"),
-                ("d", "debug"),
-                ("h", "host"),
-                ("l", "log-level"),
+                ("config", "config"),
+                ("context", "context"),
+                ("de", "debug"),
+                ("ho", "host"),
+                ("log-", "log-level"),
                 ("tls", "tls"),
                 ("tlsca", "tlscacert"),
                 ("tlsce", "tlscert"),
                 ("tlsk", "tlskey"),
                 ("tlsv", "tlsverify"),
-                ("v", "version")
+                ("version", "version")
             ]
         );
         assert_eq!(
@@ -832,16 +893,16 @@ FEEDBACK
                 ("buildx", "buildx"),
                 ("comm", "commit"),
                 ("comp", "compose"),
-                ("conf", "config"),
+                ("config", "config"),
                 ("conta", "container"),
-                ("conte", "context"),
+                ("context", "context"),
                 ("cp", "cp"),
                 ("cr", "create"),
-                ("d", "diff"),
+                ("di", "diff"),
                 ("ev", "events"),
                 ("exe", "exec"),
                 ("exp", "export"),
-                ("h", "history"),
+                ("hi", "history"),
                 ("image", "image"),
                 ("images", "images"),
                 ("imp", "import"),
@@ -881,7 +942,7 @@ FEEDBACK
                 ("tr", "trust"),
                 ("un", "unpause"),
                 ("up", "update"),
-                ("ve", "version"),
+                ("version", "version"),
                 ("vo", "volume"),
                 ("w", "wait")
             ]
@@ -898,7 +959,7 @@ FEEDBACK
                 .iter()
                 .map(|(k, v)| (k.as_str(), v.as_str()))
                 .collect::<Vec<_>>(),
-            [("p", "paginate")]
+            [("pag", "paginate")]
         );
         assert_eq!(
             subs.iter()
@@ -1060,7 +1121,7 @@ FEEDBACK
                 .iter()
                 .map(|(k, v)| (k.as_str(), v.as_str()))
                 .collect::<Vec<_>>(),
-            [("help", "help"), ("v", "version")]
+            [("help", "help"), ("ve", "version")]
         );
         assert_eq!(
             subs.iter()
@@ -1074,7 +1135,7 @@ FEEDBACK
                 ("ci", "ci"),
                 ("com", "completion"),
                 ("con", "config"),
-                ("h", "help"),
+                ("help", "help"),
                 ("i", "issue"),
                 ("l", "label"),
                 ("m", "mr"),
@@ -1082,21 +1143,21 @@ FEEDBACK
                 ("rep", "repo"),
                 ("s", "ssh-key"),
                 ("u", "user"),
-                ("v", "variable")
+                ("va", "variable")
             ]
         );
     }
 
     #[test]
-    fn deconflict() {
+    fn test_deconflict() {
         let conf = ConfigFile::default();
-        assert_eq!(deconflict_subs(&conf, &[]), HashMap::new());
+        assert_eq!(deconflict(&conf, &[], &[]), HashMap::new());
         assert_eq!(
-            deconflict_subs(&conf, &[String::from("foo")]),
+            deconflict(&conf, &[String::from("foo")], &[]),
             HashMap::from([(String::from("foo"), String::from("f"))])
         );
         assert_eq!(
-            deconflict_subs(&conf, &[String::from("bar"), String::from("baz")]),
+            deconflict(&conf, &[String::from("bar"), String::from("baz")], &[]),
             HashMap::from([
                 (String::from("bar"), String::from("bar")),
                 (String::from("baz"), String::from("baz"))
@@ -1104,9 +1165,9 @@ FEEDBACK
         );
         let conf = ConfigFile::from_file(PathBuf::from("git.toml"));
         assert_eq!(
-            deconflict_subs(&conf, &[String::from("show"), String::from("status")]),
+            deconflict(&conf, &[String::from("show"), String::from("status")], &[]),
             HashMap::from([
-                (String::from("status"), String::from("s")),
+                (String::from("status"), String::from("st")),
                 (String::from("show"), String::from("sh"))
             ])
         );
