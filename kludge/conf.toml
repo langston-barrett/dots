@@ -3,11 +3,11 @@
 short = "cb"
 
 [cmds.cabal.flags]
-config- = "config-file"
+c- = "config-file"
 de = "default-user-config"
 di = "disable-nix"
 en = "enable-nix"
-help = "help"
+hp = "help"
 ht = "http-transport"
 ig = "ignore-expiry"
 n = "numeric-version"
@@ -29,7 +29,7 @@ short = "ch"
 short = "cl"
 
 [cmds.cabal.subs.configure]
-short = "configu"
+short = "cu"
 
 [cmds.cabal.subs.exec]
 short = "ex"
@@ -41,28 +41,28 @@ short = "fe"
 short = "fr"
 
 [cmds.cabal.subs.gen-bounds]
-short = "gen"
+short = "gn"
 
 [cmds.cabal.subs.get]
-short = "get"
+short = "gt"
 
 [cmds.cabal.subs.haddock]
 short = "ha"
 
 [cmds.cabal.subs.help]
-short = "help"
+short = "hp"
 
 [cmds.cabal.subs.hscolour]
 short = "hs"
 
 [cmds.cabal.subs.info]
-short = "inf"
+short = "if"
 
 [cmds.cabal.subs.init]
-short = "ini"
+short = "ii"
 
 [cmds.cabal.subs.install]
-short = "ins"
+short = "is"
 
 [cmds.cabal.subs.list]
 short = "l"
@@ -71,10 +71,10 @@ short = "l"
 short = "o"
 
 [cmds.cabal.subs.repl]
-short = "repl"
+short = "rl"
 
 [cmds.cabal.subs.report]
-short = "repo"
+short = "ro"
 
 [cmds.cabal.subs.run]
 short = "r"
@@ -86,52 +86,52 @@ short = "s"
 short = "t"
 
 [cmds.cabal.subs.update]
-short = "upd"
+short = "ud"
 
 [cmds.cabal.subs.upload]
-short = "upl"
+short = "ul"
 
 [cmds.cabal.subs.user-config]
 short = "us"
 
 [cmds.cabal.subs.v1-bench]
-short = "v1-be"
+short = "v1e"
 
 [cmds.cabal.subs.v1-build]
-short = "v1-bu"
+short = "v1u"
 
 [cmds.cabal.subs.v1-clean]
-short = "v1-cl"
+short = "v1l"
 
 [cmds.cabal.subs.v1-configure]
-short = "v1-con"
+short = "v1n"
 
 [cmds.cabal.subs.v1-copy]
-short = "v1-cop"
+short = "v1p"
 
 [cmds.cabal.subs.v1-freeze]
-short = "v1-f"
+short = "vf"
 
 [cmds.cabal.subs.v1-haddock]
-short = "v1-h"
+short = "vh"
 
 [cmds.cabal.subs.v1-install]
-short = "v1-i"
+short = "vi"
 
 [cmds.cabal.subs.v1-reconfigure]
-short = "v1-rec"
+short = "vc"
 
 [cmds.cabal.subs.v1-register]
-short = "v1-reg"
+short = "vg"
 
 [cmds.cabal.subs.v1-repl]
-short = "v1-rep"
+short = "vp"
 
 [cmds.cabal.subs.v1-run]
-short = "v1-ru"
+short = "vu"
 
 [cmds.cabal.subs.v1-test]
-short = "v1-t"
+short = "vt"
 
 [cmds.cabal.subs.v2-bench]
 short = "v2-be"
@@ -140,22 +140,22 @@ short = "v2-be"
 short = "v2-bu"
 
 [cmds.cabal.subs.v2-clean]
-short = "v2-cl"
+short = "vl"
 
 [cmds.cabal.subs.v2-configure]
-short = "v2-co"
+short = "vo"
 
 [cmds.cabal.subs.v2-exec]
-short = "v2-e"
+short = "v2e"
 
 [cmds.cabal.subs.v2-freeze]
-short = "v2-f"
+short = "v2f"
 
 [cmds.cabal.subs.v2-haddock]
-short = "v2-h"
+short = "v2h"
 
 [cmds.cabal.subs.v2-install]
-short = "v2-i"
+short = "v2i"
 
 [cmds.cabal.subs.v2-repl]
 short = "v2-re"
@@ -164,13 +164,13 @@ short = "v2-re"
 short = "v2-ru"
 
 [cmds.cabal.subs.v2-sdist]
-short = "v2-s"
+short = "v2s"
 
 [cmds.cabal.subs.v2-test]
-short = "v2-t"
+short = "v2t"
 
 [cmds.cabal.subs.v2-update]
-short = "v2-u"
+short = "v2u"
 
 [cmds.cargo]
 short = "cg"
@@ -185,8 +185,8 @@ li = "list"
 lo = "locked"
 o = "offline"
 q = "quiet"
-verb = "verbose"
-vers = "version"
+vb = "verbose"
+vs = "version"
 
 [cmds.cargo.subs.add]
 short = "a"
@@ -207,10 +207,10 @@ short = "cl"
 short = "d"
 
 [cmds.cargo.subs.init]
-short = "ini"
+short = "ii"
 
 [cmds.cargo.subs.install]
-short = "ins"
+short = "is"
 
 [cmds.cargo.subs.new]
 short = "n"
@@ -236,11 +236,204 @@ short = "un"
 [cmds.cargo.subs.update]
 short = "up"
 
+[cmds.docker]
+short = "dk"
+
+[cmds.docker.flags]
+cg = "config"
+ct = "context"
+de = "debug"
+ho = "host"
+l- = "log-level"
+tk = "tlskey"
+tla = "tlscacert"
+tle = "tlscert"
+ts = "tls"
+tv = "tlsverify"
+vn = "version"
+
+[cmds.docker.subs.attach]
+short = "a"
+
+[cmds.docker.subs.build]
+short = "bd"
+
+[cmds.docker.subs.builder]
+short = "be"
+
+[cmds.docker.subs.buildx]
+short = "bx"
+
+[cmds.docker.subs.commit]
+short = "com"
+
+[cmds.docker.subs.compose]
+short = "cop"
+
+[cmds.docker.subs.config]
+short = "cg"
+
+[cmds.docker.subs.container]
+short = "ca"
+
+[cmds.docker.subs.context]
+short = "ct"
+
+[cmds.docker.subs.cp]
+short = "cp"
+
+[cmds.docker.subs.create]
+short = "cr"
+
+[cmds.docker.subs.daemon]
+short = "da"
+
+[cmds.docker.subs.diff]
+short = "di"
+
+[cmds.docker.subs.events]
+short = "ev"
+
+[cmds.docker.subs.exec]
+short = "ee"
+
+[cmds.docker.subs.export]
+short = "ep"
+
+[cmds.docker.subs.history]
+short = "hi"
+
+[cmds.docker.subs.image]
+short = "ie"
+
+[cmds.docker.subs.images]
+short = "ims"
+
+[cmds.docker.subs.import]
+short = "ip"
+
+[cmds.docker.subs.info]
+short = "if"
+
+[cmds.docker.subs.inspect]
+short = "is"
+
+[cmds.docker.subs.kill]
+short = "k"
+
+[cmds.docker.subs.load]
+short = "la"
+
+[cmds.docker.subs.login]
+short = "li"
+
+[cmds.docker.subs.logout]
+short = "lo"
+
+[cmds.docker.subs.logs]
+short = "ls"
+
+[cmds.docker.subs.manifest]
+short = "m"
+
+[cmds.docker.subs.network]
+short = "ne"
+
+[cmds.docker.subs.node]
+short = "no"
+
+[cmds.docker.subs.pause]
+short = "pa"
+
+[cmds.docker.subs.plugin]
+short = "pl"
+
+[cmds.docker.subs.port]
+short = "po"
+
+[cmds.docker.subs.ps]
+short = "ps"
+
+[cmds.docker.subs.pull]
+short = "pul"
+
+[cmds.docker.subs.push]
+short = "pus"
+
+[cmds.docker.subs.rename]
+short = "rn"
+
+[cmds.docker.subs.restart]
+short = "rs"
+
+[cmds.docker.subs.rm]
+short = "rm"
+
+[cmds.docker.subs.rmi]
+short = "ri"
+
+[cmds.docker.subs.run]
+short = "ru"
+
+[cmds.docker.subs.save]
+short = "sa"
+
+[cmds.docker.subs.search]
+short = "sea"
+
+[cmds.docker.subs.secret]
+short = "sec"
+
+[cmds.docker.subs.service]
+short = "ser"
+
+[cmds.docker.subs.stack]
+short = "sc"
+
+[cmds.docker.subs.start]
+short = "sr"
+
+[cmds.docker.subs.stats]
+short = "st"
+
+[cmds.docker.subs.stop]
+short = "so"
+
+[cmds.docker.subs.swarm]
+short = "sw"
+
+[cmds.docker.subs.system]
+short = "sy"
+
+[cmds.docker.subs.tag]
+short = "ta"
+
+[cmds.docker.subs.top]
+short = "to"
+
+[cmds.docker.subs.trust]
+short = "tr"
+
+[cmds.docker.subs.unpause]
+short = "un"
+
+[cmds.docker.subs.update]
+short = "up"
+
+[cmds.docker.subs.version]
+short = "vn"
+
+[cmds.docker.subs.volume]
+short = "vo"
+
+[cmds.docker.subs.wait]
+short = "w"
+
 [cmds.gh]
 short = "gh"
 
 [cmds.gh.flags]
-help = "help"
+hp = "help"
 v = "version"
 
 [cmds.gh.subs.actions]
@@ -259,22 +452,22 @@ short = "au"
 short = "b"
 
 [cmds.gh.subs.codespace]
-short = "cod"
+short = "cd"
 
 [cmds.gh.subs.completion]
-short = "com"
+short = "cm"
 
 [cmds.gh.subs.config]
-short = "con"
+short = "cn"
 
 [cmds.gh.subs.environment]
 short = "en"
 
 [cmds.gh.subs.exit-codes]
-short = "exi"
+short = "ei"
 
 [cmds.gh.subs.extension]
-short = "ext"
+short = "et"
 
 [cmds.gh.subs.formatting]
 short = "f"
@@ -286,7 +479,7 @@ short = "gi"
 short = "gp"
 
 [cmds.gh.subs.help]
-short = "help"
+short = "hp"
 
 [cmds.gh.subs.issue]
 short = "i"
@@ -301,22 +494,22 @@ short = "m"
 short = "p"
 
 [cmds.gh.subs.reference]
-short = "ref"
+short = "rf"
 
 [cmds.gh.subs.release]
-short = "rel"
+short = "rl"
 
 [cmds.gh.subs.repo]
-short = "rep"
+short = "rp"
 
 [cmds.gh.subs.run]
 short = "ru"
 
 [cmds.gh.subs.search]
-short = "sea"
+short = "sa"
 
 [cmds.gh.subs.secret]
-short = "sec"
+short = "sc"
 
 [cmds.gh.subs.ssh-key]
 short = "ss"
@@ -331,7 +524,7 @@ short = "w"
 short = "g"
 
 [cmds.git.flags]
-pag = "paginate"
+pg = "paginate"
 
 [cmds.git.subs.add]
 short = "a"
@@ -346,10 +539,10 @@ short = "an"
 short = "ap"
 
 [cmds.git.subs.archimport]
-short = "archim"
+short = "arm"
 
 [cmds.git.subs.archive]
-short = "archiv"
+short = "arv"
 
 [cmds.git.subs.bisect]
 short = "bi"
@@ -361,37 +554,37 @@ short = "bl"
 short = "br"
 
 [cmds.git.subs.bugreport]
-short = "bug"
+short = "bg"
 
 [cmds.git.subs.bundle]
-short = "bun"
+short = "bn"
 
 [cmds.git.subs.cat-file]
 short = "ca"
 
 [cmds.git.subs.check-attr]
-short = "check-a"
+short = "cha"
 
 [cmds.git.subs.check-ignore]
-short = "check-i"
+short = "chi"
 
 [cmds.git.subs.check-mailmap]
-short = "check-m"
+short = "chm"
 
 [cmds.git.subs.check-ref-format]
-short = "check-r"
+short = "chr"
 
 [cmds.git.subs.checkout]
 short = "co"
 
 [cmds.git.subs.checkout-index]
-short = "checko"
+short = "cho"
 
 [cmds.git.subs.cherry]
-short = "cherry"
+short = "cy"
 
 [cmds.git.subs.cherry-pick]
-short = "cherry-"
+short = "c-"
 
 [cmds.git.subs.citool]
 short = "ci"
@@ -409,10 +602,10 @@ short = "col"
 short = "cm"
 
 [cmds.git.subs.commit-graph]
-short = "commit-g"
+short = "cg"
 
 [cmds.git.subs.commit-tree]
-short = "commit-t"
+short = "ct"
 
 [cmds.git.subs.config]
 short = "con"
@@ -421,55 +614,55 @@ short = "con"
 short = "cou"
 
 [cmds.git.subs.credential]
-short = "credential"
+short = "cl"
 
 [cmds.git.subs.credential-cache]
-short = "credential-c"
+short = "cc"
 
 [cmds.git.subs.credential-netrc]
-short = "credential-n"
+short = "cn"
 
 [cmds.git.subs.credential-store]
-short = "credential-s"
+short = "cs"
 
 [cmds.git.subs.cvsexportcommit]
-short = "cvse"
+short = "cve"
 
 [cmds.git.subs.cvsimport]
-short = "cvsi"
+short = "cvi"
 
 [cmds.git.subs.cvsserver]
-short = "cvss"
+short = "cvs"
 
 [cmds.git.subs.describe]
 short = "de"
 
 [cmds.git.subs.diff]
-short = "diff"
+short = "dif"
 
 [cmds.git.subs.diff-files]
-short = "diff-f"
+short = "df"
 
 [cmds.git.subs.diff-index]
-short = "diff-i"
+short = "di"
 
 [cmds.git.subs.diff-tree]
-short = "diff-t"
+short = "dt"
 
 [cmds.git.subs.difftool]
-short = "difft"
+short = "dit"
 
 [cmds.git.subs.fast-export]
-short = "fast-e"
+short = "fae"
 
 [cmds.git.subs.fast-import]
-short = "fast-i"
+short = "fai"
 
 [cmds.git.subs.fetch]
-short = "fetch"
+short = "fh"
 
 [cmds.git.subs.fetch-pack]
-short = "fetch-"
+short = "f-"
 
 [cmds.git.subs.filter-branch]
 short = "fi"
@@ -478,13 +671,13 @@ short = "fi"
 short = "fm"
 
 [cmds.git.subs.for-each-ref]
-short = "for-each-ref"
+short = "ff"
 
 [cmds.git.subs.for-each-repo]
-short = "for-each-rep"
+short = "fp"
 
 [cmds.git.subs.format-patch]
-short = "form"
+short = "fom"
 
 [cmds.git.subs.fsck]
 short = "fs"
@@ -496,10 +689,10 @@ short = "gc"
 short = "ge"
 
 [cmds.git.subs.gitk]
-short = "gitk"
+short = "gk"
 
 [cmds.git.subs.gitweb]
-short = "gitw"
+short = "gw"
 
 [cmds.git.subs.grep]
 short = "gr"
@@ -523,16 +716,16 @@ short = "ht"
 short = "im"
 
 [cmds.git.subs.index-pack]
-short = "ind"
+short = "id"
 
 [cmds.git.subs.init]
-short = "ini"
+short = "ii"
 
 [cmds.git.subs.instaweb]
-short = "ins"
+short = "is"
 
 [cmds.git.subs.interpret-trailers]
-short = "int"
+short = "it"
 
 [cmds.git.subs.lfs]
 short = "lf"
@@ -541,49 +734,49 @@ short = "lf"
 short = "l"
 
 [cmds.git.subs.ls-files]
-short = "ls-f"
+short = "lsf"
 
 [cmds.git.subs.ls-remote]
-short = "ls-r"
+short = "lsr"
 
 [cmds.git.subs.ls-tree]
-short = "ls-t"
+short = "lst"
 
 [cmds.git.subs.mailinfo]
-short = "maili"
+short = "mi"
 
 [cmds.git.subs.mailsplit]
-short = "mails"
+short = "ms"
 
 [cmds.git.subs.maintenance]
-short = "main"
+short = "mn"
 
 [cmds.git.subs.merge]
-short = "merge"
+short = "me"
 
 [cmds.git.subs.merge-base]
-short = "merge-b"
+short = "meb"
 
 [cmds.git.subs.merge-file]
-short = "merge-f"
+short = "mef"
 
 [cmds.git.subs.merge-index]
-short = "merge-i"
+short = "mei"
 
 [cmds.git.subs.merge-one-file]
-short = "merge-o"
+short = "meo"
 
 [cmds.git.subs.merge-tree]
-short = "merge-t"
+short = "met"
 
 [cmds.git.subs.mergetool]
-short = "merget"
+short = "mt"
 
 [cmds.git.subs.mktag]
-short = "mkta"
+short = "ma"
 
 [cmds.git.subs.mktree]
-short = "mktr"
+short = "mr"
 
 [cmds.git.subs.multi-pack-index]
 short = "mu"
@@ -601,28 +794,28 @@ short = "no"
 short = "p4"
 
 [cmds.git.subs.pack-objects]
-short = "pack-o"
+short = "po"
 
 [cmds.git.subs.pack-redundant]
-short = "pack-red"
+short = "pd"
 
 [cmds.git.subs.pack-refs]
-short = "pack-ref"
+short = "pf"
 
 [cmds.git.subs.patch-id]
-short = "pat"
+short = "pt"
 
 [cmds.git.subs.prune]
-short = "prune"
+short = "pe"
 
 [cmds.git.subs.prune-packed]
-short = "prune-"
+short = "p-"
 
 [cmds.git.subs.pull]
-short = "pul"
+short = "pl"
 
 [cmds.git.subs.push]
-short = "pus"
+short = "ps"
 
 [cmds.git.subs.quiltimport]
 short = "q"
@@ -655,49 +848,49 @@ short = "req"
 short = "rer"
 
 [cmds.git.subs.reset]
-short = "rese"
+short = "re"
 
 [cmds.git.subs.restore]
-short = "rest"
+short = "rt"
 
 [cmds.git.subs.rev-list]
-short = "rev-l"
+short = "rl"
 
 [cmds.git.subs.rev-parse]
-short = "rev-p"
+short = "rp"
 
 [cmds.git.subs.revert]
-short = "reve"
+short = "ree"
 
 [cmds.git.subs.rm]
 short = "rm"
 
 [cmds.git.subs.send-email]
-short = "send-e"
+short = "see"
 
 [cmds.git.subs.send-pack]
-short = "send-p"
+short = "sep"
 
 [cmds.git.subs.sh-i18n]
-short = "sh-i"
+short = "shi"
 
 [cmds.git.subs.sh-setup]
-short = "sh-s"
+short = "shs"
 
 [cmds.git.subs.shortlog]
-short = "shor"
+short = "shr"
 
 [cmds.git.subs.show]
-short = "show"
+short = "shw"
 
 [cmds.git.subs.show-branch]
-short = "show-b"
+short = "sb"
 
 [cmds.git.subs.show-index]
-short = "show-i"
+short = "si"
 
 [cmds.git.subs.show-ref]
-short = "show-r"
+short = "sr"
 
 [cmds.git.subs.sparse-checkout]
 short = "sp"
@@ -727,31 +920,31 @@ short = "sy"
 short = "t"
 
 [cmds.git.subs.unpack-file]
-short = "unpack-f"
+short = "uf"
 
 [cmds.git.subs.unpack-objects]
-short = "unpack-o"
+short = "uo"
 
 [cmds.git.subs.update-index]
-short = "update-i"
+short = "ui"
 
 [cmds.git.subs.update-ref]
-short = "update-r"
+short = "ur"
 
 [cmds.git.subs.update-server-info]
-short = "update-s"
+short = "us"
 
 [cmds.git.subs.var]
 short = "va"
 
 [cmds.git.subs.verify-commit]
-short = "verify-c"
+short = "vc"
 
 [cmds.git.subs.verify-pack]
-short = "verify-p"
+short = "vp"
 
 [cmds.git.subs.verify-tag]
-short = "verify-t"
+short = "vt"
 
 [cmds.git.subs.whatchanged]
 short = "wh"
@@ -766,7 +959,7 @@ short = "wr"
 short = "gl"
 
 [cmds.glab.flags]
-help = "help"
+hp = "help"
 ve = "version"
 
 [cmds.glab.subs.alias]
@@ -785,13 +978,13 @@ short = "ch"
 short = "ci"
 
 [cmds.glab.subs.completion]
-short = "com"
+short = "cm"
 
 [cmds.glab.subs.config]
-short = "con"
+short = "cn"
 
 [cmds.glab.subs.help]
-short = "help"
+short = "hp"
 
 [cmds.glab.subs.issue]
 short = "i"
@@ -803,10 +996,10 @@ short = "l"
 short = "m"
 
 [cmds.glab.subs.release]
-short = "rel"
+short = "rl"
 
 [cmds.glab.subs.repo]
-short = "rep"
+short = "rp"
 
 [cmds.glab.subs.ssh-key]
 short = "s"
@@ -821,7 +1014,7 @@ short = "va"
 short = "mdb"
 
 [cmds.mdbook.flags]
-help = "help"
+hp = "help"
 v = "version"
 
 [cmds.mdbook.subs.build]
@@ -834,7 +1027,7 @@ short = "cl"
 short = "co"
 
 [cmds.mdbook.subs.help]
-short = "help"
+short = "hp"
 
 [cmds.mdbook.subs.init]
 short = "i"

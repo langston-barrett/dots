@@ -3,7 +3,7 @@
 set -ex
 rm -f conf.gen.toml
 echo "# see conf.sh" > conf.gen.toml
-for tool in cabal cargo gh git glab mdbook; do
+for tool in cabal cargo docker gh git glab mdbook; do
   cargo run -qr -- zle extract $tool $tool.toml > $tool.gen.toml || exit 1
   cat $tool.gen.toml >> conf.gen.toml
 done
