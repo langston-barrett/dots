@@ -2,25 +2,45 @@ autoload -U promptinit && promptinit
 autoload -U colors && colors
 setopt promptsubst
 
-function in_nix_shell() {
-  if [[ ! -z ${IN_NIX_SHELL} ]]; then
-    echo "(nxsh: $IN_NIX_SHELL)"
-  else
-    echo "(nxsh: no)"
-  fi
-}
-
 # NB: Spacing is a Unicode em-space
 PROMPT_SEP=" : "
 
-git_prompt_info() {
-  if [[ -d .git ]] || [[ -d ${PROJECT_ROOT}/.git ]]; then
-    ref=$(git-branch-name)
-    if [[ -n "${ref}" ]]; then
-      printf "%s%s" "${PROMPT_SEP}" "${ref}"
-    fi
+# Update prompt every second, except when completing
+TMOUT=1
+
+TRAPALRM() {
+  # if [[ $((SECONDS % 2)) -eq 0 ]]; then
+  #   printf "${SECONDS}" > /tmp/now
+  # fi
+  return
+  # TODO: Also don't do this during history search
+  if [ "$WIDGET" != "complete-word" ] && [ "$WIDGET" != "tab" ]; then
+    zle reset-prompt
   fi
 }
+
+# Include auto-updating build status in prompt
+# function watch() {
+#   if [[ -f .nowatch ]]; then
+#     return
+#   fi
+#   if [[ zbr == $(basename "${PWD}") ]] && [[ -f Cargo.toml ]]; then
+#     if [[ -f /tmp/watchpid ]]; then
+#       kill "$(bat --plain /tmp/watchpid)"
+#     fi
+#     status_file="/tmp/$(basename "${PWD}")-status"
+#     (ls /tmp/now ./**/*.toml ./**/*.rs | entr -c -s check.sh > "${status_file}.log" 2>&1) & disown
+#     printf "%s" "$?" > /tmp/watchpid
+#   fi
+# }
+# chpwd_functions=(${chpwd_functions[@]} "watch")
+
+# function build_info() {
+#   status_file="/tmp/$(basename "${PROJECT_ROOT}")-status"
+#   if [[ -f ${status_file} ]]; then
+#     printf "%s%s" "${PROMPT_SEP}" "$(<"${status_file}")"
+#   fi
+# }
 
 # If we're on another machine, show the user/hostname
 if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]]; then
@@ -28,14 +48,14 @@ if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]]; then
 fi
 
 newline=$'\n'
-git_prompt='$(git_prompt_info)'
-PROMPT="${newline}[${PROMPT_EXTRA}%3d${git_prompt}]${newline}${newline}"
+kludge_prompt='$(kludge prompt)'
+PROMPT="${newline}[${PROMPT_EXTRA}%3d${kludge_prompt}]${newline}${newline}"
 #PROMPT="$ "
 export PROMPT
 unset newline
 
-newline() { 
-  printf '\n' 
+newline() {
+  printf '\n'
 }
 add-zsh-hook preexec newline
 

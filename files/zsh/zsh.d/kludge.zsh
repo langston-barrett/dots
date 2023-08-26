@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-eval "$(kludge zle init)"
+eval "$(zbr init)"
+# eval "$(kludge zle init)"

@@ -4,8 +4,9 @@ use tracing::{debug, Level};
 use tracing_subscriber::fmt::format::FmtSpan;
 
 mod cli;
+mod prompt;
 
-use cli::{Cli, Commands};
+use cli::{Cli, Command};
 
 fn verbosity_to_log_level(verbosity: u8) -> Level {
     match verbosity {
@@ -27,12 +28,10 @@ fn initialize_tracing(cli: &Cli) {
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli: Cli = clap::Parser::parse();
-
     initialize_tracing(&cli);
     debug!(?cli);
-
     match cli.cmd {
-        Commands::Zle(conf) => zbr::go(conf)?,
+        Command::Prompt => prompt::go()?,
     }
     Ok(())
 }

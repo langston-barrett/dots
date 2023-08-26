@@ -1,7 +1,7 @@
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Cli {
     #[command(subcommand)]
-    pub(crate) cmd: Commands,
+    pub(crate) cmd: Command,
 
     /// Verbose mode: use multiple times for increased verbosity
     #[arg(
@@ -13,6 +13,6 @@ pub(crate) struct Cli {
 }
 
 #[derive(Debug, clap::Subcommand)]
-pub(crate) enum Commands {
-    Zle(zbr::Config),
+pub(crate) enum Command {
+    Prompt,
 }
