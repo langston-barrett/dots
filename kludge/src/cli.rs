@@ -14,5 +14,5 @@ pub(crate) struct Cli {
 
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Commands {
-    Zle(crate::zle::Config),
+    Zle(zbr::Config),
 }

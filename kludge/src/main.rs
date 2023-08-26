@@ -1,9 +1,9 @@
+use std::error::Error;
+
 use tracing::{debug, Level};
 use tracing_subscriber::fmt::format::FmtSpan;
 
-mod build;
 mod cli;
-mod zle;
 
 use cli::{Cli, Commands};
 
@@ -25,13 +25,14 @@ fn initialize_tracing(cli: &Cli) {
         .init();
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     let cli: Cli = clap::Parser::parse();
 
     initialize_tracing(&cli);
     debug!(?cli);
 
     match cli.cmd {
-        Commands::Zle(conf) => zle::go(conf),
+        Commands::Zle(conf) => zbr::go(conf)?,
     }
+    Ok(())
 }
