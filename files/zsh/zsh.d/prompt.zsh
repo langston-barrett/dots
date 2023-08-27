@@ -6,18 +6,17 @@ setopt promptsubst
 PROMPT_SEP=" : "
 
 # Update prompt every second, except when completing
-TMOUT=1
+# TMOUT=1
 
-TRAPALRM() {
-  # if [[ $((SECONDS % 2)) -eq 0 ]]; then
-  #   printf "${SECONDS}" > /tmp/now
-  # fi
-  return
-  # TODO: Also don't do this during history search
-  if [ "$WIDGET" != "complete-word" ] && [ "$WIDGET" != "tab" ]; then
-    zle reset-prompt
-  fi
-}
+# TRAPALRM() {
+#   # if [[ $((SECONDS % 2)) -eq 0 ]]; then
+#   #   printf "${SECONDS}" > /tmp/now
+#   # fi
+#   # TODO: Also don't do this during history search
+#   if [ "$WIDGET" != "complete-word" ] && [ "$WIDGET" != "tab" ]; then
+#     zle reset-prompt
+#   fi
+# }
 
 # Include auto-updating build status in prompt
 # function watch() {

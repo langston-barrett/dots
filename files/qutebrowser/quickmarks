@@ -22,7 +22,6 @@ polymorph v-spells google drive https://drive.google.com/drive/u/0/folders/0AMP-
 polymorph-mrs https://gitlab-ext.galois.com/polymorph/polymorph/-/merge_requests
 polymorph-issues https://gitlab-ext.galois.com/polymorph/polymorph/-/issues
 gmail-compose https://mail.google.com/mail/u/0/?ui=2&fs=1&tf=cm&shva=1
-grass-drive https://drive.google.com/drive/u/0/folders/1CO-jpA_jYd6dWcT5Z9OB9NHHggBLzzXi
 bbn-vspells-range https://vspells.ext.bbn.com/bbn/welcome-to-the-range
 bbn-vspells-solution-template https://vspells.ext.bbn.com/bbn/solution-template
 galois-vspells-solution-template https://gitlab-ext.galois.com/polymorph/solution-template
@@ -31,7 +30,16 @@ tiddlywiki https://langston.tiddlyhost.com/
 drive-u-1 https://drive.google.com/drive/u/1/my-drive
 poly-dyn https://github.com/langston-barrett/polymorphic-dynamic
 detect-google-drive https://drive.google.com/drive/u/0/folders/0AO1vooaNX3oNUk9PVA
-harden-issues https://gitlab-ext.galois.com/detect/detect/-/issues
-harden-mrs https://gitlab-ext.galois.com/detect/detect/-/merge_requests
+detect-issues https://gitlab-ext.galois.com/detect/detect/-/issues
+detect-mrs https://gitlab-ext.galois.com/detect/detect/-/merge_requests
+detect-wiki https://gitlab-ext.galois.com/detect/detect/-/wikis/home
 libafl-docs https://docs.rs/libafl/latest/libafl/
 libafl-qemu-docs https://docs.rs/libafl_qemu/latest/libafl_qemu/index.html
+maps https://www.google.com/maps
+ices https://github.com/rust-lang/rust/issues?q=is%3Aopen+is%3Aissue+label%3AI-ICE
+needs-glacier https://github.com/rust-lang/rust/issues?q=is%3Aopen+is%3Aissue+label%3AI-ICE+label%3AS-bug-has-mcve+-label%3Aglacier+-label%3Arequires-debug-assertions+-label%3Arequires-custom-config
+cal https://calendar.google.com/calendar/u/0/r
+cal-personal https://calendar.google.com/calendar/u/1/r
+mattermost https://mattermost.galois.com/
+tasks https://tasks.google.com/embed/?origin=https://calendar.google.com&fullWidth=1&authuser=bbarrett909@gmail.com
+

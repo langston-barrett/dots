@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 
-eval "$(zbr init)"
-# eval "$(kludge zle init)"
+eval "$(zbr init $HOME/code/zbr/conf/conf.toml)"
