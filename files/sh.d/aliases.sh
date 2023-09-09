@@ -46,7 +46,7 @@ build_alias() {
 build_alias cb cabal
 build_alias cg cargo
 build_alias m make
-build_alias od objdump
+# build_alias od objdump
 build_alias dk docker
 build_alias py python
 build_alias py3 python3
