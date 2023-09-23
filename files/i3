@@ -8,15 +8,6 @@ exec_always polybar -r top
 exec dropbox start
 exec feh --bg-fill ~/.config/wallpaper.png
 
-# ** variables
-
-# See https://github.com/Kyczan/dotfiles
-set_from_resource $bg i3.bgrnd #282A36    # background
-set_from_resource $fg i3.fgrnd #FFFFFF    # foreground
-set_from_resource $in i3.inact #676E7D    # inactive
-set_from_resource $ur i3.urgen #E53935    # urgent
-set_from_resource $tr i3.trans FF         # transparency
-
 # ** general
 
 # Alt is Mod1.
@@ -64,23 +55,6 @@ set $float O
 set $reload w
 set $restart r
 set $exit e
-
-# colemak:
-# set $left n
-# set $down e
-# set $up i
-# set $right o
-# set $workspace0 t
-# set $workspace1 s
-# set $workspace2 r
-# set $workspace3 a
-# set $resize p
-# set $stack g
-# set $split j
-# set $float U
-# set $reload w
-# set $restart f
-# set $exit q
 
 # *** focus
 
@@ -165,7 +139,14 @@ default_border pixel 2
 hide_edge_borders smart
 
 # Window titles
-font pango:Open Sans 1
+font pango:Open Sans 3
+
+# See https://github.com/Kyczan/dotfiles
+set_from_resource $bg i3.bgrnd #282A36    # background
+set_from_resource $fg i3.fgrnd #FFFFFF    # foreground
+set_from_resource $in i3.inact #676E7D    # inactive
+set_from_resource $ur i3.urgen #E53935    # urgent
+set_from_resource $tr i3.trans FF         # transparency
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #9E9E9E #9E9E9E #9E9E9E #9E9E9E   #9E9E9E
