@@ -30,7 +30,7 @@
   services.picom = {
     enable = true;
   };
-  services.unclutter.enable = true;
+  services.unclutter.enable = false; # weird interaction...
 
   # TODO: Fix after NixOS 21.05 upgrade
   # security.apparmor.profiles =
