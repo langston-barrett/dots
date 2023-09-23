@@ -69,7 +69,7 @@
 ;;
 ;; I shouldn't introduce chording where none exists (e.g., for esc, ret).
 
-(defalias spc (tap-hold 100 spc (layer-toggle space)))
+(defalias spc (tap-hold 200 spc (layer-toggle space)))
 
 (deflayer base
   lalt
@@ -82,6 +82,7 @@
 )
 
 (defalias
+  tab (around lalt tab)
   q (around lalt c)
   w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
   e e

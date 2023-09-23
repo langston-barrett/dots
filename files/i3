@@ -18,17 +18,16 @@ bindsym $mod+c kill
 # Mouse+mod floats & drags
 floating_modifier $mod
 
-for_window [title="^shell-hydra$"] floating enable
-for_window [title="^shell-hydra$"] resize set 500 500
-for_window [title="^shell-hydra$"] move position center
-for_window [title="^shell-hydra$"] border pixel 2
-
-bindsym $mod+Tab exec env HYDRA=1 alacritty --class shell-hydra --title shell-hydra, [title="shell-hydra"] focus
+for_window [title="^launch$"] floating enable
+for_window [title="^launch$"] resize set 400 300
+for_window [title="^launch$"] move position center
+for_window [title="^launch$"] border pixel 2
+# bindsym $mod+Tab exec env HYDRA=1 alacritty --class launch --title launch, [title="launch"] focus
+bindsym $mod+space exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
 
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 #bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
-bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Alt+c -kb-cancel Alt+Q -kb-cancel Alt+q -kb-cancel Ctrl+g
-bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Alt+c -kb-cancel Alt+Q -kb-cancel Alt+q -kb-cancel Ctrl+g
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 # bindsym $mod+Return exec urxvt
