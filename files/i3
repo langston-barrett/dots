@@ -6,9 +6,7 @@
 exec_always polybar -r top
 # exec_always polybar -r external
 exec dropbox start
-exec conky --config=$HOME/code/dots/files/conky/conkyrc.greeting
 exec feh --bg-fill ~/.config/wallpaper.png
-exec --no-startup-id nm-applet
 
 # ** variables
 
@@ -24,6 +22,8 @@ set_from_resource $tr i3.trans FF         # transparency
 # Alt is Mod1.
 set $mod Mod1
 
+bindsym $mod+c kill
+
 # Mouse+mod floats & drags
 floating_modifier $mod
 
@@ -31,50 +31,21 @@ for_window [title="^shell-hydra$"] floating enable
 for_window [title="^shell-hydra$"] resize set 500 500
 for_window [title="^shell-hydra$"] move position center
 for_window [title="^shell-hydra$"] border pixel 2
-for_window [class="conky"] floating enable
-for_window [class="^Emacs$" title="^Launcher$"] floating enable
-for_window [class="^Emacs$" title="^Launcher$"] move position center
-for_window [class="^Emacs$" title="^Launcher$"] focus
-for_window [class="^Emacs$" title="^Launcher$"] resize set 800 500; move position center
-for_window [class="^Emacs$" title="^Launcher$"] border pixel 2
 
-# bindsym $mod+Tab fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
-
-# bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
-# bindsym $mod+Shift+space exec i3-dmenu-desktop
-# bindsym $mod+space fullscreen disable; exec "emacsclient --no-wait --eval '(call-interactively (quote my/launcher))'"
 bindsym $mod+Tab exec env HYDRA=1 alacritty --class shell-hydra --title shell-hydra, [title="shell-hydra"] focus
-# bindsym $mod+Shift+space exec i3-dmenu-desktop
 
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 #bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
-bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
+bindsym $mod+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Alt+c -kb-cancel Alt+Q -kb-cancel Alt+q -kb-cancel Ctrl+g
 bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
-# Rofi firefox history
-# bindsym $mod+Shift+space exec rofi -kb-cancel Alt+C -kb-cancel Ctrl+g -modi "firefox:$HOME/code/dots/files/scripts/rofi-firefox.sh" -show firefox
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
-# bindsym $mod+Return exec kitty
 # bindsym $mod+Return exec urxvt
 bindsym $mod+Return exec alacritty
-bindsym $mod+Shift+Return exec bash -c "$HOME/.config/bin/emacs-vterm"
-#bindsym $mod+Shift+Return exec urxvt
-# bindsym $mod+Shift+Return exec emacsclient --create-frame -e '(eshell t)'
-bindsym $mod+Shift+c kill
+bindsym $mod+Shift+Return exec urxvt
 
 # enter fullscreen mode for the focused container
 bindsym $mod+Shift+p fullscreen toggle
-
-# brightness, volume, etc
-# use nixos.xorg.xev to find the keycodes
-# bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
-# bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
-bindsym XF86MonBrightnessDown exec light -U 5
-bindsym XF86MonBrightnessUp exec light -A 5
-
-# These also work for pulse
-bindsym XF86AudioLowerVolume exec bash -c "pactl set-sink-volume 0 '-5%' && pactl set-sink-volume 1 '-5%' || true"
-bindsym XF86AudioRaiseVolume exec bash -c "pactl set-sink-volume 0 '+5%' && pactl set-sink-volume 1 '+5%' || true"
 
 # ** navigation
 
@@ -176,6 +147,17 @@ bindsym $mod+Shift+$reload reload
 bindsym $mod+Shift+$restart restart
 bindsym $mod+Shift+$exit exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
 
+# ** brightness + volume
+
+# use nixos.xorg.xev to find the keycodes
+# bindsym XF86AudioLowerVolume exec amixer sset Master 5%-
+# bindsym XF86AudioRaiseVolume exec amixer sset Master 5%+
+bindsym XF86MonBrightnessDown exec light -U 5
+bindsym XF86MonBrightnessUp exec light -A 5
+
+# These also work for pulse
+bindsym XF86AudioLowerVolume exec bash -c "pactl set-sink-volume 0 '-5%' && pactl set-sink-volume 1 '-5%' || true"
+bindsym XF86AudioRaiseVolume exec bash -c "pactl set-sink-volume 0 '+5%' && pactl set-sink-volume 1 '+5%' || true"
 
 # ** appearance
 
@@ -183,7 +165,7 @@ default_border pixel 2
 hide_edge_borders smart
 
 # Window titles
-font pango:Open Sans 3
+font pango:Open Sans 1
 
 # class                 border  backgr. text    indicator child_border
 client.focused          #9E9E9E #9E9E9E #9E9E9E #9E9E9E   #9E9E9E
