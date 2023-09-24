@@ -1,7 +1,24 @@
 #!/usr/bin/env bash
 
-# --print-query is used to run a custom command when none of the list is
-# selected.
-OPTS='--info=hidden --print-query --bind=ctrl-space:print-query,tab:replace-query'
-
-exec i3-msg -q "exec --no-startup-id $(compgen -c | fzf $OPTS | tail -1)"
+candidates=${XDG_RUNTIME_DIR}/launcher
+if ! [[ -f ${candidates} ]]; then
+  compgen -c | while read -r f; do
+    printf '%s:%s\n' "${f}" "${f}" >> ${candidates}
+  done
+  # Maybe not necessary?
+  ls ~/.config/bin/* | while read -r f; do
+    printf '%s:%s\n' "${f}" "$(basename ${f})" >> ${candidates}
+  done
+fi
+exec i3-msg -q "exec --no-startup-id $(fzf --delimiter ':' --info=hidden --with-nth=2 --bind 'enter:execute(echo {1})+abort' < "${candidates}")"
+sleep 5
+# if ! [[ -f $candidates ]]; then
+#   dirs="${XDG_DATA_HOME:-${HOME}/.local/share}:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+#   for d in $(printf "%s" "${dirs//:/ }"); do
+#     if [[ -d "${d}/applications" ]]; then
+#       fd . "${d}/applications" --extension desktop | while read -r f; do
+#         printf '%s\n' "${f}"
+#       done
+#     fi
+#   done
+# fi

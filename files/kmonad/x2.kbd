@@ -6,7 +6,7 @@
 )
 
 #|
-  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _  
   _    _    _    _    _    _    _    _    _    _    _    _    _    _   
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _    _    _    _    _    _    _    _    _    _    _  
@@ -16,7 +16,7 @@
 |#
 
 (defsrc
-  esc
+  esc  f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   caps a    s    d    f    g    h    j    k    l    ;    '    ret
@@ -72,7 +72,7 @@
 (defalias spc (tap-hold 200 spc (layer-toggle space)))
 
 (deflayer base
-  lalt
+  lalt f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12
   grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
   tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
   esc  a    s    d    f    g    h    j    k    l    ;    '    ret
@@ -83,6 +83,16 @@
 
 (defalias
   tab (around lalt tab)
+  1 (around lsft 1)
+  2 (around lsft 2)
+  3 (around lsft 3)
+  4 (around lsft 4)
+  5 (around lsft 5)
+  6 (around lsft 6)
+  7 (around lsft 7)
+  8 (around lsft 8)
+  9 (around lsft 9)
+  0 (around lsft 0)
   q (around lalt c)
   w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
   e e
@@ -106,11 +116,11 @@
 )
 
 (deflayer space
-  _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
+  _    _    _    _    _    _    _    _    _    _    _    _    _  
+  _    @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   _    _    _   
   _    @q   @w   @e   @r   @t   @y   _    _    _    @p   _    _    _
   _    @a   @s   @d   @f   @g   @h   @j   @k   @l   _    _    _  
-  _    _    @x   @c   @v   @b    _    _    _    _    _    _   
+  _    _    @x   @c   @v   @b   _    _    _    _    _    _   
   _    _    _              _              _    _    _    _    _   
                                                     _    _    _
 )
@@ -132,7 +142,7 @@
 )
 
 (deflayer window
-  _
+  _    _    _    _    _    _    _    _    _    _    _    _    _  
   _    _    _    _    _    _    _    _    _    _    _    _    _    _   
   _    _    @ww  @we  @wr  @wt  _    _    _    @wo  _    _    _    _
   _    @wa  @ws  @wd  @wf  _    @wh  @wj  @wk  @wl  _    _    _  

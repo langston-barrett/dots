@@ -129,8 +129,10 @@ bindsym XF86MonBrightnessDown exec light -U 5
 bindsym XF86MonBrightnessUp exec light -A 5
 
 # These also work for pulse
-bindsym XF86AudioLowerVolume exec bash -c "pactl set-sink-volume 0 '-5%' && pactl set-sink-volume 1 '-5%' || true"
-bindsym XF86AudioRaiseVolume exec bash -c "pactl set-sink-volume 0 '+5%' && pactl set-sink-volume 1 '+5%' || true"
+bindsym XF86AudioLowerVolume exec bash ~/code/dots/files/scripts/bin/volume-down
+bindsym XF86AudioRaiseVolume exec bash ~/code/dots/files/scripts/bin/volume-up
+bindsym F2 exec bash ~/code/dots/files/scripts/bin/volume-down
+bindsym F3 exec bash ~/code/dots/files/scripts/bin/volume-up
 
 # ** appearance
 

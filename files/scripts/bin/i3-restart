@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+pkill polybar
+i3-msg restart
