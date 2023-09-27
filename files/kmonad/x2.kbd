@@ -82,6 +82,7 @@
 )
 
 (defalias
+  grv (around lsft grv)
   tab (around lalt tab)
   1 (around lsft 1)
   2 (around lsft 2)
@@ -100,6 +101,8 @@
   t (around lalt ret)
   y (around lsft (around caps c))
   p (around lsft (around caps v))
+  [ (around lsft [)
+  ] (around lsft ])
   a (around lalt a)
   s (around lalt s)
   d (around lalt d)
@@ -109,18 +112,23 @@
   j (around lalt j)
   k (around lalt k)
   l (around lalt l)
+  ; (around lsft ;)
+  dqu (around lsft ")
+  z (around rctl z)
   x (around caps x)
   c (around caps c)
   v (around caps v)
   b (cmd-button "sudo -u langston qutebrowser")
+  , (around lsft ,)
+  . (around lsft .)
 )
 
 (deflayer space
   _    _    _    _    _    _    _    _    _    _    _    _    _  
-  _    @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   _    _    _   
-  _    @q   @w   @e   @r   @t   @y   _    _    _    @p   _    _    _
-  _    @a   @s   @d   @f   @g   @h   @j   @k   @l   _    _    _  
-  _    _    @x   @c   @v   @b   _    _    _    _    _    _   
+  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   _   
+  _    @q   @w   @e   @r   @t   @y   _    _    _    @p   @[   @]    _
+  _    @a   @s   @d   @f   @g   @h   @j   @k   @l   @;   @dqu _  
+  _    @z   @x   @c   @v   @b   _    _    @,   @.    _    _   
   _    _    _              _              _    _    _    _    _   
                                                     _    _    _
 )
