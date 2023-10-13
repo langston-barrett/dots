@@ -6,11 +6,11 @@
 )
 
 #|
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
-  _    _    _              _              _    _         _    _    _    
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _         _    _    _
 |#
 
 (defsrc
@@ -95,10 +95,11 @@
   t (around lalt ret)
   y (around lsft (around caps c))
   u (around lsft u)
-  p (around lsft (around caps v))
+  p (around lsft (around lctl v))
   [ (around lsft [)
   ] (around lsft ])
-  a (around lalt a)
+  bspc (around rctl bspc)
+  a (around rctl a)
   s (around lalt s)
   d (around lalt d)
   f (around lalt f)
@@ -111,20 +112,20 @@
   dqu (around lsft ")
   ret (around lsft ret)
   z (around rctl z)
-  x (around caps x)
-  c (around caps c)
-  v (around caps v)
+  x (around lctl x)
+  c (around lctl c)
+  v (around lctl v)
   b (cmd-button "sudo -u langston qutebrowser")
   , (around lsft ,)
   . (around lsft .)
 )
 
 (deflayer space
-  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   _   
+  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   @bspc
   _    @q   @w   @e   @r   @t   @y   @u   _    _    @p   @[   @]   _
   _    @a   @s   @d   @f   @g   @h   @j   @k   @l   @;   @dqu @ret _
-  _    @z   @x   @c   @v   @b   _    _    @,   @.   _    _    _    _   
-  _    _    _              _              _    _         _    _    _    
+  _    @z   @x   @c   @v   @b   _    _    @,   @.   _    _    _    _
+  _    _    _              _              _    _         _    _    _
 )
 
 
@@ -145,12 +146,12 @@
 )
 
 (deflayer window
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _   
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    @ww  @we  @wr  @wt  _    _    _    @wo  _    _    _    _
   _    @wa  @ws  @wd  @wf  _    @wh  @wj  @wk  @wl  _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
   _    _    _              _              _    _         _    _    _
-)   
+)
 
 ;; ;; symbols: _;./,(){}
 ;; (defalias
@@ -160,10 +161,10 @@
 
 ;; (deflayer symbol
 ;;   _
-;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _   
 ;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-;;   _    _    _    @sd  @sf  _    _    _    _    _    _    _    _  
-;;   _    _    _    _    _    _    _    _    _    _    _    _   
-;;   _    _    _              _              _    _    _    _    _   
+;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _
+;;   _    _    _    @sd  @sf  _    _    _    _    _    _    _    _
+;;   _    _    _    _    _    _    _    _    _    _    _    _
+;;   _    _    _              _              _    _    _    _    _
 ;;                                                     _    _    _
 ;; )

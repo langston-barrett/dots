@@ -1,0 +1,154 @@
+(defcfg
+  input  (device-file "/dev/input/by-id/usb-Bastard_Keyboards_Scylla_Splinky-event-kbd")
+  output (uinput-sink "My KMonad output")
+  cmp-seq ralt
+  allow-cmd false
+)
+
+#|
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    -
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+                 _    _    _    _    _    _
+                      _    _    _    _
+|#
+
+;; default kbds changed with usevia.app
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    rmet
+  tab  q    w    e    r    t    y    u    i    o    p    -
+  pgup a    s    d    f    g    h    j    k    l    ;    '
+  pgdn z    x    c    v    b    n    m    ,    .    /    \
+                 lctl bspc lsft rsft spc  rctl
+                      lalt home end  ralt
+)
+
+(defalias
+  spc (tap-hold 200 (around-next (layer-toggle space)) (layer-toggle space))
+  mod (tap-hold 200 (around-next (layer-toggle mod)) (layer-toggle mod))
+  ssp (tap-hold 300 spc rsft)
+  sbs (tap-next bspc lsft) ;; tap-next that is either a shift, or a backspace
+)
+
+(deflayer base
+  grv  1    2    3    4    5    rmet 6    7    8    9    0
+  tab  q    w    e    r    t    -    y    u    i    o    p
+  pgup a    s    d    f    g    up   h    j    k    l    ;
+  pgdn z    x    c    v    b    down n    m    ,    .    /
+                 esc  @sbs @mod @spc @ssp ret
+                      tab  -    .    /
+)
+
+(defalias
+  grv (around lsft grv)
+  tab (around lalt tab)
+  1 (around lsft 1)
+  2 (around lsft 2)
+  3 (around lsft 3)
+  4 (around lsft 4)
+  5 (around lsft 5)
+  6 (around lsft 6)
+  7 (around lsft 7)
+  8 (around lsft 8)
+  9 (around lsft 9)
+  0 (around lsft 0)
+  q (around lalt c)
+  w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
+  e e
+  r (around rctl r)  ;; TODO: this should be part of shell kbds
+  t (around lalt ret)
+  y (around lsft (around lctl c))
+  p (around lsft (around lctl v))
+  [ (around lsft [)
+  ] (around lsft ])
+  bspc (tap-next (around rctl bspc) lsft)
+  cap (around lalt tab)
+  a (around rctl a)
+  s (around lalt s)
+  d (around lalt d)
+  f (around lalt f)
+  g (around lalt spc)
+  h (around lalt h)
+  j (around lalt j)
+  k (around lalt k)
+  l (around lalt l)
+  ; (around lsft ;)
+  dqu (around lsft ")
+  ret (around lsft ret)
+  z (around rctl z)
+  x (around lctl x)
+  c (around lctl c)
+  v (around lctl v)
+  b (cmd-button "sudo -u langston qutebrowser")
+  , (around lsft ,)
+  . (around lsft .)
+)
+
+(deflayer space
+  @grv  @1    @2    @3    @4    @5    _     @6    @7    @8    @9    @0
+  @tab  @q    @w    @e    @r    @t    _     @y    _     _     _     @p
+  _     @a    @s    @d    @f    @g    _     @h    @j    @k    @l    _
+  _     @z    @x    @c    @v    @b    _     _     _     @,    @.    _
+                    _     @bspc _     _     _     _
+                          _     _     _     _
+)
+
+(defalias
+  ww (around lalt w)
+  we (around lalt e)
+  wr (around lalt r)
+  wt (around lalt t)
+  wo (around lalt O)
+  wp (around lalt P)
+  wa (around lalt A)
+  ws (around lalt S)
+  wd (around lalt D)
+  wf (around lalt F)
+  wh (around lalt H)
+  wj (around lalt J)
+  wk (around lalt K)
+  wl (around lalt L)
+)
+
+;; TODO
+(deflayer window
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    @ww  @we  @wr  @wt  _    _    _    _    _    -
+  _    @wa  @ws  @wd  @wf  _    _    @wh  @wj  @wk  @wl  _
+  _    _    _    _    _    _    _    _    _    _    _    _
+                 _    _    _    _    _    _
+                      _    _    _    _
+)
+
+;; TODO:
+;;
+;; - symbols
+;; - suspend
+;;
+;; approximate frequency (C): _,)(*;-=>/.{}"&:+#[]<|%!\'@?~^$`
+
+(defalias
+  arr (tap-hold 200 (around-next (layer-toggle arrow)) (layer-toggle arrow))
+  ctl (around-next lctl)
+  alt (around-next lalt)
+)
+
+(deflayer mod
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    \    /    =    -    =    _    left down up   rght p
+  _    @arr @alt @ctl _    _    _    _    _    _    _    _
+                 _    _    esc  _    _    _
+                      _    _    _    _
+)
+
+(deflayer arrow
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    left down up   rght _
+  _    _    _    _    _    _    _    _    _    _    _    _
+                 _    _    _    _    _    _
+                      _    _    _    _
+)
+
