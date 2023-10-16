@@ -23,7 +23,8 @@ function chatgpt_raw() {
 }
 
 function chatgpt() {
-  chatgpt_raw "${1}" \
+  prompt=${1:-$(bat /dev/stdin)}
+  chatgpt_raw "${prompt}" \
     | jq -r '.choices[0].message.content' \
     | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//'
 }

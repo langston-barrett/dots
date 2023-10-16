@@ -107,4 +107,5 @@ zle-z() {
 zle -N zle-z
 bindkey -M vicmd 'z' zle-z
 
+bindkey -M viins '^A' history-incremental-search-backward
 bindkey -M viins '^R' history-incremental-search-backward

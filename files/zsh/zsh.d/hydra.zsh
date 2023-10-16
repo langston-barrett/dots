@@ -1,7 +1,5 @@
 if [[ -n "$HYDRA" ]]; then
-  unset HYDRA
   # NTS: exec does not work here
-  shell_hydra ~/code/dots/files/shell-hydra.json; exit
 
   # No notifications for backgrounded dogs
   # setopt LOCAL_OPTIONS NO_NOTIFY NO_MONITOR

@@ -5,25 +5,6 @@ export PATH=$PATH:$HOME/.config/bin
 
 eval $(lesspipe.sh)
 
-function git() {
-  if [[ "$1" == "push" ]]; then
-    branch=$(git rev-parse --abbrev-ref HEAD)
-    if [[ $branch == "master" ]]; then
-      case "$(basename "$(pwd)")" in
-        "sfe") echo "Refusing to push to master" ;;
-        "renovate") echo "Refusing to push to master" ;;
-        "parameterized-utils") echo "Refusing to push to master" ;;
-        "chess") echo "Refusing to push to master" ;;
-        *) command git "$@"
-      esac
-    else
-      command git "$@"
-    fi
-  else
-    command git "$@"
-  fi
-}
-
 ## Generic
 
 GPG_TTY=$(tty)
