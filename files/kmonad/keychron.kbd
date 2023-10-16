@@ -23,7 +23,6 @@
 ;; sudo chmod 0666 /dev/hidraw3
 
 (defsrc
-
   q     w     e     r     t     y     u     i     o     p
   a     s     d     f     g     h     j     k     l
   z     x     c     v     b     n     m
@@ -36,15 +35,16 @@
 )
 
 (defalias spc (tap-hold 200 spc (layer-toggle space)))
+(defalias cap (tap-hold 200 esc (layer-toggle mod)))
 
 (deflayer base
   q     w     e     r     t     y     u     i     o     p
   a     s     d     f     g     h     j     k     l
   z     x     c     v     b     n     m
 
-  lalt  1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
   tab                                                               [     ]     \
-  esc                                                         ;     '     ret   pgup
+  @cap                                                        ;     '     ret   pgup
   lsft                                            ,     .     /     rsft  up    pgdn
   lctl  lmet  XX                @spc              ralt  rctl        left  down  right
 )
@@ -57,9 +57,9 @@
 
 (deflayer space
   A-q   @w    _     C-r   A-T   @y    _     _     _     @p
-  A-a   A-s   A-d   A-f   A-g   A-h   A-j   A-k   A-l
-  C-z   C-x   C-c   C-v   _     _     _
-
+  C-a   A-s   A-d   -     A-g   A-h   A-j   A-k   A-l
+  C-z   C-x   C-c   C-v   _     A-n   A-m
+ 
   S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   S-9   S-0   S--   S-=   C-bspc
   _                                                                 S-[   S-]   S-\
   _                                                           S-;   S-'   S-ret _
@@ -69,8 +69,8 @@
 
 (deflayer window
   _     A-w   A-e   A-r   A-t   _     _     _     A-O    A-P
-  A-A   A-S   A-D   A-F   _     A-H   A-J   A-K   A-L
-  _     _     _     _     _     _     _
+  _     A-S   A-D   _     _     A-H   A-J   A-K   A-L
+  _     _     _     _     _     A-N   A-M
 
   _     _     _     _     _     _     _     _     _     _     _     _     _     _
   _                                                                 _     _     _
@@ -78,3 +78,16 @@
   _                                               _     _     _     _     _     _
   _     _     _                 _                 _     _           _     _     _
 )
+
+(deflayer mod
+  !     @     #     $     %     ^     &     *     S-[   S-]
+  [     ,     .     -     =     S-9   S-0   ;     '
+  ]     S-,   S-.   S--   S-=   S-;   S-'
+
+  S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   XX    XX    S--   S-=   C-bspc
+  _                                                                 S-[   S-]   S-\
+  _                                                           S-;   S-'   S-ret _
+  _                                               S-,   S-.   S-/   _     _     _
+  _     _     _                 _                 _     _           _     _     _
+)
+

@@ -7,11 +7,23 @@
 
 Besides standard letters and punctuation, I frequently use the keyboard to
 control just a few programs:
+
 - window manager (i3), via lalt
 - shell (zsh), via ctrl-key and via Spacemacs/Vim-like modal bindings
 - editor (helix), via Spacemacs/Vim-like modal bindings
 - browser (qute), via Vim-like modal bindings
 - various programs via ctrl-key (ctrl-{a,c,x,v})
+
+### Tap vs hold
+
+Most keys are tapped but never held. Shift, ctrl, and alt are held but never
+tapped. Backspace and arrow keys are the exceptions, as they are tapped and
+held.
+
+### Modifier keys
+
+I use ctrl and alt a lot, but rarely on the same keys. These modifiers can
+be combined into one.
 
 ## Very frequent keys
 

@@ -5,23 +5,35 @@
   allow-cmd false
 )
 
-#|
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    -
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-                 _    _    _    _    _    _
-                      _    _    _    _
+#| Letter keys are shared (copy-pasted) among different keyboards
+
+  _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _
+
+  _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _
+  _                                   _                             _
+  _                                   _                 _     _     _
+                    _     _     _     _     _     _
+                          _     _     _     _
 |#
 
 ;; default kbds changed with usevia.app
+;; navigate to chrome://device-log to find device path
+;; sudo chmod 0666 /dev/hidraw3
+
 (defsrc
-  grv  1    2    3    4    5    6    7    8    9    0    rmet
-  tab  q    w    e    r    t    y    u    i    o    p    -
-  pgup a    s    d    f    g    h    j    k    l    ;    '
-  pgdn z    x    c    v    b    n    m    ,    .    /    \
-                 lctl bspc lsft rsft spc  rctl
-                      lalt home end  ralt
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  grv   1     2     3     4     5     6     7     8     9     0     left
+  tab                                                               rght
+  ;                                   up                            pgup
+  '                                   down              ,     .     pgdn
+                    lctl  bspc  lsft  rsft  spc   rctl
+                          lalt  home  end   ralt
 )
 
 (defalias
@@ -32,93 +44,50 @@
 )
 
 (deflayer base
-  grv  1    2    3    4    5    left 6    7    8    9    0
-  tab  q    w    e    r    t    rght y    u    i    o    p
-  XX   a    s    d    f    g    up   h    j    k    l    pgup
-  XX   z    x    c    v    b    down n    m    XX   XX   pgdn
-                 esc  @sbs @mod @spc @ssp ret
-                      tab  ,    .    /
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  grv   1     2     3     4     5     6     7     8     9     0     left
+  tab                                                               rght
+  XX                                  up                            pgup
+  XX                                  down              XX    XX    pgdn
+                    esc   @sbs  @mod  @spc  @ssp  ret
+                          tab   ,     .     /
 )
 
 (defalias
-  grv (around lsft grv)
-  tab (around lalt tab)
-  1 (around lsft 1)
-  2 (around lsft 2)
-  3 (around lsft 3)
-  4 (around lsft 4)
-  5 (around lsft 5)
-  6 (around lsft 6)
-  7 (around lsft 7)
-  8 (around lsft 8)
-  9 (around lsft 9)
-  0 (around lsft 0)
-  q (around lalt c)
   w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
-  e e
-  r (around rctl r)  ;; TODO: this should be part of shell kbds
-  t (around lalt ret)
   y (around lsft (around lctl c))
   p (around lsft (around lctl v))
-  [ (around lsft [)
-  ] (around lsft ])
   bspc (tap-next (around rctl bspc) lsft)
-  cap (around lalt tab)
-  a (around rctl a)
-  s (around lalt s)
-  d (around lalt d)
-  f (around lalt f)
-  g (around lalt spc)
-  h (around lalt h)
-  j (around lalt j)
-  k (around lalt k)
-  l (around lalt l)
-  ; (around lsft ;)
-  dqu (around lsft ")
-  ret (around lsft ret)
-  z (around rctl z)
-  x (around lctl x)
-  c (around lctl c)
-  v (around lctl v)
-  b (cmd-button "sudo -u langston qutebrowser")
-  , (around lsft ,)
-  . (around lsft .)
 )
 
 (deflayer space
-  @grv  S-1   S-2   S-3   S-4   S-5   _     S-6   S-7   S-8   S-9   S-0
-  @tab  @q    @w    @e    @r    @t    _     @y    _     _     _     @p
-  _     @a    @s    @d    @f    @g    _     @h    @j    @k    @l    _
-  _     @z    @x    @c    @v    @b    _     _     _     @,    @.    _
-                    _     @bspc _     _     _     _
+  A-q   @w    _     C-r   A-T   @y    _     _     _     @p
+  C-a   A-s   A-d   -     A-g   A-h   A-j   A-k   A-l
+  C-z   C-x   C-c   C-v   _     A-n   A-m
+
+  S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   S-9   S-0   _
+  _                                                                 _
+  _                                   _                             _
+  _                                   _                 _     _     _
+                    _     @bspc _     _     _     S-ret
                           _     _     _     _
 )
 
-(defalias
-  ww (around lalt w)
-  we (around lalt e)
-  wr (around lalt r)
-  wt (around lalt t)
-  wo (around lalt O)
-  wp (around lalt P)
-  wa (around lalt A)
-  ws (around lalt S)
-  wd (around lalt D)
-  wf (around lalt F)
-  wh (around lalt H)
-  wj (around lalt J)
-  wk (around lalt K)
-  wl (around lalt L)
-)
-
-;; TODO
 (deflayer window
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    @ww  @we  @wr  @wt  _    _    _    _    _    -
-  _    @wa  @ws  @wd  @wf  _    _    @wh  @wj  @wk  @wl  _
-  _    _    _    _    _    _    _    _    _    _    _    _
-                 _    _    _    _    _    _
-                      _    _    _    _
+  _     A-w   A-e   A-r   A-t   _     _     _     A-O    A-P
+  _     A-S   A-D   _     _     A-H   A-J   A-K   A-L
+  _     _     _     _     _     A-N   A-M
+
+  _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _
+  _                                   _                             _
+  _                                   _                 _     _     _
+                    _     _     _     _     _     _
+                          _     _     _     _
+
 )
 
 ;; TODO:
@@ -136,20 +105,29 @@
 )
 
 (deflayer mod
-  @grv  @1    @2    @3    @4    @5    _     @6    @7    @8    @9    @0
-  _    _    _    _    _    _    _    [    ]    _    _    _
-  _    \    /    =    -    =    _    \(   \)   ;    '    _
-  _    @arr @alt @ctl _    _    _    S-[  S-]  _    _    _
-                 _    _    esc  _    _    _
-                      _    _    _    _
+  !     @     #     $     %     ^     &     *     S-[   S-]
+  [     ,     .     -     =     S-9   S-0   ;     '
+  ]     S-,   S-.   S--   S-=   S-;   S-'
+
+  S-grv S-1   S-2   S-3   S-4   S-5   _     S-6   S-7   S-8   S-9   S-0
+  _                                                                 _
+  _                                   _                             _
+  _                                   _                 _     _     _
+                    _     @bspc _     _     _     S-ret
+                          _     _     _     _
 )
 
 (deflayer arrow
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    left down up   rght _
-  _    _    _    _    _    _    _    _    _    _    _    _
-                 _    _    _    _    _    _
-                      _    _    _    _
+  _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     left  down  up    rght
+  _     _     _     _     _     _     _
+
+
+  _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _
+  _                                   _                             _
+  _                                   _                 _     _     _
+                    _     _     _     _     _     _
+                          _     _     _     _
 )
 

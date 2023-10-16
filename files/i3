@@ -13,17 +13,19 @@ exec feh --bg-fill ~/.config/wallpaper.png
 # Alt is Mod1.
 set $mod Mod1
 
+bindsym $mod+q kill
 bindsym $mod+c kill
 
 # Mouse+mod floats & drags
 floating_modifier $mod
 
 for_window [title="^launch$"] floating enable
-for_window [title="^launch$"] resize set 400 300
+for_window [title="^launch$"] resize set 600 400
 for_window [title="^launch$"] move position center
 for_window [title="^launch$"] border pixel 2
 # bindsym $mod+Tab exec env HYDRA=1 alacritty --class launch --title launch, [title="launch"] focus
 bindsym $mod+space exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
+bindsym $mod+g exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
 
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 #bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
@@ -32,10 +34,11 @@ bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Alt+c 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"
 # bindsym $mod+Return exec urxvt
 bindsym $mod+Return exec alacritty
+bindsym $mod+Shift+t exec alacritty
 bindsym $mod+Shift+Return exec urxvt
 
 # enter fullscreen mode for the focused container
-bindsym $mod+Shift+p fullscreen toggle
+bindsym $mod+Shift+f fullscreen toggle
 
 # ** navigation
 
@@ -43,10 +46,10 @@ set $left h
 set $down j
 set $up k
 set $right l
-set $workspace0 f
-set $workspace1 d
+set $workspace0 n
+set $workspace1 m
 set $workspace2 s
-set $workspace3 a
+set $workspace3 d
 set $resize r
 set $stack t
 set $split y
@@ -116,8 +119,8 @@ bindsym $mod+u focus mode_toggle
 #bindsym $mod+d focus child  # focus the child container
 
 # Reload, restart, and kill i3
-bindsym $mod+Shift+$reload reload
-bindsym $mod+Shift+$restart restart
+# bindsym $mod+Shift+$reload reload
+# bindsym $mod+Shift+$restart restart
 bindsym $mod+Shift+$exit exec "i3-nagbar -t warning -m 'End X session?' -b 'Yes' 'i3-msg exit'"
 
 # ** brightness + volume
@@ -182,59 +185,3 @@ mode "resize" {
 bindsym $mod+$resize mode "resize"
 # smart_borders on
 
-# ** exec
-
-set $execMode "Switch mode: [q]uit [d]isplay [f]ocus"
-bindsym $mod+x mode $execMode
-
-mode $execMode {
-    bindsym d mode $displayMode
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym q mode "default"
-}
-
-# ** display
-
-set $displayMode "Set display mode [e]-ink [d]esk [l]aptop"
-
-mode $displayMode {
-    bindsym e exec "~/.config/i3/scripts/e-ink.sh"; \
-                mode "default"
-    bindsym d exec "~/.config/i3/scripts/at-desk.sh"; \
-                mode "default"
-    bindsym l exec "~/.config/i3/scripts/not-at-desk.sh"; \
-                mode "default"
-
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-    bindsym q mode "default"
-}
-
-# ** i3bar
-
-# bar {
-#   i3bar_command i3bar -t
-#   font pango:Hack, Icons 8
-
-#   output primary
-#   tray_output primary
-#   status_command i3status
-#   # status_command conky --config=$HOME/code/dots/files/conky/conkyrc.i3
-
-
-#   position top
-
-#   colors {
-#     background    #17171788
-#     statusline    #D8D8D8FF
-
-#     background  $bg$tr
-#     separator   $in
-#     #                  border   bground   text
-#     focused_workspace  $bg$tr   $bg$tr    $fg
-#     inactive_workspace $bg$tr   $bg$tr    $in
-#     urgent_workspace   $bg$tr   $bg$tr    $ur
-#   }
-# }
