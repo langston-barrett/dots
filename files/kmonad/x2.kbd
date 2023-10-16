@@ -25,50 +25,6 @@
                                                     left down right
 )
 
-;; ## Goals
-;;
-;; - Reduce risk of RSI by reducing chording
-;; - Increase speed by reducing movement away from the home row
-;;
-;; ## Observations
-;;
-;; Besides standard letters and punctuation, I frequently use the keyboard to
-;; control just a few programs:
-;;
-;; - window manager (i3), via lalt
-;; - shell (zsh), via ctrl-key and via Spacemacs/Vim-like modal bindings
-;; - editor (helix), via Spacemacs/Vim-like modal bindings
-;; - browser (qute), via Vim-like modal bindings
-;; - various programs via ctrl-key (ctrl-{a,c,x,v})
-;;
-;; ## Very frequent keys
-;;
-;; - spc: ed, shell
-;; - bspc: ed, shell
-;; - esc: ed, shell, browser
-;; - ret: ed, shell
-;; - lalt: wm
-;; - tab: shell
-;; - lsft: ed, shell
-;; - lctl: shell, browser
-;; - rght: shell
-;; - symbols: _;./,(){}
-;;
-;; ## Very infrequent keys
-;;
-;; - super
-;; - spc (held)
-;; - ret (held)
-;; - shift (tap)
-;; - bspc (tap)
-;; - lctl (tap)
-;;
-;; ## Space as leader
-;;
-;; I don't hold down the space bar, so I can use this to toggle layers.
-;;
-;; I shouldn't introduce chording where none exists (e.g., for esc, ret).
-
 (defalias spc (tap-hold 200 spc (layer-toggle space)))
 
 (deflayer base
@@ -84,16 +40,6 @@
 (defalias
   grv (around lsft grv)
   tab (around lalt tab)
-  1 (around lsft 1)
-  2 (around lsft 2)
-  3 (around lsft 3)
-  4 (around lsft 4)
-  5 (around lsft 5)
-  6 (around lsft 6)
-  7 (around lsft 7)
-  8 (around lsft 8)
-  9 (around lsft 9)
-  0 (around lsft 0)
   q (around lalt c)
   w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
   e e
@@ -101,37 +47,21 @@
   t (around lalt ret)
   y (around lsft (around caps c))
   p (around lsft (around caps v))
-  [ (around lsft [)
-  ] (around lsft ])
   bspc (around rctl bspc)
   cap (around lalt tab)
-  a (around rctl a)
-  s (around lalt s)
-  d (around lalt d)
-  f (around lalt f)
   g (around lalt spc)
-  h (around lalt h)
-  j (around lalt j)
-  k (around lalt k)
-  l (around lalt l)
   ; (around lsft ;)
-  dqu (around lsft ")
-  ret (around lsft ret)
-  z (around rctl z)
-  x (around caps x)
-  c (around caps c)
-  v (around caps v)
-  b (cmd-button "sudo -u langston qutebrowser")
   , (around lsft ,)
   . (around lsft .)
 )
 
+;; TODO: A-c -> A-q
 (deflayer space
   _    _    _    _    _    _    _    _    _    _    _    _    _
-  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   @bspc
-  _    @q   @w   @e   @r   @t   @y   _    _    _    @p   @[   @]   _
-  @cap @a   @s   @d   @f   @g   @h   @j   @k   @l   @;   @dqu @ret
-  _    @z   @x   @c   @v   @b   _    _    @,   @.   _    _
+  @grv S-1  S-2  S-3  S-4  S-5  S-6  S-7  S-8  S-9  S-0  _    _    C-bspc
+  _    A-c  @w   _    C-r  A-T  @y   _    _    _    @p   S-[  S-]  _
+  @cap C-a  A-s  A-d  A-f  A-g  A-h  A-j  A-k  A-l  @;   S-'  S-ret
+  _    C-z  C-x  C-c  C-v  _    _    _    @,   @.   _    _
   _    _    _              _              _    _    _    _    _
                                                     _    _    _
 )

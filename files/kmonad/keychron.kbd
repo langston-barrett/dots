@@ -5,166 +5,76 @@
   allow-cmd true
 )
 
-#|
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _              _              _    _         _    _    _
+#| Letter keys are shared (copy-pasted) among different keyboards
+
+  _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _
+
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _     _     _
+  _                                                           _     _     _     _
+  _                                               _     _     _     _     _     _
+  _     _     _                 _                 _     _           _     _     _
 |#
 
-(defsrc
-  esc  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-  caps a    s    d    f    g    h    j    k    l    ;    '    ret  pgup
-  lsft z    x    c    v    b    n    m    ,    .    /    rsft up   pgdn
-  lctl lmet lalt           spc            ralt rctl      left down right
-)
+;; src configured with usevia.app
+;; navigate to chrome://device-log to find device path
+;; sudo chmod 0666 /dev/hidraw3
 
-;; ## Goals
-;;
-;; - Reduce risk of RSI by reducing chording
-;; - Increase speed by reducing movement away from the home row
-;;
-;; ## Observations
-;;
-;; Besides standard letters and punctuation, I frequently use the keyboard to
-;; control just a few programs:
-;;
-;; - window manager (i3), via lalt
-;; - shell (zsh), via ctrl-key and via Spacemacs/Vim-like modal bindings
-;; - editor (helix), via Spacemacs/Vim-like modal bindings
-;; - browser (qute), via Vim-like modal bindings
-;; - various programs via ctrl-key (ctrl-{a,c,x,v})
-;;
-;; ## Very frequent keys
-;;
-;; - spc: ed, shell
-;; - bspc: ed, shell
-;; - esc: ed, shell, browser
-;; - ret: ed, shell
-;; - lalt: wm
-;; - tab: shell
-;; - lsft: ed, shell
-;; - lctl: shell, browser
-;; - rght: shell
-;; - symbols: _;./,(){}
-;;
-;; ## Very infrequent keys
-;;
-;; - super
-;; - spc (held)
-;; - ret (held)
-;; - shift (tap)
-;; - bspc (tap)
-;; - lctl (tap)
-;;
-;; ## Space as leader
-;;
-;; I don't hold down the space bar, so I can use this to toggle layers.
-;;
-;; I shouldn't introduce chording where none exists (e.g., for esc, ret).
+(defsrc
+
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  esc   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab                                                               [     ]     \
+  caps                                                        ;     '     ret   pgup
+  lsft                                            ,     .     /     rsft  up    pgdn
+  lctl  lmet  lalt              spc               ralt  rctl        left  down  right
+)
 
 (defalias spc (tap-hold 200 spc (layer-toggle space)))
 
 (deflayer base
-  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
-  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
-  esc  a    s    d    f    g    h    j    k    l    ;    '    ret  pgup
-  lsft z    x    c    v    b    n    m    ,    .    /    rsft up   pgdn
-  lctl lmet XX             @spc           ralt rctl      left down right
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  lalt  1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab                                                               [     ]     \
+  esc                                                         ;     '     ret   pgup
+  lsft                                            ,     .     /     rsft  up    pgdn
+  lctl  lmet  XX                @spc              ralt  rctl        left  down  right
 )
 
 (defalias
-  grv (around lsft grv)
-  tab (around lalt tab)
-  1 (around lsft 1)
-  2 (around lsft 2)
-  3 (around lsft 3)
-  4 (around lsft 4)
-  5 (around lsft 5)
-  6 (around lsft 6)
-  7 (around lsft 7)
-  8 (around lsft 8)
-  9 (around lsft 9)
-  0 (around lsft 0)
-  q (around lalt c)
   w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
-  e e
-  r (around rctl r)
-  t (around lalt ret)
   y (around lsft (around caps c))
-  u (around lsft u)
-  p (around lsft (around lctl v))
-  [ (around lsft [)
-  ] (around lsft ])
-  bspc (around rctl bspc)
-  a (around rctl a)
-  s (around lalt s)
-  d (around lalt d)
-  f (around lalt f)
-  g (around lalt spc)
-  h (around lalt h)
-  j (around lalt j)
-  k (around lalt k)
-  l (around lalt l)
-  ; (around lsft ;)
-  dqu (around lsft ")
-  ret (around lsft ret)
-  z (around rctl z)
-  x (around lctl x)
-  c (around lctl c)
-  v (around lctl v)
-  b (cmd-button "sudo -u langston qutebrowser")
-  , (around lsft ,)
-  . (around lsft .)
+  p (around lsft (around caps v))
 )
 
 (deflayer space
-  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   @bspc
-  _    @q   @w   @e   @r   @t   @y   @u   _    _    @p   @[   @]   _
-  _    @a   @s   @d   @f   @g   @h   @j   @k   @l   @;   @dqu @ret _
-  _    @z   @x   @c   @v   @b   _    _    @,   @.   _    _    _    _
-  _    _    _              _              _    _         _    _    _
-)
+  A-q   @w    _     C-r   A-T   @y    _     _     _     @p
+  A-a   A-s   A-d   A-f   A-g   A-h   A-j   A-k   A-l
+  C-z   C-x   C-c   C-v   _     _     _
 
-
-(defalias
-  ww (around lalt w)
-  we (around lalt e)
-  wr (around lalt r)
-  wt (around lalt t)
-  wo (around lalt O)
-  wa (around lalt A)
-  ws (around lalt S)
-  wd (around lalt D)
-  wf (around lalt F)
-  wh (around lalt H)
-  wj (around lalt J)
-  wk (around lalt K)
-  wl (around lalt L)
+  S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   S-9   S-0   S--   S-=   C-bspc
+  _                                                                 S-[   S-]   S-\
+  _                                                           S-;   S-'   S-ret _
+  _                                               S-,   S-.   S-/   _     _     _
+  _     _     _                 _                 _     _           _     _     _
 )
 
 (deflayer window
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    @ww  @we  @wr  @wt  _    _    _    @wo  _    _    _    _
-  _    @wa  @ws  @wd  @wf  _    @wh  @wj  @wk  @wl  _    _    _    _
-  _    _    _    _    _    _    _    _    _    _    _    _    _    _
-  _    _    _              _              _    _         _    _    _
+  _     A-w   A-e   A-r   A-t   _     _     _     A-O    A-P
+  A-A   A-S   A-D   A-F   _     A-H   A-J   A-K   A-L
+  _     _     _     _     _     _     _
+
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _     _     _
+  _                                                           _     _     _     _
+  _                                               _     _     _     _     _     _
+  _     _     _                 _                 _     _           _     _     _
 )
-
-;; ;; symbols: _;./,(){}
-;; (defalias
-;;   sd -
-;;   sf /
-;; )
-
-;; (deflayer symbol
-;;   _
-;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-;;   _    _    _    _    _    _    _    _    _    _    _    _    _    _
-;;   _    _    _    @sd  @sf  _    _    _    _    _    _    _    _
-;;   _    _    _    _    _    _    _    _    _    _    _    _
-;;   _    _    _              _              _    _    _    _    _
-;;                                                     _    _    _
-;; )
