@@ -34,8 +34,8 @@
   lctl  lmet  lalt              spc               ralt  rctl        left  down  right
 )
 
-(defalias spc (tap-hold 200 spc (layer-toggle space)))
-(defalias cap (tap-hold 200 esc (layer-toggle mod)))
+(defalias spc (tap-hold 150 spc (layer-toggle space)))
+(defalias cap (tap-next esc (layer-toggle mod)))
 
 (deflayer base
   q     w     e     r     t     y     u     i     o     p
@@ -50,7 +50,7 @@
 )
 
 (defalias
-  w (tap-hold 200 (around-next (layer-toggle window)) (layer-toggle window))
+  w (tap-hold 150 (around-next (layer-toggle window)) (layer-toggle window))
   y (around lsft (around caps c))
   p (around lsft (around caps v))
 )
@@ -69,7 +69,7 @@
 
 (deflayer window
   _     A-w   A-e   A-r   A-t   _     _     _     A-O    A-P
-  _     A-S   A-D   _     _     A-H   A-J   A-K   A-L
+  _     A-S   A-D   A-F   _     A-H   A-J   A-K   A-L
   _     _     _     _     _     A-N   A-M
 
   _     _     _     _     _     _     _     _     _     _     _     _     _     _

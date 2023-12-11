@@ -39,7 +39,7 @@
 (defalias
   spc (tap-hold 200 (around-next (layer-toggle space)) (layer-toggle space))
   mod (tap-hold 200 (around-next (layer-toggle mod)) (layer-toggle mod))
-  ssp (tap-hold 300 spc rsft)
+  ssp (tap-hold 200 spc rsft)
   sbs (tap-next bspc lsft) ;; tap-next that is either a shift, or a backspace
 )
 
@@ -53,7 +53,7 @@
   XX                                  up                            pgup
   XX                                  down              XX    XX    pgdn
                     esc   @sbs  @mod  @spc  @ssp  ret
-                          tab   ,     .     /
+                          tab   ,     .     tab
 )
 
 (defalias
