@@ -1,5 +1,5 @@
 # UNFINISHED
-{ config, pkgs, ... }: 
+{ config, pkgs, ... }:
 {
   imports = [ ./graphical.nix ];
 
