@@ -1,4 +1,4 @@
-{ ghc ? "ghc927"
+{ ghc ? "ghc96"
 , unstableHaskell ? true
 }:
 
@@ -13,11 +13,14 @@ in pkgs.mkShell {
   buildInputs =  [
     pkgs.clang_11
     pkgs.llvm_11
+    pkgs.cvc5
     pkgs.yices
     pkgs.z3
+    pkgs.mdbook
 
-    (hPkgs.haskell.packages.${ghc}.ghcWithHoogle (hpkgs: with hpkgs; []))
-    hPkgs.haskell-language-server
+    hPkgs.haskell.packages.${ghc}.ghc
+    hPkgs.haskell.packages.${ghc}.haskell-language-server
+    hPkgs.haskellPackages.apply-refact
     hPkgs.haskellPackages.ghcid
     hPkgs.haskellPackages.hlint
     hPkgs.haskellPackages.cabal-install

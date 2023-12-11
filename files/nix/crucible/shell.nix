@@ -13,6 +13,7 @@ in pkgs.mkShell {
   buildInputs =  [
     pkgs.clang_8
     pkgs.llvm_8
+    pkgs.cvc5
     pkgs.yices
     pkgs.z3
 
