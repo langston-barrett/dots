@@ -1,5 +1,5 @@
 auto_save.session: true
-fonts.default_size: "16px"
+fonts.default_size: "22px"
 bindings.commands:
   normal:
     tL: open https://outline.com/{url}

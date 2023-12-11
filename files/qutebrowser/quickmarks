@@ -33,7 +33,7 @@ detect-google-drive https://drive.google.com/drive/u/0/folders/0AO1vooaNX3oNUk9P
 detect-issues https://gitlab-ext.galois.com/detect/detect/-/issues
 detect-mrs https://gitlab-ext.galois.com/detect/detect/-/merge_requests
 detect-wiki https://gitlab-ext.galois.com/detect/detect/-/wikis/home
-libafl-docs https://docs.rs/libafl/latest/libafl/
+libafl-docs https://docs.rs/libafl/0.10.1/libafl/
 libafl-qemu-docs https://docs.rs/libafl_qemu/latest/libafl_qemu/index.html
 maps https://www.google.com/maps
 ices https://github.com/rust-lang/rust/issues?q=is%3Aopen+is%3Aissue+label%3AI-ICE
@@ -42,4 +42,4 @@ cal https://calendar.google.com/calendar/u/0/r
 cal-personal https://calendar.google.com/calendar/u/1/r
 mattermost https://mattermost.galois.com/
 tasks https://tasks.google.com/embed/?origin=https://calendar.google.com&fullWidth=1&authuser=bbarrett909@gmail.com
-
+grease-mrs https://gitlab-ext.galois.com/grease/grease/-/merge_requests
