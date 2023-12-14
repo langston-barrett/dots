@@ -9,13 +9,6 @@
     graphviz
     imagemagick
     pass
-
-    # all necessary for emacs build epdfinfo
-    autoconf
-    automake
-    autobuild
-    pkgconfig
-    gnum4
   ];
 
   # security.apparmor.profiles =
