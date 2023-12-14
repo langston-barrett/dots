@@ -38,7 +38,6 @@
 )
 
 (defalias
-  esc (around lalt a)
   grv (around lsft grv)
   tab (around lalt tab)
   q (around lalt c)
@@ -58,12 +57,12 @@
 
 ;; TODO: A-c -> A-q
 (deflayer space
-  @esc _    _    _    _    _    _    _    _    _    _    _    _  
-  @grv @1   @2   @3   @4   @5   @6   @7   @8   @9   @0   @[   @]   @bspc   
-  _    @q   @w   @e   @r   @t   @y   _    _    _    @p   @[   @]   _
-  @cap @a   @s   @d   @f   @g   @h   @j   @k   @l   @;   @dqu @ret  
-  _    @z   @x   @c   @v   @b   _    _    @,   @.   _    _   
-  _    _    _              _              _    _    _    _    _   
+  _    _    _    _    _    _    _    _    _    _    _    _    _
+  @grv S-1  S-2  S-3  S-4  S-5  S-6  S-7  S-8  S-9  S-0  _    _    C-bspc
+  _    A-c  @w   _    C-r  A-T  @y   _    _    _    @p   S-[  S-]  _
+  @cap C-a  A-s  A-d  A-f  A-g  A-h  A-j  A-k  A-l  @;   S-'  S-ret
+  _    C-z  C-x  C-c  C-v  _    _    _    @,   @.   _    _
+  _    _    _              _              _    _    _    _    _
                                                     _    _    _
 )
 
