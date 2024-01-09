@@ -15,7 +15,6 @@
     arandr
     # conky
     vanilla-dmz # cursor theme
-    xorg.xmodmap # swap l-ctrl and caps lock
   ];
 
   # TODO: Fix after NixOS 21.05 upgrade
@@ -26,7 +25,6 @@
   #     (writeDenyProfile { path = pkgs.xcompmgr; binary = "xcompmgr"; })
   #     # TODO  test these
   #     # (writeDenyProfile { path = pkgs.arandr; binary = "aspell"; })
-  #     # (writeDenyProfile { path = pkgs.xorg.xmodmap; binary = "xmodmap"; })
   #     # (writeDenyProfile { path = pkgs.arandr; binary = "arandr"; })
   #   ];
 

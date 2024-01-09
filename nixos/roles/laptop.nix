@@ -25,11 +25,8 @@
       DisplaySize   294 166
     '';
 
-    # TODO: get rid of ~/.xmodmap and see if this works
-    xkbOptions = "ctrl:swapcaps";
-
     synaptics = {
-      enable = true;
+      enable = false;  # TODO?
       # OSX-like "Natural" two-finger scrolling
       twoFingerScroll = true;
       horizTwoFingerScroll = true;

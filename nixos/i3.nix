@@ -5,8 +5,8 @@
 
   environment.systemPackages = with pkgs; [
     (polybar.override {
-      i3GapsSupport = true;
-      i3-gaps = i3-gaps;
+      # i3GapsSupport = true;
+      # i3-gaps = i3-gaps;
       jsoncpp = jsoncpp;
     })
     # i3status

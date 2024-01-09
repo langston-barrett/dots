@@ -33,7 +33,7 @@ in {
   networking.hostName = "sem";
   services.logind.extraConfig = "RuntimeDirectorySize=8G";
 
-  services.mullvad-vpn.enable = true;
+  # services.mullvad-vpn.enable = true;
 
   environment.systemPackages = with pkgs; [
     # beets

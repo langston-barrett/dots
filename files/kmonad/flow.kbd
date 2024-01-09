@@ -1,0 +1,95 @@
+(defcfg
+  input  (device-file "/dev/input/by-id/usb-Compx_Flow84@Lofree-event-kbd")
+  output (uinput-sink "My KMonad output")
+  cmp-seq ralt
+  allow-cmd true
+)
+
+#| Letter keys are shared (copy-pasted) among different keyboards
+
+  _     _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _     _     _
+  _     _     _     _     _     _     _
+
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _     _     _
+  _                                                           _     _     _     _
+  _                                               _     _     _     _     _     _
+  _     _     _                 _                 _     _           _     _     _
+|#
+
+;; src configured with usevia.app
+;; navigate to chrome://device-log to find device path
+;; sudo chmod 0666 /dev/hidraw3
+
+;; just copied from keychron, not actually customized for flow
+
+(defsrc
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  esc   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab                                                               [     ]     \
+  caps                                                        ;     '     ret   pgup
+  lsft                                            ,     .     /     rsft  up    pgdn
+  lctl  lmet  lalt              spc               ralt  rctl        left  down  right
+)
+
+(defalias spc (tap-hold 150 spc (layer-toggle space)))
+(defalias cap (tap-next esc (layer-toggle mod)))
+
+(deflayer base
+  q     w     e     r     t     y     u     i     o     p
+  a     s     d     f     g     h     j     k     l
+  z     x     c     v     b     n     m
+
+  grv   1     2     3     4     5     6     7     8     9     0     -     =     bspc
+  tab                                                               [     ]     \
+  @cap                                                        ;     '     ret   pgup
+  lsft                                            ,     .     /     rsft  up    pgdn
+  lctl  lmet  XX                @spc              ralt  rctl        left  down  right
+)
+
+(defalias
+  w (tap-hold 150 (around-next (layer-toggle window)) (layer-toggle window))
+  y (around lsft (around caps c))
+  p (around lsft (around caps v))
+)
+
+(deflayer space
+  A-q   @w    _     C-r   A-T   @y    _     _     _     @p
+  C-a   A-s   A-d   -     A-g   A-h   A-j   A-k   A-l
+  C-z   C-x   C-c   C-v   _     A-n   A-m
+ 
+  S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   S-9   S-0   S--   S-=   C-bspc
+  _                                                                 S-[   S-]   S-\
+  _                                                           S-;   S-'   S-ret _
+  _                                               S-,   S-.   S-/   _     _     _
+  _     _     _                 _                 _     _           _     _     _
+)
+
+(deflayer window
+  _     A-w   A-e   A-r   A-t   _     _     _     A-O    A-P
+  _     A-S   A-D   A-F   _     A-H   A-J   A-K   A-L
+  _     _     _     _     _     A-N   A-M
+
+  _     _     _     _     _     _     _     _     _     _     _     _     _     _
+  _                                                                 _     _     _
+  _                                                           _     _     _     _
+  _                                               _     _     _     _     _     _
+  _     _     _                 _                 _     _           _     _     _
+)
+
+(deflayer mod
+  !     @     #     $     %     ^     &     *     S-[   S-]
+  grv   \     /     -     =     S-9   S-0   ;     '
+  [     ]     _     S--   S-=   ,     .
+
+  S-grv S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   XX    XX    S--   S-=   C-bspc
+  _                                                                 S-[   S-]   S-\
+  _                                                           S-;   S-'   S-ret _
+  _                                               S-,   S-.   S-/   _     _     _
+  _     _     _                 _                 _     _           _     _     _
+)
+

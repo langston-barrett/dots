@@ -95,6 +95,10 @@ in {
     openDefaultPorts = true;
   };
 
+  services.udev.extraRules = ''
+    KERNEL=="uinput", MODE="0660", GROUP="uinput", OPTIONS+="static_node=uinput"
+  '';
+
   # TODO: Fix after NixOS 21.05 upgrade
   # Apparmor profiles for package in ./minimal.nix
   # security.apparmor.profiles =
