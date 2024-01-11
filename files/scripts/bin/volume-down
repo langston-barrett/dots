@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-pactl set-sink-volume 0 '-5%'
-pactl set-sink-volume 1 '-5%'
-pactl set-sink-volume 2 '-5%'
-pactl set-sink-volume 3 '-5%'
+vols="volumes: "
+for sink in 0 1 2 3; do
+  pactl set-sink-volume "${sink}" '-5%'
+  vol=$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $((sink + 1)) | tail -n 1 | sed -e 's,.* \([0-9][0-9]*\)%.*,\1,')
+  vols="${vols} ${vol}%"
+done
+notify-send "${vols}"

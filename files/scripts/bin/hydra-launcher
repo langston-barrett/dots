@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec ~/.cargo/bin/shell_hydra ~/code/dots/files/shell-hydra.json
