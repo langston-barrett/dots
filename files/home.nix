@@ -1,60 +1,78 @@
 { pkgs, ... }:
-  programs = --exact {
-    exact-gpg.enable = false;
 
- --height=10% --layout=reverse --prompt='>> '    # password-store = {
-    };
+{
+  home.packages = with pkgs; [
+    fasd
+  ];
 
--exact      enable = true;
-      enable = exact-tree;
+  nixpkgs.overlays = [ ];
+
+  manual.manpages.enable = true;
+
+  services = {
+    dunst = {
+      enable = true;
+      settings = {
         global = {
           geometry = "500-30+50";
+          transparency = 10;
           frame_color = "#eceff1";
-  };
-  programs = {
-    gpg.enable = true;
-
- --height=10% --layout=reverse --prompt='>> '    # password-store = {
-    };
-
-      enable = true;
-      keybase = {
-        enable = true;
+          font = "Hack 14";
+          word_wrap = true;
+        };
       };
-    gpg-agent = {
+    };
+
+    lorri.enable = true;
+
+    kbfs = {
       enable = true;
-      enableSshSupport = true;
     };
-    #   enable = true;
-  };
-
-    user = {
-      timers = { };
+    keybase = {
+      enable = true;
     };
-  };
-}
-assword-store = {
-    #   enable = true;
-  };
-
-    user = {
-      timers = { };
-    };
-  };
-}
-
     gpg-agent = {
       enable = true;
       enableSshSupport = true;
     };
   };
+
+  # programs.home-manager = {
+  #   enable = true;
+  # };
+
   programs = {
     gpg.enable = true;
 
     # password-store = {
     #   enable = true;
+    # };
+
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    emacs = {
+      enable = true;
+    };
+
+    zsh = {
+      enable = true;
+      enableAutosuggestions = true;
+      enableCompletion = false;
+      enableSyntaxHighlighting = true;
+      sessionVariables = {
+        # masterpassword
+        MPW_FULLNAME = "Langston Barrett";
+        MPW_SITETYPE = "x";
+        XDG_CONFIG_HOME = "$HOME/.config";
+        EDITOR = "hx";
+      };
+    };
   };
 
+  systemd = {
     user = {
       timers = { };
     };
