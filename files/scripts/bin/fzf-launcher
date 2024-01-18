@@ -2,23 +2,17 @@
 
 candidates=${XDG_RUNTIME_DIR}/launcher
 if ! [[ -f ${candidates} ]]; then
+  dots="$HOME/code/dots"
+  while IFS= read -r line; do
+    read -ra cols <<< "$line"
+    printf "%s;%s\n" "${dots}/files/scripts/bin/new-tab '${cols[1]}'" "${cols[0]}" >> "${candidates}"
+  done < "${dots}/files/qutebrowser/quickmarks"
   compgen -c | while read -r f; do
-    printf '%s:%s\n' "${f}" "${f}" >> ${candidates}
+    printf '%s;%s\n' "${f}" "${f}" >> "${candidates}"
   done
   # Maybe not necessary?
   ls ~/.config/bin/* | while read -r f; do
-    printf '%s:%s\n' "${f}" "$(basename ${f})" >> ${candidates}
+    printf '%s;%s\n' "${f}" "$(basename "${f}")" >> "${candidates}"
   done
 fi
-exec i3-msg -q "exec --no-startup-id $(fzf --delimiter ':' --info=hidden --with-nth=2 --bind 'enter:execute(echo {1})+abort' < "${candidates}")"
-sleep 5
-# if ! [[ -f $candidates ]]; then
-#   dirs="${XDG_DATA_HOME:-${HOME}/.local/share}:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
-#   for d in $(printf "%s" "${dirs//:/ }"); do
-#     if [[ -d "${d}/applications" ]]; then
-#       fd . "${d}/applications" --extension desktop | while read -r f; do
-#         printf '%s\n' "${f}"
-#       done
-#     fi
-#   done
-# fi
+exec i3-msg -q "exec --no-startup-id $(fzf --delimiter ';' --info=hidden --with-nth=2 --bind 'enter:execute(echo {1})+abort' < "${candidates}")"

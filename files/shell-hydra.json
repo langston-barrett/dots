@@ -1,45 +1,5 @@
 [
     {
-        "key": "r",
-        "desc": "rofi",
-        "keys": [
-            {
-                "key": "r",
-                "desc": "run",
-                "exit": true,
-                "cmd": [
-                  "rofi",
-                  "-show",
-                  "drun",
-                  "-kb-cancel",
-                  "Alt+C",
-                  "-kb-cancel",
-                  "Ctrl+g"
-                ]
-            },
-            {
-                "key": "p",
-                "desc": "pass",
-                "exit": true,
-                "cmd": ["rofi-pass"]
-            },
-            {
-                "key": "w",
-                "desc": "window",
-                "exit": true,
-                "cmd": [
-                  "rofi",
-                  "-show",
-                  "window",
-                  "-kb-cancel",
-                  "Alt+C",
-                  "-kb-cancel",
-                  "Ctrl+g"
-                ]
-            }
-        ]
-    },
-    {
         "key": "w",
         "desc": "wm (i3)",
         "keys": [
@@ -215,14 +175,14 @@
             {
                 "key": "v",
                 "desc": "volume down",
-                "exit": true,
-                "cmd": ["amixer", "sset", "Master", "10%-"]
+                "exit": false,
+                "cmd": ["/home/langston/code/dots/files/scripts/bin/volume-down"]
             },
             {
                 "key": "V",
                 "desc": "volume up",
-                "exit": true,
-                "cmd": ["amixer", "sset", "Master", "10%+"]
+                "exit": false,
+                "cmd": ["/home/langston/code/dots/files/scripts/bin/volume-up"]
             }
 
         ]
@@ -244,5 +204,77 @@
                 "cmd": ["feh", "--bg-fill", "~/.config/wallpaper.jpg"]
             }
         ]
+    },
+    {
+        "key": "p",
+        "desc": "power",
+        "keys": [
+            {
+                "key": "l",
+                "desc": "lock",
+                "exit": true,
+                "cmd": ["systemctl", "start", "physlock"]
+            },
+            {
+                "key": "s",
+                "desc": "suspend",
+                "exit": true,
+                "cmd": ["systemctl", "suspend"]
+            },
+            {
+                "key": "R",
+                "desc": "reboot",
+                "exit": true,
+                "cmd": ["sudo", "reboot"]
+            },
+            {
+                "key": "S",
+                "desc": "shutdown",
+                "exit": true,
+                "cmd": ["sudo", "shutdown", "now"]
+            }
+        ]
+    },
+    {
+        "key": "t",
+        "desc": "terminal",
+        "keys": [
+            {
+                "key": "d",
+                "desc": "detect",
+                "exit": true,
+                "cmd": ["i3-msg", "exec alacritty --working-directory /home/langston/code/detect"]
+            },
+            {
+                "key": "o",
+                "desc": "dots",
+                "exit": true,
+                "cmd": ["i3-msg", "exec alacritty --working-directory /home/langston/code/dots"]
+            },
+            {
+                "key": "y",
+                "desc": "shell-hydra",
+                "exit": true,
+                "cmd": ["i3-msg", "exec alacritty --working-directory /home/langston/code/shell-hydra"]
+            },
+            {
+                "key": "g",
+                "desc": "grease",
+                "exit": true,
+                "cmd": ["i3-msg", "exec alacritty --working-directory /home/langston/code/grease"]
+            }
+        ]
+    },
+    {
+        "key": "v",
+        "desc": "volume down",
+        "exit": false,
+        "cmd": ["/home/langston/code/dots/files/scripts/bin/volume-down"]
+    },
+    {
+        "key": "V",
+        "desc": "volume up",
+        "exit": false,
+        "cmd": ["/home/langston/code/dots/files/scripts/bin/volume-up"]
     }
 ]
