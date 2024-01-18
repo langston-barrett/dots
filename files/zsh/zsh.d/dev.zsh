@@ -168,3 +168,4 @@ detck() {
     cargo test --locked --workspace --exclude demo1 --exclude dxezz && \
     cargo test --locked --workspace -- demo1 dxezz --test-threads=1
 }
+
