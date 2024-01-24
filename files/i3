@@ -26,6 +26,7 @@ for_window [title="^launch$"] border pixel 2
 # bindsym $mod+Tab exec env HYDRA=1 alacritty --class launch --title launch, [title="launch"] focus
 bindsym $mod+space exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
 bindsym $mod+g exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
+bindsym $mod+z exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/hydra-launcher, [title="launch"] focus
 
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
 #bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
