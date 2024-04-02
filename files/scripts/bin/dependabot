@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -ex
+
+tmp=$(mktemp)
+for repo in icemelter souffle-lint treeedb tree-crasher treereduce tree-splicer yapall; do
+  cd ~/code/$repo
+  git checkout main
+  git pull origin main
+  gh pr list --author "app/dependabot" --search "status:success" 2> $tmp
+  if [[ -n $(cat $tmp) ]]; then
+    continue;
+  fi
+  read -p "Lower: " lower
+  read -p "Upper: " upper
+  if [[ $upper == "" ]]; then
+    upper=$lower
+  fi
+  for pr in $(seq $lower $upper 2> /dev/null); do
+    gh pr merge --auto --rebase $pr
+  done
+done
