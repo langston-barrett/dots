@@ -71,7 +71,7 @@
       - src: git/pre-commit
         dst: "{{ home }}/.config/git/hooks/pre-commit"
       - src: home.nix
-        dst: "{{ xdg_config_home }}/nixpkgs/home.nix"
+        dst: "{{ xdg_config_home }}/home-manager/home.nix"
         minimal: true
       - src: i3
         dst: "{{ xdg_config_home }}/i3/config"
@@ -198,6 +198,8 @@
       - src: sxhkdrc
         dst: "{{ xdg_config_home }}/sxhkd/sxhkdrc"
         graphical: true
+      - src: taskrc
+        dst: "{{ home }}/.taskrc"
       - src: tmux.conf
         dst: "{{ home }}/.tmux.conf"
       # - src: "unsplash/{{ wallpaper }}"
@@ -205,9 +207,6 @@
       #   graphical: true
       - src: urlview
         dst: "{{ home }}/.urlview"
-      - src: xmodmap
-        dst: "{{ home }}/.xmodmap"
-        graphical: true
       - src: Xresources
         dst: "{{ home }}/.Xresources"
       - src: sh.d
