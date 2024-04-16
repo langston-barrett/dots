@@ -53,6 +53,9 @@
       - src: config.nix
         dst: "{{ xdg_config_home }}/nixpkgs/config.nix"
         minimal: true
+      - src: home.nix
+        dst: "{{ xdg_config_home }}/home-manager/home.nix"
+        minimal: true
       # status: can't figure out how to customize
       # - src: gdbinit
       #   dst: "{{ home }}/.gdbinit"

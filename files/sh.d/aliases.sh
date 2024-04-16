@@ -13,6 +13,14 @@ ee() {
 
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
+clipboard() {
+  if [[ -n "${1}" ]]; then
+    xsel -ib <"${1}"
+  else
+    xsel -ib
+  fi
+}
+
 seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
 }
@@ -52,6 +60,7 @@ build_alias py python
 build_alias py3 python3
 build_alias tr trash
 alias tp='trash put'
+alias docker='sudo -g docker docker'
 
 ## Git
 
@@ -59,50 +68,8 @@ alias tp='trash put'
 
 build_alias g git
 
-# TODO: unused
-_GIT_ALIASES=(
-  "git,a,add"
-  "git,b,branch"
-  "git,bl,blame"
-  "git,cb,checkout -b"
-  "git,cl,clone --jobs 4"
-  "git,co,checkout"
-  "git,com,checkout main"
-  "git,cp,cherry-pick"
-  "git,cm,commit"
-  "git,cmm,commit --message "
-  "git,d,diff"
-  "git,ds,diff --cached"
-  "git,f,fetch"
-  "git,fa,fetch --all"
-  "git,i,init"
-  "git,hd,rev-parse HEAD"
-  "git,l,log"
-  "git,lsf,ls-files"
-  "git,m,merge"
-  "git,p,push"
-  "git,pf,push --force-with-lease"
-  "git,pl,pull"
-  "git,plm,pull mine"
-  "git,plo,pull origin"
-  "git,plu,pull upstream"
-  "git,r,reset"
-  "git,rh,reset --hard"
-  "git,rb,rebase"
-  "git,rbi,rebase --interactive"
-  "git,rc,rebase --continue"
-  "git,ra,rebase --abort"
-  "git,rv,remote --verbose"
-  "git,s,status"
-  "git,sh,stash"
-  "git,ss,status --short"
-  "git,su,submodule"
-  "git,sup,submodule update"
-  "git,supi,submodule update --init"
-  "git,t,tag"
-)
-
 alias ga='git add'
+alias gau='git add --update'
 alias gb='git branch'
 alias gbl='git blame'
 alias gbD='git branch -D'
