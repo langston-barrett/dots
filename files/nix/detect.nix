@@ -4,7 +4,7 @@
 
 pkgs.mkShell {
   # bindgen
-  LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+  LIBCLANG_PATH = "${unstable.llvmPackages_18.libclang.lib}/lib";
   QEMU = "${pkgs.qemu_kvm}";
 
   buildInputs = [
@@ -18,7 +18,8 @@ pkgs.mkShell {
     pkgs.rustup
 
     # libafl_qemu
-    unstable.clang_16
+    unstable.clang_18
+    unstable.llvmPackages_18.llvm.dev
     pkgs.qemu_kvm
     pkgs.ninja
     pkgs.libslirp
