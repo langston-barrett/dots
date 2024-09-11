@@ -19,7 +19,7 @@
 
  services.xserver = {
     enable = true;
-    layout = "us";
+    xkb.layout = "us";
 
     monitorSection = ''
       DisplaySize   294 166

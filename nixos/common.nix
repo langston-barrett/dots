@@ -29,7 +29,7 @@ in {
 
   # Time
   time.timeZone = "America/New_York";
-  services.localtime.enable = true;
+  services.localtimed.enable = true;
 
   # Nix
   nixpkgs.config.allowUnfree = true;
@@ -37,7 +37,12 @@ in {
   nix = {
     buildCores = 0; # All available
     # gc.automatic = true;
-    useSandbox = true;
+    settings.sandbox = true;
+    settings.trusted-users = [ "root" variables.username ];
+    settings.trusted-substituters = [
+      "https://cache.nixos.org"
+      # "http://fryingpan.dev.galois.com/hydra"
+    ];
 
     # Use cachix binary caches
     binaryCaches = [
@@ -50,11 +55,6 @@ in {
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "fryingpan.dev.galois.com-1:z0mUoDyQ+o8E4PEIOGb3UaT40EAmSte7vidUvAJdjmU="
     ];
-    trustedBinaryCaches = [
-      "https://cache.nixos.org"
-      # "http://fryingpan.dev.galois.com/hydra"
-    ];
-    trustedUsers = [ "root" variables.username ];
 
   };
 

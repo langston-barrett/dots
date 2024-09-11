@@ -12,13 +12,15 @@
     # i3status
   ];
 
+  services.displayManager = {
+    defaultSession = "none+i3";
+  };
   services.xserver = {
     displayManager = {
       lightdm.enable = true;
       sessionCommands = ''
         xrdb -merge ~/.Xresources
       '';
-      defaultSession = "none+i3";
     };
 
     windowManager.i3 = {
