@@ -38,8 +38,8 @@
       #   dst: "{{ home }}/.aspell.en.pws"
       - src: agignore
         dst: "{{ home }}/.agignore"
-      - src: alacritty.yml
-        dst: "{{ xdg_config_home }}/alacritty/alacritty.yml"
+      - src: alacritty.toml
+        dst: "{{ xdg_config_home }}/alacritty/alacritty.toml"
         graphical: true
       - src: beets.yml
         dst: "{{ xdg_config_home }}/beets/config.yaml"
