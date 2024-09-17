@@ -15,11 +15,12 @@
   services = {
     openssh = {
       enable = true;
-      forwardX11 = false;  # notifications
+      settings = {
+        PermitRootLogin = "no";
+        PasswordAuthentication = false;
+        KdbInteractiveAuthentication = false;
+      };
       ports = [ 9988 ];
-      permitRootLogin = "no";
-      passwordAuthentication = false;
-      challengeResponseAuthentication = false;
     };
 
     # View with Remmina

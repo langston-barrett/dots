@@ -31,15 +31,16 @@
   environment.systemPackages = with pkgs; [
     glxinfo # driver query
   ];
+  services.displayManager = {
+    defaultSession = "none+i3";
+    defaultSession = "none+i3";
+    autoLogin.enable = true;
+    autoLogin.user = "langston";
+    lightdm.enable = true;
+  };
   services.xserver = {
     enable = true;
     videoDrivers = [ "nvidia" ];
-    displayManager = {
-      defaultSession = "none+i3";
-      autoLogin.enable = true;
-      autoLogin.user = "langston";
-      lightdm.enable = true;
-    };
     # desktopManager.xfce.enable = true;
   };
 
@@ -82,8 +83,10 @@
   };
 
   nix = {
-    buildCores = 0;
-    maxJobs = 24;
+    settings = {
+      cores = 0;
+      max-jobs = 24;
+    };
     # gc.automatic = true;
   };
 

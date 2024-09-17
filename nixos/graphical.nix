@@ -44,10 +44,10 @@ in {
   #   ];
 
   fonts = {
-    enableFontDir = false;
+    fontDir.enable = false;
     enableGhostscriptFonts = true;
     # fontconfig.dpi = 192;
-    fonts = with pkgs; [
+    packages = with pkgs; [
       # comfortaa
       # fira-code, freefont-ttf, ubuntu-font-family
 
@@ -82,28 +82,5 @@ in {
 
   services.redshift = {
     enable = false;
-  };
-
-  systemd.user.services = {
-    feh = {
-      enable = true;
-      description = "Use feh image viewer to set the wallpaper";
-      serviceConfig =
-        let graphical = import ./functions/graphical-service.nix {
-              inherit config;
-              userService = true;
-            };
-        in graphical // {
-          ExecStart = ''
-            ${pkgs.feh}/bin/feh \
-              --no-fehbg \
-              --bg-fill \
-              /home/${variables.username}/.config/wallpaper.jpg
-          '';
-          Restart = "on-failure";
-          RestartSec = "5s";
-          MemoryLimit = "512M";
-        };
-    };
   };
 }
