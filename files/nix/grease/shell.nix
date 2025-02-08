@@ -11,8 +11,8 @@ in pkgs.mkShell {
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${pkgs.zlib}/lib
   '';
   buildInputs =  [
-    pkgs.clang_11
-    pkgs.llvm_11
+    pkgs.clang_17
+    pkgs.llvm_17
     pkgs.cvc5
     pkgs.yices
     pkgs.z3
