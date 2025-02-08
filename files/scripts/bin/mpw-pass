@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# doesn't currently work...
+sites=${XDG_RUNTIME_DIR}/sites
+if ! [[ -f $sites ]]; then
+  cat > $sites <<'EOF'
+  amazon.com
+  americanexpress.com
+  bbn.com
+  concursolutions.com
+  duolingo.com
+  facebook.com
+  galois.com
+  getpocket.com
+  github.com
+  google.com
+  openai.com
+  regence.com
+  researchr.org
+  sigplan.org
+  steampowered.com
+  taxfyle.com
+  tiddlyhost.com
+EOF
+fi
+alacritty --class launch --title launch -e bash -c "fzf --info=hidden --bind 'enter:execute(mpw {1})+abort' < $sites && sleep 5"

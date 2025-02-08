@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+volume-down
+volume-down
+volume-down
