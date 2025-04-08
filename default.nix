@@ -1,8 +1,5 @@
-# To use: nix-shell --run zsh
-with import <nixpkgs> {}; stdenv.mkDerivation {
+# To use: nix-shell --run 'exec zsh'
+with import <nixpkgs> {}; mkShell {
   name = "dots";
-  buildInputs = [
-    ansible
-    shellcheck
-  ];
+  buildInputs = [ shellcheck ];
 }

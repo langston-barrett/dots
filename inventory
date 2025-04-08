@@ -1,3 +1,0 @@
-# -*- mode: conf -*-
-[targets]
-localhost ansible_connection=local
