@@ -1,9 +1,0 @@
-* dots
-
-These are not your everyday dotfiles! This repo hosts both per-system
-configuration via NixOS and per-user configuration via Ansible.
-
-#+begin_src bash :results verbatim
-export MINIMAL=1
-curl --silent --show-error https://raw.githubusercontent.com/langston-barrett/dots/master/run.sh | bash
-#+end_src

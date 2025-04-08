@@ -21,5 +21,5 @@ if [[ -f "$SSH_ENV" ]]; then
   #   start_agent;
   # }
 else
-  start_agent;
+  # start_agent
 fi

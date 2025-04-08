@@ -42,12 +42,19 @@ PROMPT_SEP=" : "
 # }
 
 # If we're on another machine, show the user/hostname
-if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]]; then
+if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]] && [[ $(uname -n) != 000800-langston.local ]]; then
   PROMPT_EXTRA="${PROMPT_EXTRA}$(whoami)@$(uname -n)${PROMPT_SEP}"
 fi
 
 newline=$'\n'
-kludge_prompt='$(kludge prompt)'
+
+installed() { command -v "$1" >/dev/null 2>&1; }
+if installed kludge; then
+  kludge_prompt='$(kludge prompt)'
+else
+  kludge_prompt=' [kludge not installed]'
+fi
+
 PROMPT="${newline}[${PROMPT_EXTRA}%3d${kludge_prompt}]${newline}${newline}"
 #PROMPT="$ "
 export PROMPT

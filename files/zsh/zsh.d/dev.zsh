@@ -3,7 +3,10 @@
 export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.config/bin
 
-eval $(lesspipe.sh)
+installed() { command -v "$1" >/dev/null 2>&1; }
+if installed lesspipe.sh; then
+  eval $(lesspipe.sh)
+fi
 
 ## Generic
 

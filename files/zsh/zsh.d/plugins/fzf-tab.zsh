@@ -1,4 +1,3 @@
-
 tab() {
   local start_col=0
   if [[ "${#BUFFER}" -lt $((COLUMNS-32)) ]]; then
@@ -18,8 +17,9 @@ tab() {
 }
 zle -N tab
 
-bindkey -M emacs "^I" tab
-bindkey -M viins "^I" tab
+# TODO:
+# bindkey -M emacs "^I" tab
+# bindkey -M viins "^I" tab
 
 zstyle ':fzf-tab:complete:*:*' fzf-preview 'preview.sh ${(Q)realpath}'
 

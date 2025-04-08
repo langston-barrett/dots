@@ -14,6 +14,15 @@ fi
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export ZSH_CONFIG_DIR="${XDG_CONFIG_HOME}/zsh"
 
+if ! [[ -d ~/.zsh/autosuggest ]]; then
+  git clone \
+    --single-branch \
+    --branch=master \
+    --depth=1 \
+    https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/autosuggest
+fi
+source ~/.zsh/autosuggest/zsh-autosuggestions.zsh
+
 source "${ZSH_CONFIG_DIR}/plugins.zsh"
 
 source_all_sh() {[[ -d $1 ]] && for f in $1/*.sh; do source "${f}"; done; unset f;}

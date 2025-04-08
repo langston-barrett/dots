@@ -2,7 +2,13 @@
 
 # this file is sourced last
 
-# GREASE
+installed() { command -v "$1" >/dev/null 2>&1; }
+if ! installed zbr; then
+  zbr-space() {
+    zle .self-insert
+  }
+  zle -N zbr-space
+fi
 
 my-expand-abbrev() {
   typeset -A abbrevs
