@@ -30,6 +30,9 @@ source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "${f}"; done; unset f;
 source_all_sh "${XDG_CONFIG_HOME}/sh.d"
 source_all "${ZSH_CONFIG_DIR}/zsh.d"
 
+[ -e ~/.nix-profile/etc/profile.d/nix.sh ] && . ~/.nix-profile/etc/profile.d/nix.sh
+[ -f ~/.ghcup/env ] && . ~/.ghcup/env
+
 if [[ "$PROFILE_ZSH_STARTUP" == true ]]; then
   unsetopt xtrace
   exec 2>&3 3>&-

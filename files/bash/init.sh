@@ -5,3 +5,6 @@ export BASH_CONFIG_DIR="${XDG_CONFIG_HOME}/bash"
 source_all() { [[ -d $1 ]] && for f in "${1}"/*.sh; do source "${f}"; done; unset f; }
 source_all ${XDG_CONFIG_HOME}/sh.d
 source_all ${BASH_CONFIG_DIR}/bash.d
+
+[ -e ~/.nix-profile/etc/profile.d/nix.sh ] && . ~/.nix-profile/etc/profile.d/nix.sh
+[ -f ~/.ghcup/env ] && . ~/.ghcup/env

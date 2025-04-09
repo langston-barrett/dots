@@ -2,5 +2,3 @@
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export ZSH_CONFIG_DIR="${XDG_CONFIG_HOME}/zsh"
 source "${ZSH_CONFIG_DIR}/init.zsh"
-
-if [ -e /home/langston/.nix-profile/etc/profile.d/nix.sh ]; then . /home/langston/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
