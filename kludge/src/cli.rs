@@ -14,5 +14,6 @@ pub(crate) struct Cli {
 
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
+    Install,
     Prompt,
 }
