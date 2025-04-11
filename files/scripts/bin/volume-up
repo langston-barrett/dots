@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -euo pipefail
+
 vols="volumes: "
 for sink in 0 1 2 3; do
   pactl set-sink-volume "${sink}" '+5%'

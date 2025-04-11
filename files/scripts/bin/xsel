@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+if [[ ${OSTYPE} == darwin* ]]; then
+  pbcopy
+else
+  xsel "${@}"
+fi

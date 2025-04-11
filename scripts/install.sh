@@ -55,3 +55,7 @@ if ! installed kludge; then
   cd kludge
   cargo install --path .
 fi
+
+# TODO: rm cargo install
+cargo install --path kludge
+kludge install "$@"

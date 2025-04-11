@@ -2,6 +2,8 @@
 # alias ta='todo.sh add'
 # alias tl='todo.sh list'
 
+export PATH=$PATH:${HOME}/code/dots/files/scripts/bin/
+
 export EDITOR=hx
 ee() {
   if [[ -n "${1}" ]]; then
@@ -198,6 +200,8 @@ alias makej='make -j$(nproc)'
 alias lock='systemctl start physlock'
 
 open() { xdg-open "${1}" & disown; }
+
+alias rgall="rg --hidden --no-ignore"
 
 # temporary
 

@@ -38,9 +38,11 @@ for f in ${XDG_CONFIG_HOME:-${HOME}/.config}/zsh/zsh.d/plugins/*.zsh; do
   zsh-defer source "${f}"
 done
 
-if [[ -d ~/code/spacezle ]]; then
-  zsh-defer source ~/code/spacezle/src/spacezle.zsh
+if ! [[ -d ~/code/spacezle ]]; then
+  mkdir -p code
+  git clone https://github.com/langston-barrett/SpaceZLE ~/code/spacezle
 fi
+zsh-defer source ~/code/spacezle/src/spacezle.zsh
 # if [[ -d ~/code/zsh-contextual-abbrevs ]]; then
 #   zsh-defer source ~/code/zsh-contextual-abbrevs/src/contextual-abbrevs.zsh
 # fi

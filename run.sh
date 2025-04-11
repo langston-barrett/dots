@@ -3,7 +3,7 @@
 set -ex
 
 if [[ -f scripts/install.sh ]]; then
-  exec bash scripts/install.sh
+  exec bash scripts/install.sh "$@"
 fi
 
 installed() { command -v "$1" >/dev/null 2>&1; }
@@ -40,5 +40,5 @@ else
   pushd ./langston-barrett-dots*/
 fi
 
-exec bash run.sh
+exec bash run.sh "$@"
 
