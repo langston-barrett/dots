@@ -24,7 +24,7 @@ my-expand-abbrev() {
       "ts" "echo 'cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz'"
       "x" "export NO_REBUILD_QEMU_SYS=1"
     )
-  elif [[ $PWD == ~/code/grease ]]; then
+  elif [[ $PWD == ~/code/grease ]] ||  [[ $PWD == ~/code/grease-* ]]; then
     abbrevs=(
       "r" "echo 'cabal run exe:grease'"
       "t" "echo 'cabal run test:grease-tests --'"
@@ -35,7 +35,7 @@ my-expand-abbrev() {
   if [[ $BUFFER == "help" ]]; then
     help=""
     for key value in ${(kv)abbrevs}; do
-      help="$help $key"
+      help+="$help $key"
     done
     zle -M "${(e)help}"
     zle -R
