@@ -30,8 +30,11 @@ source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "${f}"; done; unset f;
 source_all_sh "${XDG_CONFIG_HOME}/sh.d"
 source_all "${ZSH_CONFIG_DIR}/zsh.d"
 
-[ -e ~/.nix-profile/etc/profile.d/nix.sh ] && . ~/.nix-profile/etc/profile.d/nix.sh
-[ -f ~/.ghcup/env ] && . ~/.ghcup/env
+source_if_exists() { [ -e "${1}" ] && . "${1}"; }
+source_if_exists ~/.ghcup/env
+source_if_exists ~/.nix-profile/etc/profile.d/nix.sh 
+# macOS: https://github.com/NixOS/nix/issues/3616
+source_if_exists /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
 
 if [[ "$PROFILE_ZSH_STARTUP" == true ]]; then
   unsetopt xtrace

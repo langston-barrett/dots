@@ -1,26 +1,4 @@
-# https://ianthehenry.com/posts/how-to-configure-tmux/
-# https://github.com/tmux-plugins/tmux-sensible/blob/master/sensible.tmux
-unbind-key -a
-
-set-option -g status off
-set-option -g mode-keys vi
-
-# Remove delay after pressing ESC
-set -s escape-time 0
-
-# Increase scrollback buffer size from 2000 lines
-set -g history-limit 20000
-
-# Increase tmux messages display duration from 750ms to 4s
-set -g display-time 4000
-
-set -g mouse on
-
-# Colors
-# https://stackoverflow.com/questions/41783367
-set -g default-terminal "xterm-256color"
-set-option -sa terminal-overrides ",xterm*:Tc"
-set -as terminal-features ",xterm*:RGB"
+# :lang bash
 
 set -g copy-command "xsel -ib"
 bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel

@@ -48,3 +48,6 @@ tiddlywiki https://langston.tiddlyhost.com/
 what4-docs-hackage https://hackage.haskell.org/package/what4
 what4-issues https://github.com/GaloisInc/what4/issues
 what4-prs https://github.com/GaloisInc/what4/pulls
+ghcs https://gitlab.haskell.org/ghc/ghc/-/wikis/GHC%20Status
+cabal.project https://cabal.readthedocs.io/en/stable/cabal-project-description-file.html
+ghc-base-version https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history

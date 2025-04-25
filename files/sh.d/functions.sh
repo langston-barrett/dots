@@ -147,7 +147,3 @@ snip() {
   popd > /dev/null || return
   popd > /dev/null || return
 }
-
-yank-file() {
-  bat "${1}" |& xsel -ib
-}

@@ -1,9 +1,17 @@
 dockeri() {
-  sudo -g docker docker run \
-    --rm \
-    --interactive \
-    --tty \
-    "${@}"
+  if [[ ${OSTYPE} == darwin* ]]; then
+    docker run \
+      --rm \
+      --interactive \
+      --tty \
+      "${@}"
+  else
+    sudo -g docker docker run \
+      --rm \
+      --interactive \
+      --tty \
+      "${@}"
+  fi
 }
 
 docker-here() {

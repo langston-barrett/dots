@@ -62,7 +62,10 @@ build_alias py python
 build_alias py3 python3
 build_alias tr trash
 alias tp='trash put'
-alias docker='sudo -g docker docker'
+
+if [[ ${OSTYPE} != darwin* ]]; then
+  alias docker='sudo -g docker docker'
+fi
 
 ## Git
 
