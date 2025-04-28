@@ -114,7 +114,12 @@ read-json() {
 }
 
 # Recursively find and replace
-sedr() { fd --type f -0 | xargs -0 sed -E -i "$@"; }
+
+if [[ ${OSTYPE} == darwin* ]]; then
+  sedr() { fd --type f -0 | xargs -0 sed -i '' -e "$@"; }
+else
+  sedr() { fd --type f -0 | xargs -0 sed -E -i "$@"; }
+fi
 
 sorted-diff() {
     file1=$(mktemp)

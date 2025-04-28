@@ -24,8 +24,10 @@ my-expand-abbrev() {
       "ts" "echo 'cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz'"
       "x" "export NO_REBUILD_QEMU_SYS=1"
     )
-  elif [[ $PWD == ~/code/grease ]] ||  [[ $PWD == ~/code/grease-* ]]; then
+  elif [[ $PWD == "${HOME}/code/grease"* ]]; then
     abbrevs=(
+      "o" "echo 'ghcid'"
+      "ot" "echo 'ghcid --target=test:grease-tests'"
       "r" "echo 'cabal run exe:grease'"
       "t" "echo 'cabal run test:grease-tests --'"
       "to" 'echo "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"'
