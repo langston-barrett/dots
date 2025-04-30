@@ -32,6 +32,7 @@ if [[ -f ~/.bashrc ]]; then
     exit 1
   fi
 else
+  ln -s "$(realpath files/sh.d)" "${XDG_CONFIG_HOME}/sh.d"
   ln -s "$(realpath files/bashrc)" ~/.bashrc
   ln -s "$(realpath files/bash)" "${XDG_CONFIG_HOME}/bash"
 fi
