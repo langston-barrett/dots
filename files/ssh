@@ -4,85 +4,23 @@
 StrictHostKeyChecking ask
 # UsePrivilegedPort no
 
+Host *
+  PreferredAuthentications publickey,keyboard-interactive,password
+
 # options applied for Galois hosts
 Host *.galois.com
   ControlMaster auto
   ForwardAgent yes
-  PreferredAuthentications publickey,keyboard-interactive,password
   VerifyHostKeyDNS ask
-
-Host 192.168.0.*
-  PreferredAuthentications publickey,keyboard-interactive,password
-
-Host pi
-  HostName 192.168.0.131
-  User pi
-  Port 11171
-
-Host big-wifi
-  User langston
-  HostName 192.168.0.189
-  Port 9988
-  IdentityFile ~/.ssh/id_ed25519
-
-Host big
-  ControlMaster auto
-  User langston
-  HostName 192.168.0.171
-  Port 9988
-  IdentityFile ~/.ssh/id_ed25519
-
-Host big-external
-  ControlMaster auto
-  User langston
-  HostName 24.22.76.243
-  Port 9988
-  IdentityFile ~/.ssh/id_ed25519
-
-Host small
-  ControlMaster auto
-  User siddharthist
-  HostName 192.168.0.115
-  Port 9988
-  IdentityFile ~/.ssh/id_ed25519
-
-Host phone
-  ControlMaster auto
-  HostName 192.168.0.198
-  Port 9988
-  IdentityFile ~/.ssh/id_ed25519
-
-Host carbon
-  User langston
-  HostName carbon.proj.galois.com
-  # IdentityFile ~/.ssh/id_ed25519
-  # PasswordAuthentication no
-  # PreferredAuthentications publickey,keyboard-interactive,password
-
-Host oxygen
-  User langston
-  HostName oxygen.proj.galois.com
-  IdentityFile ~/.ssh/id_ed25519
-  PasswordAuthentication no
-  PreferredAuthentications publickey,keyboard-interactive,password
 
 Host sky
   User langston
   # HostName vm-37-51.eic.galois.com
   HostName 192.168.61.185
   Port 9988
-  IdentityFile ~/.ssh/id_ed25519
   LocalForward 8666 localhost:8666
   LocalForward 8001 localhost:8001
   LocalForward 8050 localhost:8050
   LocalForward 9000 localhost:9000
   PasswordAuthentication no
-  PreferredAuthentications publickey,keyboard-interactive,password
   ControlMaster auto
-
-Host remarkable
-  HostName 192.168.1.181
-  PreferredAuthentications keyboard-interactive,password
-  User root
-  PubkeyAcceptedAlgorithms +ssh-rsa
-  HostkeyAlgorithms +ssh-rsa
