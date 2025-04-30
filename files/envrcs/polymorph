@@ -1,2 +1,0 @@
-# -*- sh -*-
-use_nix ~/code/dots/files/nix/polymorph/shell.nix
