@@ -33,6 +33,11 @@ my-expand-abbrev() {
       "to" 'echo "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"'
     )
   fi
+  abbrevs+=(
+    "bc" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0'"
+    "ll" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -S -O0'"
+    "y" "echo 'clipboard'"
+  )
 
   if [[ $BUFFER == "help" ]]; then
     help=""

@@ -5,6 +5,7 @@
 export PATH=$PATH:${HOME}/code/dots/files/scripts/bin/
 
 export EDITOR=hx
+alias e="${EDITOR}"
 ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
@@ -15,13 +16,23 @@ ee() {
 
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
-clipboard() {
-  if [[ -n "${1}" ]]; then
-    xsel -ib <"${1}"
-  else
-    xsel -ib
-  fi
-}
+if [[ ${OSTYPE} == darwin* ]]; then
+  clipboard() {
+    if [[ -n "${1}" ]]; then
+      pbcopy <"${1}"
+    else
+      pbcopy
+    fi
+  }
+else
+  clipboard() {
+    if [[ -n "${1}" ]]; then
+      xsel -ib <"${1}"
+    else
+      xsel -ib
+    fi
+  }
+fi
 
 seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"

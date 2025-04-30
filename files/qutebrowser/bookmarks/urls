@@ -1,1 +1,2 @@
 https://github.com/GaloisInc/grease GaloisInc/grease: CLI tool and Ghidra plug-in for analyzing binaries using under-constrained symbolic execution
+https://github.com/GaloisInc/grease/issues/115 llvm: Use type information to bootstrap refinement loop · Issue #115 · GaloisInc/grease
