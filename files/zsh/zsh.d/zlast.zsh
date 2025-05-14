@@ -4,13 +4,13 @@
 
 installed() { command -v "$1" >/dev/null 2>&1; }
 if ! installed zbr; then
-  zbr-space() {
-    zle .self-insert
-  }
+  zbr-space() { zle .self-insert; }
   zle -N zbr-space
+  zbr-ret() { zle accept-line; }
+  zle -N zbr-ret
 fi
 
-my-expand-abbrev() {
+expand-abbrev() {
   typeset -A abbrevs
   if [[ $PWD == ~/code/detect ]]; then
     abbrevs=(
@@ -33,16 +33,30 @@ my-expand-abbrev() {
       "to" 'echo "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"'
     )
   fi
+  if [[ -f Cargo.toml ]]; then
+    abbrevs=(
+      "b" "echo 'cargo build'"
+      "t" "echo 'cargo test'"
+    )
+  elif [[ -f *.cabal ]]; then
+    abbrevs=(
+      "b" "echo 'cabal build'"
+      "d" "echo 'cabal haddock'"
+      "t" "echo 'cabal test'"
+    )
+  fi
   abbrevs+=(
     "bc" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0'"
     "ll" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -S -O0'"
+    "sky" "echo 'ssh sky'"
     "y" "echo 'clipboard'"
   )
 
   if [[ $BUFFER == "help" ]]; then
     help=""
+    newline=$'\n'
     for key value in ${(kv)abbrevs}; do
-      help+="$help $key"
+      help+="$key: $value$newline"
     done
     zle -M "${(e)help}"
     zle -R
@@ -60,8 +74,21 @@ my-expand-abbrev() {
       return
     fi
   done
+}
+zle -N expand-abbrev
+
+expand-space() {
+  zle expand-abbrev
   zle zbr-space
 }
+zle -N expand-space
 
-zle -N my-expand-abbrev
-bindkey " " my-expand-abbrev
+expand-ret() {
+  zle expand-abbrev
+  zle zbr-ret
+}
+zle -N expand-ret
+
+bindkey " " expand-space
+bindkey "^M" expand-ret
+
