@@ -42,7 +42,8 @@ PROMPT_SEP=" : "
 # }
 
 # If we're on another machine, show the user/hostname
-if [[ $(uname -n) != big ]] && [[ $(uname -n) != langston-x1 ]] && [[ $(uname -n) != 000800-langston.local ]]; then
+hostname=$(uname -n)
+if [[ ${hostname} != big ]] && [[ ${hostname} != langston-x1 ]] && [[ ${hostname} != 000800-langston.local ]] && [[ ${hostname} != Mac ]]; then
   PROMPT_EXTRA="${PROMPT_EXTRA}$(whoami)@$(uname -n)${PROMPT_SEP}"
 fi
 
