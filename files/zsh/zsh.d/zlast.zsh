@@ -10,85 +10,36 @@ if ! installed zbr; then
   zle -N zbr-ret
 fi
 
-expand-abbrev() {
-  typeset -A abbrevs
-  if [[ $PWD == ~/code/detect ]]; then
-    abbrevs=(
-      "clippy" "echo 'cargo clippy --all-targets -- --deny warnings'"
-      "bs" "echo 'echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid && sudo sysctl kernel.perf_event_mlock_kb=2048 && cargo b -q --profile=profiling --bin=sofuzz && samply record ./target/profiling/sofuzz --solutions /run/user/1000/sols --gas=2048 sofuzz/rs/map/map.toml target/profiling/libsofuzz_map.so --no-check-dwarf'"
-      "e1" "echo 'rm -rf benign solutions ; cargo build -p=eval1-smi-model && cargo run --bin dxezz -- --qcow=targets/eval1-smi/image-debug/snapshots.qcow2 targets/eval1-smi/eval1-smi-debug.toml target/debug/libeval1_smi_model.so --seed=1 --outer-iterations=8 --inner-iterations=1 --no-check-snapshots -v'"
-      "rd" "echo 'cargo run --bin=dxezz --'"
-      "rs" "echo 'cargo run --bin=sofuzz --'"
-      "t" "echo 'cargo test'"
-      "td" "echo 'cargo test --package=dxezz -- --test-threads=1'"
-      "ts" "echo 'cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz'"
-      "x" "export NO_REBUILD_QEMU_SYS=1"
-    )
-  elif [[ $PWD == "${HOME}/code/grease"* ]]; then
-    abbrevs=(
-      "o" "echo 'ghcid'"
-      "ot" "echo 'ghcid --target=test:grease-tests'"
-      "r" "echo 'cabal run exe:grease'"
-      "t" "echo 'cabal run test:grease-tests --'"
-      "to" 'echo "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"'
-    )
-  fi
-  if [[ -f Cargo.toml ]]; then
-    abbrevs=(
-      "b" "echo 'cargo build'"
-      "t" "echo 'cargo test'"
-    )
-  elif [[ -f *.cabal ]]; then
-    abbrevs=(
-      "b" "echo 'cabal build'"
-      "d" "echo 'cabal haddock'"
-      "t" "echo 'cabal test'"
-    )
-  fi
-  abbrevs+=(
-    "bc" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0'"
-    "ll" "echo 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -S -O0'"
-    "sky" "echo 'ssh sky'"
-    "y" "echo 'clipboard'"
-  )
+# TODO: hint system
 
-  if [[ $BUFFER == "help" ]]; then
-    help=""
-    newline=$'\n'
-    for key value in ${(kv)abbrevs}; do
-      help+="$key: $value$newline"
-    done
-    zle -M "${(e)help}"
-    zle -R
-    sleep 5
-    return
+kludge-expand() {
+  out=$(env RUST_BACKTRACE=1 kludge expand -- "${LBUFFER}" "${RBUFFER}")
+  if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
+    BUFFER=${out}
+    CURSOR=${#BUFFER}
   fi
-
-  for key value in ${(kv)abbrevs}; do
-    check=${BUFFER/#$key/}
-    if [[ $BUFFER != $check ]] && [[ ${#BUFFER} == ${#key} ]]; then
-      new=$(eval "$value")
-      BUFFER="${BUFFER/#$key/$new} "
-      zle -R
-      CURSOR=${#BUFFER}
-      return
-    fi
-  done
 }
-zle -N expand-abbrev
+zle -N kludge-expand
 
 expand-space() {
-  zle expand-abbrev
+  zle kludge-expand
   zle zbr-space
 }
 zle -N expand-space
 
 expand-ret() {
-  zle expand-abbrev
+  zle kludge-expand
   zle zbr-ret
 }
 zle -N expand-ret
 
-bindkey " " expand-space
-bindkey "^M" expand-ret
+bindkey -M emacs " " expand-space
+bindkey -M viins " " expand-space
+bindkey -M emacs "^M" expand-ret
+bindkey -M viins "^M" expand-ret
+
+# control-space is a normal space
+bindkey -M emacs "^ " magic-space
+bindkey -M viins "^ " magic-space
+
 
