@@ -12,8 +12,6 @@ if ! installed zbr; then
   zle -N zbr-hint
 fi
 
-# TODO: hint system
-
 kludge-expand() {
   out=$(env RUST_BACKTRACE=1 kludge expand -- "${LBUFFER}" "${RBUFFER}")
   if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
