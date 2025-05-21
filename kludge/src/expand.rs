@@ -93,7 +93,7 @@ const ANYWHERE: &[(&str, &str)] = &[
 
 fn expand_anywhere(lbuf: &str, rbuf: &str) -> Option<String> {
     for (l, r) in ANYWHERE {
-        if lbuf == *l && rbuf == "" {
+        if lbuf == *l && rbuf.is_empty() {
             return Some(r.to_string());
         }
     }
@@ -126,7 +126,7 @@ fn expand_basic(lbuf: &str, rbuf: &str) -> Option<String> {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
         if name == Some(d) {
             for (l, r) in *expands {
-                if lbuf == *l && rbuf == "" {
+                if lbuf == *l && rbuf.is_empty() {
                     return Some(r.to_string());
                 }
             }
@@ -145,7 +145,7 @@ fn expand(lbuf: String, rbuf: String) -> Option<String> {
 fn hint(lbuf: String, rbuf: String) -> Vec<(&'static str, &'static str)> {
     let mut results = Vec::with_capacity(8);
     for (l, r) in ANYWHERE {
-        if l.starts_with(lbuf.as_str()) && rbuf == "" {
+        if l.starts_with(lbuf.as_str()) && rbuf.is_empty() {
             results.push((*l, *r));
         }
     }
@@ -154,7 +154,7 @@ fn hint(lbuf: String, rbuf: String) -> Vec<(&'static str, &'static str)> {
         for (d, expands) in BASIC {
             if name == Some(d) {
                 for (l, r) in *expands {
-                    if l.starts_with(lbuf.as_str()) && rbuf == "" {
+                    if l.starts_with(lbuf.as_str()) && rbuf.is_empty() {
                         results.push((*l, *r));
                     }
                 }
@@ -174,10 +174,8 @@ pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
         for (l, r) in hint(conf.lbuf, conf.rbuf) {
             println!("{l} --> {r}");
         }
-    } else {
-        if let Some(r) = expand(conf.lbuf, conf.rbuf) {
-            println!("{r}");
-        }
+    } else if let Some(r) = expand(conf.lbuf, conf.rbuf) {
+        println!("{r}");
     }
     Ok(())
 }
