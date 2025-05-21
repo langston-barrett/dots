@@ -207,19 +207,12 @@ alias lkeyb='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/
 alias kmonad-minidox4="cd /tmp ; sudo echo ; sudo nohup ${HOME}/.cabal/bin/kmonad ${HOME}/code/dots/files/kmonad/minidox-0.4.kbd & disown"
 alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/kmonad/mini.kbd & disown'
 
-alias sshb='ssh big'
-alias sshbe='ssh big-external'
-
 alias makej='make -j$(nproc)'
 alias lock='systemctl start physlock'
 
 open() { xdg-open "${1}" & disown; }
 
 alias rgall="rg --hidden --no-ignore"
-
-# temporary
-
-alias restart_steam='kill -9 $(pgrep steam) && steam 2>&1 > /dev/null & disown'
 
 # Haskell
 

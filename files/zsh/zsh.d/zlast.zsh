@@ -8,6 +8,8 @@ if ! installed zbr; then
   zle -N zbr-space
   zbr-ret() { zle accept-line; }
   zle -N zbr-ret
+  zbr-hint() { }
+  zle -N zbr-hint
 fi
 
 # TODO: hint system
@@ -21,8 +23,22 @@ kludge-expand() {
 }
 zle -N kludge-expand
 
+kludge-hint() {
+  if [[ -n ${BUFFER% } ]]; then
+    out=$(env RUST_BACKTRACE=1 kludge expand --hint -- "${LBUFFER}" "${RBUFFER}")
+    if [[ -n $out ]]; then
+      newline=$'\n'
+      zle -M "$(printf "%s%s" "${newline}" "${out}")"
+    else
+      zbr-hint
+    fi
+  fi
+}
+zle -N kludge-hint
+
 expand-space() {
   zle kludge-expand
+  zle kludge-hint
   zle zbr-space
 }
 zle -N expand-space
@@ -42,4 +58,7 @@ bindkey -M viins "^M" expand-ret
 bindkey -M emacs "^ " magic-space
 bindkey -M viins "^ " magic-space
 
-
+function zle-line-pre-redraw() {
+  zle kludge-hint
+}
+zle -N zle-line-pre-redraw
