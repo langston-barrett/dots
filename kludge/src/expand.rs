@@ -64,31 +64,113 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
     }
 }
 
+const CLANG_LLVM: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0";
+const CLANG_LLVM_S: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S";
+
 const ANYWHERE: &[(&str, &str)] = &[
+    ("bc", CLANG_LLVM),
     ("cb", "cabal"),
     ("cg", "cargo"),
     ("dk", "docker"),
     ("e", "hx"),
+    ("ll", CLANG_LLVM_S),
     ("m", "make"),
+    ("od", "objdump"),
+    ("py3", "python3"),
+    ("rgall", "rg --hidden --no-ignore"),
+    ("rmrf", "\\rm -rf"),
+    ("sky", "ssh sky"),
+    ("tp", "trash put"),
+    ("y", "clipboard"),
+    //
+    // nix
+    //
     ("nb", "nix-build"),
     ("nba", "nix-build -A"),
     ("ns", "nix-shell"),
     ("nsr", "nix-shell --run"),
     ("nsrzsh", "nix-shell --run 'exec zsh'"),
-    ("py3", "python3"),
-    ("rgall", "rg --hidden --no-ignore"),
-    ("rmrf", "\rm -rf"),
-    ("tp", "trash put"),
-    (
-        "bc",
-        "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0",
-    ),
-    (
-        "ll",
-        "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -S -O0",
-    ),
-    ("sky", "ssh sky"),
-    ("y", "clipboard"),
+    //
+    // git
+    //
+    // see also .gitconfig
+    //
+    ("gclh", "git clone https://github.com/"),
+    ("gclg", "git clone https://github.com/GaloisInc/"),
+    ("gclm", "git clone https://github.com/langston-barrett/"),
+    //
+    ("ga", "git add"),
+    ("gau", "git add --update"),
+    ("gb", "git branch"),
+    ("gbD", "git branch -D"),
+    ("gbl", "git blame"),
+    ("gbr", "git branch"),
+    ("gca", "git commit --amend"),
+    ("gcb", "git checkout -b"),
+    ("gcl", "git clone --jobs 4"),
+    ("gcm", "git commit -m"),
+    ("gcm", "git commit"),
+    ("gcmm", "git commit --message ."),
+    ("gco", "git checkout"),
+    ("gcom", "git checkout main"),
+    ("gcp", "git cherry-pick"),
+    ("gd", "git diff"),
+    ("gdm", "git diff master"),
+    ("gds", "git diff --cached"),
+    ("gf", "git fetch"),
+    ("gfa", "git fetch --all"),
+    ("gFp", "git pull origin"),
+    ("gFu", "git pull upstream"),
+    ("ghd", "git rev-parse HEAD"),
+    ("gi", "git init"),
+    ("gl", "git log"),
+    ("glsf", "git ls-files"),
+    ("gm", "git merge"),
+    ("gmum", "git merge upstream/master"),
+    ("gp", "git push"),
+    ("gpf", "git push --force-with-lease"),
+    ("gPf", "git push --force-with-lease"),
+    ("gpl", "git pull"),
+    ("gplm", "git pull mine"),
+    ("gplo", "git pull origin"),
+    ("gplu", "git pull upstream"),
+    ("gPp", "git push -u origin"),
+    ("gpum", "git pull upstream master"),
+    ("gr", "git reset"),
+    ("gra", "git rebase --abort"),
+    ("grb", "git rebase"),
+    ("grc", "git rebase --continue"),
+    ("grhm", "git reset --hard origin/master"),
+    ("gri", "git rebase --interactive"),
+    ("grv", "git remote --verbose"),
+    ("gs", "git status"),
+    ("gsh", "git stash"),
+    ("gss", "git status --short"),
+    ("gsu", "git submodule"),
+    ("gsup", "git submodule update"),
+    ("gsupi", "git submodule update --init"),
+    ("gt", "git tag"),
+    ("gwa", "git worktree add"),
+    ("gwl", "git worktree list"),
+    ("gwm", "git worktree move"),
+    ("gwr", "git worktree remove"),
+    //
+    // linux
+    //
+    #[cfg(target_os = "linux")]
+    ("docker", "sudo -g docker docker"),
+    #[cfg(target_os = "linux")]
+    ("sys", "sudo systemctl"),
+    #[cfg(target_os = "linux")]
+    ("syss", "sudo systemctl status"),
+    #[cfg(target_os = "linux")]
+    ("sysr", "sudo systemctl restart"),
+    #[cfg(target_os = "linux")]
+    ("sysu", "systemctl --user"),
+    #[cfg(target_os = "linux")]
+    ("sysus", "systemctl --user status"),
+    #[cfg(target_os = "linux")]
+    ("sysur", "systemctl --user restart"),
 ];
 
 fn expand_anywhere(lbuf: &str, rbuf: &str) -> Option<String> {
@@ -171,7 +253,7 @@ pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
             println!("alias {l}='{r}'");
         }
     } else if conf.hint {
-        for (l, r) in hint(conf.lbuf, conf.rbuf) {
+        for (l, r) in hint(conf.lbuf, conf.rbuf).iter().take(5) {
             println!("{l} --> {r}");
         }
     } else if let Some(r) = expand(conf.lbuf, conf.rbuf) {

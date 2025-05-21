@@ -1,11 +1,6 @@
-# alias t='todo.sh'
-# alias ta='todo.sh add'
-# alias tl='todo.sh list'
-
 export PATH=$PATH:${HOME}/code/dots/files/scripts/bin/
 
 export EDITOR=hx
-alias e="${EDITOR}"
 ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
@@ -53,97 +48,6 @@ if [[ -n "${ZSH_NAME}" ]]; then
   alias '#'='undollar'
 fi
 
-build_alias() {
-  alias "${1}"="${2}"
-
-  # Works as a gentle reminder with ZSH alias expansion on space
-  if [[ -n "${ZSH_NAME}" ]]; then
-    alias "${2}"="${1}"
-  fi
-}
-
-## Tools
-
-build_alias cb cabal
-build_alias cg cargo
-build_alias m make
-# build_alias od objdump
-build_alias dk docker
-build_alias py python
-build_alias py3 python3
-build_alias tr trash
-alias tp='trash put'
-
-if [[ ${OSTYPE} != darwin* ]]; then
-  alias docker='sudo -g docker docker'
-fi
-
-## Git
-
-# See also gitconfig aliases
-
-build_alias g git
-
-alias ga='git add'
-alias gau='git add --update'
-alias gb='git branch'
-alias gbl='git blame'
-alias gbD='git branch -D'
-alias gbr='git branch'
-alias gco='git checkout'
-alias gcom='git checkout main'
-alias gcp='git cherry-pick'
-alias gcb='git checkout -b'
-alias gcm='git commit -m'
-alias gcl='git clone --jobs 4'
-alias gcm='git commit'
-alias gcmm='git commit --message .'
-alias gca='git commit --amend'
-alias gd='git diff'
-alias gds='git diff --cached'
-alias gdm='git diff master'
-alias gf='git fetch'
-alias gfa='git fetch --all'
-alias gFp='git pull origin'
-alias gFu='git pull upstream'
-alias gi='git init'
-alias ghd='git rev-parse HEAD'
-alias gl='git log'
-alias glsf='git ls-files'
-alias gp='git push'
-alias gpf='git push --force-with-lease'
-alias gpl='git pull'
-alias gplm='git pull mine'
-alias gplo='git pull origin'
-alias gplu='git pull upstream'
-alias gm='git merge'
-alias gmum='git merge upstream/master'
-alias gpum='git pull upstream master'
-alias gPp='git push -u origin'
-alias gPf='git push --force-with-lease'
-alias gr='git reset'
-alias grhm='git reset --hard origin/master'
-alias grb='git rebase'
-alias gri='git rebase --interactive'
-alias grc='git rebase --continue'
-alias gra='git rebase --abort'
-alias grv='git remote --verbose'
-alias gs='git status'
-alias gsh='git stash'
-alias gss='git status --short'
-alias gsu='git submodule'
-alias gsup='git submodule update'
-alias gsupi='git submodule update --init'
-alias gt='git tag'
-alias gwl='git worktree list'
-alias gwa='git worktree add'
-alias gwm='git worktree move'
-alias gwr='git worktree remove'
-
-github_clone() { git clone "https://github.com/${1}"; }
-git_clone_mine() { git clone "https://github.com/langston-barrett/${1}"; }
-
-
 upstream_name() {
     git rev-parse --symbolic-full-name --abbrev-ref @{u}
 }
@@ -174,32 +78,11 @@ canff() {
   fi
 }
 
-
-# systemd
-alias sys="sudo systemctl";
-alias syss="sudo systemctl status";
-alias sysr="sudo systemctl restart";
-alias sysu="systemctl --user";
-alias sysus="systemctl --user status";
-alias sysur="systemctl --user restart";
-
 maxmem() {
   gb="${1}"
   shift
   systemd-run --scope -p MemoryMax="${gb}G" --user "${@}"
 }
-
-## Nix
-alias nb='nix-build'
-alias nba='nix-build -A'
-alias ns='nix-shell'
-alias nsr='nix-shell --run'
-alias nsp='nix-shell --pure'
-alias nspr='nix-shell --pure --run'
-
-# TODO: replace with "nix run || nix log"
-alias nsrzsh='nix-shell --run "exec zsh"'
-alias nz='nsrzsh || nsrzsh nix/shell.nix || nsrzsh tools/shell.nix'
 
 alias kmonad-minidox='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/minidox.kbd & disown'
 alias keyb='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/minidox.kbd & disown'
@@ -212,8 +95,82 @@ alias lock='systemctl start physlock'
 
 open() { xdg-open "${1}" & disown; }
 
-alias rgall="rg --hidden --no-ignore"
+# kludge expand --aliases "" ""
 
-# Haskell
-
-alias entr-hlint='fd . --extension hs | entr -c -s "hlint --hint=$HOME/code/dots/files/hlint.yaml src"'
+alias bc='clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0'
+alias cb='cabal'
+alias cg='cargo'
+alias dk='docker'
+alias e='hx'
+alias ll='clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S'
+alias m='make'
+alias od='objdump'
+alias py3='python3'
+alias rgall='rg --hidden --no-ignore'
+alias rmrf='\rm -rf'
+alias sky='ssh sky'
+alias tp='trash put'
+alias y='clipboard'
+alias nb='nix-build'
+alias nba='nix-build -A'
+alias ns='nix-shell'
+alias nsr='nix-shell --run'
+alias nsrzsh='nix-shell --run 'exec zsh''
+alias gclh='git clone https://github.com/'
+alias gclg='git clone https://github.com/GaloisInc/'
+alias gclm='git clone https://github.com/langston-barrett/'
+alias ga='git add'
+alias gau='git add --update'
+alias gb='git branch'
+alias gbD='git branch -D'
+alias gbl='git blame'
+alias gbr='git branch'
+alias gca='git commit --amend'
+alias gcb='git checkout -b'
+alias gcl='git clone --jobs 4'
+alias gcm='git commit -m'
+alias gcm='git commit'
+alias gcmm='git commit --message .'
+alias gco='git checkout'
+alias gcom='git checkout main'
+alias gcp='git cherry-pick'
+alias gd='git diff'
+alias gdm='git diff master'
+alias gds='git diff --cached'
+alias gf='git fetch'
+alias gfa='git fetch --all'
+alias gFp='git pull origin'
+alias gFu='git pull upstream'
+alias ghd='git rev-parse HEAD'
+alias gi='git init'
+alias gl='git log'
+alias glsf='git ls-files'
+alias gm='git merge'
+alias gmum='git merge upstream/master'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gPf='git push --force-with-lease'
+alias gpl='git pull'
+alias gplm='git pull mine'
+alias gplo='git pull origin'
+alias gplu='git pull upstream'
+alias gPp='git push -u origin'
+alias gpum='git pull upstream master'
+alias gr='git reset'
+alias gra='git rebase --abort'
+alias grb='git rebase'
+alias grc='git rebase --continue'
+alias grhm='git reset --hard origin/master'
+alias gri='git rebase --interactive'
+alias grv='git remote --verbose'
+alias gs='git status'
+alias gsh='git stash'
+alias gss='git status --short'
+alias gsu='git submodule'
+alias gsup='git submodule update'
+alias gsupi='git submodule update --init'
+alias gt='git tag'
+alias gwa='git worktree add'
+alias gwl='git worktree list'
+alias gwm='git worktree move'
+alias gwr='git worktree remove'
