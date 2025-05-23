@@ -39,8 +39,6 @@ llvm-dis-view() {
   llvm-dis -o - "${f}" | bat --language=llvm --file-name="${f}.ll" "${@}"
 }
 
-alias trailing="sed -i 's/[ \t]*$//'"
-
 # For copy/pasting from websites
 if [[ -n "${ZSH_NAME}" ]]; then
   undollar() { "${@}"; }

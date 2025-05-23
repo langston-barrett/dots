@@ -16,7 +16,7 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
     if lbuf == "b" {
         let pwd = std::env::current_dir().ok()?;
         match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from("cabal build all")),
+            Some(build::System::Cabal) => Some(String::from("cabal build ")),
             Some(build::System::Cargo) => Some(String::from("cargo build ")),
             Some(build::System::Make) => Some(String::from("make ")),
             None => None,
@@ -80,12 +80,14 @@ const ANYWHERE: &[(&str, &str)] = &[
     ("rgall", "rg --hidden --no-ignore"),
     ("rmrf", "\\rm -rf"),
     ("sky", "ssh sky"),
+    ("todo", "hx ~/todo.md"),
     ("tp", "trash put"),
     ("y", "clipboard"),
     //
     // nix
     //
     ("nb", "nix-build"),
+    ("nc", "nix-channel"),
     ("nba", "nix-build -A"),
     ("ns", "nix-shell"),
     ("nsr", "nix-shell --run"),
@@ -155,10 +157,17 @@ const ANYWHERE: &[(&str, &str)] = &[
     ("gwm", "git worktree move"),
     ("gwr", "git worktree remove"),
     //
+    // macos
+    //
+    #[cfg(target_os = "macos")]
+    ("trailing", "sed -i '' 's/[[:space:]]*$//'"),
+    //
     // linux
     //
     #[cfg(target_os = "linux")]
     ("docker", "sudo -g docker docker"),
+    #[cfg(target_os = "linux")]
+    ("trailing", "sed -i 's/[ \t]*$//"),
     #[cfg(target_os = "linux")]
     ("sys", "sudo systemctl"),
     #[cfg(target_os = "linux")]
@@ -171,6 +180,12 @@ const ANYWHERE: &[(&str, &str)] = &[
     ("sysus", "systemctl --user status"),
     #[cfg(target_os = "linux")]
     ("sysur", "systemctl --user restart"),
+    //
+    // meta
+    //
+    ("k", "kludge"),
+    ("ka", "hx ~/code/dots/kludge/src/expand.rs"),
+    ("ki", "cd ~/code/dots/kludge; cargo install --path=.; cd -"),
 ];
 
 fn expand_anywhere(lbuf: &str, rbuf: &str) -> Option<String> {
@@ -182,25 +197,35 @@ fn expand_anywhere(lbuf: &str, rbuf: &str) -> Option<String> {
     None
 }
 
-const BASIC: &[(&str, &[(&str, &str)])] = &[("detect", &[
-    ("bs", "echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid && sudo sysctl kernel.perf_event_mlock_kb=2048 && cargo b -q --profile=profiling --bin=sofuzz && samply record ./target/profiling/sofuzz --solutions /run/user/1000/sols --gas=2048 sofuzz/rs/map/map.toml target/profiling/libsofuzz_map.so --no-check-dwarf"),
-    ("clippy", "cargo clippy --all-targets -- --deny warnings"),
-    ("e1", "rm -rf benign solutions ; cargo build -p=eval1-smi-model && cargo run --bin dxezz -- --qcow=targets/eval1-smi/image-debug/snapshots.qcow2 targets/eval1-smi/eval1-smi-debug.toml target/debug/libeval1_smi_model.so --seed=1 --outer-iterations=8 --inner-iterations=1 --no-check-snapshots -v"),
-    ("rb", "cargo run --bin=bzro --"),
-    ("rd", "cargo run --bin=dxezz --"),
-    ("rs", "cargo run --bin=sofuzz --"),
-    ("t", "cargo test"),
-    ("tb", "cargo test --package=bzro -- --test-threads=1"),
-    ("td", "cargo test --package=dxezz -- --test-threads=1"),
-    ("ts", "cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz"),
-]), ("grease", &[
-    ("r", "cabal run exe:grease --"),
-    ("t", "cabal run test:grease-tests --"),
-    // TODO
-    ("to", "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"),
-    ("w", "ghcid"),
-    ("wt", "ghcid --target=test:grease-tests"),
-])];
+const BASIC: &[(&str, &[(&str, &str)])] = &[
+    ("crucible-llvm-cli", &[
+        ("r", "cabal run exe:crucible-llvm --"),
+        ("rs", "cabal run exe:crucible-llvm -- simulate"),
+        ("t", "cabal run test:crucible-llvm-cli-tests --"),
+        ("w", "ghcid"),
+        ("wt", "ghcid --target=test:crucible-llvm-cli-tests"),
+    ]),
+    ("detect", &[
+        ("bs", "echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid && sudo sysctl kernel.perf_event_mlock_kb=2048 && cargo b -q --profile=profiling --bin=sofuzz && samply record ./target/profiling/sofuzz --solutions /run/user/1000/sols --gas=2048 sofuzz/rs/map/map.toml target/profiling/libsofuzz_map.so --no-check-dwarf"),
+        ("clippy", "cargo clippy --all-targets -- --deny warnings"),
+        ("e1", "rm -rf benign solutions ; cargo build -p=eval1-smi-model && cargo run --bin dxezz -- --qcow=targets/eval1-smi/image-debug/snapshots.qcow2 targets/eval1-smi/eval1-smi-debug.toml target/debug/libeval1_smi_model.so --seed=1 --outer-iterations=8 --inner-iterations=1 --no-check-snapshots -v"),
+        ("rb", "cargo run --bin=bzro --"),
+        ("rd", "cargo run --bin=dxezz --"),
+        ("rs", "cargo run --bin=sofuzz --"),
+        ("t", "cargo test"),
+        ("tb", "cargo test --package=bzro -- --test-threads=1"),
+        ("td", "cargo test --package=dxezz -- --test-threads=1"),
+        ("ts", "cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz"),
+    ]),
+    ("grease", &[
+        ("r", "cabal run exe:grease --"),
+        ("t", "cabal run test:grease-tests --"),
+        // TODO
+        ("to", "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)"),
+        ("w", "ghcid"),
+        ("wt", "ghcid --target=test:grease-tests"),
+    ])
+];
 
 fn expand_basic(lbuf: &str, rbuf: &str) -> Option<String> {
     let cwd = env::current_dir().ok()?;
@@ -218,9 +243,9 @@ fn expand_basic(lbuf: &str, rbuf: &str) -> Option<String> {
 }
 
 fn expand(lbuf: String, rbuf: String) -> Option<String> {
-    expand_build_system(&lbuf)
+    expand_basic(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf))
-        .or_else(|| expand_basic(&lbuf, &rbuf))
+        .or_else(|| expand_build_system(&lbuf))
 }
 
 // TODO: Deduplicate logic
