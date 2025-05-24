@@ -14,31 +14,34 @@ pub(crate) struct Config {
     paths: Vec<PathBuf>,
 }
 
-fn fix_line(line: &str, tab_width: usize) -> String {
-    line.replace("\t", &" ".repeat(tab_width))
-        .trim_end()
-        .to_string()
-}
-
 fn fix_whitespace(path: &Path, check: bool, tab_width: usize) -> Result<bool, Box<dyn Error>> {
     let bytes = fs::read(path)?;
     if let Ok(content) = std::str::from_utf8(bytes.as_slice()) {
-        let fixed = content
-            .lines()
-            .map(|line| fix_line(line, tab_width))
-            .collect::<Vec<_>>()
-            .join("\n")
-            + "\n";
-
-        if check {
-            if content == fixed {
-                return Ok(true);
+        let mut lines = Vec::with_capacity(64); // guess
+        let mut ok = true;
+        for (num, line) in content.lines().enumerate() {
+            let num = num + 1; // line numbers start at 1
+            let trimmed = line.trim_end();
+            if check {
+                if line != trimmed {
+                    ok = false;
+                    let col = trimmed.len();
+                    eprintln!("{}:{}:{}: trailing whitespace", path.display(), num, col);
+                }
+                if let Some(idx) = line.find('\t') {
+                    ok = false;
+                    let col = idx + 1; // column numbers start at 1
+                    eprintln!("{}:{}:{}: tab", path.display(), num, col);
+                }
             } else {
-                eprintln!("Bad whitespace: {}", path.display());
-                return Ok(false;)
+                let tab = " ".repeat(tab_width);
+                lines.push(trimmed.replace('\t', &tab));
             }
         }
-
+        if check {
+            return Ok(ok);
+        }
+        let fixed = lines.join("\n") + "\n";
         fs::write(path, fixed)?;
     }
     Ok(true)
