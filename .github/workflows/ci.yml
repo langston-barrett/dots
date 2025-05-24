@@ -1,0 +1,23 @@
+name: CI
+on:
+  push:
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./kludge
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - run: cargo fmt --check
+    - name: Deps
+      run: |
+        rustup update
+        rustup component add clippy
+    - uses: Swatinem/rust-cache@v2
+    - run: cargo clippy -- --deny warnings
+    - run: cargo test --locked --no-run
+    - run: cargo test

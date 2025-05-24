@@ -66,11 +66,19 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
 
 const CLANG_LLVM: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0";
 const CLANG_LLVM_S: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S";
+const CURLS: &str = "curl \\
+  --fail \\
+  --location \\
+  --proto '=https' \\
+  --show-error \\
+  --silent \\
+  --tlsv1.2 \\";
 
 const ANYWHERE: &[(&str, &str)] = &[
     ("bc", CLANG_LLVM),
     ("cb", "cabal"),
     ("cg", "cargo"),
+    ("curls", CURLS),
     ("dk", "docker"),
     ("e", "hx"),
     ("ll", CLANG_LLVM_S),
