@@ -29,31 +29,31 @@ TEST := $(OUT_DIR)/tests
 TYPES := $(OUT_DIR)/types
 
 $(OUT):
-	@mkdir -p $(OUT_DIR)/
-	@touch $(OUT)
+    @mkdir -p $(OUT_DIR)/
+    @touch $(OUT)
 
 $(DEPS): $(OUT) $(THIS) $(CABALS) $(CABAL_PROJECT)
-	$(CABAL) $(CABAL_FLAGS) install --only-dependencies
-	@touch "$@"
+    $(CABAL) $(CABAL_FLAGS) install --only-dependencies
+    @touch "$@"
 
 $(BUILD): $(EXE_HS) $(SRC_HS)
-	$(CABAL) $(CABAL_FLAGS) build
-	@touch "$@"
+    $(CABAL) $(CABAL_FLAGS) build
+    @touch "$@"
 
 $(INSTALL): $(BUILD) $(SRC_HS)
-	$(CABAL) $(CABAL_FLAGS) install
-	@touch "$@"
+    $(CABAL) $(CABAL_FLAGS) install
+    @touch "$@"
 
 $(TEST): $(BUILD) $(SRC_HS) $(TEST_HS)
-	$(CABAL) $(CABAL_FLAGS) test
-	@touch "$@"
+    $(CABAL) $(CABAL_FLAGS) test
+    @touch "$@"
 
 define linter
 $(OUT_DIR)/$(1).$(3): $(LINTER_CONFIGS) $(1)
-	@mkdir -p $$(@D)
-	@echo $(2) $(1)
-	$(2) $(subst {},$(1),$(4))
-	@touch "$$@"
+    @mkdir -p $$(@D)
+    @echo $(2) $(1)
+    $(2) $(subst {},$(1),$(4))
+    @touch "$$@"
 endef
 
 $(foreach hs,$(ALL_HS),$(eval $(call linter,$(hs),hlint,syntax,--only="Parse error" -- {})))
@@ -65,8 +65,8 @@ hlint: $(addprefix $(OUT_DIR)/, $(ALL_HS:=.hlint))
 # types: $(addprefix $(OUT_DIR)/, $(TYPECHECK_HS:=.types))
 
 $(TYPES): $(TYPECHECK_HS)
-	cd src; cabal exec -- ghc -O0 -fno-code -fno-break-on-exception -fno-break-on-error -ferror-spans $(subst src/,,$(TYPECHECK_HS))
-	touch "$@"
+    cd src; cabal exec -- ghc -O0 -fno-code -fno-break-on-exception -fno-break-on-error -ferror-spans $(subst src/,,$(TYPECHECK_HS))
+    touch "$@"
 
 .PHONY: types
 types: $(TYPES)
@@ -82,24 +82,24 @@ test: $(TEST)
 
 .PHONY: entr-lint
 entr-lint:
-	for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
-	  entr -c -s "$(MAKE) lint && $(MAKE) types"
+    for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
+      entr -c -s "$(MAKE) lint && $(MAKE) types"
 
 .PHONY: entr-build
 entr-build:
-	for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
-	  entr -c -s "$(MAKE) lint && $(MAKE) types && $(MAKE) build"
+    for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
+      entr -c -s "$(MAKE) lint && $(MAKE) types && $(MAKE) build"
 
 .PHONY: entr
 entr:
-	for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
-	  entr -c -s "$(MAKE) lint && $(MAKE) types && $(MAKE) build && $(MAKE) test"
+    for f in $(THIS) $(ALL_HS); do printf "%s\n" "$${f}"; done | \
+      entr -c -s "$(MAKE) lint && $(MAKE) types && $(MAKE) build && $(MAKE) test"
 
 .PHONY: install
 install: $(INSTALL)
 
 .PHONY: clean
 clean:
-	rm -rf dist*
+    rm -rf dist*
 
 all: lint build test

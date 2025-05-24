@@ -72,7 +72,7 @@ list-make-targets() {
 }
 
 list-man-pages() {
-  apropos . | awk '{ print $1 }' 
+  apropos . | awk '{ print $1 }'
 }
 
 mount-encrypted() {

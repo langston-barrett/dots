@@ -28,7 +28,7 @@ vi_mode_set_cursor() {
     ansi_bar_cursor
     ansi_no_cursor_blink
   fi
-  
+
 }
 
 # Updates editor information when the keymap changes.

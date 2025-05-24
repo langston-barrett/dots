@@ -31,8 +31,14 @@ fn fix_whitespace(path: &Path, check: bool, tab_width: usize) -> Result<bool, Bo
             + "\n";
 
         if check {
-            return Ok(content == fixed);
+            if content == fixed {
+                return Ok(true);
+            } else {
+                eprintln!("Bad whitespace: {}", path.display());
+                return Ok(false;)
+            }
         }
+
         fs::write(path, fixed)?;
     }
     Ok(true)

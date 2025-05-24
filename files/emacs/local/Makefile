@@ -5,19 +5,19 @@ PATTERN = .*
 
 # TODO: Individualize
 $(OBJS): %.elc: %.el
-	cask build
+    cask build
 
 .PHONY: build
 build: $(OBJS)
 
 .PHONY: test
 test: build
-	$(CASK) exec buttercup -L . --pattern '$(PATTERN)' test
+    $(CASK) exec buttercup -L . --pattern '$(PATTERN)' test
 
 .PHONY: entr
 entr: build
-	find . -name "*.el" -or -name "Makefile" | entr -c -s "make test"
+    find . -name "*.el" -or -name "Makefile" | entr -c -s "make test"
 
 .PHONY: clean
 clean:
-	rm $(OBJS)
+    rm $(OBJS)

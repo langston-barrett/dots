@@ -67,9 +67,9 @@ newline() {
 add-zsh-hook preexec newline
 
 # https://superuser.com/questions/1389834/can-i-have-the-terminal-prompt-at-the-vertical-middle-of-a-window
-zmodload zsh/terminfo 
+zmodload zsh/terminfo
 PS1o="$PS1"
-function prompt_middle() { 
+function prompt_middle() {
   halfpage_down=""
   for i in {1..${1}}; do
     halfpage_down="$halfpage_down${terminfo[cud1]}"
@@ -78,7 +78,7 @@ function prompt_middle() {
   for i in {1..${1}}; do
     halfpage_up="$halfpage_up${terminfo[cuu1]}"
   done
-  PS1="%{${halfpage_down}${halfpage_up}%}$PS1o"; 
+  PS1="%{${halfpage_down}${halfpage_up}%}$PS1o";
 }
 function prompt_float() { PS1="$PS1o"; }
 function prompt_height() {

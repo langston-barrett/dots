@@ -22,7 +22,7 @@ for k, v in yaml_data.items():
 # COLORS #
 ##########
 
-# base16 colors but with variable names that 
+# base16 colors but with variable names that
 # reflect what the color is mainly used for
 
 bg_default = "#282c34"          # main shade darkest

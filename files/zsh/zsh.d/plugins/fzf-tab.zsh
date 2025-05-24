@@ -13,7 +13,7 @@ tab() {
     --bind="bspace:backward-delete-char/eof" \
     --bind="tab:accept" \
     --bind="space:print-query"
-  fzf-tab-complete 
+  fzf-tab-complete
 }
 zle -N tab
 
@@ -24,7 +24,7 @@ zle -N tab
 zstyle ':fzf-tab:complete:*:*' fzf-preview 'preview.sh ${(Q)realpath}'
 
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
-	fzf-preview 'echo ${(P)word}'
+    fzf-preview 'echo ${(P)word}'
 
 zstyle ':fzf-tab:complete:-command-:*' fzf-preview \
-  ¦ '(out=$(tldr --color always "$word") 2>/dev/null && echo $out) || (out=$(MANWIDTH=$FZF_PREVIEW_COLUMNS man "$word") 2>/dev/null && echo $out) || (out=$(which "$word") && echo $out) || echo "${(P)word}"' 
+  ¦ '(out=$(tldr --color always "$word") 2>/dev/null && echo $out) || (out=$(MANWIDTH=$FZF_PREVIEW_COLUMNS man "$word") 2>/dev/null && echo $out) || (out=$(which "$word") && echo $out) || echo "${(P)word}"'
