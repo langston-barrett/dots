@@ -36,18 +36,11 @@ in {
   # services.mullvad-vpn.enable = true;
 
   environment.systemPackages = with pkgs; [
-    # beets
-    # calibre
-    # chromium
-    # gimp
-    # keynav
-    # kdeconnect
     maim
     mu
-    # musescore
+    obsidian
     spotify
     tmux
-    # vlc
   ];
 
   # This value determines the NixOS release with which your system is to be

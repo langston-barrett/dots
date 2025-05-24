@@ -8,6 +8,7 @@ mod expand;
 mod install;
 mod prompt;
 mod system;
+mod whitespace;
 
 use cli::{Cli, Command};
 
@@ -37,6 +38,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Expand(conf) => expand::go(conf)?,
         Command::Install => install::go()?,
         Command::Prompt => prompt::go()?,
+        Command::Whitespace(conf) => whitespace::go(conf)?,
     }
     Ok(())
 }

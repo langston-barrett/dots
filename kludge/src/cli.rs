@@ -17,4 +17,5 @@ pub(crate) enum Command {
     Expand(crate::expand::Config),
     Install,
     Prompt,
+    Whitespace(crate::whitespace::Config),
 }

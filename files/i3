@@ -20,10 +20,10 @@ bindsym $mod+c kill
 floating_modifier $mod
 
 for_window [title="^launch$"] floating enable
-for_window [title="^launch$"] resize set 600 400
+for_window [title="^launch$"] resize set 500 400
 for_window [title="^launch$"] move position center
 for_window [title="^launch$"] border pixel 2
-# bindsym $mod+Tab exec env HYDRA=1 alacritty --class launch --title launch, [title="launch"] focus
+bindsym $mod+Tab exec alacritty --class launch --title launch, [title="launch"] focus
 bindsym $mod+space exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
 bindsym $mod+g exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/fzf-launcher, [title="launch"] focus
 bindsym $mod+z exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/hydra-launcher, [title="launch"] focus
