@@ -3,6 +3,6 @@
 # key: cas
 # --
 \begin{cases}
-	${1:equation} &\text{ if }${2:case} \\\\
-	${3:equation} &\text{ if }${4:case}
+    ${1:equation} &\text{ if }${2:case} \\\\
+    ${3:equation} &\text{ if }${4:case}
 \end{cases}

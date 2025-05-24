@@ -3,7 +3,7 @@
 # key: defun
 # --
 \begin{align*}
-	f:X\longrightarrow Y
+    f:X\longrightarrow Y
   &&
   x\xlongmapsto{f} y
 \end{align*}

@@ -3,5 +3,5 @@
 # key: remark*
 # --
 \begin{remark*}
-	$0
+    $0
 \end{remark*}

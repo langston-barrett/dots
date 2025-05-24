@@ -3,5 +3,5 @@
 # key: thm*
 # --
 \begin{theorem*}
-	$0
+    $0
 \end{theorem*}

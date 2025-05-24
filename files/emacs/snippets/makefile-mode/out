@@ -7,4 +7,4 @@
 OUT := ./out
 
 $(OUT):
-	@mkdir -p "$@"
+    @mkdir -p "$@"

@@ -3,5 +3,5 @@
 # key: tab
 # --
 \begin\{tabular}\{${1:c}}
-	$0
+    $0
 \end\{tabular}

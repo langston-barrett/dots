@@ -3,5 +3,5 @@
 # key: def*
 # --
 \begin{definition*}
-	$0
+    $0
 \end{definition*}
