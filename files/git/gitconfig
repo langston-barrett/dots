@@ -6,21 +6,21 @@
     email = langston.barrett@gmail.com
 [core]
     excludesfile = /home/langston/.config/git/gitignore
-	autocrlf = false
+    autocrlf = false
 [grep]
     extendedRegexp = true
 [color]
     ui = auto
 [push]
     default = simple
-	autoSetupRemote = true
+    autoSetupRemote = true
 [pull]
-	ff = only
+    ff = only
 [sendemail]
-	smtpserver = smtp.gmail.com
-	smtpuser = langston.barrett@gmail.com
-	smtpencryption = tls
-	smtpserverport = 587
+    smtpserver = smtp.gmail.com
+    smtpuser = langston.barrett@gmail.com
+    smtpencryption = tls
+    smtpserverport = 587
 
 # ---------------------------------------------------------
 # Credentials and URLs
@@ -46,22 +46,22 @@
 
 # See also ZSH aliases
 [alias]
-	b = branch
-	bl = blame
-	co = checkout
-	cb = checkout -b
-	com = checkout main
-	cp = cherry-pick
-	ds = diff --cached
-	fa = fetch --all
-	i = init
-	l = log
-	hd = rev-parse HEAD
-	p = push
-	pf = push --force-with-lease
-	pl = pull
-	pushf = push --force-with-lease
-	rv = remote -v
+    b = branch
+    bl = blame
+    co = checkout
+    cb = checkout -b
+    com = checkout main
+    cp = cherry-pick
+    ds = diff --cached
+    fa = fetch --all
+    i = init
+    l = log
+    hd = rev-parse HEAD
+    p = push
+    pf = push --force-with-lease
+    pl = pull
+    pushf = push --force-with-lease
+    rv = remote -v
     rb = rebase
     rbi = rebase -i
     s = status
@@ -89,4 +89,4 @@
     colorMoved = default
 
 [init]
-	defaultBranch = main
+    defaultBranch = main
