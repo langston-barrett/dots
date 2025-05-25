@@ -29,7 +29,6 @@ bindsym $mod+g exec alacritty --class launch --title launch -e ~/code/dots/files
 bindsym $mod+z exec alacritty --class launch --title launch -e ~/code/dots/files/scripts/bin/hydra-launcher, [title="launch"] focus
 
 # bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Ctrl+g
-#bindsym $mod+space exec env HYDRA=1 alacritty --class hydra --title hydra, [title="hydra"] focus
 bindsym $mod+Shift+space exec rofi -show drun -kb-cancel Alt+C -kb-cancel Alt+c -kb-cancel Alt+Q -kb-cancel Alt+q -kb-cancel Ctrl+g
 
 # bindsym $mod+d exec dmenu_run -fn "Open Sans-12"

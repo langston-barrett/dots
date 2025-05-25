@@ -2,7 +2,7 @@
 
 newline=$'\n'
 user="$(whoami)"
-if [[ "${user}" == langston ]] || [[ "${user}" == siddharthist ]]; then
+if [[ "${user}" == langston ]]; then
   user=""
 else
   user="${user}@$(hostname) : "

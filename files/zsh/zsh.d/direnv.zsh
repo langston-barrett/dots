@@ -1,3 +1,3 @@
-if [[ -z $IN_NIX_SHELL ]] && [[ -z $HYDRA ]]; then
+if [[ -z $IN_NIX_SHELL ]]; then
   eval "$(direnv hook zsh)"
 fi
