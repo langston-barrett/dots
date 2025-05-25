@@ -89,6 +89,7 @@ const ANYWHERE: &[(&str, &str)] = &[
     ("bc", CLANG_LLVM),
     ("cb", "cabal"),
     ("cg", "cargo"),
+    ("cgi.", "cargo install --path=."),
     ("curls", CURLS),
     ("dk", "docker"),
     ("e", "hx"),
