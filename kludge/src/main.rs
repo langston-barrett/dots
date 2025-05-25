@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use tracing::{debug, Level};
+use tracing::{Level, debug};
 use tracing_subscriber::fmt::format::FmtSpan;
 
 mod cli;
