@@ -2,7 +2,7 @@
 name = "kludge"
 description = "Random bits of code for automation"
 version = "0.0.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 clap = { features = ["derive"], version = "4" }

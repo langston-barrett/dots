@@ -73,6 +73,17 @@ const CURLS: &str = "curl \\
   --show-error \\
   --silent \\
   --tlsv1.2 \\";
+const GIT_CHECKOUT_MAIN: &str =
+    "git checkout $(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const GIT_DIFF_MAIN: &str = "git diff $(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const GIT_MERGE_ORIGIN_MAIN: &str =
+    "git merge origin/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const GIT_MERGE_UPSTREAM_MAIN: &str =
+    "git merge upstream/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const GIT_PULL_ORIGIN_MAIN: &str =
+    "git pull origin/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const GIT_PULL_UPSTREAM_MAIN: &str =
+    "git pull upstream/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
 
 const ANYWHERE: &[(&str, &str)] = &[
     ("bc", CLANG_LLVM),
@@ -103,67 +114,26 @@ const ANYWHERE: &[(&str, &str)] = &[
     //
     // git
     //
-    // see also .gitconfig
+    // see also .gitconfig, zbr
     //
-    ("gclh", "git clone https://github.com/"),
-    ("gclg", "git clone https://github.com/GaloisInc/"),
-    ("gclm", "git clone https://github.com/langston-barrett/"),
-    //
-    ("ga", "git add"),
-    ("gau", "git add --update"),
-    ("gb", "git branch"),
-    ("gbD", "git branch -D"),
-    ("gbl", "git blame"),
-    ("gbr", "git branch"),
     ("gca", "git commit --amend"),
     ("gcb", "git checkout -b"),
-    ("gcl", "git clone --jobs 4"),
-    ("gcm", "git commit -m"),
-    ("gcm", "git commit"),
-    ("gcmm", "git commit --message ."),
-    ("gco", "git checkout"),
-    ("gcom", "git checkout main"),
-    ("gcp", "git cherry-pick"),
-    ("gd", "git diff"),
-    ("gdm", "git diff master"),
+    ("gc.", "git commit --message ."),
+    ("gclg", "git clone https://github.com/GaloisInc/"),
+    ("gclh", "git clone https://github.com/"),
+    ("gclm", "git clone https://github.com/langston-barrett/"),
+    ("gcom", GIT_CHECKOUT_MAIN),
+    ("gdm", GIT_DIFF_MAIN),
     ("gds", "git diff --cached"),
-    ("gf", "git fetch"),
-    ("gfa", "git fetch --all"),
-    ("gFp", "git pull origin"),
-    ("gFu", "git pull upstream"),
-    ("ghd", "git rev-parse HEAD"),
-    ("gi", "git init"),
-    ("gl", "git log"),
-    ("glsf", "git ls-files"),
-    ("gm", "git merge"),
-    ("gmum", "git merge upstream/master"),
-    ("gp", "git push"),
-    ("gpf", "git push --force-with-lease"),
-    ("gPf", "git push --force-with-lease"),
-    ("gpl", "git pull"),
+    ("gmom", GIT_MERGE_ORIGIN_MAIN),
+    ("gmum", GIT_MERGE_UPSTREAM_MAIN),
     ("gplm", "git pull mine"),
     ("gplo", "git pull origin"),
+    ("gplom", GIT_PULL_ORIGIN_MAIN),
     ("gplu", "git pull upstream"),
-    ("gPp", "git push -u origin"),
-    ("gpum", "git pull upstream master"),
-    ("gr", "git reset"),
-    ("gra", "git rebase --abort"),
-    ("grb", "git rebase"),
-    ("grc", "git rebase --continue"),
-    ("grhm", "git reset --hard origin/master"),
-    ("gri", "git rebase --interactive"),
+    ("gplum", GIT_PULL_UPSTREAM_MAIN),
+    ("grph", "git rev-parse HEAD"),
     ("grv", "git remote --verbose"),
-    ("gs", "git status"),
-    ("gsh", "git stash"),
-    ("gss", "git status --short"),
-    ("gsu", "git submodule"),
-    ("gsup", "git submodule update"),
-    ("gsupi", "git submodule update --init"),
-    ("gt", "git tag"),
-    ("gwa", "git worktree add"),
-    ("gwl", "git worktree list"),
-    ("gwm", "git worktree move"),
-    ("gwr", "git worktree remove"),
     //
     // macos
     //
@@ -283,7 +253,9 @@ pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
     // TODO: Help system
     if conf.aliases {
         for (l, r) in ANYWHERE {
-            println!("alias {l}='{r}'");
+            if !r.contains("'") {
+                println!("alias {l}='{r}'");
+            }
         }
     } else if conf.hint {
         for (l, r) in hint(conf.lbuf, conf.rbuf).iter().take(5) {
