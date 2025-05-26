@@ -20,92 +20,9 @@ export KEYTIMEOUT=20
 # Unbind double escape
 bindkey -rpM viins '^[^['
 
-vi_mode_set_cursor() {
-  if [[ ${1:-${VI_KEYMAP}} == vicmd ]]; then
-    ansi_block_cursor
-    ansi_no_cursor_blink
-  else
-    ansi_bar_cursor
-    ansi_no_cursor_blink
-  fi
-
-}
-
-# Updates editor information when the keymap changes.
-typeset -g VI_KEYMAP=main
-zle-vi-set-mode() {
-  typeset -g VI_KEYMAP=${1:-main}
-  vi_mode_set_cursor
-  zle reset-prompt
-  zle -R
-}
-
-function zle-keymap-select() {
-  zle-vi-set-mode "${KEYMAP}"
-}
-zle -N zle-keymap-select
-
-function zle-line-init() {
-  zle-vi-set-mode "${KEYMAP}"
-  # Always start in normal mode:
-  # zle -K vicmd
-}
-zle -N zle-line-init
-
-function zle-line-finish() {
-  zle-vi-set-mode "${KEYMAP}"
-}
-zle -N zle-line-finish
-
-function vi-accept-line() {
-  VI_KEYMAP=main
-  zle accept-line
-}
-
-zle -N vi-accept-line
-
-bindkey -v
-
-# if mode indicator wasn't setup by theme, define default
-if [[ "${MODE_INDICATOR}" == "" ]]; then
-  MODE_INDICATOR="%{$fg_bold[red]%}<%{$fg[red]%}<<%{$reset_color%}"
-fi
-
-# function vi_mode_prompt_info() {
-#  case "${1:-${VI_KEYMAP:-main}}" in
-#     main) printf "%s\n" "%{$fg[yellow]%}i%{$reset_color%}" ;;
-#     viins) printf "%s\n" "%{$fg[yellow]%}i%{$reset_color%}" ;;
-#     isearch) printf "isearch\n" ;;
-#     command) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
-#     vicmd) printf "%s\n" "%{$fg[blue]%}n%{$reset_color%}" ;;
-#     spacezle) printf "%s\n" "%{$fg[green]%}n%{$reset_color%}" ;;
-#     visual) printf "sel\n" ;;
-#     viopp) printf "opp\n" ;;
-#     *) printf "???\n" ;;
-#   esac
-# }
-
-function use-j-k() {
-  if [[ $((${SECONDS} - ${last:-0})) -gt 10 ]]; then
-    notify-send "you can use ctrl-j and ctrl-k"
-    last=${SECONDS}
-  fi
-}
-# zle -N use-j-k
-# bindkey '^[OA' use-j-k
-# bindkey '^[OB' use-j-k
-
-spacezle-append-to-buffer() {
-  BUFFER+="${1}"
-  CURSOR="${#BUFFER}"
-  zle redisplay
-}
-zle-z() {
-  spacezle-append-to-buffer "z "
-  zle vi-insert
-}
-zle -N zle-z
-bindkey -M vicmd 'z' zle-z
+bindkey -v  # vi mode
 
 bindkey -M viins '^A' history-incremental-search-backward
 bindkey -M viins '^R' history-incremental-search-backward
+
+source_all "${ZSH_CONFIG_DIR}/zsh.d/vi"
