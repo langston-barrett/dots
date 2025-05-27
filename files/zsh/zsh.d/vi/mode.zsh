@@ -35,15 +35,15 @@ vi-accept-line() {
 }
 zle -N vi-accept-line
 
-function vi_mode_prompt() {
-  local mode="${1:-${VI_KEYMAP:-main}}"
-  case "${mode}" in
-     main) printf "%s\n" "%{$fg[green]%}%3d%{$reset_color%}" ;;
-     viins) printf "%s\n" "%{$fg[green]%}%3d%{$reset_color%}" ;;
-     command) printf "%s\n" "%{$fg[blue]%}%3d%{$reset_color%}" ;;
-     spacezle) printf "%s\n" "%{$fg[red]%}%3d%{$reset_color%}" ;;
-     vicmd) printf "%s\n" "%{$fg[blue]%}%3d%{$reset_color%}" ;;
-     *) printf "vi mode=${mode}?\n" ;;
-   esac
-}
-PS1=${PS1:s/%3d/'$(vi_mode_prompt)'}
+# function vi_mode_prompt() {
+#   local mode="${1:-${VI_KEYMAP:-main}}"
+#   case "${mode}" in
+#      main) printf "%s\n" "%{$fg[green]%}%3d%{$reset_color%}" ;;
+#      viins) printf "%s\n" "%{$fg[green]%}%3d%{$reset_color%}" ;;
+#      command) printf "%s\n" "%{$fg[blue]%}%3d%{$reset_color%}" ;;
+#      spacezle) printf "%s\n" "%{$fg[red]%}%3d%{$reset_color%}" ;;
+#      vicmd) printf "%s\n" "%{$fg[blue]%}%3d%{$reset_color%}" ;;
+#      *) printf "vi mode=${mode}?\n" ;;
+#    esac
+# }
+# PS1=${PS1:s/%3d/'$(vi_mode_prompt)'}
