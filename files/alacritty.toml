@@ -1,3 +1,4 @@
+[general]
 live_config_reload = true
 
 [colors]
@@ -83,12 +84,12 @@ save_to_clipboard = true
 semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 
 [window]
-decorations = "none"
+# decorations = "none"
 dynamic_padding = false
 
 [window.dimensions]
-columns = 80
-lines = 24
+columns = 100
+lines = 64
 
 [window.padding]
 x = 16
