@@ -15,8 +15,11 @@ fi
 kludge-expand() {
   out=$(env RUST_BACKTRACE=1 kludge expand -- "${LBUFFER}" "${RBUFFER}")
   if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
-    BUFFER=${out}
-    CURSOR=${#BUFFER}
+    BUFFER=${out/•/}
+    CURSOR=${out[(Ie)•]}
+    if [[ ${CURSOR} -ne ${#BUFFER} ]]; then
+      CURSOR=$((CURSOR-1))
+    fi
   fi
 }
 zle -N kludge-expand

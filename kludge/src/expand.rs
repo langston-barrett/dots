@@ -2,6 +2,8 @@ use std::{env, error::Error, ffi::OsStr};
 
 use crate::system as build;
 
+const CURSOR: char = '•';
+
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
     #[clap(long)]
@@ -85,92 +87,98 @@ const GIT_PULL_ORIGIN_MAIN: &str =
 const GIT_PULL_UPSTREAM_MAIN: &str =
     "git pull upstream/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
 
-const ANYWHERE: &[(&str, &str)] = &[
-    ("bc", CLANG_LLVM),
-    ("cb", "cabal"),
-    ("cg", "cargo"),
-    ("cgi.", "cargo install --path=."),
-    ("curls", CURLS),
-    ("dk", "docker"),
-    ("e", "hx"),
-    ("ll", CLANG_LLVM_S),
-    ("m", "make"),
-    ("od", "objdump"),
-    ("py3", "python3"),
-    ("rgall", "rg --hidden --no-ignore"),
-    ("rmrf", "\\rm -rf"),
-    ("sky", "ssh sky"),
-    ("todo", "hx ~/todo.md"),
-    ("tp", "trash put"),
-    ("y", "clipboard"),
+const ANYWHERE: &[(&str, &str, &str)] = &[
+    ("bc", CLANG_LLVM, ""),
+    ("cb", "cabal", ""),
+    ("cg", "cargo", ""),
+    ("cgi.", "cargo install --path=.", ""),
+    ("curls", CURLS, ""),
+    ("dk", "docker", ""),
+    ("e", "hx", ""),
+    ("hex", "python3 -c 'print(hex(", "))'"),
+    ("ll", CLANG_LLVM_S, ""),
+    ("m", "make", ""),
+    ("od", "objdump", ""),
+    ("py3", "python3", ""),
+    ("pye", "python3 -c 'print(", ")'"),
+    ("rgall", "rg --hidden --no-ignore", ""),
+    ("rmrf", "\\rm -rf", ""),
+    ("sky", "ssh sky", ""),
+    ("todo", "hx ~/todo.md", ""),
+    ("tp", "trash put", ""),
+    ("y", "clipboard", ""),
     //
     // nix
     //
-    ("nb", "nix-build"),
-    ("nc", "nix-channel"),
-    ("nba", "nix-build -A"),
-    ("ns", "nix-shell"),
-    ("nsr", "nix-shell --run"),
-    ("nsrzsh", "nix-shell --run 'exec zsh'"),
+    ("nb", "nix-build", ""),
+    ("nc", "nix-channel", ""),
+    ("nba", "nix-build -A", ""),
+    ("ns", "nix-shell", ""),
+    ("nsr", "nix-shell --run", ""),
+    ("nsrzsh", "nix-shell --run 'exec zsh'", ""),
     //
     // git
     //
     // see also .gitconfig, zbr
     //
-    ("gca", "git commit --amend"),
-    ("gcb", "git checkout -b"),
-    ("gc.", "git commit --message ."),
-    ("gclg", "git clone https://github.com/GaloisInc/"),
-    ("gclh", "git clone https://github.com/"),
-    ("gclm", "git clone https://github.com/langston-barrett/"),
-    ("gcom", GIT_CHECKOUT_MAIN),
-    ("gdm", GIT_DIFF_MAIN),
-    ("gds", "git diff --cached"),
-    ("gmom", GIT_MERGE_ORIGIN_MAIN),
-    ("gmum", GIT_MERGE_UPSTREAM_MAIN),
-    ("gplm", "git pull mine"),
-    ("gplo", "git pull origin"),
-    ("gplom", GIT_PULL_ORIGIN_MAIN),
-    ("gplu", "git pull upstream"),
-    ("gplum", GIT_PULL_UPSTREAM_MAIN),
-    ("grph", "git rev-parse HEAD"),
-    ("grv", "git remote --verbose"),
+    ("gca", "git commit --amend", ""),
+    ("gcb", "git checkout -b", ""),
+    ("gc.", "git commit --message .", ""),
+    ("gclg", "git clone https://github.com/GaloisInc/", ""),
+    ("gclh", "git clone https://github.com/", ""),
+    ("gclm", "git clone https://github.com/langston-barrett/", ""),
+    ("gcom", GIT_CHECKOUT_MAIN, ""),
+    ("gdm", GIT_DIFF_MAIN, ""),
+    ("gds", "git diff --cached", ""),
+    ("gmom", GIT_MERGE_ORIGIN_MAIN, ""),
+    ("gmum", GIT_MERGE_UPSTREAM_MAIN, ""),
+    ("gplm", "git pull mine", ""),
+    ("gplo", "git pull origin", ""),
+    ("gplom", GIT_PULL_ORIGIN_MAIN, ""),
+    ("gplu", "git pull upstream", ""),
+    ("gplum", GIT_PULL_UPSTREAM_MAIN, ""),
+    ("grph", "git rev-parse HEAD", ""),
+    ("grv", "git remote --verbose", ""),
     //
     // macos
     //
     #[cfg(target_os = "macos")]
-    ("trailing", "sed -i '' 's/[[:space:]]*$//'"),
+    ("trailing", "sed -i '' 's/[[:space:]]*$//'", ""),
     //
     // linux
     //
     #[cfg(target_os = "linux")]
-    ("docker", "sudo -g docker docker"),
+    ("docker", "sudo -g docker docker", ""),
     #[cfg(target_os = "linux")]
-    ("trailing", "sed -i 's/[ \t]*$//"),
+    ("trailing", "sed -i 's/[ \t]*$//", ""),
     #[cfg(target_os = "linux")]
-    ("sys", "sudo systemctl"),
+    ("sys", "sudo systemctl", ""),
     #[cfg(target_os = "linux")]
-    ("syss", "sudo systemctl status"),
+    ("syss", "sudo systemctl status", ""),
     #[cfg(target_os = "linux")]
-    ("sysr", "sudo systemctl restart"),
+    ("sysr", "sudo systemctl restart", ""),
     #[cfg(target_os = "linux")]
-    ("sysu", "systemctl --user"),
+    ("sysu", "systemctl --user", ""),
     #[cfg(target_os = "linux")]
-    ("sysus", "systemctl --user status"),
+    ("sysus", "systemctl --user status", ""),
     #[cfg(target_os = "linux")]
-    ("sysur", "systemctl --user restart"),
+    ("sysur", "systemctl --user restart", ""),
     //
     // meta
     //
-    ("k", "kludge"),
-    ("ka", "hx ~/code/dots/kludge/src/expand.rs"),
-    ("ki", "cd ~/code/dots/kludge; cargo install --path=.; cd -"),
+    ("k", "kludge", ""),
+    ("ka", "hx ~/code/dots/kludge/src/expand.rs", ""),
+    (
+        "ki",
+        "cd ~/code/dots/kludge; cargo install --path=.; cd -",
+        "",
+    ),
 ];
 
-fn expand_anywhere(lbuf: &str, rbuf: &str) -> Option<String> {
-    for (l, r) in ANYWHERE {
-        if lbuf == *l && rbuf.is_empty() {
-            return Some(r.to_string());
+fn expand_anywhere(lbuf0: &str, rbuf0: &str) -> Option<(String, String)> {
+    for (short, lbuf, rbuf) in ANYWHERE {
+        if lbuf0 == *short && rbuf0.is_empty() {
+            return Some((lbuf.to_string(), rbuf.to_string()));
         }
     }
     None
@@ -227,14 +235,15 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
     ),
 ];
 
-fn expand_basic(lbuf: &str, rbuf: &str) -> Option<String> {
+fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     let cwd = env::current_dir().ok()?;
     for (d, expands) in BASIC {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
         if name == Some(d) {
             for (l, r) in *expands {
+                // TODO: Allow non-empty rbufs
                 if lbuf == *l && rbuf.is_empty() {
-                    return Some(r.to_string());
+                    return Some((r.to_string(), String::new()));
                 }
             }
         }
@@ -242,18 +251,18 @@ fn expand_basic(lbuf: &str, rbuf: &str) -> Option<String> {
     None
 }
 
-fn expand(lbuf: String, rbuf: String) -> Option<String> {
+fn expand(lbuf: String, rbuf: String) -> Option<(String, String)> {
     expand_basic(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf))
-        .or_else(|| expand_build_system(&lbuf))
+        .or_else(|| expand_build_system(&lbuf).map(|s| (s, String::new())))
 }
 
 // TODO: Deduplicate logic
-fn hint(lbuf: String, rbuf: String) -> Vec<(&'static str, &'static str)> {
+fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     let mut results = Vec::with_capacity(8);
-    for (l, r) in ANYWHERE {
-        if l.starts_with(lbuf.as_str()) && rbuf.is_empty() {
-            results.push((*l, *r));
+    for (short, lbuf, rbuf) in ANYWHERE {
+        if short.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
+            results.push((*short, format!("{lbuf}{CURSOR}{rbuf}")));
         }
     }
     if let Ok(cwd) = env::current_dir() {
@@ -261,8 +270,8 @@ fn hint(lbuf: String, rbuf: String) -> Vec<(&'static str, &'static str)> {
         for (d, expands) in BASIC {
             if name == Some(d) {
                 for (l, r) in *expands {
-                    if l.starts_with(lbuf.as_str()) && rbuf.is_empty() {
-                        results.push((*l, *r));
+                    if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
+                        results.push((l, r.to_string()));
                     }
                 }
             }
@@ -274,17 +283,17 @@ fn hint(lbuf: String, rbuf: String) -> Vec<(&'static str, &'static str)> {
 pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
     // TODO: Help system
     if conf.aliases {
-        for (l, r) in ANYWHERE {
-            if !r.contains("'") {
-                println!("alias {l}='{r}'");
+        for (short, lbuf, rbuf) in ANYWHERE {
+            if rbuf.is_empty() && !lbuf.contains("'") {
+                println!("alias {short}='{lbuf}'");
             }
         }
     } else if conf.hint {
         for (l, r) in hint(conf.lbuf, conf.rbuf).iter().take(5) {
             println!("{l} --> {r}");
         }
-    } else if let Some(r) = expand(conf.lbuf, conf.rbuf) {
-        println!("{r}");
+    } else if let Some((lbuf, rbuf)) = expand(conf.lbuf, conf.rbuf) {
+        println!("{lbuf}{CURSOR}{rbuf}");
     }
     Ok(())
 }
