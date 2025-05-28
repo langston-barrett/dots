@@ -29,6 +29,13 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
             Some(build::System::Cabal) => Some(String::from("cabal haddock ")),
             _ => None,
         }
+    } else if lbuf == "f" {
+        let pwd = std::env::current_dir().ok()?;
+        match build::System::detect(pwd) {
+            Some(build::System::Cargo) => Some(String::from("cargo fmt ")),
+            Some(build::System::Make) => Some(String::from("make fmt ")),
+            _ => None,
+        }
     } else if lbuf == "i" {
         let pwd = std::env::current_dir().ok()?;
         match build::System::detect(pwd) {
@@ -75,17 +82,21 @@ const CURLS: &str = "curl \\
   --show-error \\
   --silent \\
   --tlsv1.2 \\";
-const GIT_CHECKOUT_MAIN: &str =
-    "git checkout $(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
-const GIT_DIFF_MAIN: &str = "git diff $(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
-const GIT_MERGE_ORIGIN_MAIN: &str =
-    "git merge origin/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+const DOCKER_CLANG: &str = r#"
+docker run \
+  --platform linux/amd64 \
+  --rm \
+  --mount "type=bind,src=${PWD},dst=/work" \
+  --workdir /work \
+  ubuntu:24.04 \
+  sh -c 'apt-get update && apt-get install -y clang && clang"#;
+const GIT_CHECKOUT_MAIN: &str = "git checkout $(git branch | grep -Eo '(main|master)$')";
+const GIT_DIFF_MAIN: &str = "git diff $(git branch | grep -Eo '(main|master)$')";
+const GIT_MERGE_ORIGIN_MAIN: &str = "git merge origin/$(git branch | grep -Eo '(main|master)$')";
 const GIT_MERGE_UPSTREAM_MAIN: &str =
-    "git merge upstream/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
-const GIT_PULL_ORIGIN_MAIN: &str =
-    "git pull origin/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
-const GIT_PULL_UPSTREAM_MAIN: &str =
-    "git pull upstream/$(git remote show origin | sed -n '/HEAD branch/s/.*: //p')";
+    "git merge upstream/$(git branch | grep -Eo '(main|master)$')";
+const GIT_PULL_ORIGIN_MAIN: &str = "git pull origin/$(git branch | grep -Eo '(main|master)$')";
+const GIT_PULL_UPSTREAM_MAIN: &str = "git pull upstream/$(git branch | grep -Eo '(main|master)$')";
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("bc", CLANG_LLVM, ""),
@@ -94,6 +105,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("cgi.", "cargo install --path=.", ""),
     ("curls", CURLS, ""),
     ("dk", "docker", ""),
+    ("dk-clang", DOCKER_CLANG, "'"),
     ("e", "hx", ""),
     ("hex", "python3 -c 'print(hex(", "))'"),
     ("ll", CLANG_LLVM_S, ""),
@@ -184,6 +196,18 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str) -> Option<(String, String)> {
     None
 }
 
+const GREASE_CMDS: &[(&str, &str)] = &[
+    ("r", "cabal run exe:grease --"),
+    ("t", "cabal run test:grease-tests --"),
+    // TODO
+    (
+        "to",
+        "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)",
+    ),
+    ("w", "ghcid"),
+    ("wt", "ghcid --target=test:grease-tests"),
+];
+
 const BASIC: &[(&str, &[(&str, &str)])] = &[
     (
         "crucible-llvm-cli",
@@ -219,20 +243,8 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
             ),
         ],
     ),
-    (
-        "grease",
-        &[
-            ("r", "cabal run exe:grease --"),
-            ("t", "cabal run test:grease-tests --"),
-            // TODO
-            (
-                "to",
-                "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)",
-            ),
-            ("w", "ghcid"),
-            ("wt", "ghcid --target=test:grease-tests"),
-        ],
-    ),
+    ("grease", GREASE_CMDS),
+    ("grease-cli", GREASE_CMDS),
 ];
 
 fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
