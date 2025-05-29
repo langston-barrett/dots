@@ -198,9 +198,9 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
 ];
 
 fn expand_anywhere(lbuf0: &str, rbuf0: &str) -> Option<(String, String)> {
-    for (short, lbuf, rbuf) in ANYWHERE {
-        if lbuf0 == *short && rbuf0.is_empty() {
-            return Some((lbuf.to_string(), rbuf.to_string()));
+    for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
+        if lbuf0 == short && rbuf0.is_empty() {
+            return Some((lbuf.to_owned(), rbuf.to_owned()));
         }
     }
     None
@@ -275,13 +275,13 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
 
 fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     let cwd = env::current_dir().ok()?;
-    for (d, expands) in BASIC {
+    for (d, expands) in BASIC.iter().copied() {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
         if name == Some(d) {
-            for (l, r) in *expands {
+            for (l, r) in expands.iter().copied() {
                 // TODO: Allow non-empty rbufs
-                if lbuf == *l && rbuf.is_empty() {
-                    return Some((r.to_string(), String::new()));
+                if lbuf == l && rbuf.is_empty() {
+                    return Some((r.to_owned(), String::new()));
                 }
             }
         }
@@ -298,16 +298,16 @@ fn expand(lbuf: String, rbuf: String) -> Option<(String, String)> {
 // TODO: Deduplicate logic
 fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     let mut results = Vec::with_capacity(8);
-    for (short, lbuf, rbuf) in ANYWHERE {
+    for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
         if short.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-            results.push((*short, format!("{lbuf}{CURSOR}{rbuf}")));
+            results.push((short, format!("{lbuf}{CURSOR}{rbuf}")));
         }
     }
     if let Ok(cwd) = env::current_dir() {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
-        for (d, expands) in BASIC {
+        for (d, expands) in BASIC.iter().copied() {
             if name == Some(d) {
-                for (l, r) in *expands {
+                for (l, r) in expands {
                     if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
                         results.push((l, r.to_string()));
                     }
@@ -321,7 +321,7 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
 pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
     // TODO: Help system
     if conf.aliases {
-        for (short, lbuf, rbuf) in ANYWHERE {
+        for (short, lbuf, rbuf) in ANYWHERE.iter() {
             if rbuf.is_empty() && !lbuf.contains("'") {
                 println!("alias {short}='{lbuf}'");
             }
@@ -334,4 +334,26 @@ pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
         println!("{lbuf}{CURSOR}{rbuf}");
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::expand;
+
+    fn test_expand(l: &str, r: &str) -> Option<(String, String)> {
+        expand(l.to_owned(), r.to_owned())
+    }
+
+    fn test_expand_is(l: &str, r: &str, result: &str) {
+        assert_eq!(test_expand(l, r), Some((result.to_owned(), String::new())));
+    }
+
+    #[test]
+    fn expand_l() {
+        test_expand_is(
+            "l",
+            "",
+            "cargo fmt --check && cargo clippy -- --deny warnings",
+        )
+    }
 }
