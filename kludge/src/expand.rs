@@ -39,7 +39,16 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
     } else if lbuf == "i" {
         let pwd = std::env::current_dir().ok()?;
         match build::System::detect(pwd) {
+            Some(build::System::Cabal) => Some(String::from("cabal install ")),
             Some(build::System::Cargo) => Some(String::from("cargo install ")),
+            Some(build::System::Make) => Some(String::from("make install ")),
+            _ => None,
+        }
+    } else if lbuf == "l" {
+        let pwd = std::env::current_dir().ok()?;
+        match build::System::detect(pwd) {
+            Some(build::System::Cargo) => Some(String::from("cargo clippy -- --deny warnings ")),
+            Some(build::System::Make) => Some(String::from("make lint ")),
             _ => None,
         }
     } else if lbuf == "r" {
@@ -95,8 +104,8 @@ const GIT_DIFF_MAIN: &str = "git diff $(git branch | grep -Eo '(main|master)$')"
 const GIT_MERGE_ORIGIN_MAIN: &str = "git merge origin/$(git branch | grep -Eo '(main|master)$')";
 const GIT_MERGE_UPSTREAM_MAIN: &str =
     "git merge upstream/$(git branch | grep -Eo '(main|master)$')";
-const GIT_PULL_ORIGIN_MAIN: &str = "git pull origin/$(git branch | grep -Eo '(main|master)$')";
-const GIT_PULL_UPSTREAM_MAIN: &str = "git pull upstream/$(git branch | grep -Eo '(main|master)$')";
+const GIT_PULL_ORIGIN_MAIN: &str = "git pull origin $(git branch | grep -Eo '(main|master)$')";
+const GIT_PULL_UPSTREAM_MAIN: &str = "git pull upstream $(git branch | grep -Eo '(main|master)$')";
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("bc", CLANG_LLVM, ""),
@@ -111,6 +120,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("ll", CLANG_LLVM_S, ""),
     ("m", "make", ""),
     ("od", "objdump", ""),
+    ("pr", "gh pr create --assignee langston-barrett --web", ""),
     ("py3", "python3", ""),
     ("pye", "python3 -c 'print(", ")'"),
     ("rgall", "rg --hidden --no-ignore", ""),
@@ -226,22 +236,38 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
                 "bs",
                 "echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid && sudo sysctl kernel.perf_event_mlock_kb=2048 && cargo b -q --profile=profiling --bin=sofuzz && samply record ./target/profiling/sofuzz --solutions /run/user/1000/sols --gas=2048 sofuzz/rs/map/map.toml target/profiling/libsofuzz_map.so --no-check-dwarf",
             ),
-            ("clippy", "cargo clippy --all-targets -- --deny warnings"),
             (
                 "e1",
                 "rm -rf benign solutions ; cargo build -p=eval1-smi-model && cargo run --bin dxezz -- --qcow=targets/eval1-smi/image-debug/snapshots.qcow2 targets/eval1-smi/eval1-smi-debug.toml target/debug/libeval1_smi_model.so --seed=1 --outer-iterations=8 --inner-iterations=1 --no-check-snapshots -v",
             ),
+            (
+                "lu",
+                "cargo clippy --no-default-features --features=usermode -- --deny warnings",
+            ),
             ("rb", "cargo run --bin=bzro --"),
+            (
+                "rbu",
+                "cargo run --bin=bzro --no-default-features --features=usermode --",
+            ),
             ("rd", "cargo run --bin=dxezz --"),
             ("rs", "cargo run --bin=sofuzz --"),
             ("t", "cargo test"),
+            ("tu", "cargo test --no-default-features --features=usermode"),
             ("tb", "cargo test --package=bzro -- --test-threads=1"),
+            (
+                "tbu",
+                "cargo test --package=bzro -- --test-threads=1  --no-default-features --features=usermode",
+            ),
             ("td", "cargo test --package=dxezz -- --test-threads=1"),
             (
                 "ts",
                 "cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz",
             ),
         ],
+    ),
+    (
+        "kludge",
+        &[("l", "cargo fmt --check && cargo clippy -- --deny warnings")],
     ),
     ("grease", GREASE_CMDS),
     ("grease-cli", GREASE_CMDS),
