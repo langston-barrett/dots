@@ -5,6 +5,7 @@ use std::{
     process,
 };
 
+/// Detect and fix whitespace issues
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
     #[clap(long)]
@@ -15,6 +16,10 @@ pub(crate) struct Config {
 }
 
 fn fix_whitespace(path: &Path, check: bool, tab_width: usize) -> Result<bool, Box<dyn Error>> {
+    let path_bytes = path.as_os_str().as_encoded_bytes();
+    let tabs_ok =
+        path_bytes == "Makefile".as_bytes() || path_bytes.ends_with(".makefile".as_bytes());
+    let tab = " ".repeat(tab_width);
     let bytes = fs::read(path)?;
     if let Ok(content) = std::str::from_utf8(bytes.as_slice()) {
         let mut lines = Vec::with_capacity(64); // guess
@@ -28,14 +33,19 @@ fn fix_whitespace(path: &Path, check: bool, tab_width: usize) -> Result<bool, Bo
                     let col = trimmed.len();
                     eprintln!("{}:{}:{}: trailing whitespace", path.display(), num, col);
                 }
-                if let Some(idx) = line.find('\t') {
-                    ok = false;
-                    let col = idx + 1; // column numbers start at 1
-                    eprintln!("{}:{}:{}: tab", path.display(), num, col);
+                if !tabs_ok {
+                    if let Some(idx) = line.find('\t') {
+                        ok = false;
+                        let col = idx + 1; // column numbers start at 1
+                        eprintln!("{}:{}:{}: tab", path.display(), num, col);
+                    }
                 }
             } else {
-                let tab = " ".repeat(tab_width);
-                lines.push(trimmed.replace('\t', &tab));
+                lines.push(if tabs_ok {
+                    trimmed.to_owned()
+                } else {
+                    trimmed.replace('\t', &tab)
+                });
             }
         }
         if check {

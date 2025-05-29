@@ -16,6 +16,7 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     Expand(crate::expand::Config),
     Install,
+    /// Print information for ZSH prompt
     Prompt,
     Whitespace(crate::whitespace::Config),
 }

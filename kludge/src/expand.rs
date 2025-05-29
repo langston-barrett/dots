@@ -4,6 +4,7 @@ use crate::system as build;
 
 const CURSOR: char = '•';
 
+/// Expand shell abbreviations
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
     #[clap(long)]
