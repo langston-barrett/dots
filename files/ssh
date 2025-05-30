@@ -5,22 +5,15 @@ StrictHostKeyChecking ask
 # UsePrivilegedPort no
 
 Host *
+  ControlMaster auto
   PreferredAuthentications publickey,keyboard-interactive,password
 
 # options applied for Galois hosts
 Host *.galois.com
-  ControlMaster auto
   ForwardAgent yes
+  PasswordAuthentication no
+  User langston
   VerifyHostKeyDNS ask
 
 Host sky
-  User langston
-  # HostName vm-37-51.eic.galois.com
-  HostName 192.168.61.185
-  Port 9988
-  LocalForward 8666 localhost:8666
-  LocalForward 8001 localhost:8001
-  LocalForward 8050 localhost:8050
-  LocalForward 9000 localhost:9000
-  PasswordAuthentication no
-  ControlMaster auto
+  HostName vm-60-189.galois.com

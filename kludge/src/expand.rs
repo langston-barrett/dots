@@ -110,6 +110,9 @@ const GIT_PULL_UPSTREAM_MAIN: &str = "git pull upstream $(git branch | grep -Eo 
 const GIT_REBASE_MAIN: &str = "git rebase $(git branch | grep -Eo '(main|master)$')";
 const GIT_REBASE_INTERACTIVE_MAIN: &str =
     "git rebase --interactive $(git branch | grep -Eo '(main|master)$')";
+const GIT_REBASE_ORIGIN_MAIN: &str = "git rebase origin/$(git branch | grep -Eo '(main|master)$')";
+const GIT_REBASE_INTERACTIVE_ORIGIN_MAIN: &str =
+    "git rebase --interactive origin/$(git branch | grep -Eo '(main|master)$')";
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("bc", CLANG_LLVM, ""),
@@ -165,6 +168,8 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("gplum", GIT_PULL_UPSTREAM_MAIN, ""),
     ("grbm", GIT_REBASE_MAIN, ""),
     ("grbim", GIT_REBASE_INTERACTIVE_MAIN, ""),
+    ("grbom", GIT_REBASE_ORIGIN_MAIN, ""),
+    ("grbiom", GIT_REBASE_INTERACTIVE_ORIGIN_MAIN, ""),
     ("grph", "git rev-parse HEAD", ""),
     ("grv", "git remote --verbose", ""),
     //
