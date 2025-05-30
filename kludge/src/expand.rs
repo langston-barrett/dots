@@ -157,6 +157,8 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("gclh", "git clone https://github.com/", ""),
     ("gclm", "git clone https://github.com/langston-barrett/", ""),
     ("gcom", GIT_CHECKOUT_MAIN, ""),
+    ("gfo", "git fetch origin", ""),
+    ("gfu", "git fetch upstream", ""),
     ("gdm", GIT_DIFF_MAIN, ""),
     ("gds", "git diff --cached", ""),
     ("gmom", GIT_MERGE_ORIGIN_MAIN, ""),
