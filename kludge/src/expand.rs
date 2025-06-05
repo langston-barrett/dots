@@ -17,7 +17,7 @@ pub(crate) struct Config {
 
 fn expand_build_system(lbuf: &str) -> Option<String> {
     if lbuf == "b" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("cabal build ")),
             Some(build::System::Cargo) => Some(String::from("cargo build ")),
@@ -25,20 +25,20 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
             None => None,
         }
     } else if lbuf == "d" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("cabal haddock ")),
             _ => None,
         }
     } else if lbuf == "f" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cargo) => Some(String::from("cargo fmt ")),
             Some(build::System::Make) => Some(String::from("make fmt ")),
             _ => None,
         }
     } else if lbuf == "i" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("cabal install ")),
             Some(build::System::Cargo) => Some(String::from("cargo install ")),
@@ -46,22 +46,21 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
             _ => None,
         }
     } else if lbuf == "l" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cargo) => Some(String::from("cargo clippy -- --deny warnings ")),
             Some(build::System::Make) => Some(String::from("make lint ")),
             _ => None,
         }
     } else if lbuf == "r" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("cabal run ")),
             Some(build::System::Cargo) => Some(String::from("cargo run ")),
-            Some(build::System::Make) => None,
-            None => None,
+            Some(build::System::Make) | None => None,
         }
     } else if lbuf == "t" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("cabal test ")),
             Some(build::System::Cargo) => Some(String::from("cargo test ")),
@@ -69,7 +68,7 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
             None => None,
         }
     } else if lbuf == "w" {
-        let pwd = std::env::current_dir().ok()?;
+        let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("ghcid")),
             Some(build::System::Cargo) => Some(String::from(
@@ -115,6 +114,7 @@ const GIT_REBASE_INTERACTIVE_ORIGIN_MAIN: &str =
     "git rebase --interactive origin/$(git branch | grep -Eo '(main|master)$')";
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
+    ("ba", "cabal build all", ""),
     ("bc", CLANG_LLVM, ""),
     ("cb", "cabal", ""),
     ("cg", "cargo", ""),
@@ -320,9 +320,9 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
         for (d, expands) in BASIC.iter().copied() {
             if name == Some(d) {
-                for (l, r) in expands {
+                for (l, r) in expands.iter().copied() {
                     if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-                        results.push((l, r.to_string()));
+                        results.push((l, r.to_owned()));
                     }
                 }
             }
@@ -331,11 +331,12 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     results
 }
 
+#[allow(clippy::unnecessary_wraps)]
 pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
     // TODO: Help system
     if conf.aliases {
-        for (short, lbuf, rbuf) in ANYWHERE.iter() {
-            if rbuf.is_empty() && !lbuf.contains("'") {
+        for (short, lbuf, rbuf) in ANYWHERE {
+            if rbuf.is_empty() && !lbuf.contains('\'') {
                 println!("alias {short}='{lbuf}'");
             }
         }
@@ -367,6 +368,6 @@ mod test {
             "l",
             "",
             "cargo fmt --check && cargo clippy -- --deny warnings",
-        )
+        );
     }
 }
