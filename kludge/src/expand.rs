@@ -48,7 +48,9 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
     } else if lbuf == "l" {
         let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
-            Some(build::System::Cargo) => Some(String::from("cargo clippy -- --deny warnings ")),
+            Some(build::System::Cargo) => Some(String::from(
+                "cargo clippy --all-targets -- --deny warnings ",
+            )),
             Some(build::System::Make) => Some(String::from("make lint ")),
             _ => None,
         }
@@ -72,7 +74,7 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from("ghcid")),
             Some(build::System::Cargo) => Some(String::from(
-                "ls ./**/Cargo.toml ./**/*.rs | entr -c -s 'cargo fmt && cargo clippy -- --deny warnings'",
+                "ls ./**/Cargo.toml ./**/*.rs | entr -c -s 'cargo fmt && cargo clippy --all-targets -- --deny warnings'",
             )),
             Some(build::System::Make) => Some(String::from("make test")),
             None => None,
@@ -256,7 +258,7 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
             ),
             (
                 "lu",
-                "cargo clippy --no-default-features --features=usermode -- --deny warnings",
+                "cargo clippy --all-targets --no-default-features --features=usermode -- --deny warnings",
             ),
             ("rb", "cargo run --bin=bzro --"),
             (
@@ -281,7 +283,10 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
     ),
     (
         "kludge",
-        &[("l", "cargo fmt --check && cargo clippy -- --deny warnings")],
+        &[(
+            "l",
+            "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
+        )],
     ),
     ("grease", GREASE_CMDS),
     ("grease-cli", GREASE_CMDS),
@@ -368,7 +373,7 @@ mod test {
         test_expand_is(
             "l",
             "",
-            "cargo fmt --check && cargo clippy -- --deny warnings",
-        );
+            "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
+        )
     }
 }
