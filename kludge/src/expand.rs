@@ -114,6 +114,8 @@ const GIT_REBASE_INTERACTIVE_MAIN: &str =
 const GIT_REBASE_ORIGIN_MAIN: &str = "git rebase origin/$(git branch | grep -Eo '(main|master)$')";
 const GIT_REBASE_INTERACTIVE_ORIGIN_MAIN: &str =
     "git rebase --interactive origin/$(git branch | grep -Eo '(main|master)$')";
+const GIT_RESET_HARD_ORIGIN_MAIN: &str =
+    "git reset --hard origin/$(git branch | grep -Eo '(main|master)$')";
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("ba", "cabal build all", ""),
@@ -152,6 +154,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     //
     // see also .gitconfig, zbr
     //
+    ("ga.", "git add .", ""),
     ("gc.", "git commit --message .", ""),
     ("gca", "git commit --amend", ""),
     ("gcb", "git checkout -b", ""),
@@ -175,6 +178,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("grbiom", GIT_REBASE_INTERACTIVE_ORIGIN_MAIN, ""),
     ("grbm", GIT_REBASE_MAIN, ""),
     ("grbom", GIT_REBASE_ORIGIN_MAIN, ""),
+    ("grhom", GIT_RESET_HARD_ORIGIN_MAIN, ""),
     ("grph", "git rev-parse HEAD", ""),
     ("grv", "git remote --verbose", ""),
     //
