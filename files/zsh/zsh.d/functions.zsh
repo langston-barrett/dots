@@ -55,3 +55,12 @@ alias weather='curl wttr.in/PDX'
 copy_last_command() {
   printf "%s" "$history[$((HISTCMD-1))]" | xsel -ib
 }
+
+bug() {
+  f=$(mktemp)
+  last_cmd=$history[$((HISTCMD-1))]
+  printf '```\n%s\n\n%s\n```\n\n(commit: %s)' "${last_cmd}" "$(zsh -c "$last_cmd" 2>&1)" "$(git rev-parse --short HEAD)" > "${f}"
+  "${EDITOR}" "${f}"
+  clipboard "${f}"
+  rm -f "${f}"
+}
