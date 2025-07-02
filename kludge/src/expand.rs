@@ -33,6 +33,9 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
     } else if lbuf == "f" {
         let pwd = env::current_dir().ok()?;
         match build::System::detect(pwd) {
+            Some(build::System::Cabal) => Some(String::from(
+                "fourmolu --mode inplace $(git ls-files '*.hs') ",
+            )),
             Some(build::System::Cargo) => Some(String::from("cargo fmt ")),
             Some(build::System::Make) => Some(String::from("make fmt ")),
             _ => None,
