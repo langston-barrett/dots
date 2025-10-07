@@ -104,6 +104,21 @@ docker run \
   --workdir /work \
   ubuntu:24.04 \
   sh -c 'apt-get update && apt-get install -y clang && clang"#;
+const DOCKER_DEV: &str = r#"
+docker run \
+  --platform linux/amd64 \
+  --rm \
+  --interactive \
+  --tty \
+  --mount "type=bind,src=${PWD},dst=/work" \
+  --workdir /work \
+  --env "PROMPT_EXTRA=${1} : " \
+  --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+  --mount type=bind,readonly=true,src=$HOME/.config/bash,dst=/root/.config/bash \
+  --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+  --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/root/.config/sh.d \
+  ubuntu-dev
+"#;
 const GIT_CHECKOUT_MAIN: &str = "git checkout $(git branch | grep -Eo '(main|master)$')";
 const GIT_DIFF_MAIN: &str = "git diff $(git branch | grep -Eo '(main|master)$')";
 const GIT_MERGE_ORIGIN_MAIN: &str = "git merge origin/$(git branch | grep -Eo '(main|master)$')";
@@ -129,6 +144,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("curls", CURLS, ""),
     ("dk", "docker", ""),
     ("dk-clang", DOCKER_CLANG, "'"),
+    ("dk-dev", DOCKER_DEV, "'"),
     ("e", "hx", ""),
     ("hex", "python3 -c 'print(hex(", "))'"),
     ("ll", CLANG_LLVM_S, ""),
@@ -184,6 +200,8 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("grhom", GIT_RESET_HARD_ORIGIN_MAIN, ""),
     ("grph", "git rev-parse HEAD", ""),
     ("grv", "git remote --verbose", ""),
+    ("gsuud", "git submodule update", ""), // TODO: zbr should handle this
+    ("gsuudi", "git submodule update", ""), // TODO: zbr should handle this
     //
     // macos
     //
@@ -234,11 +252,32 @@ const GREASE_CMDS: &[(&str, &str)] = &[
     ("t", "cabal run test:grease-tests --"),
     // TODO
     (
+        "l",
+        "hlint grease{,-aarch32,-ppc,-x86}/src grease-cli/src grease-exe/{main,src,tests}",
+    ),
+    (
         "to",
         "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)",
     ),
-    ("w", "ghcid"),
+    (
+        "w",
+        "ghcid --command \"cabal repl lib:grease pkg:grease-cli pkg:grease-exe\"",
+    ),
     ("wt", "ghcid --target=test:grease-tests"),
+];
+
+const SCREACH_CMDS: &[(&str, &str)] = &[
+    ("r", "cabal run exe:screach --"),
+    (
+        "l",
+        "hlint --hint=deps/grease/.hlint.yaml screach/{app,src,test} elf-edit-ecfs/{src,tools}",
+    ),
+    ("t", "cabal run test:screach-test --"),
+    (
+        "w",
+        "ghcid --command \"cabal repl lib:screach exe:screach\"",
+    ),
+    ("wt", "ghcid --target=test:screach-test"),
 ];
 
 const BASIC: &[(&str, &[(&str, &str)])] = &[
@@ -297,6 +336,8 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
     ),
     ("grease", GREASE_CMDS),
     ("grease-cli", GREASE_CMDS),
+    ("grease-exe", GREASE_CMDS),
+    ("screach", SCREACH_CMDS),
 ];
 
 fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
@@ -381,6 +422,6 @@ mod test {
             "l",
             "",
             "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
-        )
+        );
     }
 }
