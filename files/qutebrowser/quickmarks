@@ -26,7 +26,6 @@ gmail-compose https://mail.google.com/mail/u/0/?ui=2&fs=1&tf=cm&shva=1
 gmail-u-1 https://mail.google.com/mail/u/1/#inbox
 grease-docs https://galoisinc.github.io/grease/
 grease-issues https://github.com/GaloisInc/grease/issues
-grease-mrs https://gitlab-ext.galois.com/grease/grease/-/merge_requests
 grease-prs https://github.com/GaloisInc/grease/pulls
 home https://clockie.app/?theme=dark&hours=24
 hoogle https://hoogle.haskell.org
@@ -57,3 +56,5 @@ tiddlywiki https://langston.tiddlyhost.com/
 what4-docs-hackage https://hackage.haskell.org/package/what4
 what4-issues https://github.com/GaloisInc/what4/issues
 what4-prs https://github.com/GaloisInc/what4/pulls
+haskell-ci https://github.com/GaloisInc/.github
+weather-bk https://duckduckgo.com/?q=weather+11226&ia=web

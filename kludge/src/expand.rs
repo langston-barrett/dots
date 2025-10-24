@@ -270,7 +270,7 @@ const SCREACH_CMDS: &[(&str, &str)] = &[
     ("r", "cabal run exe:screach --"),
     (
         "l",
-        "hlint --hint=deps/grease/.hlint.yaml screach/{app,src,test} elf-edit-ecfs/{src,tools}",
+        "hlint --hint=../deps/grease/.hlint.yaml {app,src,test} ../elf-edit-ecfs/{src,tools}",
     ),
     ("t", "cabal run test:screach-test --"),
     (

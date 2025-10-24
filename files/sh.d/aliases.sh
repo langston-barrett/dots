@@ -29,6 +29,16 @@ else
   }
 fi
 
+lhd() {
+  lesshand-cli decode "${1:--}"
+}
+
+lhe() {
+  f=$(mktemp)
+  "${EDITOR}" "${f}"
+  lesshand-cli decode "${f}" | clipboard
+}
+
 seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
 }
