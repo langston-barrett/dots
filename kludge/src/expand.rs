@@ -248,10 +248,25 @@ fn notify(s: String) {
     drop(std::process::Command::new("notify").arg(s).spawn());
 }
 
+// duplicated from zbr
+fn clean_buf(mut lbuf: String) -> (String, String) {
+    let mut prefix = String::new();
+    for delim in [" || ", " && ", "; ", "| ", "|& "] {
+        if let Some(idx) = lbuf.rfind(delim) {
+            let after = idx + delim.len();
+            let (pre, post) = lbuf.split_at(after);
+            prefix = String::from(pre);
+            lbuf = String::from(post);
+        }
+    }
+    (prefix, lbuf)
+}
+
 fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, String)> {
+    let (prefix, lbuf0) = clean_buf(String::from(lbuf0));
     for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
         if lbuf0 == short && rbuf0.is_empty() {
-            return Some((lbuf.to_owned(), rbuf.to_owned()));
+            return Some((format!("{prefix}{lbuf}"), rbuf.to_owned()));
         }
     }
     if enter {
@@ -263,7 +278,10 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
 
         for (short, long) in ANYWHERE_ENTER {
             if let Some(rest) = lbuf0.strip_prefix(&format!("{short} ")) {
-                return Some((long.replace('_', rest), String::new()));
+                return Some((
+                    format!("{prefix}{}", long.replace('_', rest)),
+                    String::new(),
+                ));
             }
         }
     }
