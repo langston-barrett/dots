@@ -144,6 +144,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("ba", "cabal build all", ""),
     ("bc", CLANG_LLVM, ""),
     ("cb", "cabal", ""),
+    ("chx", "chmod +x", ""),
     ("cg", "cargo", ""),
     ("cgi.", "cargo install --path=.", ""),
     ("cpwd", "pwd | copy", ""),
@@ -400,10 +401,37 @@ fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     None
 }
 
+// Perform arbitrary transformations
+fn expand_advanced(lbuf: &str, rbuf: &str, enter: bool) -> Option<(String, String)> {
+    if !enter {
+        return None;
+    }
+
+    // turn `each` into `xargs`
+    let mut changed = false;
+    let mut words = Vec::with_capacity(8);
+    for word in lbuf.split_whitespace() {
+        if word == "each" {
+            words.push("xargs");
+            words.push("-I");
+            words.push("{}");
+            changed = true;
+        } else {
+            words.push(word);
+        }
+    }
+    if changed {
+        return Some((words.join(" "), rbuf.to_owned()));
+    }
+
+    None
+}
+
 fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
     expand_basic(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf, enter))
         .or_else(|| expand_build_system(&lbuf).map(|s| (s, String::new())))
+        .or_else(|| expand_advanced(&lbuf, &rbuf, enter))
 }
 
 // TODO: Deduplicate logic

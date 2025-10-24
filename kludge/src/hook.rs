@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{collections::HashSet, error::Error};
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
@@ -28,6 +28,8 @@ pub(crate) struct EndConfig {
     cmd: Vec<String>,
 }
 
+const IGNORE: &[&str] = &["ls", "hx"];
+
 fn begin(_conf: BeginConfig) {}
 
 fn notify(s: String) {
@@ -36,6 +38,12 @@ fn notify(s: String) {
 
 fn end(conf: EndConfig) {
     let duration = conf.end.saturating_sub(conf.begin);
+    let words = HashSet::<&str>::from_iter(conf.cmd.iter().map(|s| s.as_str()));
+    for word in IGNORE.iter().copied() {
+        if words.contains(word) {
+            return;
+        }
+    }
     if duration >= 5 {
         notify(format!("{} finished after {duration}s", conf.cmd.join(" ")));
     }
