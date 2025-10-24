@@ -46,15 +46,25 @@ kludge-hint() {
 zle -N kludge-hint
 
 expand-space() {
+  old=${BUFFER}
   zle kludge-space
   zle kludge-hint
-  zle zbr-space
+  if [[ ${BUFFER} == ${old} ]]; then
+    zle zbr-space
+  else
+    zle .self-insert
+  fi
 }
 zle -N expand-space
 
 expand-ret() {
+  old=${BUFFER}
   zle kludge-ret
-  zle zbr-ret
+  if [[ ${BUFFER} == ${old} ]]; then
+    zle zbr-ret
+  else
+    zle accept-line
+  fi
 }
 zle -N expand-ret
 

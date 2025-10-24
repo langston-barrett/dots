@@ -272,14 +272,11 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
         if lbuf0 == short && rbuf0.is_empty() {
             return Some((format!("{prefix}{lbuf}"), rbuf.to_owned()));
         }
+        if lbuf0 == lbuf {
+            notify(format!("hint: try {short}"));
+        }
     }
     if enter {
-        for (short, lbuf, _) in ANYWHERE.iter().copied() {
-            if lbuf0 == lbuf && rbuf0.is_empty() {
-                notify(format!("You should use {short}"));
-            }
-        }
-
         for (short, long) in ANYWHERE_ENTER {
             if let Some(rest) = lbuf0.strip_prefix(&format!("{short} ")) {
                 return Some((
@@ -481,7 +478,7 @@ mod test {
     use super::expand;
 
     fn test_expand(l: &str, r: &str) -> Option<(String, String)> {
-        expand(l.to_owned(), r.to_owned(), false)
+        expand(l.to_owned(), r.to_owned(), false, true)
     }
 
     fn test_expand_is(l: &str, r: &str, result: &str) {

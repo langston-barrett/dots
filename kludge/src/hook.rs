@@ -44,7 +44,8 @@ fn end(conf: EndConfig) {
             return;
         }
     }
-    if duration >= 5 {
+    // TODO: figure out false positives
+    if duration >= usize::MAX {
         notify(format!("{} finished after {duration}s", conf.cmd.join(" ")));
     }
 }
