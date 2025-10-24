@@ -4,7 +4,9 @@ use tracing::{Level, debug};
 use tracing_subscriber::fmt::format::FmtSpan;
 
 mod cli;
+mod edit;
 mod expand;
+mod hook;
 mod install;
 mod prompt;
 mod system;
@@ -35,7 +37,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     initialize_tracing(&cli);
     debug!(?cli);
     match cli.cmd {
+        Command::Edit(conf) => edit::go(conf)?,
         Command::Expand(conf) => expand::go(conf)?,
+        Command::Hook(conf) => hook::go(conf)?,
         Command::Install => install::go()?,
         Command::Prompt => prompt::go()?,
         Command::Whitespace(conf) => whitespace::go(conf)?,

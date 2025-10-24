@@ -1,0 +1,14 @@
+
+#!/usr/bin/env bash
+
+set -e
+
+if [[ ${OSTYPE} == darwin* ]]; then
+  # This requires giving notification permission to "Script Editor"
+  txt=$(printf 'tell app "Alacritty" to display dialog "%s"' "${1}")
+  osascript -e "${txt}"
+else
+  echo "Confirm currently only available on macOS :-("
+  notify "Confirm currently only available on macOS :-("
+  exit 1
+fi

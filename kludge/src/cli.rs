@@ -14,7 +14,9 @@ pub(crate) struct Cli {
 
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
+    Edit(crate::edit::Config),
     Expand(crate::expand::Config),
+    Hook(crate::hook::Config),
     Install,
     /// Print information for ZSH prompt
     Prompt,

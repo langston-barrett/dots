@@ -151,9 +151,10 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("dk", "docker", ""),
     ("dk-clang", DOCKER_CLANG, "'"),
     ("dk-dev", DOCKER_DEV, "'"),
-    ("e", "hx", ""),
+    ("e", "kludge edit", ""),
     ("hex", "python3 -c 'print(hex(", "))'"),
     ("ll", CLANG_LLVM_S, ""),
+    ("lower", "tr '[:upper:]' '[:lower:]'", ""),
     ("m", "make", ""),
     ("od", "objdump", ""),
     ("pr", "gh pr create --assignee langston-barrett --web", ""),
@@ -163,7 +164,9 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("rmrf", "\\rm -rf", ""),
     ("sky", "ssh sky", ""),
     ("todo", "hx ~/todo.md", ""),
+    ("top", "cd $(git rev-parse --show-toplevel)", ""),
     ("tp", "trash put", ""),
+    ("upper", "tr '[:lower:]' '[:upper:]'", ""),
     ("y", "copy", ""),
     //
     // nix
