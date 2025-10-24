@@ -11,11 +11,6 @@
 # Written by Jean-Philippe Ouellet <jpo@vt.edu>
 # Made available under the ISC license.
 
-notify() {
-  # 2.5s
-  notify-send --expire-time=2500 "${1}"
-}
-
 # only do this if we're in an interactive shell
 [[ -o interactive ]] || return
 

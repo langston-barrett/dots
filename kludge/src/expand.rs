@@ -11,6 +11,8 @@ pub(crate) struct Config {
     aliases: bool,
     #[clap(long)]
     hint: bool,
+    #[clap(long)]
+    enter: bool,
     lbuf: String,
     rbuf: String,
 }
@@ -135,6 +137,9 @@ const GIT_REBASE_INTERACTIVE_ORIGIN_MAIN: &str =
 const GIT_RESET_HARD_ORIGIN_MAIN: &str =
     "git reset --hard origin/$(git branch | grep -Eo '(main|master)$')";
 
+// Expansions that only apply when the user hit "enter", not "space"
+const ANYWHERE_ENTER: &[(&str, &str)] = &[("mkcd", "mkdir _ && cd _")];
+
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("ba", "cabal build all", ""),
     ("bc", CLANG_LLVM, ""),
@@ -159,7 +164,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("sky", "ssh sky", ""),
     ("todo", "hx ~/todo.md", ""),
     ("tp", "trash put", ""),
-    ("y", "clipboard", ""),
+    ("y", "copy", ""),
     //
     // nix
     //
@@ -239,10 +244,27 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ),
 ];
 
-fn expand_anywhere(lbuf0: &str, rbuf0: &str) -> Option<(String, String)> {
+fn notify(s: String) {
+    drop(std::process::Command::new("notify").arg(s).spawn());
+}
+
+fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, String)> {
     for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
         if lbuf0 == short && rbuf0.is_empty() {
             return Some((lbuf.to_owned(), rbuf.to_owned()));
+        }
+    }
+    if enter {
+        for (short, lbuf, _) in ANYWHERE.iter().copied() {
+            if lbuf0 == lbuf && rbuf0.is_empty() {
+                notify(format!("You should use {short}"));
+            }
+        }
+
+        for (short, long) in ANYWHERE_ENTER {
+            if let Some(rest) = lbuf0.strip_prefix(&format!("{short} ")) {
+                return Some((long.replace('_', rest), String::new()));
+            }
         }
     }
     None
@@ -357,9 +379,9 @@ fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     None
 }
 
-fn expand(lbuf: String, rbuf: String) -> Option<(String, String)> {
+fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
     expand_basic(&lbuf, &rbuf)
-        .or_else(|| expand_anywhere(&lbuf, &rbuf))
+        .or_else(|| expand_anywhere(&lbuf, &rbuf, enter))
         .or_else(|| expand_build_system(&lbuf).map(|s| (s, String::new())))
 }
 
@@ -399,7 +421,7 @@ pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
         for (l, r) in hint(conf.lbuf, conf.rbuf).iter().take(5) {
             println!("{l} --> {r}");
         }
-    } else if let Some((lbuf, rbuf)) = expand(conf.lbuf, conf.rbuf) {
+    } else if let Some((lbuf, rbuf)) = expand(conf.lbuf, conf.rbuf, conf.enter) {
         println!("{lbuf}{CURSOR}{rbuf}");
     }
     Ok(())
@@ -410,7 +432,7 @@ mod test {
     use super::expand;
 
     fn test_expand(l: &str, r: &str) -> Option<(String, String)> {
-        expand(l.to_owned(), r.to_owned())
+        expand(l.to_owned(), r.to_owned(), false)
     }
 
     fn test_expand_is(l: &str, r: &str, result: &str) {

@@ -12,7 +12,7 @@ if ! installed zbr; then
   zle -N zbr-hint
 fi
 
-kludge-expand() {
+kludge-space() {
   out=$(env RUST_BACKTRACE=1 kludge expand -- "${LBUFFER}" "${RBUFFER}")
   if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
     BUFFER=${out/•/}
@@ -22,7 +22,15 @@ kludge-expand() {
     fi
   fi
 }
-zle -N kludge-expand
+zle -N kludge-space
+
+kludge-ret() {
+  out=$(env RUST_BACKTRACE=1 kludge expand --enter -- "${LBUFFER}" "${RBUFFER}")
+  if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
+    BUFFER=${out/•/}
+  fi
+}
+zle -N kludge-ret
 
 kludge-hint() {
   if [[ -n ${BUFFER% } ]]; then
@@ -38,14 +46,14 @@ kludge-hint() {
 zle -N kludge-hint
 
 expand-space() {
-  zle kludge-expand
+  zle kludge-space
   zle kludge-hint
   zle zbr-space
 }
 zle -N expand-space
 
 expand-ret() {
-  zle kludge-expand
+  zle kludge-ret
   zle zbr-ret
 }
 zle -N expand-ret

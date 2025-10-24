@@ -21,10 +21,6 @@ lhe() {
   lesshand-cli decode "${f}" | copy
 }
 
-mkcd() {
-  mkdir "${1}" && cd "${1}"
-}
-
 seds() {
   sed "$(printf 's|%s|%s|g' "${1}" "${2}")"
 }

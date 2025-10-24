@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ ${OSTYPE} == darwin* ]]; then
+  # This requires giving notification permission to "Script Editor"
+  txt=$(printf 'display notification "" with title "%s"' "${1}")
+  osascript -e "${txt}"
+else
+  notify-send --expire-time=2500 "${1}"
+fi
