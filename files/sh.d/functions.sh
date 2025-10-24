@@ -148,7 +148,7 @@ snip() {
       --preview="grep -v '^#' {} | bat --style=plain --file-name={} --language=${language} --force-colorization" | \
     xargs bat | \
     grep -v '^#' | \
-    xsel -ib
+    copy
   popd > /dev/null || return
   popd > /dev/null || return
 }

@@ -9,7 +9,7 @@ ee() {
   fi
 }
 
-alias jq_clipboard="xsel -ob | jq | xsel -ib"
+alias jq_clipboard="paste | jq | copy"
 
 lhd() {
   lesshand-cli decode "${1:--}"
@@ -104,7 +104,7 @@ alias rmrf='\rm -rf'
 alias sky='ssh sky'
 alias todo='hx ~/todo.md'
 alias tp='trash put'
-alias y='clipboard'
+alias y='copy'
 alias nb='nix-build'
 alias nc='nix-channel'
 alias nba='nix-build -A'
