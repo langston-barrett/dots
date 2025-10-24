@@ -141,6 +141,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("cb", "cabal", ""),
     ("cg", "cargo", ""),
     ("cgi.", "cargo install --path=.", ""),
+    ("cpwd", "pwd | copy", ""),
     ("curls", CURLS, ""),
     ("dk", "docker", ""),
     ("dk-clang", DOCKER_CLANG, "'"),
@@ -201,7 +202,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("grph", "git rev-parse HEAD", ""),
     ("grv", "git remote --verbose", ""),
     ("gsuud", "git submodule update", ""), // TODO: zbr should handle this
-    ("gsuudi", "git submodule update", ""), // TODO: zbr should handle this
+    ("gsuudi", "git submodule update --init", ""), // TODO: zbr should handle this
     //
     // macos
     //

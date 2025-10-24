@@ -11,24 +11,6 @@ ee() {
 
 alias jq_clipboard="xsel -ob | jq | xsel -ib"
 
-if [[ ${OSTYPE} == darwin* ]]; then
-  clipboard() {
-    if [[ -n "${1}" ]]; then
-      pbcopy <"${1}"
-    else
-      pbcopy
-    fi
-  }
-else
-  clipboard() {
-    if [[ -n "${1}" ]]; then
-      xsel -ib <"${1}"
-    else
-      xsel -ib
-    fi
-  }
-fi
-
 lhd() {
   lesshand-cli decode "${1:--}"
 }
@@ -36,7 +18,11 @@ lhd() {
 lhe() {
   f=$(mktemp)
   "${EDITOR}" "${f}"
-  lesshand-cli decode "${f}" | clipboard
+  lesshand-cli decode "${f}" | copy
+}
+
+mkcd() {
+  mkdir "${1}" && cd "${1}"
 }
 
 seds() {
@@ -97,10 +83,8 @@ alias keyb='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/m
 alias lkeyb='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/x1.kbd & disown'
 alias kmonad-minidox4="cd /tmp ; sudo echo ; sudo nohup ${HOME}/.cabal/bin/kmonad ${HOME}/code/dots/files/kmonad/minidox-0.4.kbd & disown"
 alias kmonad-mini='z kmon && sudo echo && sudo kmonad ~/code/dots/files/kmonad/mini.kbd & disown'
-
 alias makej='make -j$(nproc)'
 alias lock='systemctl start physlock'
-alias bts='for i in 1 2 3; do echo -n \`; done | clipboard'
 
 open() { xdg-open "${1}" & disown; }
 
@@ -111,6 +95,7 @@ alias bc='clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0'
 alias cb='cabal'
 alias cg='cargo'
 alias cgi.='cargo install --path=.'
+alias cpwd='pwd | copy'
 alias dk='docker'
 alias e='hx'
 alias ll='clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S'
@@ -145,6 +130,8 @@ alias gplo='git pull origin'
 alias gplu='git pull upstream'
 alias grph='git rev-parse HEAD'
 alias grv='git remote --verbose'
+alias gsuud='git submodule update'
+alias gsuudi='git submodule update'
 alias k='kludge'
 alias ka='hx ~/code/dots/kludge/src/expand.rs'
 alias ki='cd ~/code/dots/kludge; cargo install --path=.; cd -'

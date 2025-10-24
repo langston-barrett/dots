@@ -31,7 +31,7 @@ plugin-compile() {
 # required for fzf-tab
 plugin-load zsh-users/zsh-completions
 # fzf-tab does not like being deferred
-# plugin-load Aloxaf/fzf-tab
+plugin-load Aloxaf/fzf-tab
 plugin-load romkatv/zsh-defer
 
 for f in ${XDG_CONFIG_HOME:-${HOME}/.config}/zsh/zsh.d/plugins/*.zsh; do
