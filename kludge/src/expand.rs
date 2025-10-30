@@ -346,21 +346,21 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
             ),
             (
                 "lu",
-                "cargo clippy --all-targets --no-default-features --features=usermode -- --deny warnings",
+                "cargo clippy --all-targets --no-default-features --features=usermode --target-dir=target-usermode -- --deny warnings",
             ),
             ("rb", "cargo run --bin=bzro --"),
             (
                 "rbu",
-                "cargo run --bin=bzro --no-default-features --features=usermode --",
+                "cargo run --bin=bzro --no-default-features --features=usermode --target-dir=target-usermode --",
             ),
             ("rd", "cargo run --bin=dxezz --"),
             ("rs", "cargo run --bin=sofuzz --"),
             ("t", "cargo test"),
-            ("tu", "cargo test --no-default-features --features=usermode"),
+            ("tu", "cargo test --no-default-features --features=usermode --target-dir=target-usermode"),
             ("tb", "cargo test --package=bzro -- --test-threads=1"),
             (
                 "tbu",
-                "cargo test --package=bzro -- --test-threads=1  --no-default-features --features=usermode",
+                "cargo test --package=bzro --no-default-features --features=usermode --target-dir=target-usermode -- --test-threads=1",
             ),
             ("td", "cargo test --package=dxezz -- --test-threads=1"),
             (
