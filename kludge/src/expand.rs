@@ -161,6 +161,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("pr", "gh pr create --assignee langston-barrett --web", ""),
     ("py3", "python3", ""),
     ("pye", "python3 -c 'print(", ")'"),
+    ("qr", "qrencode -t utf8", ""),
     ("rgall", "rg --hidden --no-ignore", ""),
     ("rmrf", "\\rm -rf", ""),
     ("sky", "ssh sky", ""),
