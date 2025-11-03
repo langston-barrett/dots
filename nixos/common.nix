@@ -28,7 +28,7 @@ in {
   ] ++ import ./minimal.nix { inherit pkgs; };
 
   # Time
-  time.timeZone = "America/New_York";
+  # time.timeZone = "America/New_York";
   services.localtimed.enable = true;
 
   # Nix
@@ -80,14 +80,6 @@ in {
     #     enable = true;
     #   };
     # };
-  };
-
-  services.syncthing = {
-    enable = false;
-    group = variables.username;
-    user = variables.username;
-    dataDir = "/home/${variables.username}/sync";
-    openDefaultPorts = true;
   };
 
   services.udev.extraRules = ''

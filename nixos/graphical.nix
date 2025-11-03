@@ -6,7 +6,7 @@ let
     longitude = -122.63;
   };
   location = portland;
-  master = (import ./pkgs.nix { inherit pkgs; }).master;
+  # master = (import ./pkgs.nix { inherit pkgs; }).master;
   variables = import ./hosts/this/variables.nix;
 in {
   imports = [ ./gtk.nix ];
@@ -15,17 +15,14 @@ in {
     # Window manager functionality
     feh
     rofi
-    rxvt_unicode-with-plugins
     vanilla-dmz # cursor theme
     libnotify
 
     # General graphical packages
     alacritty
     anki
-    baobab
-    # kcolorchooser
-    master.dropbox
-    master.signal-desktop
+    dropbox
+    # signal-desktop
     qutebrowser
     xsel
     zathura

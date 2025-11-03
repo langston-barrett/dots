@@ -15,6 +15,7 @@ bail_if_not_installed nix
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME=$HOME/.config
 fi
+mkdir -p $XDG_CONFIG_HOME
 
 helix_config="${XDG_CONFIG_HOME}/helix/config.toml"
 if [[ -d ~/.config/helix ]] && ! [[ -f "${helix_config}" ]]; then
@@ -55,6 +56,16 @@ fi
 if ! installed kludge; then
   cd kludge
   cargo install --path .
+  export PATH=$PATH:$HOME/.cargo/bin
+  cd ..
+fi
+
+if ! installed zbr; then
+  pushd ~/code
+  git clone https://github.com/langston-barrett/zbr
+  cd zbr
+  cargo install --path=.
+  popd
 fi
 
 # TODO: rm cargo install

@@ -16,17 +16,17 @@ in {
 
   boot = {
     # Obscure network protocols and old or rare filesystems
-    inherit (hardened.boot) blacklistedKernelModules;
+    # inherit (hardened.boot) blacklistedKernelModules;
   };
 
   security = {
-    inherit (hardened.security)
+    # inherit (hardened.security)
       # "Restrict process information to the owning user."
       # Only on NixOS < 21.05
       # hideProcessInformation
 
       # Whether to prevent replacing the running kernel image.
-      protectKernelImage;
+      # protectKernelImage;
 
     polkit = {
       enable = true;
