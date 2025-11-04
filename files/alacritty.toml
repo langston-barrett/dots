@@ -47,7 +47,7 @@ style = "Block"
 unfocused_hollow = true
 
 [font]
-size = 13.0
+size = 15.0
 
 [font.bold]
 family = "Hack"

@@ -10,7 +10,7 @@ bail_if_not_installed() {
   fi
 }
 
-bail_if_not_installed nix
+# bail_if_not_installed nix
 
 if [[ -z $XDG_CONFIG_HOME ]]; then
   export XDG_CONFIG_HOME=$HOME/.config
