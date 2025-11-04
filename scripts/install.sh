@@ -71,3 +71,17 @@ fi
 # TODO: rm cargo install
 cargo install --path kludge
 kludge install "$@"
+
+if ! installed zsh; then
+  if installed apt-get; then
+    if installed sudo; then
+      sudo apt-get update
+      sudo apt-get install -y zsh
+    else
+      apt-get update
+      apt-get install -y zsh
+    fi
+  fi
+fi
+
+exec zsh

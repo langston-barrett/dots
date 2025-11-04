@@ -14,6 +14,9 @@ bail_if_not_installed() {
   fi
 }
 
+mkdir -p ~/code
+cd ~/code
+
 if installed git; then
   git clone \
       --jobs "$(nproc)" \
