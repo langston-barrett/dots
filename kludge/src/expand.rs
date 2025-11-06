@@ -492,7 +492,7 @@ mod test {
     use super::expand;
 
     fn test_expand(l: &str, r: &str) -> Option<(String, String)> {
-        expand(l.to_owned(), r.to_owned(), false, true)
+        expand(l.to_owned(), r.to_owned(), false)
     }
 
     fn test_expand_is(l: &str, r: &str, result: &str) {

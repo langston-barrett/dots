@@ -33,12 +33,10 @@ fn fix_whitespace(path: &Path, check: bool, tab_width: usize) -> Result<bool, Bo
                     let col = trimmed.len();
                     eprintln!("{}:{}:{}: trailing whitespace", path.display(), num, col);
                 }
-                if !tabs_ok {
-                    if let Some(idx) = line.find('\t') {
-                        ok = false;
-                        let col = idx + 1; // column numbers start at 1
-                        eprintln!("{}:{}:{}: tab", path.display(), num, col);
-                    }
+                if !tabs_ok && let Some(idx) = line.find('\t') {
+                    ok = false;
+                    let col = idx + 1; // column numbers start at 1
+                    eprintln!("{}:{}:{}: tab", path.display(), num, col);
                 }
             } else {
                 lines.push(if tabs_ok {

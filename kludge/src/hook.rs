@@ -38,14 +38,18 @@ fn notify(s: String) {
 
 fn end(conf: EndConfig) {
     let duration = conf.end.saturating_sub(conf.begin);
-    let words = HashSet::<&str>::from_iter(conf.cmd.iter().map(|s| s.as_str()));
+    let words = conf
+        .cmd
+        .iter()
+        .map(String::as_str)
+        .collect::<HashSet<&str>>();
     for word in IGNORE.iter().copied() {
         if words.contains(word) {
             return;
         }
     }
     // TODO: figure out false positives
-    if duration >= usize::MAX {
+    if duration == usize::MAX {
         notify(format!("{} finished after {duration}s", conf.cmd.join(" ")));
     }
 }
