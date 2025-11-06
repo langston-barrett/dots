@@ -28,10 +28,19 @@ plugin-compile() {
   done
 }
 
-# required for fzf-tab
-plugin-load zsh-users/zsh-completions
-# fzf-tab does not like being deferred
-plugin-load Aloxaf/fzf-tab
+installed() { command -v "$1" >/dev/null 2>&1; }
+if installed fzf || [[ $(hostname) == 000800-langston.local ]]; then
+  # required for fzf-tab
+  plugin-load zsh-users/zsh-completions
+  # fzf-tab does not like being deferred
+  plugin-load Aloxaf/fzf-tab
+
+  # see bin/pick
+  fzf_flags=('--border' '--height=10%' '--layout=reverse' '--prompt=' '--info=hidden' )
+  zstyle ':fzf-tab:*' fzf-flags $fzf_flags
+  zstyle ':fzf-tab:complete:*:*' fzf-preview 'preview $realpath'
+  zstyle ':fzf-tab:*' fzf-bindings 'tab:accept'
+fi
 plugin-load romkatv/zsh-defer
 
 for f in ${XDG_CONFIG_HOME:-${HOME}/.config}/zsh/zsh.d/plugins/*.zsh; do

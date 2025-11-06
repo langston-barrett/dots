@@ -5,7 +5,7 @@ ee() {
   if [[ -n "${1}" ]]; then
     hx "$@"
   else
-    hx "$(fd . --type f --max-depth 5 | zlefzff)"
+    hx "$(fd . --type f --max-depth 5 | pick)"
   fi
 }
 

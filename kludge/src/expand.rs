@@ -162,6 +162,11 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("py3", "python3", ""),
     ("pye", "python3 -c 'print(", ")'"),
     ("qr", "qrencode -t utf8", ""),
+    (
+        "recent-branches",
+        "git branch --sort=-committerdate | head -n 10",
+        "",
+    ),
     ("rgall", "rg --hidden --no-ignore", ""),
     ("rmrf", "\\rm -rf", ""),
     ("sky", "ssh sky", ""),
@@ -193,6 +198,11 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("gclm", "git clone https://github.com/langston-barrett/", ""),
     ("gco-", "git checkout -", ""),
     ("gcom", GIT_CHECKOUT_MAIN, ""),
+    (
+        "gcor",
+        "git checkout $(git branch --sort=-committerdate --format='%(refname:short)' | head -n 8 | pick)",
+        "",
+    ),
     ("gdm", GIT_DIFF_MAIN, ""),
     ("gds", "git diff --cached", ""),
     ("gfo", "git fetch origin", ""),
@@ -300,7 +310,7 @@ const GREASE_CMDS: &[(&str, &str)] = &[
     ),
     (
         "to",
-        "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | zshfzf)",
+        "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | pick)",
     ),
     (
         "w",
@@ -357,7 +367,10 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
             ("rd", "cargo run --bin=dxezz --"),
             ("rs", "cargo run --bin=sofuzz --"),
             ("t", "cargo test"),
-            ("tu", "cargo test --no-default-features --features=usermode --target-dir=target-usermode"),
+            (
+                "tu",
+                "cargo test --no-default-features --features=usermode --target-dir=target-usermode",
+            ),
             ("tb", "cargo test --package=bzro -- --test-threads=1"),
             (
                 "tbu",

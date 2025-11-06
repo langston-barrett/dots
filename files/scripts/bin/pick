@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Use fzf to pick something at the terminal
+#
+# Inspiration:
+# https://github.com/junegunn/fzf-git.sh/blob/main/fzf-git.sh
+# https://github.com/wfxr/forgit
+
+# --border: it's nice
+# --height: don't make eyes move too much
+# --layout: don't make eyes move too much
+# --prompt: simplify presentation
+# --info: simplify presentation
+# --preview: see bin/preview
+exec fzf \
+  --border \
+  --height=10% \
+  --layout=reverse \
+  --prompt='' \
+  --info=hidden \
+  --preview='preview {}' \
+  --bind=tab:accept \
+  "${@}"
