@@ -18,6 +18,7 @@ pub(crate) enum Command {
     Expand(crate::expand::Config),
     Hook(crate::hook::Config),
     Install,
+    Preview(crate::preview::Config),
     /// Print information for ZSH prompt
     Prompt,
     Whitespace(crate::whitespace::Config),

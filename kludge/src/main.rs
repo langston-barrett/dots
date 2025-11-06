@@ -8,6 +8,7 @@ mod edit;
 mod expand;
 mod hook;
 mod install;
+mod preview;
 mod prompt;
 mod system;
 mod whitespace;
@@ -41,6 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Expand(conf) => expand::go(conf)?,
         Command::Hook(conf) => hook::go(conf)?,
         Command::Install => install::go()?,
+        Command::Preview(conf) => preview::go(conf)?,
         Command::Prompt => prompt::go()?,
         Command::Whitespace(conf) => whitespace::go(conf)?,
     }

@@ -20,6 +20,6 @@ exec fzf \
   --layout=reverse \
   --prompt='' \
   --info=hidden \
-  --preview='preview {}' \
+  --preview='kludge preview {}' \
   --bind=tab:accept \
   "${@}"

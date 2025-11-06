@@ -283,7 +283,7 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
         if lbuf0 == short && rbuf0.is_empty() {
             return Some((format!("{prefix}{lbuf}"), rbuf.to_owned()));
         }
-        if lbuf0 == lbuf {
+        if lbuf0 == lbuf && !lbuf.contains(' ') {
             notify(format!("hint: try {short}"));
         }
     }
