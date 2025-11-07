@@ -11,6 +11,10 @@ ee() {
 
 alias jq_clipboard="paste | jq | copy"
 
+pick_process() { ps -e -o pid,comm | tail -n +2 | pick --with-nth={2} --bind='enter:become(echo {1})' --preview-window=hidden; }
+sigint() { kill -2 $(pick_process); }
+sigkill() { kill -9 $(pick_process); }
+
 lhd() {
   lesshand-cli decode "${1:--}"
 }
@@ -78,7 +82,9 @@ alias kmonad-minidox='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/file
 alias keyb='cd /tmp && sudo echo && sudo nohup kmonad ~/code/dots/files/kmonad/xps.kbd & disown'
 alias lock='systemctl start physlock'
 
-open() { xdg-open "${1}" & disown; }
+if [[ ${OSTYPE} != darwin* ]]; then
+  open() { xdg-open "${1}" & disown; }
+fi
 
 # kludge expand --aliases "" ""
 

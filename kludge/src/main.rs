@@ -8,6 +8,7 @@ mod edit;
 mod expand;
 mod hook;
 mod install;
+mod launcher;
 mod preview;
 mod prompt;
 mod system;
@@ -41,6 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Edit(conf) => edit::go(conf)?,
         Command::Expand(conf) => expand::go(conf)?,
         Command::Hook(conf) => hook::go(conf)?,
+        Command::Launcher => launcher::go()?,
         Command::Install => install::go()?,
         Command::Preview(conf) => preview::go(conf)?,
         Command::Prompt => prompt::go()?,

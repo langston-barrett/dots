@@ -72,14 +72,14 @@ fi
 cargo install --path kludge
 kludge install "$@"
 
-if ! installed zsh; then
+if ! installed fzf || ! installed zsh; then
   if installed apt-get; then
     if installed sudo; then
       sudo apt-get update
-      sudo apt-get install -y zsh
+      sudo apt-get install -y fzf zsh
     else
       apt-get update
-      apt-get install -y zsh
+      apt-get install -y fzf zsh
     fi
   fi
 fi

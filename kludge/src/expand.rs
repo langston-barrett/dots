@@ -154,6 +154,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("dk-dev", DOCKER_DEV, "'"),
     ("e", "kludge edit", ""),
     ("hex", "python3 -c 'print(hex(", "))'"),
+    ("last", r#"printf '%s\n' "$history[$((HISTCMD-1))]""#, ""),
     ("ll", CLANG_LLVM_S, ""),
     ("lower", "tr '[:upper:]' '[:lower:]'", ""),
     ("m", "make", ""),
@@ -257,6 +258,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
         "cd ~/code/dots/kludge; cargo install --path=.; cd -",
         "",
     ),
+    ("kl", "kludge launcher", ""),
 ];
 
 fn notify(s: String) {
@@ -445,12 +447,17 @@ fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
         .or_else(|| expand_advanced(&lbuf, &rbuf, enter))
 }
 
+fn to_hint(expanded: &str) -> String {
+    expanded.replace('\n', " ").chars().take(60).collect()
+}
+
 // TODO: Deduplicate logic
 fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     let mut results = Vec::with_capacity(8);
     for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
         if short.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-            results.push((short, format!("{lbuf}{CURSOR}{rbuf}")));
+            let hint = to_hint(&format!("{lbuf}{CURSOR}{rbuf}"));
+            results.push((short, hint));
         }
     }
     if let Ok(cwd) = env::current_dir() {
@@ -459,7 +466,8 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
             if name == Some(d) {
                 for (l, r) in expands.iter().copied() {
                     if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-                        results.push((l, r.to_owned()));
+                        let hint = to_hint(r);
+                        results.push((l, hint));
                     }
                 }
             }
