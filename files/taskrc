@@ -1,2 +1,31 @@
-data.location=/home/langston/org/task
-news.version=2.6.0
+news.version=3.4.1
+data.location=~/.local/share/task
+hooks.location=~/.config/task/hooks
+
+# Color theme (uncomment one to use)
+#include light-16.theme
+#include light-256.theme
+#include bubblegum-256.theme
+#include dark-16.theme
+#include dark-256.theme
+#include dark-red-256.theme
+#include dark-green-256.theme
+#include dark-blue-256.theme
+#include dark-violets-256.theme
+#include dark-yellow-green.theme
+#include dark-gray-256.theme
+#include dark-gray-blue-256.theme
+#include solarized-dark-256.theme
+#include solarized-light-256.theme
+#include no-color.theme
+
+# https://taskwarrior.org/docs/examples/#priority
+uda.priority.values=high,med,,low
+
+uda.issue.type=numeric
+uda.issue.label=Issue
+
+urgency.user.project.dots.coefficient=-1.0
+urgency.uda.priority.high.coefficient=6.0
+urgency.uda.priority.med.coefficient=4.0
+urgency.uda.priority.low.coefficient=2

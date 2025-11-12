@@ -3,6 +3,11 @@
 
 # This is the first file to be loaded, which loads all the others
 
+if [[ ${ITERM_PROFILE} == "Hotkey Window" ]] && [[ -x ~/.cargo/bin/kludge ]]; then
+  export PATH=$PATH:$HOME/.cargo/bin:$HOME/code/dots/files/scripts/bin:$HOME/.nix-profile/bin
+  exec kludge launcher
+fi
+
 # https://kevin.burke.dev/kevin/profiling-zsh-startup-time/
 if [[ "$PROFILE_ZSH_STARTUP" == true ]]; then
   # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
