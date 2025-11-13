@@ -32,13 +32,12 @@ task-table | \
     --bind 'start:+transform-header:bat ~/.local/share/task/filter' \
     --bind 'load:+transform-header:bat ~/.local/share/task/filter' \
     --style=full \
-    --header-label 'Filter' \
     --bind="bspace:backward-delete-char/eof" \
     --bind="A:execute(task add {q})+clear-query+reload(task-table)" \
     --bind='B:execute(task {1} modify depends:$(tasks --bind=enter:accept))+clear-query+reload(task-table)' \
     --bind="D:execute(task {1} done)+clear-query+reload(task-table)" \
     --bind="E:execute(task {1} edit)+clear-query+reload(task-table)" \
-    --bind='F:execute(printf "status:pending\n-BLOCKED\nproject:bracelet\nproject:detect\nproject:dots\nproject:grease" | fzf --multi --preview-window=hidden > ~/.local/share/task/filter)+clear-query+reload(task-table)' \
+    --bind='F:execute(printf "status:pending\n-BLOCKED\nproject:bracelet\nproject:detect\nproject:dots\nproject:grease" | fzf --multi --preview-window=hidden | tr "\n" " " > ~/.local/share/task/filter)+clear-query+reload(task-table)' \
     --bind="H:execute(task {1} modify priority:high)+reload(task-table)" \
     --bind="L:execute(task {1} modify priority:low)+reload(task-table)" \
     --bind="M:execute(task {1} modify priority:med)+reload(task-table)" \

@@ -26,6 +26,7 @@ def pad_left($len):
 EOF
 
 if ! [[ -f ~/.local/share/task/filter ]]; then
+  mkdir -p ~/.local/share/task
   printf 'status:pending\n' > ~/.local/share/task/filter
 fi
 task ${1:-$(bat ~/.local/share/task/filter)} export | \
