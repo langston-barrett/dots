@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+export PATH=$PATH:$HOME/code/dots/files/scripts/bin:$HOME/.cargo/bin
+kludge launcher

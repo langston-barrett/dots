@@ -28,4 +28,4 @@ uda.issue.label=Issue
 urgency.user.project.dots.coefficient=-1.0
 urgency.uda.priority.high.coefficient=6.0
 urgency.uda.priority.med.coefficient=4.0
-urgency.uda.priority.low.coefficient=2
+urgency.uda.priority.low.coefficient=-1.0
