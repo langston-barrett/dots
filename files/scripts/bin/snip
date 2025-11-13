@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+pushd ~/code/dots/files/attic/emacs/snippets > /dev/null || return
+if [[ -z "${1:-}" ]]; then
+  d=$(fd --type d . | pick)
+  if [[ -z "${d}" ]]; then
+    return
+  fi
+  pushd "${d}" > /dev/null || return
+else
+  pushd "${1}"* > /dev/null || return
+fi
+
+language=$(basename "$(pwd)")
+language="${language%-mode}"
+fd --type f . | \
+  pick \
+    --width=60% \
+    --preview="grep -v '^#' {} | bat --style=plain --file-name={} --language=${language} --force-colorization" | \
+  xargs grep -v '^#'
+popd > /dev/null || return
+popd > /dev/null || return

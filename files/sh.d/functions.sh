@@ -128,27 +128,3 @@ sorted-diff() {
     bat "${2}" | sort > "${file2}"
     diff "${file1}" "${file2}"
 }
-
-snip() {
-  pushd ~/code/dots/files/emacs/snippets > /dev/null || return
-  language=yaml
-  if [[ -z "${1}" ]]; then
-    d=$(fd --type d . | fzf --info=hidden --height=10% --layout=reverse)
-    if [[ -z "${d}" ]]; then
-      return
-    fi
-    pushd "${d}" > /dev/null || return
-  else
-    pushd "${1}"* > /dev/null || return
-  fi
-  language=$(basename "$(pwd)")
-  language="${language%-mode}"
-  fd --type f . | \
-    fzf --ansi --info=hidden --layout=reverse \
-      --preview="grep -v '^#' {} | bat --style=plain --file-name={} --language=${language} --force-colorization" | \
-    xargs bat | \
-    grep -v '^#' | \
-    copy
-  popd > /dev/null || return
-  popd > /dev/null || return
-}
