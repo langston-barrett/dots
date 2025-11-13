@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# Use fzf to pick a taskwarrior filter
+
+options=$({
+  printf -- 'default\tstatus:pending -BLOCKED project.not:dots\n'
+  printf -- 'bracelet\tproject:bracelet\n'
+  printf -- 'detect\tproject:detect\n'
+  printf -- 'dots\tproject:dots\n'
+  printf -- 'grease\tproject:grease\n'
+  printf -- 'pending\tstatus:pending\n'
+  printf -- 'unblocked\t-BLOCKED\n'
+})
+
+printf "%s" "${options}" | \
+  fzf \
+    --multi \
+    --border \
+    --height=10% \
+    --layout=reverse \
+    --prompt='' \
+    --info=hidden \
+    --preview-window=up,1 \
+    --delimiter=$'\t' \
+    --accept-nth='{2}' \
+    --with-nth='{1}' \
+    --preview='echo {2}' \
+    "${@}" | \
+  tr '\n' ' '

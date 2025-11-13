@@ -21,11 +21,11 @@ U: Unset priority
     # --bind="F:execute(hx ~/.local/share/task/filter)+clear-query+reload(task-table)" \
 task-table | \
   pick \
-    --preview='task {1} information | rg "^(Description|Status|Project|Issue|Priority|Parent|This task is blocking)"' \
-    --preview-window=up,6,wrap \
+    --preview='task {1} information | rg "^(Description|Status|Issue|Priority|Project|Parent|Tags|This task is blocking)"' \
+    --preview-window=up,8,wrap \
     --delimiter='\t' \
     --accept-nth='{1}' \
-    --with-nth='{7} {6} {4} {3} {2}' \
+    --with-nth='{6} {4} {3} {2}' \
     --multi \
     --header-first \
     --header ' ' \
@@ -33,11 +33,11 @@ task-table | \
     --bind 'load:+transform-header:bat ~/.local/share/task/filter' \
     --style=full \
     --bind="bspace:backward-delete-char/eof" \
-    --bind="A:execute(task add {q})+clear-query+reload(task-table)" \
+    --bind="A:execute(task add {q})+reload(task-table)" \
     --bind='B:execute(task {1} modify depends:$(tasks --bind=enter:accept))+clear-query+reload(task-table)' \
     --bind="D:execute(task {1} done)+clear-query+reload(task-table)" \
     --bind="E:execute(task {1} edit)+clear-query+reload(task-table)" \
-    --bind='F:execute(printf "status:pending\n-BLOCKED\nproject:bracelet\nproject:detect\nproject:dots\nproject:grease" | fzf --multi --preview-window=hidden | tr "\n" " " > ~/.local/share/task/filter)+clear-query+reload(task-table)' \
+    --bind='F:execute(task-filter > ~/.local/share/task/filter)+reload(task-table)' \
     --bind="H:execute(task {1} modify priority:high)+reload(task-table)" \
     --bind="L:execute(task {1} modify priority:low)+reload(task-table)" \
     --bind="M:execute(task {1} modify priority:med)+reload(task-table)" \
@@ -46,7 +46,9 @@ task-table | \
     --bind="S:execute(task {1} start)+clear-query+reload(task-table)" \
     --bind="T:execute(task {1} stop)+clear-query+reload(task-table)" \
     --bind="U:execute(task {1} modify priority:)+reload(task-table)" \
+    --bind="X:execute(task {1} delete)+clear-query+reload(task-table)" \
+    --bind="Z:clear-query" \
     --bind="?:execute(echo '${docs}' | bat --plain --paging=always)+reload(task-table)" \
-    --bind="enter:execute(task add {q})+clear-query+reload(task-table)" \
+    --bind="enter:execute(task add {q})+reload(task-table)" \
     --bind="ctrl-r:reload(task-table)" \
     "${@}"

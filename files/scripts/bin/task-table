@@ -20,7 +20,7 @@ def pad_left($len):
   , (.priority | .[0:1] // "⠀")
   , (.id | pad_left(2))
   , (.project // "⠀" | .[0:3] | pad_left(3))
-  , .urgency | pad_left(5)
+  , (.urgency | tostring | .[0:3] | pad_left(3))
   ]
 | join ("\t")
 EOF
