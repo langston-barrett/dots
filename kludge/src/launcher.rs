@@ -1,11 +1,13 @@
 use std::{
-    fs,
+    env, fs,
     io::{Seek, Write},
     os::unix::{ffi::OsStrExt, process::CommandExt as _},
     process,
 };
 
 use anyhow::Context as _;
+
+const DELIM: &str = "\t";
 
 fn apps(stdin: &mut fs::File) -> anyhow::Result<()> {
     if let Ok(it) = fs::read_dir("/Applications") {
@@ -19,7 +21,7 @@ fn apps(stdin: &mut fs::File) -> anyhow::Result<()> {
                 continue;
             }
             stdin.write_all(name.as_bytes())?;
-            stdin.write_all(b";")?;
+            stdin.write_all(DELIM.as_bytes())?;
             stdin.write_all(b"open -a '")?;
             stdin.write_all(entry.path().as_os_str().as_bytes())?;
             stdin.write_all(b"'")?;
@@ -30,13 +32,15 @@ fn apps(stdin: &mut fs::File) -> anyhow::Result<()> {
 }
 
 pub(super) fn go() -> anyhow::Result<()> {
+    unsafe { env::remove_var("ITERM_PROFILE") };
+
     let p = "/Users/langston/.launcher";
     if let Ok(stdin) = fs::File::open(p) {
         Err(process::Command::new("pick")
             .stdin(stdin)
-            .arg("--delimiter=;")
+            .arg(format!("--delimiter={DELIM}"))
             .arg("--with-nth={1}")
-            .arg("--bind=enter:become(zsh -c {2})")
+            .arg("--bind=enter:become(zsh -ic {2})")
             .arg("--preview-window=hidden")
             .exec())?;
     }
@@ -44,14 +48,18 @@ pub(super) fn go() -> anyhow::Result<()> {
 
     apps(&mut stdin)?;
 
+    stdin.write_all("Tasks".as_bytes())?;
+    stdin.write_all(DELIM.as_bytes())?;
+    stdin.write_all("/Users/langston/code/dots/files/scripts/bin/tasks".as_bytes())?;
+
     stdin.flush()?;
     stdin.rewind()?;
     let stdin = fs::File::open(p)?;
     Err(process::Command::new("pick")
         .stdin(stdin)
-        .arg("--delimiter=;")
+        .arg(format!("--delimiter={DELIM}"))
         .arg("--with-nth={1}")
-        .arg("--bind=enter:become(zsh -c {2})")
+        .arg("--bind=enter:become(zsh -ic {2})")
         .arg("--preview-window=hidden")
         .exec())?
 }

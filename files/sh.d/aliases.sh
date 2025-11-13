@@ -15,6 +15,8 @@ pick_process() { ps -e -o pid,comm | tail -n +2 | pick --with-nth={2} --bind='en
 sigint() { kill -2 $(pick_process); }
 sigkill() { kill -9 $(pick_process); }
 
+alias jj=tasks
+
 lhd() {
   lesshand-cli decode "${1:--}"
 }
