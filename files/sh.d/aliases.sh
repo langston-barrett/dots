@@ -1,3 +1,9 @@
+#!/bin/sh
+# ^-- for shellcheck
+
+# TODO
+# shellcheck disable=all
+
 export PATH=$PATH:${HOME}/code/dots/files/scripts/bin/
 
 export EDITOR=hx

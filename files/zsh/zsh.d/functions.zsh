@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# shellcheck disable=all
+
 # Delete all files with the given extensions (list as string, separated by " ")
 function remove_exts() {
   setopt shwordsplit # Split on " "

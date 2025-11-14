@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# ^ for Shellcheck
+# ^-- for shellcheck
+
+# shellcheck disable=SC1090,SC1091
 
 # This is the first file to be loaded, which loads all the others
 
@@ -12,7 +14,7 @@ fi
 if [[ "$PROFILE_ZSH_STARTUP" == true ]]; then
   # http://zsh.sourceforge.net/Doc/Release/Prompt-Expansion.html
   PS4=$'%D{%M%S%.} %N:%i> '
-  exec 3>&2 2>$HOME/tmp/startlog.$$
+  exec 3>&2 2>"${HOME}"/tmp/startlog.$$
   setopt xtrace prompt_subst
 fi
 
@@ -30,8 +32,8 @@ source ~/.zsh/autosuggest/zsh-autosuggestions.zsh
 
 source "${ZSH_CONFIG_DIR}/plugins.zsh"
 
-source_all_sh() {[[ -d $1 ]] && for f in $1/*.sh; do source "${f}"; done; unset f;}
-source_all() {[[ -d $1 ]] && for f in $1/*.zsh; do source "${f}"; done; unset f;}
+source_all_sh() { [[ -d $1 ]] && for f in "${1}"/*.sh; do source "${f}"; done; unset f; }
+source_all() { [[ -d $1 ]] && for f in "${1}"/*.zsh; do source "${f}"; done; unset f; }
 source_all_sh "${XDG_CONFIG_HOME}/sh.d"
 source_all "${ZSH_CONFIG_DIR}/zsh.d"
 

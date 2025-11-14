@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+
+# TODO
+# shellcheck disable=all
+
 while :
 do
   rem_bat=$(acpi -b | grep -Eo "[0-9]+%" | grep -Eo "[0-9]+")

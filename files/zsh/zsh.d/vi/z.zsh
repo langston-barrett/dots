@@ -1,3 +1,8 @@
+#!/usr/bin/env zsh
+# ^-- for shellcheck
+
+# shellcheck disable=SC2034
+
 append-to-buffer() {
   BUFFER+="${1}"
   CURSOR="${#BUFFER}"

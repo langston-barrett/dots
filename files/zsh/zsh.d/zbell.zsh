@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# shellcheck disable=all
+
 [[ -o interactive ]] || return
 
 # $EPOCHSECONDS

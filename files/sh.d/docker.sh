@@ -1,3 +1,9 @@
+#!/bin/sh
+# ^-- for shellcheck
+
+# TODO
+# shellcheck disable=all
+
 dockeri() {
   if [[ ${OSTYPE} == darwin* ]]; then
     docker run \

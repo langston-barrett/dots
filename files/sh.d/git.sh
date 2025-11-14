@@ -1,4 +1,8 @@
 #!/bin/sh
+# ^-- for shellcheck
+
+# TODO
+# shellcheck disable=all
 
 export CARGO_NET_GIT_FETCH_WITH_CLI=true
 

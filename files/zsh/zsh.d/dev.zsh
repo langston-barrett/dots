@@ -5,6 +5,7 @@ export PATH=$PATH:$HOME/.config/bin
 
 installed() { command -v "$1" >/dev/null 2>&1; }
 if installed lesspipe.sh; then
+  # shellcheck disable=SC2046
   eval $(lesspipe.sh)
 fi
 

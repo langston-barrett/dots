@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# ^-- for shellcheck
+
 if [[ ${OSTYPE} == darwin* ]]; then
   copy() {
     if [[ -n "${1}" ]]; then

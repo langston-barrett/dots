@@ -4,7 +4,7 @@ set -e
 shopt -s globstar
 
 for f in ./**/*.zsh; do
-  if ! [[ $f =~ "prompt.zsh" ]]; then
+  if ! [[ $f =~ prompt.zsh ]]; then
     echo "linting $f"
     shellcheck \
       --shell=bash \

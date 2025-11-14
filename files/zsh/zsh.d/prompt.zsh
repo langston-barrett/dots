@@ -1,3 +1,4 @@
+# shellcheck disable=all
 autoload -U promptinit && promptinit
 autoload -U colors && colors
 setopt promptsubst

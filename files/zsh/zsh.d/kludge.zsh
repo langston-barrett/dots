@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-eval "$(zbr init $HOME/code/zbr/conf/conf.toml)"
+eval "$(zbr init "${HOME}"/code/zbr/conf/conf.toml)"

@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+# ^-- for shellcheck
+
+# shellcheck disable=SC2034
+
 HISTFILE=~/.zsh_history
 HISTSIZE=50000
 SAVEHIST=10000

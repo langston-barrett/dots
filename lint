@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 
-from glob import glob
+import glob as glob_mod
 from itertools import chain
 from os import execvp
 from pathlib import Path
+
+
+def glob(g):
+    return glob_mod.glob(g, recursive=True)
+
 
 ninja = """
 builddir=.out/
@@ -13,7 +18,7 @@ rule cargo
   description = cargo
 
 rule sc
-  command = shellcheck $in && touch $out
+  command = shellcheck --shell=bash $in && touch $out
   description = shellcheck
 
 rule ruff-check
@@ -47,10 +52,14 @@ rs = " ".join(glob("kludge/**/*.rs"))
 # TODO precommit
 
 for path in chain(["lint"], glob("**/*.py")):
+    if "plugins" in path or Path(path).read_text().startswith("# noqa"):
+        continue
     lint("ruff-check", path)
     lint("ruff-fmt", path)
 
-for path in chain(glob("**/*.sh"), glob("files/scripts/bin/*")):
+for path in chain(glob("**/*.sh"), glob("files/scripts/bin/*"), glob("**/*.zsh")):
+    if "plugins" in path:
+        continue
     slug = path.replace("/", "-") + ".sc"
     build(f"$builddir/{slug}", "sc", path)
 

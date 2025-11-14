@@ -1,3 +1,8 @@
+#!/usr/bin/env bash
+# ^-- for shellcheck
+
+# shellcheck disable=all
+
 # Delete all merged git branches. Use caution, and only use on master.
 # http://goo.gl/r9Bos0
 clean-merged() {

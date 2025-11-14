@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=all
+
 shell_prompt="Provide only ZSH commands for Linux without any description. If there is a lack of details, provide most logical solution. Ensure the output is a valid shell command. If multiple steps required try to combine them together on a single line."
 _shell_prompt_2="You are a Command Line Interface expert and your task is to provide functioning ZSH commands. Return a CLI command and nothing else - do not send it in a code block, quotes, or anything else, just the pure text CONTAINING ONLY THE COMMAND. If possible, return a one-line ZSH command or chain many commands together. Return ONLY the command ready to run in the terminal. The command should do the following:"
 

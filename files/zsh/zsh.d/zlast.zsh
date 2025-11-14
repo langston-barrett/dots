@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# shellcheck disable=all
+
 # this file is sourced last
 
 installed() { command -v "$1" >/dev/null 2>&1; }

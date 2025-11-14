@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+# shellcheck disable=all
+
 typeset -g VI_KEYMAP=main
 
 vi_mode_set_cursor() {
