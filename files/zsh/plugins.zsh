@@ -1,3 +1,5 @@
+# shellcheck disable=all
+
 # https://github.com/mattmc3/zsh_unplugged
 plugin-load() {
   local repo plugdir initfile

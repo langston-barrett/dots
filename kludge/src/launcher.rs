@@ -86,6 +86,12 @@ pub(super) fn go() -> anyhow::Result<()> {
     stdin.write_all("/Users/langston/code/dots/files/scripts/bin/tasks".as_bytes())?;
     #[cfg(target_os = "linux")]
     stdin.write_all("tasks".as_bytes())?;
+    stdin.write_all(b"\n")?;
+
+    stdin.write_all("Password (mpw)".as_bytes())?;
+    stdin.write_all(DELIM.as_bytes())?;
+    stdin.write_all("mpw".as_bytes())?;
+    stdin.write_all(b"\n")?;
 
     stdin.flush()?;
     stdin.rewind()?;

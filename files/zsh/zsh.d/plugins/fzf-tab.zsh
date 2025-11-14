@@ -1,3 +1,5 @@
+# shellcheck disable=all
+
 tab() {
   local start_col=0
   if [[ "${#BUFFER}" -lt $((COLUMNS-32)) ]]; then
@@ -21,7 +23,7 @@ zle -N tab
 # bindkey -M emacs "^I" tab
 # bindkey -M viins "^I" tab
 
-zstyle ':fzf-tab:complete:*:*' fzf-preview 'preview.sh ${(Q)realpath}'
+zstyle ':fzf-tab:complete:*:*' fzf-preview 'preview ${(Q)realpath}'
 
 zstyle ':fzf-tab:complete:(-command-|-parameter-|-brace-parameter-|export|unset|expand):*' \
     fzf-preview 'echo ${(P)word}'

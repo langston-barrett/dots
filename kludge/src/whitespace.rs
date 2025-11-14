@@ -63,7 +63,7 @@ pub(super) fn go(mut conf: Config) -> Result<(), Box<dyn Error>> {
     let mut ok = true;
     while let Some(path) = stack.pop() {
         if path.is_file() {
-            ok |= fix_whitespace(&path, conf.check, conf.tab_width)?;
+            ok &= fix_whitespace(&path, conf.check, conf.tab_width)?;
             continue;
         }
         if path.is_dir() {

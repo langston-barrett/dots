@@ -1,33 +1,58 @@
 #!/usr/bin/env python
 
-import glob as glob_mod
+from argparse import ArgumentParser
 from itertools import chain
 from os import execvp
 from pathlib import Path
+from subprocess import run
 
 
-def glob(g):
-    return glob_mod.glob(g, recursive=True)
-
-
-ninja = """
+ninja = r"""
 builddir=.out/
 
-rule cargo
-  command = cd kludge; cargo build --release
+rule bom
+  command = rg '\xEF\xBB\xBF' -- $in && exit 1 || touch $out
+  description = check for utf-8 byte-order mark
+
+rule crlf
+  command = rg --multiline '\r\n' -- $in && exit 1 || touch $out
+  description = check for crlf
+
+rule cargo-build
+  command = cd kludge; cargo build --release && touch ../$out
   description = cargo
 
+rule cargo-clippy
+  command = cd kludge; cargo clippy --all-targets -- --deny warnings && touch ../$out
+  description = cargo clippy
+
+rule cargo-fmt
+  command = cd kludge; cargo fmt --check && touch ../$out
+  description = cargo fmt
+
+rule jq
+  command = jq null -- $in > /dev/null && touch $out
+  description = jq
+
+rule merge
+  command = rg '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
+  description = check for merge conflict markers
+
 rule sc
-  command = shellcheck --shell=bash $in && touch $out
+  command = shellcheck --shell=bash -- $in && touch $out
   description = shellcheck
 
 rule ruff-check
-  command = ruff check $in && touch $out
+  command = ruff check -- $in && touch $out
   description = ruff check
 
 rule ruff-fmt
-  command = ruff format --check $in && touch $out
+  command = ruff format --check -- $in && touch $out
   description = ruff format
+
+rule ws
+  command = kludge whitespace --check -- $in && touch $out
+  description = whitespace
 
 """
 
@@ -38,30 +63,75 @@ def build(outs: str, rule: str, ins: str):
 
 
 def lint(rule: str, ins: str):
-    slug = path.replace("/", "-") + "." + rule
+    slug = ins.replace("/", "-") + "." + rule
     build(f"$builddir/{slug}", rule, ins)
 
 
-rs = " ".join(glob("kludge/**/*.rs"))
-# build("kludge/target/release/kludge", "cargo", rs)
+def ls_files(pat: str) -> list[str]:
+    out = run(
+        ["git", "ls-files", "--exclude-standard", "--", pat],
+        capture_output=True,
+        shell=False,
+    )
+    return out.stdout.strip().decode("utf-8").split("\n")
 
-# TODO cargo fmt
-# TODO cargo clippy
-# TODO whitespace with kludge
-# TODO run in CI
-# TODO precommit
 
-for path in chain(["lint"], glob("**/*.py")):
-    if "plugins" in path or Path(path).read_text().startswith("# noqa"):
-        continue
-    lint("ruff-check", path)
-    lint("ruff-fmt", path)
+def txt(path: str):
+    lint("bom", path)
+    lint("crlf", path)
+    lint("merge", path)
+    lint("ws", path)
 
-for path in chain(glob("**/*.sh"), glob("files/scripts/bin/*"), glob("**/*.zsh")):
-    if "plugins" in path:
-        continue
-    slug = path.replace("/", "-") + ".sc"
-    build(f"$builddir/{slug}", "sc", path)
 
-Path("build.ninja").write_text(ninja)
-execvp("ninja", ["ninja"])
+def json():
+    json = ls_files("*.json")
+    for path in json:
+        lint("jq", path)
+        txt(path)
+
+
+def nix():
+    nix = ls_files("*.nix")
+    for path in nix:
+        txt(path)
+
+
+def py():
+    py = chain(["lint"], ls_files("*.py"))
+    for path in py:
+        if Path(path).read_text().startswith("# noqa"):
+            continue
+        lint("ruff-check", path)
+        lint("ruff-fmt", path)
+        txt(path)
+
+
+def rs():
+    rs = ls_files("*.rs")
+    build("$builddir/cargo-fmt", "cargo-fmt", " ".join(rs))
+    build("$builddir/cargo-clippy", "cargo-clippy", " ".join(rs))
+    for path in rs:
+        txt(path)
+
+
+def sh():
+    sh = chain(ls_files("*.sh"), ls_files("files/scripts/bin/*"), ls_files("*.zsh"))
+    for path in sh:
+        lint("sc", path)
+        txt(path)
+
+
+def go():
+    json()
+    nix()
+    py()
+    rs()
+    sh()
+    Path("build.ninja").write_text(ninja)
+    execvp("ninja", ["ninja"])
+
+
+# just for --help
+parser = ArgumentParser()
+args = parser.parse_args()
+go()
