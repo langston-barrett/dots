@@ -2,7 +2,7 @@
 
 from argparse import ArgumentParser
 from itertools import chain
-from os import execvp
+from os import execvp, environ
 from pathlib import Path
 from subprocess import run
 
@@ -35,7 +35,7 @@ rule jq
   description = jq
 
 rule merge
-  command = rg '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
+  command = grep -E '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
   description = check for merge conflict markers
 
 rule sc
@@ -77,10 +77,13 @@ def ls_files(pat: str) -> list[str]:
 
 
 def txt(path: str):
-    lint("bom", path)
-    lint("crlf", path)
+    if environ.get("CI") is None:
+        # requires rg
+        lint("bom", path)
+        lint("crlf", path)
+        # requires kludge
+        lint("ws", path)
     lint("merge", path)
-    lint("ws", path)
 
 
 def json():
