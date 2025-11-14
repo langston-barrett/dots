@@ -12,10 +12,10 @@ bail_if_not_installed() {
 
 # bail_if_not_installed nix
 
-if [[ -z $XDG_CONFIG_HOME ]]; then
-  export XDG_CONFIG_HOME=$HOME/.config
+if [[ -z ${XDG_CONFIG_HOME} ]]; then
+  export XDG_CONFIG_HOME="${HOME}/.config"
 fi
-mkdir -p $XDG_CONFIG_HOME
+mkdir -p "${XDG_CONFIG_HOME}"
 
 helix_config="${XDG_CONFIG_HOME}/helix/config.toml"
 if [[ -d ~/.config/helix ]] && ! [[ -f "${helix_config}" ]]; then

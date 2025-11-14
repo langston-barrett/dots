@@ -29,6 +29,7 @@ if ! [[ -f ~/.local/share/task/filter ]]; then
   mkdir -p ~/.local/share/task
   printf 'status:pending\n' > ~/.local/share/task/filter
 fi
+# shellcheck disable=SC2086
 task ${1:-$(bat ~/.local/share/task/filter)} export | \
   jq -r -f "${tmp}" | \
   sort --numeric-sort --reverse --key=7 --field-separator=$'\t'

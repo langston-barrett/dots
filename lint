@@ -1,0 +1,58 @@
+#!/usr/bin/env python
+
+from glob import glob
+from itertools import chain
+from os import execvp
+from pathlib import Path
+
+ninja = """
+builddir=.out/
+
+rule cargo
+  command = cd kludge; cargo build --release
+  description = cargo
+
+rule sc
+  command = shellcheck $in && touch $out
+  description = shellcheck
+
+rule ruff-check
+  command = ruff check $in && touch $out
+  description = ruff check
+
+rule ruff-fmt
+  command = ruff format --check $in && touch $out
+  description = ruff format
+
+"""
+
+
+def build(outs: str, rule: str, ins: str):
+    global ninja
+    ninja += f"build {outs}: {rule} {ins}\n"
+
+
+def lint(rule: str, ins: str):
+    slug = path.replace("/", "-") + "." + rule
+    build(f"$builddir/{slug}", rule, ins)
+
+
+rs = " ".join(glob("kludge/**/*.rs"))
+# build("kludge/target/release/kludge", "cargo", rs)
+
+# TODO cargo fmt
+# TODO cargo clippy
+# TODO whitespace with kludge
+# TODO run in CI
+# TODO precommit
+
+for path in chain(["lint"], glob("**/*.py")):
+    lint("ruff-check", path)
+    lint("ruff-fmt", path)
+
+for path in chain(glob("**/*.sh"), glob("files/scripts/bin/*")):
+    slug = path.replace("/", "-") + ".sc"
+    build(f"$builddir/{slug}", "sc", path)
+
+Path("build.ninja").write_text(ninja)
+execvp("ninja", ["ninja"])
