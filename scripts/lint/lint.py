@@ -61,7 +61,7 @@ rule jq
 # markdown
 
 rule mdlynx
-  command = mdlynx $in && touch $out
+  command = cd $$(dirname $in) && mdlynx $$(basename $in) && cd - && touch $out
   description = mdlynx
 
 rule typos
@@ -135,7 +135,10 @@ def ls_files(pat: str) -> list[str]:
         capture_output=True,
         shell=False,
     )
-    return out.stdout.strip().decode("utf-8").split("\n")
+    stdout = out.stdout.strip()
+    if stdout == b"":
+        return []
+    return stdout.decode("utf-8").split("\n")
 
 
 def txt(path: str) -> None:
