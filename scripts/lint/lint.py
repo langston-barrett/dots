@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# TODO: zizmor
-
 """Run formatters and linters incrementally and in parallel using Ninja"""
 
 # To run on every change:
@@ -229,7 +227,6 @@ def go(format: bool) -> None:
     execvp("ninja", ["ninja"])
 
 
-# just for --help
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--format", action="store_true")
 args = parser.parse_args()

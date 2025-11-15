@@ -386,6 +386,17 @@ const BASIC: &[(&str, &[(&str, &str)])] = &[
         ],
     ),
     (
+        "dots",
+        &[
+            ("f", "./scripts/lint/lint.py --format"),
+            ("l", "./scripts/lint/lint.py"),
+            (
+                "w",
+                "git ls-files --exclude-standard | entr -c -s './scripts/lint/lint.py --format && ./scripts/lint/lint.py'",
+            ),
+        ],
+    ),
+    (
         "kludge",
         &[(
             "l",
