@@ -10,6 +10,9 @@ from subprocess import run
 ninja = r"""
 builddir=.out/
 
+# ---------------------------------------------------------
+# text
+
 rule bom
   command = rg '\xEF\xBB\xBF' -- $in && exit 1 || touch $out
   description = check for utf-8 byte-order mark
@@ -17,6 +20,46 @@ rule bom
 rule crlf
   command = rg --multiline '\r\n' -- $in && exit 1 || touch $out
   description = check for crlf
+
+rule merge
+  command = grep -E '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
+  description = check for merge conflict markers
+
+rule ws
+  command = kludge whitespace --check -- $in && touch $out
+  description = whitespace
+
+# ---------------------------------------------------------
+# json
+
+rule jq
+  command = jq null -- $in > /dev/null && touch $out
+  description = jq
+
+# ---------------------------------------------------------
+# python (scripts)
+
+rule mypy
+  command = mypy --no-error-summary --strict -- $in && touch $out
+  description = mypy
+
+rule ruff-check
+  command = ruff check --quiet -- $in && touch $out
+  description = ruff check
+
+rule ruff-fmt
+  command = ruff format --check --quiet -- $in && touch $out
+  description = ruff format
+
+# ---------------------------------------------------------
+# shell
+
+rule sc
+  command = shellcheck --shell=bash -- $in && touch $out
+  description = shellcheck
+
+# ---------------------------------------------------------
+# rust
 
 rule cargo-build
   command = cd kludge; cargo build --release && touch ../$out
@@ -30,39 +73,15 @@ rule cargo-fmt
   command = cd kludge; cargo fmt --check && touch ../$out
   description = cargo fmt
 
-rule jq
-  command = jq null -- $in > /dev/null && touch $out
-  description = jq
-
-rule merge
-  command = grep -E '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
-  description = check for merge conflict markers
-
-rule sc
-  command = shellcheck --shell=bash -- $in && touch $out
-  description = shellcheck
-
-rule ruff-check
-  command = ruff check --quiet -- $in && touch $out
-  description = ruff check
-
-rule ruff-fmt
-  command = ruff format --check --quiet -- $in && touch $out
-  description = ruff format
-
-rule ws
-  command = kludge whitespace --check -- $in && touch $out
-  description = whitespace
-
 """
 
 
-def build(outs: str, rule: str, ins: str):
+def build(outs: str, rule: str, ins: str) -> None:
     global ninja
     ninja += f"build {outs}: {rule} {ins}\n"
 
 
-def lint(rule: str, ins: str):
+def lint(rule: str, ins: str) -> None:
     slug = ins.replace("/", "-") + "." + rule
     build(f"$builddir/{slug}", rule, ins)
 
@@ -76,7 +95,7 @@ def ls_files(pat: str) -> list[str]:
     return out.stdout.strip().decode("utf-8").split("\n")
 
 
-def txt(path: str):
+def txt(path: str) -> None:
     if environ.get("CI") is None:
         # requires rg
         lint("bom", path)
@@ -86,30 +105,31 @@ def txt(path: str):
     lint("merge", path)
 
 
-def json():
+def json() -> None:
     json = ls_files("*.json")
     for path in json:
         lint("jq", path)
         txt(path)
 
 
-def nix():
+def nix() -> None:
     nix = ls_files("*.nix")
     for path in nix:
         txt(path)
 
 
-def py():
+def py() -> None:
     py = chain(["lint"], ls_files("*.py"))
     for path in py:
         if Path(path).read_text().startswith("# noqa"):
             continue
+        lint("mypy", path)
         lint("ruff-check", path)
         lint("ruff-fmt", path)
         txt(path)
 
 
-def rs():
+def rs() -> None:
     rs = ls_files("*.rs")
     build("$builddir/cargo-fmt", "cargo-fmt", " ".join(rs))
     build("$builddir/cargo-clippy", "cargo-clippy", " ".join(rs))
@@ -117,14 +137,14 @@ def rs():
         txt(path)
 
 
-def sh():
+def sh() -> None:
     sh = chain(ls_files("*.sh"), ls_files("files/scripts/bin/*"), ls_files("*.zsh"))
     for path in sh:
         lint("sc", path)
         txt(path)
 
 
-def go():
+def go() -> None:
     json()
     nix()
     py()
