@@ -16,7 +16,7 @@ jobs:
       run: |
         rustup update
         rustup component add clippy
-    - uses: Swatinem/rust-cache@v2
+    - run: pip install mypy==v1.18.2
     - uses: astral-sh/ruff-action@v3
       with:
         args: "--version"
@@ -36,6 +36,7 @@ jobs:
         chmod +x bin/*
         printf "%s/bin" "${PWD}" >> "${GITHUB_PATH}"
 
+    - uses: Swatinem/rust-cache@v2
     - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
     - run: cargo test
