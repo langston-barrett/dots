@@ -30,7 +30,7 @@ jobs:
           --silent \
           --tlsv1.2 \
           https://github.com/crate-ci/typos/releases/download/v1.39.2/typos-v1.39.2-x86_64-unknown-linux-musl.tar.gz | \
-          tar xzf - typos
+          tar xzf - ./typos
         mkdir -p bin
         mv typos bin
         chmod +x bin/*
