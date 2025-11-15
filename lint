@@ -23,7 +23,7 @@ rule cargo-build
   description = cargo
 
 rule cargo-clippy
-  command = cd kludge; cargo clippy --all-targets -- --deny warnings && touch ../$out
+  command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
   description = cargo clippy
 
 rule cargo-fmt
@@ -43,11 +43,11 @@ rule sc
   description = shellcheck
 
 rule ruff-check
-  command = ruff check -- $in && touch $out
+  command = ruff check --quiet -- $in && touch $out
   description = ruff check
 
 rule ruff-fmt
-  command = ruff format --check -- $in && touch $out
+  command = ruff format --check --quiet -- $in && touch $out
   description = ruff format
 
 rule ws
