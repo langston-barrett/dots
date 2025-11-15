@@ -109,22 +109,17 @@ rule cargo-fmt-check
 """
 
 
-def build(outs: str, rule: str, ins: str) -> None:
+def build(outs: str, rule: str, ins: str, /, *, default: bool = True) -> None:
     global ninja
     ninja += f"build {outs}: {rule} {ins}\n"
-
-
-def make_default(tgt: str) -> None:
-    global ninja
-    ninja += f"default {tgt}\n"
+    if default:
+        ninja += f"default {outs}\n"
 
 
 def lint(rule: str, ins: str, /, *, default: bool = True) -> None:
     slug = ins.replace("/", "-") + "." + rule
     tgt = f"$builddir/{slug}"
-    build(tgt, rule, ins)
-    if default:
-        make_default(tgt)
+    build(tgt, rule, ins, default=default)
 
 
 def ls_files(pat: str) -> list[str]:
@@ -181,12 +176,10 @@ def py(format: bool) -> None:
 def rs(format: bool) -> None:
     rs = ls_files("*.rs")
     build("$builddir/cargo-clippy", "cargo-clippy", " ".join(rs))
-    build("$builddir/cargo-fmt", "cargo-fmt-check", " ".join(rs))
-    build("$builddir/cargo-fmt-check", "cargo-fmt-check", " ".join(rs))
-    if format:
-        make_default("$builddir/cargo-fmt")
-    else:
-        make_default("$builddir/cargo-fmt-check")
+    build("$builddir/cargo-fmt", "cargo-fmt", " ".join(rs), default=format)
+    build(
+        "$builddir/cargo-fmt-check", "cargo-fmt-check", " ".join(rs), default=not format
+    )
     for path in rs:
         txt(path)
 
