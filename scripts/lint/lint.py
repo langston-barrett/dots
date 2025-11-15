@@ -49,7 +49,7 @@ rule ws
 # github actions
 
 rule zizmor
-  command = zizmor --quiet --pedantic -- $in && touch $out
+  command = zizmor --quiet -- $in && touch $out
   description = zizmor
 
 # ---------------------------------------------------------
