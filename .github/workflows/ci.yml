@@ -7,17 +7,21 @@ defaults:
     shell: bash
     working-directory: ./kludge
 
+permissions: {}
+
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
     - name: Deps
       run: |
         rustup update
         rustup component add clippy
     - run: pip install mypy==v1.18.2
-    - uses: astral-sh/ruff-action@v3
+    - uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v2.1.4
       with:
         args: "--version"
     - name: install typos
@@ -35,8 +39,22 @@ jobs:
         mv typos bin
         chmod +x bin/*
         printf "%s/bin" "${PWD}" >> "${GITHUB_PATH}"
+    - name: install zizmor
+      run: |
+        curl \
+          --fail \
+          --location \
+          --proto '=https' \
+          --show-error \
+          --silent \
+          --tlsv1.2 \
+          https://github.com/woodruffw/zizmor/releases/download/v1.16.3/zizmor-x86_64-unknown-linux-gnu.tar.gz | \
+          tar xzf - ./zizmor
+        mkdir -p bin
+        mv zizmor bin
+        chmod +x bin/*
 
-    - uses: Swatinem/rust-cache@v2
+    - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
     - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
     - run: cargo test

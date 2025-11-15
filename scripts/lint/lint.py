@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-# TODO: typos
-# TODO: yamllint
 # TODO: zizmor
 
 """Run formatters and linters incrementally and in parallel using Ninja"""
@@ -46,6 +44,13 @@ rule merge
 rule ws
   command = ./scripts/lint/whitespace.py -- $in && touch $out
   description = whitespace
+
+# ---------------------------------------------------------
+# github actions
+
+rule zizmor
+  command = zizmor --quiet --pedantic -- $in && touch $out
+  description = zizmor
 
 # ---------------------------------------------------------
 # json
@@ -140,6 +145,13 @@ def txt(path: str) -> None:
     lint("ws", path)
 
 
+def gha() -> None:
+    gha = ls_files(".github/workflows/*.yml")
+    for path in gha:
+        lint("zizmor", path)
+        txt(path)
+
+
 def json() -> None:
     json = ls_files("*.json")
     for path in json:
@@ -205,6 +217,7 @@ def ok() -> None:
 
 
 def go(format: bool) -> None:
+    gha()
     json()
     md()
     nix()
