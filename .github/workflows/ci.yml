@@ -43,6 +43,12 @@ jobs:
         EOF
         chmod +x bin/*
         printf "%s/bin" "${PWD}" >> "${GITHUB_PATH}"
+    - name: install mdlynx
+      run: |
+        download \
+          https://github.com/langston-barrett/mdlynx/releases/download/v0.1.0/mdlynx > \
+          bin/mdlynx
+        chmod +x bin/*
     - name: install typos
       run: |
         download \

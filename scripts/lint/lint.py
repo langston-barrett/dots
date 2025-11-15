@@ -60,6 +60,10 @@ rule jq
 # ---------------------------------------------------------
 # markdown
 
+rule mdlynx
+  command = mdlynx $in && touch $out
+  description = mdlynx
+
 rule typos
   command = typos $in && touch $out
   description = typos
@@ -160,6 +164,7 @@ def json() -> None:
 def md() -> None:
     md = ls_files("*.md")
     for path in md:
+        lint("mdlynx", path)
         lint("typos", path)
         txt(path)
 
