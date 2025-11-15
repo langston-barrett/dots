@@ -20,7 +20,10 @@ jobs:
     - uses: astral-sh/ruff-action@v3
       with:
         args: "--version"
-    - run: cd .. && ./lint
+    - uses: crate-ci/typos@v1.32.0
+      with:
+        files: "README.md"
+    - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
     - run: cargo test
     - run: cargo build --release
