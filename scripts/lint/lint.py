@@ -190,7 +190,9 @@ def py(format: bool) -> None:
 
 def rs(format: bool) -> None:
     rs = ls_files("*.rs")
-    build("$builddir/cargo-clippy", "cargo-clippy", " ".join(rs))
+    build(
+        "$builddir/cargo-clippy", "cargo-clippy", " ".join(rs + ["kludge/Cargo.toml"])
+    )
     build("$builddir/cargo-fmt", "cargo-fmt", " ".join(rs), default=format)
     build(
         "$builddir/cargo-fmt-check", "cargo-fmt-check", " ".join(rs), default=not format
