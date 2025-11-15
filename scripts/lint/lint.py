@@ -141,9 +141,8 @@ def txt(path: str) -> None:
         # requires rg
         lint("bom", path)
         lint("crlf", path)
-        # requires kludge
-        lint("ws", path)
     lint("merge", path)
+    lint("ws", path)
 
 
 def json() -> None:
@@ -200,6 +199,8 @@ def sh() -> None:
 
 
 def ok() -> None:
+    if environ.get("CI") is not None:
+        return
     rules = [line.split()[1] for line in ninja.splitlines() if line.startswith("rule")]
     for rule in rules:
         ok = False

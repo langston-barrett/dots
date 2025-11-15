@@ -20,9 +20,22 @@ jobs:
     - uses: astral-sh/ruff-action@v3
       with:
         args: "--version"
-    - uses: crate-ci/typos@v1.32.0
-      with:
-        files: "README.md"
+    - name: install typos
+      run: |
+        curl \
+          --fail \
+          --location \
+          --proto '=https' \
+          --show-error \
+          --silent \
+          --tlsv1.2 \
+          https://github.com/crate-ci/typos/releases/download/v1.39.2/typos-v1.39.2-x86_64-unknown-linux-musl.tar.gz | \
+          tar xzf - typos
+        mkdir -p bin
+        mv typos bin
+        chmod +x bin/*
+        printf "%s/bin" "${PWD}" >> "${GITHUB_PATH}"
+
     - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
     - run: cargo test
