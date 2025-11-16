@@ -23,15 +23,18 @@ with pkgs; [
   lesspipe
   man-pages
   mpw
+  mypy
   nix-prefetch-git
   python3
   ripgrep
+  ruff
   tealdeer # tldr
   tree
-  unstable.trashy
+  trashy
   unzip
   wget
   zip
+  zizmor
   zoxide
   zsh-completions
 ] ++ (if ! doC

@@ -17,46 +17,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
     - name: Deps
-      run: |
-        rustup update
-        rustup component add clippy
+      run: rustup component add clippy
     - run: pip install mypy==v1.18.2
     - uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v2.1.4
       with:
         args: "--version"
-    - name: create download script
-      run: |
-        mkdir -p bin
-        cat > bin/download <<'EOF'
-        curl \
-          --fail \
-          --location \
-          --proto '=https' \
-          --show-error \
-          --silent \
-          --tlsv1.2 \
-          "${@}"
-        EOF
-        chmod +x bin/*
-        printf "%s/bin" "${PWD}" >> "${GITHUB_PATH}"
-    - name: install mdlynx
-      run: |
-        download \
-          https://github.com/langston-barrett/mdlynx/releases/download/v0.1.0/mdlynx > \
-          bin/mdlynx
-        chmod +x bin/*
-    - name: install typos
-      run: |
-        download \
-          https://github.com/crate-ci/typos/releases/download/v1.39.2/typos-v1.39.2-x86_64-unknown-linux-musl.tar.gz | \
-          tar xzf - ./typos
-        mv typos bin
-        chmod +x bin/*
-    - uses: langston-barrett/gha/.github/actions/install-zizmor@1222958e7b839788fc5143b16805a62b232a666a
+    - uses: langston-barrett/gha/.github/actions/install-mdlynx@ac0929c97ea93fafb3cb091bf2e00046399c74f2
+    - uses: langston-barrett/gha/.github/actions/install-typos@ac0929c97ea93fafb3cb091bf2e00046399c74f2
+    - uses: langston-barrett/gha/.github/actions/install-zizmor@ac0929c97ea93fafb3cb091bf2e00046399c74f2
 
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
     - run: cd .. && ./scripts/lint/lint.py
