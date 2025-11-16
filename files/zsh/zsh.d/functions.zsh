@@ -43,13 +43,7 @@ in_interactive_session() {
   [[ $- == *i* ]]
 }
 
-# https://github.com/sharkdp/fd
-alias find='echo Use \\ rm or fd'
-
-# https://github.com/sharkdp/bat
-alias cat='echo Use \\ cat or bat'
 alias batp='bat --paging=always'
-alias less='echo Use \\ less or batp'
 export BAT_PAGER='less'
 
 alias weather='curl wttr.in/PDX'
