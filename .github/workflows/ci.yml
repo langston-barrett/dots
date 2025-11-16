@@ -20,16 +20,8 @@ jobs:
     - uses: actions/checkout@v5
       with:
         persist-credentials: false
-    - name: Deps
-      run: rustup component add clippy
-    - run: pip install mypy==v1.18.2
-    - uses: astral-sh/ruff-action@57714a7c8a2e59f32539362ba31877a1957dded1 # v2.1.4
-      with:
-        args: "--version"
-    - uses: langston-barrett/gha/.github/actions/install-mdlynx@ac0929c97ea93fafb3cb091bf2e00046399c74f2
-    - uses: langston-barrett/gha/.github/actions/install-typos@ac0929c97ea93fafb3cb091bf2e00046399c74f2
-    - uses: langston-barrett/gha/.github/actions/install-zizmor@ac0929c97ea93fafb3cb091bf2e00046399c74f2
-
+    - run: rustup component add clippy
+    - uses: langston-barrett/gha/.github/actions/install-linters@9d53a97e95863fe9875c748bf0e0ca6a7465892f
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
     - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
