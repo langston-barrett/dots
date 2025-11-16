@@ -56,13 +56,7 @@ jobs:
           tar xzf - ./typos
         mv typos bin
         chmod +x bin/*
-    - name: install zizmor
-      run: |
-        download \
-          https://github.com/woodruffw/zizmor/releases/download/v1.16.3/zizmor-x86_64-unknown-linux-gnu.tar.gz | \
-          tar xzf - ./zizmor
-        mv zizmor bin
-        chmod +x bin/*
+    - uses: langston-barrett/gha/.github/actions/install-zizmor@1222958e7b839788fc5143b16805a62b232a666a
 
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
     - run: cd .. && ./scripts/lint/lint.py
