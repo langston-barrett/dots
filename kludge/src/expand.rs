@@ -138,7 +138,12 @@ const GIT_RESET_HARD_ORIGIN_MAIN: &str =
     "git reset --hard origin/$(git branch | grep -Eo '(main|master)$')";
 
 // Expansions that only apply when the user hit "enter", not "space"
-const ANYWHERE_ENTER: &[(&str, &str)] = &[("mkcd", "mkdir _ && cd _")];
+const ANYWHERE_ENTER: &[(&str, &str)] = &[
+    ("gclg", "git clone https://github.com/GaloisInc/_"),
+    ("gclh", "git clone https://github.com/_"),
+    ("gclm", "git clone https://github.com/langston-barrett/_"),
+    ("mkcd", "mkdir _ && cd _"),
+];
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
     ("ba", "cabal build all", ""),
@@ -194,9 +199,6 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("gc.", "git commit --message .", ""),
     ("gca", "git commit --amend", ""),
     ("gcb", "git checkout -b", ""),
-    ("gclg", "git clone https://github.com/GaloisInc/", ""),
-    ("gclh", "git clone https://github.com/", ""),
-    ("gclm", "git clone https://github.com/langston-barrett/", ""),
     ("gco-", "git checkout -", ""),
     ("gcom", GIT_CHECKOUT_MAIN, ""),
     (
@@ -468,6 +470,12 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
         if short.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
             let hint = to_hint(&format!("{lbuf}{CURSOR}{rbuf}"));
+            results.push((short, hint));
+        }
+    }
+    for (short, long) in ANYWHERE_ENTER {
+        if let Some(rest) = lbuf0.strip_prefix(&format!("{short} ")) {
+            let hint = to_hint(&long.replace('_', rest));
             results.push((short, hint));
         }
     }
