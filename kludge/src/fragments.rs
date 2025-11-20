@@ -87,7 +87,7 @@ fn collect_fragments(fragments_dir: &Path) -> Result<HashMap<String, Vec<String>
             if let Some(first_line) = lines.first() {
                 let first_line = first_line.clone();
                 fragments.insert(first_line.clone(), lines);
-                debug!("Recorded fragment with first line: {}", first_line);
+                debug!("recorded fragment with first line: {}", first_line);
             } else {
                 warn!("empty fragment file: {}", path.display());
             }

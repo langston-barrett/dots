@@ -26,18 +26,24 @@ fn verbosity_to_log_level(verbosity: u8) -> Level {
     }
 }
 
-fn initialize_tracing(cli: &Cli) {
-    tracing_subscriber::fmt::fmt()
-        .with_span_events(FmtSpan::NONE)
+fn init_tracing(level: Level) {
+    let builder = tracing_subscriber::fmt::fmt()
         .with_target(false)
-        .with_max_level(verbosity_to_log_level(cli.verbose))
-        .with_writer(std::io::stderr)
-        .init();
+        .with_max_level(level)
+        .with_writer(std::io::stderr);
+    if let Level::TRACE = level {
+        let builder = builder.with_span_events(FmtSpan::ENTER | FmtSpan::CLOSE);
+        builder.init();
+    } else {
+        let builder = builder.without_time();
+        builder.init();
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli: Cli = clap::Parser::parse();
-    initialize_tracing(&cli);
+    let verbose = verbosity_to_log_level(cli.verbose);
+    init_tracing(verbose);
     debug!(?cli);
     match cli.cmd {
         Command::Edit(conf) => edit::go(conf)?,

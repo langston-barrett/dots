@@ -38,6 +38,7 @@ unimplemented = "warn"
 uninlined_format_args = "warn"
 unreadable_literal = "warn"
 use_debug = "warn"
+
 [lints.rust]
 absolute_paths_not_starting_with_crate = "warn"
 dead_code = "warn"
