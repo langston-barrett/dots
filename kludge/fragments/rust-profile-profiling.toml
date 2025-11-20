@@ -1,0 +1,4 @@
+# https://github.com/mstange/samply#turn-on-debug-info-for-full-stacks
+[profile.profiling]
+inherits = "release"
+debug = true

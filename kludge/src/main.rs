@@ -1,6 +1,7 @@
 use std::error::Error;
 
-use tracing::{Level, debug};
+use clap::Parser as _;
+use tracing::{Level, trace};
 use tracing_subscriber::fmt::format::FmtSpan;
 
 mod cli;
@@ -15,7 +16,7 @@ mod prompt;
 mod system;
 mod whitespace;
 
-use cli::{Cli, Command};
+use cli::Command;
 
 fn verbosity_to_log_level(verbosity: u8) -> Level {
     match verbosity {
@@ -41,10 +42,15 @@ fn init_tracing(level: Level) {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let cli: Cli = clap::Parser::parse();
+    let cli = cli::Cli::parse();
     let verbose = verbosity_to_log_level(cli.verbose);
     init_tracing(verbose);
-    debug!(?cli);
+    trace!(?cli);
+    go(cli)?;
+    Ok(())
+}
+
+fn go(cli: cli::Cli) -> Result<(), Box<dyn Error>> {
     match cli.cmd {
         Command::Edit(conf) => edit::go(conf)?,
         Command::Expand(conf) => expand::go(conf)?,
@@ -55,6 +61,6 @@ fn main() -> Result<(), Box<dyn Error>> {
         Command::Preview(conf) => preview::go(conf)?,
         Command::Prompt => prompt::go()?,
         Command::Whitespace(conf) => whitespace::go(conf)?,
-    }
+    };
     Ok(())
 }

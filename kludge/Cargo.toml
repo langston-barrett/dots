@@ -17,9 +17,11 @@ lto = "fat"
 
 [lints.clippy]
 # pedantic = { level = "warn", priority = -1 }
+case_sensitive_file_extension_comparisons = "allow"
 dbg_macro = "warn"
 explicit_iter_loop = "warn"
 format_push_string = "warn"
+ignore_without_reason = "warn"
 implicit_clone = "warn"
 implicit_hasher = "allow"
 inefficient_to_string = "warn"

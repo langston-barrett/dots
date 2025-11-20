@@ -1,4 +1,4 @@
-[lints.clippy]
+[workspace.lints.clippy]
 # pedantic = { level = "warn", priority = -1 }
 case_sensitive_file_extension_comparisons = "allow"
 dbg_macro = "warn"
