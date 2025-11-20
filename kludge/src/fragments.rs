@@ -1,6 +1,7 @@
 use std::{
     collections::HashMap,
     error::Error,
+    ffi::OsString,
     fs,
     path::{Path, PathBuf},
     process,
@@ -62,7 +63,12 @@ fn collect_files(dir: PathBuf) -> Result<HashMap<PathBuf, String>> {
     Ok(files)
 }
 
-fn collect_fragments(fragments_dir: &Path) -> Result<HashMap<String, Vec<String>>> {
+struct Fragment {
+    lines: Vec<String>,
+    extension: Option<OsString>,
+}
+
+fn collect_fragments(fragments_dir: &Path) -> Result<HashMap<String, Fragment>> {
     let mut fragments = HashMap::new();
 
     for entry in fs::read_dir(fragments_dir).with_context(|| {
@@ -86,7 +92,8 @@ fn collect_fragments(fragments_dir: &Path) -> Result<HashMap<String, Vec<String>
             let lines: Vec<String> = content.lines().map(String::from).collect();
             if let Some(first_line) = lines.first() {
                 let first_line = first_line.clone();
-                fragments.insert(first_line.clone(), lines);
+                let extension = path.extension().map(|ext| ext.to_os_string());
+                fragments.insert(first_line.clone(), Fragment { lines, extension });
                 debug!("recorded fragment with first line: {}", first_line);
             } else {
                 warn!("empty fragment file: {}", path.display());
@@ -110,7 +117,7 @@ fn replace_matching_files(files: &HashMap<PathBuf, String>, git_files: &[PathBuf
 }
 
 fn replace_fragment_matches(
-    fragments: &HashMap<String, Vec<String>>,
+    fragments: &HashMap<String, Fragment>,
     git_files: &[PathBuf],
 ) -> Result<()> {
     for path in git_files {
@@ -134,9 +141,13 @@ fn replace_fragment_matches(
                 continue;
             }
 
-            for (first_line, fragment_lines) in fragments {
+            for (first_line, fragment) in fragments {
+                if fragment.extension.as_deref() != path.extension() {
+                    continue;
+                }
+
                 if line.trim() == first_line.trim() {
-                    lines.extend(fragment_lines.iter().cloned());
+                    lines.extend(fragment.lines.iter().cloned());
                     lines.push("".to_owned());
                     skip = true;
                     modified = true;
