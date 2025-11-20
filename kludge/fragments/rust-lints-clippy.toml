@@ -1,5 +1,5 @@
 [lints.clippy]
-pedantic = { level = "warn", priority = -1 }
+# pedantic = { level = "warn", priority = -1 }
 dbg_macro = "warn"
 explicit_iter_loop = "warn"
 format_push_string = "warn"
