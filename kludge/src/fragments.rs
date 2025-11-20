@@ -137,6 +137,7 @@ fn replace_fragment_matches(
             for (first_line, fragment_lines) in fragments {
                 if line.trim() == first_line.trim() {
                     lines.extend(fragment_lines.iter().cloned());
+                    lines.push("".to_owned());
                     skip = true;
                     modified = true;
                     debug!("replaced fragment match in {}", path.display());
