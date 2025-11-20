@@ -16,6 +16,7 @@ pub(crate) struct Cli {
 pub(crate) enum Command {
     Edit(crate::edit::Config),
     Expand(crate::expand::Config),
+    Fragments(crate::fragments::Config),
     Hook(crate::hook::Config),
     Install,
     Launcher,

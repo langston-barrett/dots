@@ -6,6 +6,7 @@ use tracing_subscriber::fmt::format::FmtSpan;
 mod cli;
 mod edit;
 mod expand;
+mod fragments;
 mod hook;
 mod install;
 mod launcher;
@@ -41,6 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     match cli.cmd {
         Command::Edit(conf) => edit::go(conf)?,
         Command::Expand(conf) => expand::go(conf)?,
+        Command::Fragments(conf) => fragments::go(conf)?,
         Command::Hook(conf) => hook::go(conf)?,
         Command::Launcher => launcher::go()?,
         Command::Install => install::go()?,
