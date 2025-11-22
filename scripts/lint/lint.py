@@ -2,11 +2,9 @@
 
 """Run formatters and linters incrementally and in parallel using Ninja"""
 
-# TODO: markdownlint
-# TODO: make -n
+# TODO: rumdl
 # TODO: sh -n
 # TODO: taplo
-# TODO: whitespace --fix
 
 # Ninja is essentially a simpler, faster version of Make. A Ninja configuration
 # consists of *rules* (`rule`) and some number of *build statements* (`build`).
@@ -83,6 +81,10 @@ def build(
     return ninja
 
 
+def rules(ninja: NinjaScript, rule_def: str) -> NinjaScript:
+    return cast(NinjaScript, ninja + dedent(rule_def))
+
+
 def lint(
     ninja: NinjaScript, rule: str, ins: str, /, *, default: bool = True
 ) -> NinjaScript:
@@ -119,14 +121,13 @@ def gha(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if gha == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule zizmor
       command = zizmor --quiet -- $in && touch $out
       description = zizmor
-    """),
+    """,
     )
     for path in gha:
         if path.endswith("workflows/dependabot.yml"):
@@ -142,17 +143,35 @@ def json(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if json == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule jq
       command = jq null -- $in > /dev/null && touch $out
       description = jq
-    """),
+    """,
     )
     for path in json:
         ninja = lint(ninja, "jq", path)
+        ninja = txt(ninja, path, mode)
+    return ninja
+
+
+def make(ninja: NinjaScript, mode: Mode) -> NinjaScript:
+    make = ls_files(["**/Makefile"])
+    if make == []:
+        return ninja
+
+    ninja = rules(
+        ninja,
+        """
+    rule make-n
+      command = make -n -f $$in && touch $out
+      description = make -n
+    """,
+    )
+    for path in make:
+        ninja = lint(ninja, "make-n", path)
         ninja = txt(ninja, path, mode)
     return ninja
 
@@ -162,10 +181,9 @@ def md(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if md == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule mdlynx
       command = mdlynx $in && touch $out
       description = mdlynx
@@ -173,7 +191,7 @@ def md(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     rule typos
       command = typos $in && touch $out
       description = typos
-    """),
+    """,
     )
     for path in md:
         ninja = lint(ninja, "mdlynx", path)
@@ -197,10 +215,9 @@ def py(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if py == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule mypy
       command = mypy --no-error-summary --strict -- $in && touch $out
       description = mypy
@@ -220,7 +237,7 @@ def py(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     rule ruff-fmt-check
       command = ruff format --check --quiet -- $in && touch $out
       description = ruff format --check
-    """),
+    """,
     )
     for path in py:
         if Path(path).read_text().startswith("# noqa"):
@@ -240,10 +257,9 @@ def rs(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if rs == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule cargo-clippy
       command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
       description = cargo clippy
@@ -255,7 +271,7 @@ def rs(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     rule cargo-fmt-check
       command = cd kludge; cargo fmt --check && touch ../$out
       description = cargo fmt --check
-    """),
+    """,
     )
     ninja = build(ninja, "cargo-clippy", "cargo-clippy", " ".join(cargo + rs))
     ninja = build(
@@ -278,14 +294,13 @@ def sh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     if sh == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule sc
       command = shellcheck --shell=bash -- $in && touch $out
       description = shellcheck
-    """),
+    """,
     )
     for path in sh:
         ninja = lint(ninja, "sc", path)
@@ -312,14 +327,13 @@ def xref(ninja: NinjaScript) -> NinjaScript:
     if files == []:
         return ninja
 
-    ninja = cast(
-        NinjaScript,
-        ninja
-        + dedent("""
+    ninja = rules(
+        ninja,
+        """
     rule xref
       command = ./scripts/lint/xref.py -- $in && touch $out
       description = xref
-    """),
+    """,
     )
     ninja = build(ninja, "xref", "xref", " ".join(files))
     return ninja
@@ -368,6 +382,7 @@ def go(mode: Mode) -> None:
     ninja = gha(ninja, mode)
     ninja = json(ninja, mode)
     ninja = md(ninja, mode)
+    ninja = make(ninja, mode)
     ninja = nix(ninja, mode)
     ninja = py(ninja, mode)
     ninja = rs(ninja, mode)
