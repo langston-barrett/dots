@@ -10,4 +10,3 @@ array() {
     printf '%s\n' "${i}"
   done
 }
-

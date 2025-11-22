@@ -184,4 +184,3 @@ mode "resize" {
 }
 bindsym $mod+$resize mode "resize"
 # smart_borders on
-

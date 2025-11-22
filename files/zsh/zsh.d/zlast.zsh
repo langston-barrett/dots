@@ -85,4 +85,3 @@ function zle-line-pre-redraw() {
   zle kludge-hint
 }
 zle -N zle-line-pre-redraw
-

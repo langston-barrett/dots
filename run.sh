@@ -44,4 +44,3 @@ else
 fi
 
 exec bash run.sh "$@"
-

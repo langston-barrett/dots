@@ -98,4 +98,3 @@
   (add-hook 'magit-log-mode-hook #'my/disable-olivetti-tentative-mode))
 
 (my/when-idle-med 'my/activate-olivetti)
-

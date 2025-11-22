@@ -51,4 +51,3 @@ be combined into one.
 
 I don't hold down the space bar, so I can use this to toggle layers.
 I shouldn't introduce chording where none exists (e.g., for esc, ret).
-

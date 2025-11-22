@@ -25,4 +25,3 @@
   ("_" my/backlight-down)
   ("j" my/backlight-down)
   ("q" nil :exit t))
-
