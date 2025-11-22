@@ -321,31 +321,36 @@ def rs(scripts: NinjaScripts) -> NinjaScripts:
     if rs == []:
         return scripts
 
+    cd = ""
+    if len(cargo) == 1:
+        cd = "cd " + str(Path(cargo[0]).parent) + "; "
+    root = Path(__file__).absolute().parent.parent.parent
+
     scripts.lint = rules(
         scripts.lint,
-        """
+        f"""
     rule cargo-clippy
-      command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
+      command = {cd}cargo clippy --all-targets --quiet -- --deny warnings && touch {root}/$out
       description = cargo clippy
 
     rule cargo-fmt-check
-      command = cd kludge; cargo fmt --check && touch ../$out
+      command = {cd}cargo fmt --check && touch {root}/$out
       description = cargo fmt --check
     """,
     )
     scripts.fix = rules(
         scripts.fix,
-        """
+        f"""
     rule cargo-clippy-fix
-      command = cd kludge; cargo clippy --allow-dirty --fix --all-targets --quiet -- --deny warnings && touch ../$out
-      description = cargo clippy --allow-dirty --fix
+      command = {cd}cargo clippy  --all-targets --allow-dirty --fix --quiet -- --deny warnings && touch {root}/$out
+      description = cargo clippy --fix
     """,
     )
     scripts.format = rules(
         scripts.format,
-        """
+        f"""
     rule cargo-fmt
-      command = cd kludge; cargo fmt && touch ../$out
+      command = {cd}cargo fmt && touch {root}/$out
       description = cargo fmt
     """,
     )
