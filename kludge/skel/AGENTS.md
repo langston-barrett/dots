@@ -4,13 +4,14 @@
 
 ### Python
 
+- Use `dataclasses` where possible
 - Use `pathlib` where possible
 
 #### Python scripts
 
 - Use `argparse` like so: `parser = ArgumentParser(description=__doc__)`
 - Use the shebang `#!/usr/bin/env python3`
-- Write a very concise one line docstring
+- Write a very concise one line module docstring
 
 ### Rust
 

@@ -4,6 +4,8 @@
 
 # this file is sourced last
 
+# ref: kludge-expand
+
 installed() { command -v "$1" >/dev/null 2>&1; }
 if ! installed zbr; then
   zbr-space() { zle .self-insert; }

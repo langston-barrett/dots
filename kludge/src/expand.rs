@@ -1,3 +1,5 @@
+// def: kludge-expand
+
 use std::{env, error::Error, ffi::OsStr};
 
 use crate::system as build;

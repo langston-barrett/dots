@@ -4,13 +4,14 @@
 
 ### Python
 
+- Use `dataclasses` where possible
 - Use `pathlib` where possible
 
 #### Python scripts
 
 - Use `argparse` like so: `parser = ArgumentParser(description=__doc__)`
 - Use the shebang `#!/usr/bin/env python3`
-- Write a very concise one line docstring
+- Write a very concise one line module docstring
 
 ### Rust
 
@@ -23,10 +24,14 @@
 
 #### Rust libraries
 
-- Return a `Result` with a dedicated error type from fallible functions
 - Implement `error::Error` for error types
+- Return a `Result` with a dedicated error type from fallible functions
 
 ### Shell
 
-- Use `#!/usr/bin/env bash` as the shebang
 - Do not unnecessarily capitalize variables
+- Log to stderr, not stdout
+- Use `--` before variable arguments (`$1`, `$@`, etc.)
+- Use `printf` instead of `echo`
+- Use `set -euo pipefail`
+- Use `#!/usr/bin/env bash` as the shebang
