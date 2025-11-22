@@ -57,46 +57,38 @@
 #     chmod +x .git/hooks/pre-commit
 
 from argparse import ArgumentParser
+from enum import IntFlag
 from os import execvp, environ
 from pathlib import Path
 from subprocess import run
 from textwrap import dedent
+from typing import NewType, cast
+
+NinjaScript = NewType("NinjaScript", str)
 
 
-ninja = r"""
-builddir=.out/
-
-rule bom
-  command = rg '\xEF\xBB\xBF' -- $in && exit 1 || touch $out
-  description = check for utf-8 byte-order mark
-
-rule crlf
-  command = rg --multiline '\r\n' -- $in && exit 1 || touch $out
-  description = check for crlf
-
-rule merge
-  command = grep -E '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
-  description = check for merge conflict markers
-
-rule ws
-  command = ./scripts/lint/whitespace.py -- $in && touch $out
-  description = whitespace
-
-"""
+class Mode(IntFlag):
+    lint = 1
+    format = 2
+    fix = 4
 
 
-def build(out: str, rule: str, ins: str, /, *, default: bool = True) -> None:
-    global ninja
+def build(
+    ninja: NinjaScript, out: str, rule: str, ins: str, /, *, default: bool = True
+) -> NinjaScript:
     assert " " not in out
-    ninja += f"build $builddir/{out}: {rule} {ins}\n"
+    ninja = cast(NinjaScript, ninja + f"build $builddir/{out}: {rule} {ins}\n")
     if default:
-        ninja += f"default $builddir/{out}\n"
+        ninja = cast(NinjaScript, ninja + f"default $builddir/{out}\n")
+    return ninja
 
 
-def lint(rule: str, ins: str, /, *, default: bool = True) -> None:
+def lint(
+    ninja: NinjaScript, rule: str, ins: str, /, *, default: bool = True
+) -> NinjaScript:
     # replace directory separators `/` with hyphens `-`
     slug = ins.replace("/", "-") + "." + rule
-    build(slug, rule, ins, default=default)
+    return build(ninja, slug, rule, ins, default=default)
 
 
 def ls_files(pats: list[str]) -> list[str]:
@@ -111,57 +103,68 @@ def ls_files(pats: list[str]) -> list[str]:
     return stdout.decode("utf-8").split("\n")
 
 
-def txt(path: str) -> None:
+def txt(ninja: NinjaScript, path: str) -> NinjaScript:
     if environ.get("CI") is None:
         # requires rg
-        lint("bom", path)
-        lint("crlf", path)
-    lint("merge", path)
-    lint("ws", path)
+        ninja = lint(ninja, "bom", path)
+        ninja = lint(ninja, "crlf", path)
+    ninja = lint(ninja, "merge", path)
+    ninja = lint(ninja, "ws", path)
+    return ninja
 
 
-def gha() -> None:
+def gha(ninja: NinjaScript) -> NinjaScript:
     gha = ls_files([".github/**/*.yml"])
     if gha == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule zizmor
       command = zizmor --quiet -- $in && touch $out
       description = zizmor
-    """)
+    """),
+    )
     for path in gha:
         if path.endswith("workflows/dependabot.yml"):
             # https://github.com/zizmorcore/zizmor/issues/1341
             continue
-        lint("zizmor", path)
-        txt(path)
+        ninja = lint(ninja, "zizmor", path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def json() -> None:
+def json(ninja: NinjaScript) -> NinjaScript:
     json = ls_files(["*.json"])
     if json == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule jq
       command = jq null -- $in > /dev/null && touch $out
       description = jq
-    """)
+    """),
+    )
     for path in json:
-        lint("jq", path)
-        txt(path)
+        ninja = lint(ninja, "jq", path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def md() -> None:
+def md(ninja: NinjaScript) -> NinjaScript:
     md = ls_files(["*.md"])
     if md == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule mdlynx
       command = mdlynx $in && touch $out
       description = mdlynx
@@ -169,29 +172,34 @@ def md() -> None:
     rule typos
       command = typos $in && touch $out
       description = typos
-    """)
+    """),
+    )
     for path in md:
-        lint("mdlynx", path)
-        lint("typos", path)
-        txt(path)
+        ninja = lint(ninja, "mdlynx", path)
+        ninja = lint(ninja, "typos", path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def nix() -> None:
+def nix(ninja: NinjaScript) -> NinjaScript:
     nix = ls_files(["*.nix"])
     if nix == []:
-        return
+        return ninja
 
     for path in nix:
-        txt(path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def py(format: bool) -> None:
+def py(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     py = ls_files(["*.py"])
     if py == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule mypy
       command = mypy --no-error-summary --strict -- $in && touch $out
       description = mypy
@@ -211,25 +219,30 @@ def py(format: bool) -> None:
     rule ruff-fmt-check
       command = ruff format --check --quiet -- $in && touch $out
       description = ruff format --check
-    """)
+    """),
+    )
     for path in py:
         if Path(path).read_text().startswith("# noqa"):
             continue
-        lint("mypy", path)
-        lint("ruff-check", path)
-        lint("ruff-fmt", path, default=format)
-        lint("ruff-fmt-check", path, default=not format)
-        lint("py", path)
-        txt(path)
+        ninja = lint(ninja, "mypy", path)
+        ninja = lint(ninja, "ruff-check", path)
+        ninja = lint(ninja, "ruff-fmt", path, default=bool(mode & Mode.format))
+        ninja = lint(ninja, "ruff-fmt-check", path, default=bool(mode & Mode.lint))
+        ninja = lint(ninja, "py", path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def rs(format: bool) -> None:
+def rs(ninja: NinjaScript, mode: Mode) -> NinjaScript:
+    cargo = ls_files(["**/Cargo.toml"])
     rs = ls_files(["*.rs"])
     if rs == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule cargo-clippy
       command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
       description = cargo clippy
@@ -241,31 +254,45 @@ def rs(format: bool) -> None:
     rule cargo-fmt-check
       command = cd kludge; cargo fmt --check && touch ../$out
       description = cargo fmt --check
-    """)
-    build("cargo-clippy", "cargo-clippy", " ".join(rs + ["kludge/Cargo.toml"]))
-    build("cargo-fmt", "cargo-fmt", " ".join(rs), default=format)
-    build("cargo-fmt-check", "cargo-fmt-check", " ".join(rs), default=not format)
+    """),
+    )
+    ninja = build(ninja, "cargo-clippy", "cargo-clippy", " ".join(cargo + rs))
+    ninja = build(
+        ninja, "cargo-fmt", "cargo-fmt", " ".join(rs), default=bool(mode & Mode.format)
+    )
+    ninja = build(
+        ninja,
+        "cargo-fmt-check",
+        "cargo-fmt-check",
+        " ".join(rs),
+        default=bool(mode & Mode.lint),
+    )
     for path in rs:
-        txt(path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def sh() -> None:
+def sh(ninja: NinjaScript) -> NinjaScript:
     sh = ls_files(["*.sh", "files/scripts/bin/*", "*.zsh"])
     if sh == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule sc
       command = shellcheck --shell=bash -- $in && touch $out
       description = shellcheck
-    """)
+    """),
+    )
     for path in sh:
-        lint("sc", path)
-        txt(path)
+        ninja = lint(ninja, "sc", path)
+        ninja = txt(ninja, path)
+    return ninja
 
 
-def xref() -> None:
+def xref(ninja: NinjaScript) -> NinjaScript:
     files = ls_files(
         [
             "**/Makefile",
@@ -282,20 +309,24 @@ def xref() -> None:
         ]
     )
     if files == []:
-        return
+        return ninja
 
-    global ninja
-    ninja += dedent("""
+    ninja = cast(
+        NinjaScript,
+        ninja
+        + dedent("""
     rule xref
       command = ./scripts/lint/xref.py -- $in && touch $out
       description = xref
-    """)
-    build("xref", "xref", " ".join(files))
+    """),
+    )
+    ninja = build(ninja, "xref", "xref", " ".join(files))
+    return ninja
 
 
-def ok() -> None:
+def ok(ninja: NinjaScript) -> NinjaScript:
     if environ.get("CI") is not None:
-        return
+        return ninja
     rules = [line.split()[1] for line in ninja.splitlines() if line.startswith("rule")]
     for rule in rules:
         ok = False
@@ -304,23 +335,53 @@ def ok() -> None:
                 ok = True
                 break
         assert ok, f"{rule} not in any `build` lines"
+    return ninja
 
 
-def go(format: bool) -> None:
-    gha()
-    json()
-    md()
-    nix()
-    py(format)
-    rs(format)
-    sh()
-    xref()
-    ok()
+def go(mode: Mode) -> None:
+    ninja = NinjaScript(
+        dedent(r"""
+    builddir=.out/
+
+    rule bom
+      command = rg '\xEF\xBB\xBF' -- $in && exit 1 || touch $out
+      description = check for utf-8 byte-order mark
+
+    rule crlf
+      command = rg --multiline '\r\n' -- $in && exit 1 || touch $out
+      description = check for crlf
+
+    rule merge
+      command = grep -E '^(<<<<<<<|=======|>>>>>>>)' -- $in && exit 1 || touch $out
+      description = check for merge conflict markers
+
+    rule ws
+      command = ./scripts/lint/whitespace.py -- $in && touch $out
+      description = whitespace
+    """)
+    )
+    ninja = gha(ninja)
+    ninja = json(ninja)
+    ninja = md(ninja)
+    ninja = nix(ninja)
+    ninja = py(ninja, mode)
+    ninja = rs(ninja, mode)
+    ninja = sh(ninja)
+    ninja = xref(ninja)
+    ninja = ok(ninja)
     Path("build.ninja").write_text(ninja)
     execvp("ninja", ["ninja"])
 
 
 parser = ArgumentParser(description=__doc__)
 parser.add_argument("--format", action="store_true")
+parser.add_argument("--fix", action="store_true")
 args = parser.parse_args()
-go(args.format)
+mode = Mode(0)
+if not (args.format or args.fix):
+    mode |= Mode.lint
+if args.format:
+    mode |= Mode.format
+if args.fix:
+    mode |= Mode.fix
+go(mode)
