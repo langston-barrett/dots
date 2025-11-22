@@ -57,7 +57,6 @@
 #     chmod +x .git/hooks/pre-commit
 
 from argparse import ArgumentParser
-from itertools import chain
 from os import execvp, environ
 from pathlib import Path
 from subprocess import run
@@ -66,9 +65,6 @@ from textwrap import dedent
 
 ninja = r"""
 builddir=.out/
-
-# ---------------------------------------------------------
-# text
 
 rule bom
   command = rg '\xEF\xBB\xBF' -- $in && exit 1 || touch $out
@@ -85,73 +81,6 @@ rule merge
 rule ws
   command = ./scripts/lint/whitespace.py -- $in && touch $out
   description = whitespace
-
-rule xref
-  command = ./scripts/lint/xref.py -- $in && touch $out
-  description = xref
-
-# ---------------------------------------------------------
-# json
-
-rule jq
-  command = jq null -- $in > /dev/null && touch $out
-  description = jq
-
-# ---------------------------------------------------------
-# markdown
-
-rule mdlynx
-  command = cd $$(dirname $in) && mdlynx $$(basename $in) && cd - && touch $out
-  description = mdlynx
-
-rule typos
-  command = typos $in && touch $out
-  description = typos
-
-# ---------------------------------------------------------
-# python (scripts)
-
-rule mypy
-  command = mypy --no-error-summary --strict -- $in && touch $out
-  description = mypy
-
-rule py
-  command = ./scripts/lint/py.py -- $in && touch $out
-  description = python style
-
-rule ruff-check
-  command = ruff check --quiet -- $in && touch $out
-  description = ruff check
-
-rule ruff-fmt
-  command = ruff format --quiet -- $in && touch $out
-  description = ruff format
-
-rule ruff-fmt-check
-  command = ruff format --check --quiet -- $in && touch $out
-  description = ruff format --check
-
-# ---------------------------------------------------------
-# shell
-
-rule sc
-  command = shellcheck --shell=bash -- $in && touch $out
-  description = shellcheck
-
-# ---------------------------------------------------------
-# rust
-
-rule cargo-clippy
-  command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
-  description = cargo clippy
-
-rule cargo-fmt
-  command = cd kludge; cargo fmt && touch ../$out
-  description = cargo fmt
-
-rule cargo-fmt-check
-  command = cd kludge; cargo fmt --check && touch ../$out
-  description = cargo fmt --check
 
 """
 
@@ -212,6 +141,15 @@ def gha() -> None:
 
 def json() -> None:
     json = ls_files(["*.json"])
+    if json == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule jq
+      command = jq null -- $in > /dev/null && touch $out
+      description = jq
+    """)
     for path in json:
         lint("jq", path)
         txt(path)
@@ -219,6 +157,19 @@ def json() -> None:
 
 def md() -> None:
     md = ls_files(["*.md"])
+    if md == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule mdlynx
+      command = mdlynx $in && touch $out
+      description = mdlynx
+
+    rule typos
+      command = typos $in && touch $out
+      description = typos
+    """)
     for path in md:
         lint("mdlynx", path)
         lint("typos", path)
@@ -227,12 +178,40 @@ def md() -> None:
 
 def nix() -> None:
     nix = ls_files(["*.nix"])
+    if nix == []:
+        return
+
     for path in nix:
         txt(path)
 
 
 def py(format: bool) -> None:
     py = ls_files(["*.py"])
+    if py == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule mypy
+      command = mypy --no-error-summary --strict -- $in && touch $out
+      description = mypy
+
+    rule py
+      command = ./scripts/lint/py.py -- $in && touch $out
+      description = python style
+
+    rule ruff-check
+      command = ruff check --quiet -- $in && touch $out
+      description = ruff check
+
+    rule ruff-fmt
+      command = ruff format --quiet -- $in && touch $out
+      description = ruff format
+
+    rule ruff-fmt-check
+      command = ruff format --check --quiet -- $in && touch $out
+      description = ruff format --check
+    """)
     for path in py:
         if Path(path).read_text().startswith("# noqa"):
             continue
@@ -246,6 +225,23 @@ def py(format: bool) -> None:
 
 def rs(format: bool) -> None:
     rs = ls_files(["*.rs"])
+    if rs == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule cargo-clippy
+      command = cd kludge; cargo clippy --all-targets --quiet -- --deny warnings && touch ../$out
+      description = cargo clippy
+
+    rule cargo-fmt
+      command = cd kludge; cargo fmt && touch ../$out
+      description = cargo fmt
+
+    rule cargo-fmt-check
+      command = cd kludge; cargo fmt --check && touch ../$out
+      description = cargo fmt --check
+    """)
     build("cargo-clippy", "cargo-clippy", " ".join(rs + ["kludge/Cargo.toml"]))
     build("cargo-fmt", "cargo-fmt", " ".join(rs), default=format)
     build("cargo-fmt-check", "cargo-fmt-check", " ".join(rs), default=not format)
@@ -254,9 +250,16 @@ def rs(format: bool) -> None:
 
 
 def sh() -> None:
-    sh = chain(
-        ls_files(["*.sh"]), ls_files(["files/scripts/bin/*"]), ls_files(["*.zsh"])
-    )
+    sh = ls_files(["*.sh", "files/scripts/bin/*", "*.zsh"])
+    if sh == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule sc
+      command = shellcheck --shell=bash -- $in && touch $out
+      description = shellcheck
+    """)
     for path in sh:
         lint("sc", path)
         txt(path)
@@ -278,6 +281,15 @@ def xref() -> None:
             "*.zsh",
         ]
     )
+    if files == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule xref
+      command = ./scripts/lint/xref.py -- $in && touch $out
+      description = xref
+    """)
     build("xref", "xref", " ".join(files))
 
 
