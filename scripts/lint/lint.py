@@ -61,6 +61,7 @@ from itertools import chain
 from os import execvp, environ
 from pathlib import Path
 from subprocess import run
+from textwrap import dedent
 
 
 ninja = r"""
@@ -88,13 +89,6 @@ rule ws
 rule xref
   command = ./scripts/lint/xref.py -- $in && touch $out
   description = xref
-
-# ---------------------------------------------------------
-# github actions
-
-rule zizmor
-  command = zizmor --quiet -- $in && touch $out
-  description = zizmor
 
 # ---------------------------------------------------------
 # json
@@ -198,8 +192,20 @@ def txt(path: str) -> None:
 
 
 def gha() -> None:
-    gha = ls_files([".github/workflows/*.yml"])
+    gha = ls_files([".github/**/*.yml"])
+    if gha == []:
+        return
+
+    global ninja
+    ninja += dedent("""
+    rule zizmor
+      command = zizmor --quiet -- $in && touch $out
+      description = zizmor
+    """)
     for path in gha:
+        if path.endswith("workflows/dependabot.yml"):
+            # https://github.com/zizmorcore/zizmor/issues/1341
+            continue
         lint("zizmor", path)
         txt(path)
 
