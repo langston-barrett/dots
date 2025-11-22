@@ -27,7 +27,7 @@ jobs:
       with:
         persist-credentials: false
     - run: rustup component add clippy
-    - uses: langston-barrett/gha/.github/actions/install-linters@9d53a97e95863fe9875c748bf0e0ca6a7465892f
+    - uses: langston-barrett/gha/.github/actions/install-linters@9137259cab1d86dbeae3bde37898a2dfe6a12130
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
     - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run

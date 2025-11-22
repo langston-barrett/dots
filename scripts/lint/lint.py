@@ -3,7 +3,6 @@
 """Run formatters and linters incrementally and in parallel using Ninja"""
 
 # TODO: rumdl
-# TODO: taplo
 
 # Ninja is essentially a simpler, faster version of Make. A Ninja configuration
 # consists of *rules* (`rule`) and some number of *build statements* (`build`).
@@ -386,6 +385,35 @@ def sh(scripts: NinjaScripts) -> NinjaScripts:
     return scripts
 
 
+def toml(scripts: NinjaScripts) -> NinjaScripts:
+    toml = ls_files(["*.toml"])
+    if toml == []:
+        return scripts
+
+    scripts.lint = rules(
+        scripts.lint,
+        """
+    rule taplo-format-check
+      command = taplo format --check --diff | grep -v 'found files' -- $in && touch $out
+      description = taplo format --check
+    """,
+    )
+    scripts.format = rules(
+        scripts.format,
+        """
+    rule taplo-format
+      command = taplo format -- $in && touch $out
+      description = taplo format
+    """,
+    )
+    for path in toml:
+        scripts.lint = lint(scripts.lint, "taplo-format-check", path)
+        scripts.lint = txt_lint(scripts.lint, path)
+        scripts.format = lint(scripts.format, "taplo-format", path)
+        scripts.format = txt_format(scripts.format, path)
+    return scripts
+
+
 def zsh(scripts: NinjaScripts) -> NinjaScripts:
     zsh = ls_files(["*.zsh"])
     if zsh == []:
@@ -510,6 +538,7 @@ def go(do_format: bool, do_fix: bool) -> None:
     scripts = py(scripts)
     scripts = rs(scripts)
     scripts = sh(scripts)
+    scripts = toml(scripts)
     scripts = xref(scripts)
     ok(scripts.lint)
     ok(scripts.fix)
