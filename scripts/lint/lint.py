@@ -116,6 +116,33 @@ def txt(ninja: NinjaScript, path: str, mode: Mode) -> NinjaScript:
     return ninja
 
 
+# ---------------------------------------------------------
+
+
+def bash(ninja: NinjaScript, mode: Mode) -> NinjaScript:
+    bash = ls_files(["*.bash"])
+    if bash == []:
+        return ninja
+
+    ninja = rules(
+        ninja,
+        """
+    rule bash-n
+      command = bash -n -- $in && touch $out
+      description = bash -n
+
+    rule bash-sc
+      command = shellcheck --shell=bash -- $in && touch $out
+      description = shellcheck
+    """,
+    )
+    for path in bash:
+        ninja = lint(ninja, "bash-n", path)
+        ninja = lint(ninja, "bash-sc", path)
+        ninja = txt(ninja, path, mode)
+    return ninja
+
+
 def gha(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     gha = ls_files([".github/**/*.yml"])
     if gha == []:
@@ -290,7 +317,7 @@ def rs(ninja: NinjaScript, mode: Mode) -> NinjaScript:
 
 
 def sh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
-    sh = ls_files(["*.sh", "files/scripts/bin/*", "*.zsh"])
+    sh = ls_files(["*.sh", "files/scripts/bin/*"])
     if sh == []:
         return ninja
 
@@ -304,6 +331,30 @@ def sh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     )
     for path in sh:
         ninja = lint(ninja, "sc", path)
+        ninja = txt(ninja, path, mode)
+    return ninja
+
+
+def zsh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
+    zsh = ls_files(["*.zsh"])
+    if zsh == []:
+        return ninja
+
+    ninja = rules(
+        ninja,
+        """
+    rule zsh-n
+      command = zsh -n -- $in && touch $out
+      description = zsh -n
+
+    rule zsh-sc
+      command = shellcheck --shell=bash -- $in && touch $out
+      description = shellcheck
+    """,
+    )
+    for path in zsh:
+        ninja = lint(ninja, "zsh-n", path)
+        ninja = lint(ninja, "zsh-sc", path)
         ninja = txt(ninja, path, mode)
     return ninja
 
@@ -339,9 +390,9 @@ def xref(ninja: NinjaScript) -> NinjaScript:
     return ninja
 
 
-def ok(ninja: NinjaScript) -> NinjaScript:
+def ok(ninja: NinjaScript) -> None:
     if environ.get("CI") is not None:
-        return ninja
+        return
     rules = [line.split()[1] for line in ninja.splitlines() if line.startswith("rule")]
     for rule in rules:
         ok = False
@@ -350,7 +401,6 @@ def ok(ninja: NinjaScript) -> NinjaScript:
                 ok = True
                 break
         assert ok, f"{rule} not in any `build` lines"
-    return ninja
 
 
 def go(mode: Mode) -> None:
@@ -379,6 +429,7 @@ def go(mode: Mode) -> None:
       description = whitespace --fix
     """)
     )
+    ninja = bash(ninja, mode)
     ninja = gha(ninja, mode)
     ninja = json(ninja, mode)
     ninja = md(ninja, mode)
@@ -388,7 +439,7 @@ def go(mode: Mode) -> None:
     ninja = rs(ninja, mode)
     ninja = sh(ninja, mode)
     ninja = xref(ninja)
-    ninja = ok(ninja)
+    ok(ninja)
     Path("build.ninja").write_text(ninja)
     execvp("ninja", ["ninja"])
 
