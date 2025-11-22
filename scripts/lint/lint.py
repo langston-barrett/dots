@@ -3,7 +3,6 @@
 """Run formatters and linters incrementally and in parallel using Ninja"""
 
 # TODO: rumdl
-# TODO: sh -n
 # TODO: taplo
 
 # Ninja is essentially a simpler, faster version of Make. A Ninja configuration
@@ -94,6 +93,8 @@ def lint(
 
 
 def ls_files(pats: list[str]) -> list[str]:
+    for pat in pats:
+        assert pat in ALL_PATS, f"{pat} not in {ALL_PATS}"
     out = run(
         ["git", "ls-files", "--exclude-standard", "--"] + pats,
         capture_output=True,
@@ -359,22 +360,29 @@ def zsh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     return ninja
 
 
+ALL_PATS = [
+    "*.bash",
+    "*.cabal",
+    "**/Cargo.toml",
+    "files/scripts/bin/*",
+    ".github/**/*.yml",
+    "*.json",
+    "**/Makefile",
+    "*.md",
+    "*.mk",
+    "*.nix",
+    "*.project",
+    "*.py",
+    "*.rs",
+    "*.scala",
+    "*.sh",
+    "*.toml",
+    "*.zsh",
+]
+
+
 def xref(ninja: NinjaScript) -> NinjaScript:
-    files = ls_files(
-        [
-            "**/Makefile",
-            "*.cabal",
-            "*.md",
-            "*.mk",
-            "*.project",
-            "*.py",
-            "*.rs",
-            "*.scala",
-            "*.sh",
-            "*.toml",
-            "*.zsh",
-        ]
-    )
+    files = ls_files(ALL_PATS)
     if files == []:
         return ninja
 
