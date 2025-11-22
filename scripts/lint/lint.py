@@ -103,17 +103,18 @@ def ls_files(pats: list[str]) -> list[str]:
     return stdout.decode("utf-8").split("\n")
 
 
-def txt(ninja: NinjaScript, path: str) -> NinjaScript:
+def txt(ninja: NinjaScript, path: str, mode: Mode) -> NinjaScript:
     if environ.get("CI") is None:
         # requires rg
         ninja = lint(ninja, "bom", path)
         ninja = lint(ninja, "crlf", path)
     ninja = lint(ninja, "merge", path)
-    ninja = lint(ninja, "ws", path)
+    ninja = lint(ninja, "ws", path, default=bool(mode & Mode.lint))
+    ninja = lint(ninja, "ws-fix", path, default=bool(mode & Mode.format))
     return ninja
 
 
-def gha(ninja: NinjaScript) -> NinjaScript:
+def gha(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     gha = ls_files([".github/**/*.yml"])
     if gha == []:
         return ninja
@@ -132,11 +133,11 @@ def gha(ninja: NinjaScript) -> NinjaScript:
             # https://github.com/zizmorcore/zizmor/issues/1341
             continue
         ninja = lint(ninja, "zizmor", path)
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
-def json(ninja: NinjaScript) -> NinjaScript:
+def json(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     json = ls_files(["*.json"])
     if json == []:
         return ninja
@@ -152,11 +153,11 @@ def json(ninja: NinjaScript) -> NinjaScript:
     )
     for path in json:
         ninja = lint(ninja, "jq", path)
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
-def md(ninja: NinjaScript) -> NinjaScript:
+def md(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     md = ls_files(["*.md"])
     if md == []:
         return ninja
@@ -177,17 +178,17 @@ def md(ninja: NinjaScript) -> NinjaScript:
     for path in md:
         ninja = lint(ninja, "mdlynx", path)
         ninja = lint(ninja, "typos", path)
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
-def nix(ninja: NinjaScript) -> NinjaScript:
+def nix(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     nix = ls_files(["*.nix"])
     if nix == []:
         return ninja
 
     for path in nix:
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
@@ -229,7 +230,7 @@ def py(ninja: NinjaScript, mode: Mode) -> NinjaScript:
         ninja = lint(ninja, "ruff-fmt", path, default=bool(mode & Mode.format))
         ninja = lint(ninja, "ruff-fmt-check", path, default=bool(mode & Mode.lint))
         ninja = lint(ninja, "py", path)
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
@@ -268,11 +269,11 @@ def rs(ninja: NinjaScript, mode: Mode) -> NinjaScript:
         default=bool(mode & Mode.lint),
     )
     for path in rs:
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
-def sh(ninja: NinjaScript) -> NinjaScript:
+def sh(ninja: NinjaScript, mode: Mode) -> NinjaScript:
     sh = ls_files(["*.sh", "files/scripts/bin/*", "*.zsh"])
     if sh == []:
         return ninja
@@ -288,7 +289,7 @@ def sh(ninja: NinjaScript) -> NinjaScript:
     )
     for path in sh:
         ninja = lint(ninja, "sc", path)
-        ninja = txt(ninja, path)
+        ninja = txt(ninja, path, mode)
     return ninja
 
 
@@ -358,15 +359,19 @@ def go(mode: Mode) -> None:
     rule ws
       command = ./scripts/lint/whitespace.py -- $in && touch $out
       description = whitespace
+
+    rule ws-fix
+      command = ./scripts/lint/whitespace.py --fix -- $in && touch $out
+      description = whitespace --fix
     """)
     )
-    ninja = gha(ninja)
-    ninja = json(ninja)
-    ninja = md(ninja)
-    ninja = nix(ninja)
+    ninja = gha(ninja, mode)
+    ninja = json(ninja, mode)
+    ninja = md(ninja, mode)
+    ninja = nix(ninja, mode)
     ninja = py(ninja, mode)
     ninja = rs(ninja, mode)
-    ninja = sh(ninja)
+    ninja = sh(ninja, mode)
     ninja = xref(ninja)
     ninja = ok(ninja)
     Path("build.ninja").write_text(ninja)
