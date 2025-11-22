@@ -46,7 +46,7 @@
 #
 # As a git pre-commit hook:
 #
-#     bat <<'EOF' > .git/hooks/pre-commit
+#     cat <<'EOF' > .git/hooks/pre-commit
 #     #!/usr/bin/env bash
 #     ./scripts/lint/lint.py
 #     EOF
@@ -450,6 +450,7 @@ ALL_PATS = [
     "**/Cargo.toml",
     "files/scripts/bin/*",
     ".github/**/*.yml",
+    "*.hs",
     "*.json",
     "**/Makefile",
     "*.md",
