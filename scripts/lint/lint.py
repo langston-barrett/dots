@@ -54,7 +54,7 @@
 
 from argparse import ArgumentParser
 from dataclasses import dataclass
-from os import environ
+from os import environ, execvp
 from pathlib import Path
 from subprocess import run
 from textwrap import dedent
@@ -553,14 +553,15 @@ def go(do_format: bool, do_fix: bool) -> None:
     Path("fix.ninja").write_text(scripts.fix)
     Path("format.ninja").write_text(scripts.format)
     if do_fix:
-        run(["ninja", "-f", "fix.ninja"], check=True)
+        execvp("ninja", ["ninja", "-f", "fix.ninja"])
     if do_format:
-        run(["ninja", "-f", "format.ninja"], check=True)
-    run(["ninja", "-f", "lint.ninja"], check=True)
+        execvp("ninja", ["ninja", "-f", "format.ninja"])
+    execvp("ninja", ["ninja", "-f", "lint.ninja"])
 
 
 parser = ArgumentParser(description=__doc__)
-parser.add_argument("--fix", action="store_true")
-parser.add_argument("--format", action="store_true")
+group = parser.add_mutually_exclusive_group()
+group.add_argument("--fix", action="store_true")
+group.add_argument("--format", action="store_true")
 args = parser.parse_args()
 go(args.format, args.fix)
