@@ -8,7 +8,7 @@
     # Use gnome-control-center or nmtui to configure networkmanager
     networkmanager = {
       enable = true;
-      dns = "dnsmasq";
+      # dns = "dnsmasq";
       appendNameservers = [
         # "8.8.8.8"
         # "8.8.4.4"
