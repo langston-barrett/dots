@@ -399,7 +399,7 @@ def toml(scripts: NinjaScripts) -> NinjaScripts:
         scripts.lint,
         """
     rule taplo-format-check
-      command = taplo format --check --diff | grep -v 'found files' -- $in && touch $out
+      command = taplo format --check --diff -- $in && touch $out
       description = taplo format --check
     """,
     )
