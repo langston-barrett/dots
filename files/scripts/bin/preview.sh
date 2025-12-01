@@ -1,1 +1,0 @@
-/home/langston/code/dots/files/scripts/bin/preview
