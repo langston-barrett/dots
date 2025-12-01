@@ -100,7 +100,7 @@ pub(super) fn go() -> anyhow::Result<()> {
         .stdin(stdin)
         .arg(format!("--delimiter={DELIM}"))
         .arg("--with-nth={1}")
-        .arg("--bind=enter:become({2})")
+        .arg("--bind=enter:become(run {2})")
         .arg("--preview-window=hidden")
         .exec())?
 }
