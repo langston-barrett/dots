@@ -6,7 +6,6 @@ use std::{
     process,
 };
 
-/// Detect and fix whitespace issues
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
     paths: Vec<PathBuf>,

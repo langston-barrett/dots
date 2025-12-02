@@ -72,3 +72,6 @@ unused_lifetimes = "warn"
 unused_macro_rules = "warn"
 unused_qualifications = "warn"
 variant_size_differences = "warn"
+
+[lints.rustdoc]
+unescaped_backticks = "warn"
