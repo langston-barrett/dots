@@ -1,6 +1,6 @@
 // def: kludge-expand
 
-use std::{env, ffi::OsStr};
+use std::{env, ffi::OsStr, path::Path};
 
 use crate::system as build;
 
@@ -54,6 +54,11 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
         }
     } else if lbuf == "l" {
         let pwd = env::current_dir().ok()?;
+        if Path::new("scripts/lint/lint.py").exists()
+            && !Path::new(".git/hooks/pre-commit").exists()
+        {
+            eprintln!("Consider creating a pre-commit hook");
+        }
         match build::System::detect(pwd) {
             Some(build::System::Cargo) => Some(String::from(
                 "cargo clippy --all-targets -- --deny warnings ",
