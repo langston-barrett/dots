@@ -273,9 +273,9 @@ def py(scripts: NinjaScripts, skip: set[str] | None = None) -> NinjaScripts:
     scripts.lint = rules(
         scripts.lint,
         """
-    rule mypy
-      command = mypy --no-error-summary --strict -- $in && touch $out
-      description = mypy
+    rule ty
+      command = ty check -- $in && touch $out
+      description = ty
 
     rule py
       command = ./scripts/lint/py.py -- $in && touch $out
@@ -309,7 +309,7 @@ def py(scripts: NinjaScripts, skip: set[str] | None = None) -> NinjaScripts:
     for path in py:
         if Path(path).read_text().startswith("# noqa"):
             continue
-        scripts.lint = lint(scripts.lint, "mypy", path, skip=skip)
+        scripts.lint = lint(scripts.lint, "ty", path, skip=skip)
         scripts.lint = lint(scripts.lint, "ruff-check", path, skip=skip)
         scripts.lint = lint(scripts.lint, "ruff-fmt-check", path, skip=skip)
         scripts.lint = lint(scripts.lint, "py", path, skip=skip)
