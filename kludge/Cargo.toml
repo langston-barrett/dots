@@ -75,3 +75,6 @@ variant_size_differences = "warn"
 
 [lints.rustdoc]
 unescaped_backticks = "warn"
+
+[dev-dependencies]
+expect-test = "1"
