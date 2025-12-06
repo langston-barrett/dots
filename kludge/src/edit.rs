@@ -1,10 +1,11 @@
 use std::{
-    error::Error,
     fs,
     os::unix::process::CommandExt as _,
     path::{Path, PathBuf},
     process,
 };
+
+use anyhow::Context as _;
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
@@ -78,23 +79,29 @@ die() { log "${1}"; exit 1; }
 die "Not yet implemented"
 "#;
 
-fn make_default(path: &Path) -> Result<(), Box<dyn Error>> {
+fn make_default(path: &Path) -> anyhow::Result<()> {
     if !path.exists() {
         match path.extension() {
-            Some(s) if s == "c" => fs::write(path, C.as_bytes()),
-            Some(s) if s == "hs" => fs::write(path, HS.as_bytes()),
-            Some(s) if s == "py" => fs::write(path, PY.as_bytes()),
-            Some(s) if s == "sh" => fs::write(path, SH.as_bytes()),
+            Some(s) if s == "c" => fs::write(path, C.as_bytes())
+                .with_context(|| format!("failed to write C template to {}", path.display())),
+            Some(s) if s == "hs" => fs::write(path, HS.as_bytes())
+                .with_context(|| format!("failed to write Haskell template to {}", path.display())),
+            Some(s) if s == "py" => fs::write(path, PY.as_bytes())
+                .with_context(|| format!("failed to write Python template to {}", path.display())),
+            Some(s) if s == "sh" => fs::write(path, SH.as_bytes())
+                .with_context(|| format!("failed to write shell template to {}", path.display())),
             _ => Ok(()),
         }?;
     }
-    Err(process::Command::new("hx").arg(path).exec())?;
+    Err(process::Command::new("hx").arg(path).exec())
+        .with_context(|| format!("failed to execute hx editor for {}", path.display()))?;
     Ok(())
 }
 
-pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
+pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     for path in conf.paths {
-        make_default(path.as_path())?;
+        make_default(path.as_path())
+            .with_context(|| format!("failed to process {}", path.display()))?;
     }
     Ok(())
 }

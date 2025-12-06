@@ -1,6 +1,6 @@
 // def: kludge-expand
 
-use std::{env, error::Error, ffi::OsStr};
+use std::{env, ffi::OsStr};
 
 use crate::system as build;
 
@@ -498,7 +498,7 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
 }
 
 #[allow(clippy::unnecessary_wraps)]
-pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
+pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     // TODO: Help system
     if conf.aliases {
         for (short, lbuf, rbuf) in ANYWHERE {

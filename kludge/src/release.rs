@@ -1,6 +1,12 @@
-use std::{error::Error, process::Command};
+use std::process::Command;
 
-pub(super) fn go() -> Result<(), Box<dyn Error>> {
-    Command::new("git").arg("checkout").arg("main").output()?;
+use anyhow::Context as _;
+
+pub(super) fn go() -> anyhow::Result<()> {
+    Command::new("git")
+        .arg("checkout")
+        .arg("main")
+        .output()
+        .context("failed to execute `git checkout main`")?;
     Ok(())
 }

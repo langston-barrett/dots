@@ -1,6 +1,5 @@
 use std::{
     collections::HashMap,
-    error::Error,
     ffi::OsString,
     fs,
     path::{Path, PathBuf},
@@ -40,7 +39,8 @@ fn walk_dir(dir: &Path, root: &Path, files: &mut HashMap<PathBuf, String>) -> Re
         let path = entry.path();
 
         if path.is_dir() {
-            walk_dir(&path, root, files)?;
+            walk_dir(&path, root, files)
+                .with_context(|| format!("failed to walk directory {}", path.display()))?;
         } else if path.is_file() {
             let relative_path = path
                 .strip_prefix(root)
@@ -168,14 +168,23 @@ fn replace_fragment_matches(
     Ok(())
 }
 
-pub(super) fn go(config: Config) -> Result<(), Box<dyn Error>> {
+pub(super) fn go(config: Config) -> Result<()> {
     let git_files = get_git_files()?;
 
-    let files = collect_files(config.skel)?;
-    replace_matching_files(&files, &git_files)?;
+    let skel = config.skel.clone();
+    let files = collect_files(config.skel)
+        .with_context(|| format!("failed to collect files from {}", skel.display()))?;
+    replace_matching_files(&files, &git_files).context("failed to replace matching files")?;
 
-    let fragments = collect_fragments(&config.fragments)?;
-    replace_fragment_matches(&fragments, &git_files)?;
+    let fragments_path = config.fragments.clone();
+    let fragments = collect_fragments(&config.fragments).with_context(|| {
+        format!(
+            "failed to collect fragments from {}",
+            fragments_path.display()
+        )
+    })?;
+    replace_fragment_matches(&fragments, &git_files)
+        .context("failed to replace fragment matches")?;
 
     Ok(())
 }

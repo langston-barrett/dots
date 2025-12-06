@@ -1,4 +1,4 @@
-use std::{collections::HashSet, error::Error};
+use std::collections::HashSet;
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
@@ -55,7 +55,7 @@ fn end(conf: EndConfig) {
 }
 
 #[allow(clippy::unnecessary_wraps)]
-pub(super) fn go(conf: Config) -> Result<(), Box<dyn Error>> {
+pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     match conf.hook {
         Hook::Begin(conf) => begin(conf),
         Hook::End(conf) => end(conf),

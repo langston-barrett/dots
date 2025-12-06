@@ -1,5 +1,3 @@
-use std::error::Error;
-
 use clap::Parser as _;
 use tracing::{Level, trace};
 use tracing_subscriber::fmt::format::FmtSpan;
@@ -42,7 +40,7 @@ fn init_tracing(level: Level) {
     }
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> anyhow::Result<()> {
     let cli = cli::Cli::parse();
     let verbose = verbosity_to_log_level(cli.verbose);
     init_tracing(verbose);
@@ -51,18 +49,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn go(cli: cli::Cli) -> Result<(), Box<dyn Error>> {
+fn go(cli: cli::Cli) -> anyhow::Result<()> {
     match cli.cmd {
-        Command::Edit(conf) => edit::go(conf)?,
-        Command::Expand(conf) => expand::go(conf)?,
-        Command::Fragments(conf) => fragments::go(conf)?,
-        Command::Hook(conf) => hook::go(conf)?,
-        Command::Launcher => launcher::go()?,
-        Command::Install => install::go()?,
-        Command::Preview(conf) => preview::go(conf)?,
-        Command::Prompt => prompt::go()?,
-        Command::Release => release::go()?,
-        Command::Whitespace(conf) => whitespace::go(conf)?,
-    };
-    Ok(())
+        Command::Edit(conf) => edit::go(conf),
+        Command::Expand(conf) => expand::go(conf),
+        Command::Fragments(conf) => fragments::go(conf),
+        Command::Hook(conf) => hook::go(conf),
+        Command::Launcher => launcher::go(),
+        Command::Install => install::go(),
+        Command::Preview(conf) => preview::go(conf),
+        Command::Prompt => prompt::go(),
+        Command::Release => release::go(),
+        Command::Whitespace(conf) => whitespace::go(conf),
+    }
 }
