@@ -1,4 +1,4 @@
-name: release
+name: rust release
 on:
   push:
     branches:
@@ -6,5 +6,5 @@ on:
     tags:
     - v*
   pull_request:
-    paths: [".github/workflows/release.yml"]
+    paths: [".github/workflows/rust-release.yml"]
   workflow_dispatch:
