@@ -20,7 +20,9 @@ struct Version {
 }
 
 impl Version {
-    fn new(major: u64, minor: u64, patch: u64) -> Self {
+    const INITIAL: Self = Self::new(0, 1, 0);
+
+    const fn new(major: u64, minor: u64, patch: u64) -> Self {
         Self {
             major,
             minor,
@@ -365,26 +367,33 @@ fn bump_changelog(new_version: Version, git_root: &Path) -> Result<(), anyhow::E
     Ok(())
 }
 
+fn versions(initial_flag: bool) -> Result<(Version, Version), anyhow::Error> {
+    let current_version = latest()?;
+    debug!("Current version: {current_version}");
+    let initial = current_version == Version::default();
+    if initial_flag && !initial {
+        bail!("--initial specified, but current version is {initial}");
+    }
+    let new_version = if initial {
+        debug!("Using initial version number {}", Version::INITIAL);
+        Version::INITIAL
+    } else {
+        let bump_type = prompt_user()?;
+        bump(&current_version, bump_type)
+    };
+    info!("Current version: {current_version}");
+    info!("New version: {new_version}");
+    Ok((current_version, new_version))
+}
+
 pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     git_exec(&["checkout", "main"])?;
     git_exec(&["pull", "origin", "main"])?;
     drop(git_exec(&["branch", "-D", "release"]));
     git_exec(&["checkout", "-b", "release"])?;
 
-    let bump_type = prompt_user()?;
-    let current_version = latest()?;
-    let initial = current_version != Version::default();
-    if conf.initial && !initial {
-        bail!("--initial specified, but current version is {initial}");
-    }
-    let new_version = if initial {
-        Version::new(0, 1, 0)
-    } else {
-        bump(&current_version, bump_type)
-    };
-
-    info!("Current version: {current_version}");
-    info!("New version: {new_version}");
+    let (current_version, new_version) = versions(conf.initial)?;
+    let initial = new_version == Version::INITIAL;
 
     let git_root = find_git_root()?;
     if initial {
@@ -397,11 +406,11 @@ pub(super) fn go(conf: Config) -> anyhow::Result<()> {
 
     update_cargo_tomls(current_version, new_version, git_root)?;
     run_cargo_clippy()?;
-    let v = format!("v{new_version})");
+    let v = format!("v{new_version}");
     git_exec(&["commit", "-m", &v])?;
     git_exec(&["push"])?;
 
-    info!("Now wait for CI...");
+    info!("Now merge the PR...");
     io::stderr().flush().context("failed to flush stderr")?;
     let mut input = String::new();
     io::stdin()
