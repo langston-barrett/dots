@@ -29,7 +29,7 @@ jobs:
     - run: rustup component add clippy
     - uses: langston-barrett/gha/.github/actions/install-linters@64f9da15e27dbbd201568c45a26ddeea52091f09
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
-    - run: cd .. && ./kludge/skel/scripts/lint/lint.py
+    - run: cd .. && ./scripts/lint/lint.py
     - run: cargo test --locked --no-run
     - run: cargo test
     - run: cargo build --release
