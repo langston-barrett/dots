@@ -63,7 +63,7 @@ fn go(cli: cli::Cli) -> anyhow::Result<()> {
         Command::Install => install::go(),
         Command::Preview(conf) => preview::go(conf),
         Command::Prompt => prompt::go(),
-        Command::Release => release::go(),
+        Command::Release(conf) => release::go(conf),
         Command::Whitespace(conf) => whitespace::go(conf),
     }
 }

@@ -1,5 +1,12 @@
 use std::path::Path;
 
+/// Release software
+#[derive(Debug, clap::Parser)]
+pub(crate) struct Config {
+    #[clap(short = 'i', long)]
+    initial: bool,
+}
+
 #[derive(Clone, Copy)]
 pub(crate) enum System {
     Cabal,

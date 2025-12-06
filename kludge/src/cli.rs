@@ -23,6 +23,6 @@ pub(crate) enum Command {
     Preview(crate::preview::Config),
     /// Print information for ZSH prompt
     Prompt,
-    Release,
+    Release(crate::release::Config),
     Whitespace(crate::whitespace::Config),
 }

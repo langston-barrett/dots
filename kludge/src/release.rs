@@ -1,11 +1,18 @@
+use std::ffi::OsStr;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use anyhow::Context as _;
+use anyhow::{Context as _, bail};
 use tracing::{debug, info, warn};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, clap::Parser)]
+pub(crate) struct Config {
+    #[clap(short = 'i', long)]
+    initial: bool,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 struct Version {
     major: u64,
     minor: u64,
@@ -80,7 +87,7 @@ fn git(args: &[&str]) -> anyhow::Result<String> {
 
 fn prompt_user() -> anyhow::Result<VersionBump> {
     loop {
-        eprint!("Bump version: (m)ajor, (i)nor, (p)atch: ");
+        info!("Bump version: (m)ajor, m(i)nor, (p)atch: ");
         io::stderr().flush().context("failed to flush stderr")?;
         let mut input = String::new();
         io::stdin()
@@ -91,7 +98,7 @@ fn prompt_user() -> anyhow::Result<VersionBump> {
             "m" | "major" => return Ok(VersionBump::Major),
             "i" | "minor" => return Ok(VersionBump::Minor),
             "p" | "patch" => return Ok(VersionBump::Patch),
-            _ => eprintln!("Invalid choice. Please enter '(m)ajor', 'm(i)nor', or '(p)atch'."),
+            _ => warn!("Invalid choice. Please enter '(m)ajor', 'm(i)nor', or '(p)atch'."),
         }
     }
 }
@@ -105,7 +112,7 @@ fn latest() -> anyhow::Result<Version> {
             return Ok(version);
         }
     }
-    Ok(Version::new(0, 0, 0))
+    Ok(Version::default())
 }
 
 fn bump(current: &Version, bump_type: VersionBump) -> Version {
@@ -129,16 +136,17 @@ fn get_repo_name(git_root: &Path) -> anyhow::Result<String> {
     Ok(dir_name.to_string())
 }
 
-fn update_changelog(
-    changelog_path: &Path,
-    new_version: &Version,
-    repo_name: &str,
-) -> anyhow::Result<()> {
-    let content = std::fs::read_to_string(changelog_path)
-        .with_context(|| format!("failed to read changelog: {}", changelog_path.display()))?;
+fn update_changelog(path: &Path, new_version: &Version, repo_name: &str) -> anyhow::Result<()> {
+    assert_eq!(path.extension(), Some(OsStr::new(".md")));
+    let content = std::fs::read_to_string(path)
+        .with_context(|| format!("failed to read changelog: {}", path.display()))?;
     let new_content = update_changelog_str(new_version, repo_name, content)?;
-    std::fs::write(changelog_path, new_content)
-        .with_context(|| format!("failed to write changelog: {}", changelog_path.display()))?;
+    std::fs::write(path, new_content)
+        .with_context(|| format!("failed to write changelog: {}", path.display()))?;
+    git_exec(&[
+        "add",
+        path.as_os_str().to_string_lossy().into_owned().as_str(),
+    ])?;
     Ok(())
 }
 
@@ -229,15 +237,17 @@ fn get_all_cargo_toml_files(git_root: &Path) -> anyhow::Result<Vec<PathBuf>> {
     Ok(cargo_toml_files)
 }
 
-fn update_cargo_toml(cargo_toml_path: &Path, new_version: &Version) -> anyhow::Result<()> {
-    let content = std::fs::read_to_string(cargo_toml_path)
-        .with_context(|| format!("failed to read Cargo.toml: {}", cargo_toml_path.display()))?;
-
+fn update_cargo_toml(path: &Path, new_version: &Version) -> anyhow::Result<()> {
+    assert!(path.ends_with("Cargo.toml"));
+    let content = std::fs::read_to_string(path)
+        .with_context(|| format!("failed to read Cargo.toml: {}", path.display()))?;
     let new_content = update_cargo_toml_str(new_version, content)?;
-
-    std::fs::write(cargo_toml_path, new_content)
-        .with_context(|| format!("failed to write Cargo.toml: {}", cargo_toml_path.display()))?;
-
+    std::fs::write(path, new_content)
+        .with_context(|| format!("failed to write Cargo.toml: {}", path.display()))?;
+    git_exec(&[
+        "add",
+        path.as_os_str().to_string_lossy().into_owned().as_str(),
+    ])?;
     Ok(())
 }
 
@@ -327,6 +337,10 @@ fn update_cargo_tomls(
 }
 
 fn run_cargo_clippy() -> anyhow::Result<()> {
+    if !Path::new("Cargo.toml").exists() {
+        debug!("No Cargo.toml, skipping clippy");
+        return Ok(());
+    }
     debug!("Running clippy");
     let status = Command::new("cargo")
         .args(["clippy", "--all-targets", "--", "--deny", "warnings"])
@@ -335,6 +349,7 @@ fn run_cargo_clippy() -> anyhow::Result<()> {
     if !status.success() {
         anyhow::bail!("cargo clippy failed");
     }
+    git_exec(&["add", "Cargo.lock"])?;
     Ok(())
 }
 
@@ -350,24 +365,53 @@ fn bump_changelog(new_version: Version, git_root: &Path) -> Result<(), anyhow::E
     Ok(())
 }
 
-pub(super) fn go() -> anyhow::Result<()> {
+pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     git_exec(&["checkout", "main"])?;
     git_exec(&["pull", "origin", "main"])?;
-    git_exec(&["branch", "-D", "release"])?;
+    drop(git_exec(&["branch", "-D", "release"]));
     git_exec(&["checkout", "-b", "release"])?;
 
     let bump_type = prompt_user()?;
     let current_version = latest()?;
-    let new_version = bump(&current_version, bump_type);
+    let initial = current_version != Version::default();
+    if conf.initial && !initial {
+        bail!("--initial specified, but current version is {initial}");
+    }
+    let new_version = if initial {
+        Version::new(0, 1, 0)
+    } else {
+        bump(&current_version, bump_type)
+    };
 
     info!("Current version: {current_version}");
     info!("New version: {new_version}");
 
     let git_root = find_git_root()?;
-    bump_changelog(new_version, &git_root)?;
+    if initial {
+        if !Path::new("CHANGELOG.md").exists() {
+            bail!("Please create CHANGELOG.md");
+        }
+    } else {
+        bump_changelog(new_version, &git_root)?;
+    }
 
     update_cargo_tomls(current_version, new_version, git_root)?;
     run_cargo_clippy()?;
+    let v = format!("v{new_version})");
+    git_exec(&["commit", "-m", &v])?;
+    git_exec(&["push"])?;
+
+    info!("Now wait for CI...");
+    io::stderr().flush().context("failed to flush stderr")?;
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .context("failed to read from stdin")?;
+
+    git_exec(&["checkout", "main"])?;
+    git_exec(&["pull", "origin", "main"])?;
+    git_exec(&["tag", "-a", &v, "-m", &v])?;
+    git_exec(&["push", "--tags"])?;
 
     Ok(())
 }
