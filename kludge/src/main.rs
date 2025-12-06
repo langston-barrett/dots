@@ -13,6 +13,7 @@ mod install;
 mod launcher;
 mod preview;
 mod prompt;
+mod release;
 mod system;
 mod whitespace;
 
@@ -60,6 +61,7 @@ fn go(cli: cli::Cli) -> Result<(), Box<dyn Error>> {
         Command::Install => install::go()?,
         Command::Preview(conf) => preview::go(conf)?,
         Command::Prompt => prompt::go()?,
+        Command::Release => release::go()?,
         Command::Whitespace(conf) => whitespace::go(conf)?,
     };
     Ok(())
