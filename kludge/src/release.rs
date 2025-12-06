@@ -345,7 +345,7 @@ fn bump_changelog(new_version: Version, git_root: &Path) -> Result<(), anyhow::E
     if changelog_path.exists() {
         update_changelog(&changelog_path, &new_version, &repo_name)?;
     } else {
-        debug!("No CHANGELOG");
+        info!("No CHANGELOG, skipping");
     }
     Ok(())
 }
