@@ -11,7 +11,7 @@ on:
 
 jobs:
   release:
-    uses: langston-barrett/gha/.github/workflows/rust-release.yml@64f9da15e27dbbd201568c45a26ddeea52091f09
+    uses: langston-barrett/gha/.github/workflows/rust-release.yml@348fdc15bbc786f5cbffab25dd100df846607721
     secrets:
       crates-io-token: ${{ secrets.CRATES_IO_TOKEN }}
     permissions:
