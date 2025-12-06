@@ -1,3 +1,7 @@
+#![warn(clippy::expect_used)]
+#![warn(clippy::panic)]
+#![warn(clippy::unwrap_used)]
+
 use clap::Parser as _;
 use tracing::{Level, trace};
 use tracing_subscriber::fmt::format::FmtSpan;

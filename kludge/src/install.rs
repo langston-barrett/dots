@@ -18,7 +18,10 @@ pub(super) fn go() -> anyhow::Result<()> {
         ("zsh.d", home.join(".zsh.d")),
         ("zshrc", home.join(".zshrc")),
     ] {
-        fs::create_dir_all(dst.parent().unwrap())
+        let parent = dst
+            .parent()
+            .with_context(|| format!("no parent for {}", dst.display()))?;
+        fs::create_dir_all(parent)
             .with_context(|| format!("failed to create parent directory for {}", dst.display()))?;
         if dst.is_symlink() {
             continue;
