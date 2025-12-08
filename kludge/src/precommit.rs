@@ -1,4 +1,5 @@
 use std::{
+    env,
     path::Path,
     process::{self, Command},
 };
@@ -87,6 +88,10 @@ fn clippy() -> Result<(), anyhow::Error> {
 }
 
 pub(super) fn go() -> anyhow::Result<()> {
+    if env::var("KLUDGE_SKIP_PRE_COMMIT").is_ok_and(|v| v != "0") {
+        return Ok(());
+    }
+
     if Path::new("scripts/lint/lint.py").exists() {
         lint_py()?;
         return Ok(());
