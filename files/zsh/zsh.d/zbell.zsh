@@ -10,11 +10,11 @@ zmodload zsh/datetime || return
 kludge_begin() {
     zbell_timestamp=${EPOCHSECONDS:-0}
     zbell_lastcmd="${1}"
-    kludge hook begin --time "${zbell_timestamp}" ${1}
+    kludge zsh hook begin --time "${zbell_timestamp}" ${1}
 }
 
 kludge_end() {
-    kludge hook end \
+    kludge zsh hook end \
       --begin "${zbell_timestamp:-${EPOCHSECONDS:-0}}" \
       --end "${EPOCHSECONDS:-0}" \
       "${zbell_lastcmd}"

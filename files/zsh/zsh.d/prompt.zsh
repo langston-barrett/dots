@@ -52,7 +52,7 @@ newline=$'\n'
 
 installed() { command -v "$1" >/dev/null 2>&1; }
 if installed kludge; then
-  kludge_prompt='$(kludge prompt)'
+  kludge_prompt='$(kludge zsh prompt)'
 else
   kludge_prompt=' [kludge not installed]'
 fi

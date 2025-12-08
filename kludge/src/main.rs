@@ -13,6 +13,7 @@ mod fragments;
 mod hook;
 mod install;
 mod launcher;
+mod precommit;
 mod preview;
 mod prompt;
 mod release;
@@ -20,6 +21,8 @@ mod system;
 mod whitespace;
 
 use cli::Command;
+
+use crate::cli::ZshCommand;
 
 fn verbosity_to_log_level(verbosity: u8) -> Level {
     match verbosity {
@@ -56,14 +59,17 @@ fn main() -> anyhow::Result<()> {
 fn go(cli: cli::Cli) -> anyhow::Result<()> {
     match cli.cmd {
         Command::Edit(conf) => edit::go(conf),
-        Command::Expand(conf) => expand::go(conf),
         Command::Fragments(conf) => fragments::go(conf),
-        Command::Hook(conf) => hook::go(conf),
         Command::Launcher => launcher::go(),
         Command::Install => install::go(),
+        Command::Precommit => precommit::go(),
         Command::Preview(conf) => preview::go(conf),
-        Command::Prompt => prompt::go(),
         Command::Release(conf) => release::go(conf),
         Command::Whitespace(conf) => whitespace::go(conf),
+        Command::Zsh(zsh) => match zsh.cmd {
+            ZshCommand::Expand(conf) => expand::go(conf),
+            ZshCommand::Hook(conf) => hook::go(conf),
+            ZshCommand::Prompt => prompt::go(),
+        },
     }
 }

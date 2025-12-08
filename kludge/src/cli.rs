@@ -15,14 +15,27 @@ pub(crate) struct Cli {
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
     Edit(crate::edit::Config),
-    Expand(crate::expand::Config),
     Fragments(crate::fragments::Config),
-    Hook(crate::hook::Config),
     Install,
     Launcher,
+    Precommit,
     Preview(crate::preview::Config),
-    /// Print information for ZSH prompt
-    Prompt,
     Release(crate::release::Config),
     Whitespace(crate::whitespace::Config),
+    Zsh(Zsh),
+}
+
+#[derive(Debug, clap::Parser)]
+pub(crate) struct Zsh {
+    #[command(subcommand)]
+    pub(crate) cmd: ZshCommand,
+}
+
+/// Functionality used by zsh
+#[derive(Debug, clap::Subcommand)]
+pub(crate) enum ZshCommand {
+    Expand(crate::expand::Config),
+    Hook(crate::hook::Config),
+    /// Print information for ZSH prompt
+    Prompt,
 }

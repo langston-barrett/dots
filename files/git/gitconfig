@@ -5,8 +5,9 @@
     name = Langston Barrett
     email = langston.barrett@gmail.com
 [core]
+    autocrlf = input
     excludesfile = /home/langston/.config/git/gitignore
-    autocrlf = false
+    hooksPath = /home/langston/code/dots/files/git/hooks
 [grep]
     extendedRegexp = true
 [color]
