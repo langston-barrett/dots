@@ -17,6 +17,8 @@
 
 - Use `&Path`, not `&PathBuf`
 - Use `&str`, not `&String`
+- When done, run `cargo fmt`
+- When done, run `cargo clippy --allow-dirty --fix -- --deny warnings`
 
 #### Rust applications
 

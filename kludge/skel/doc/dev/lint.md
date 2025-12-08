@@ -67,16 +67,6 @@ We run [mdlynx] on our Markdown files to check for broken links.
 git ls-files -z --exclude-standard '*.md' | xargs -0 mdlynx
 ```
 
-## Mypy
-
-We lint Python code with [mypy] in `--strict` mode.
-
-[mypy]: https://www.mypy-lang.org/
-
-```sh
-git ls-files -z --exclude-standard '*.py' | xargs -0 mypy --strict
-```
-
 ## Ruff
 
 We lint and format Python code with [Ruff].
@@ -92,7 +82,7 @@ git ls-files -z --exclude-standard '*.py' | xargs -0 ruff check
 
 We format Rust code with [`rustfmt`].
 
-[rustfmt]: https://rust-lang.github.io/rustfmt
+[`rustfmt`]: https://rust-lang.github.io/rustfmt
 
 You can install rustfmt with [`rustup`] like so:
 
@@ -136,6 +126,16 @@ We lint text files with [ttlint].
 
 ```bash
 git ls-files -z --exclude-standard '**' | xargs -0 ttlint
+```
+
+## ty
+
+We lint Python code with [ty].
+
+[ty]: https://docs.astral.sh/ty/
+
+```sh
+git ls-files -z --exclude-standard '*.py' | xargs -0 ty
 ```
 
 ## typos
