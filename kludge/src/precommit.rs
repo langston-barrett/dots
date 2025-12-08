@@ -5,6 +5,16 @@ use std::{
 
 use anyhow::{Context as _, bail};
 
+fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
+    let status = cmd
+        .status()
+        .with_context(|| format!("Failed to run {:?} {:?}", cmd.get_program(), cmd.get_args()))?;
+    if !status.success() {
+        bail!("{:?} {:?} failed!", cmd.get_program(), cmd.get_args());
+    }
+    Ok(())
+}
+
 fn run(mut cmd: Command) -> Result<process::Output, anyhow::Error> {
     let out = cmd
         .output()
@@ -16,7 +26,7 @@ fn run(mut cmd: Command) -> Result<process::Output, anyhow::Error> {
             cmd.get_args(),
             String::from_utf8_lossy(out.stdout.as_slice()),
             String::from_utf8_lossy(out.stderr.as_slice())
-        )
+        );
     }
     Ok(out)
 }
@@ -36,10 +46,15 @@ fn changed_files_with_ext(ext: &'static str) -> Result<String, anyhow::Error> {
 }
 
 fn lint_py() -> Result<(), anyhow::Error> {
+    let changed = changed_files_with_ext("*")?;
     let mut cmd = Command::new("scripts/lint/lint.py");
     cmd.arg("--format");
+    exec(cmd)?;
+    let mut cmd = Command::new("git");
+    cmd.arg("add").args(changed.lines());
     run(cmd)?;
-    run(Command::new("scripts/lint/lint.py"))?;
+
+    exec(Command::new("scripts/lint/lint.py"))?;
     Ok(())
 }
 
@@ -48,7 +63,7 @@ fn fourmolu() -> Result<(), anyhow::Error> {
     let mut cmd = Command::new("fourmolu");
     cmd.args(["--mode", "inplace"]);
     cmd.args(hs.lines());
-    run(cmd)?;
+    exec(cmd)?;
 
     let mut cmd = Command::new("git");
     cmd.arg("add").args(hs.lines());
@@ -60,14 +75,14 @@ fn hlint() -> Result<(), anyhow::Error> {
     let hs = changed_files_with_ext("*.hs")?;
     let mut cmd = Command::new("hlint");
     cmd.args(hs.lines());
-    run(cmd)?;
+    exec(cmd)?;
     Ok(())
 }
 
 fn clippy() -> Result<(), anyhow::Error> {
     let mut cmd = Command::new("cargo");
     cmd.args(["clippy", "--all-targets", "--", "--deny", "warnings"]);
-    run(cmd)?;
+    exec(cmd)?;
     Ok(())
 }
 
