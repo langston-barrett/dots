@@ -2,6 +2,7 @@
 
 use std::{env, ffi::OsStr, path::Path};
 
+use crate::project::PROJECTS;
 use crate::system as build;
 
 const CURSOR: char = '•';
@@ -311,124 +312,44 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
     None
 }
 
-const GREASE_CMDS: &[(&str, &str)] = &[
-    ("r", "cabal run exe:grease --"),
-    ("t", "cabal run test:grease-tests --"),
-    // TODO
-    (
-        "l",
-        "hlint grease{,-aarch32,-ppc,-x86}/src grease-cli/src grease-exe/{main,src,tests}",
-    ),
-    (
-        "to",
-        "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | pick)",
-    ),
-    (
-        "w",
-        "ghcid --command \"cabal repl lib:grease pkg:grease-cli pkg:grease-exe\"",
-    ),
-    ("wt", "ghcid --target=test:grease-tests"),
-];
+fn build_command(cmd: &str, args: &[&str]) -> String {
+    if args.is_empty() {
+        cmd.to_string()
+    } else {
+        format!("{} {}", cmd, args.join(" "))
+    }
+}
 
-const SCREACH_CMDS: &[(&str, &str)] = &[
-    ("r", "cabal run exe:screach --"),
-    (
-        "l",
-        "hlint --hint=../deps/grease/.hlint.yaml {app,src,test} ../elf-edit-ecfs/{src,tools}",
-    ),
-    ("t", "cabal run test:screach-test --"),
-    (
-        "w",
-        "ghcid --command \"cabal repl lib:screach exe:screach\"",
-    ),
-    ("wt", "ghcid --target=test:screach-test"),
-];
-
-const BASIC: &[(&str, &[(&str, &str)])] = &[
-    (
-        "crucible-llvm-cli",
-        &[
-            ("r", "cabal run exe:crucible-llvm --"),
-            ("rs", "cabal run exe:crucible-llvm -- simulate"),
-            ("t", "cabal run test:crucible-llvm-cli-tests --"),
-            ("w", "ghcid"),
-            ("wt", "ghcid --target=test:crucible-llvm-cli-tests"),
-        ],
-    ),
-    (
-        "detect",
-        &[
-            (
-                "bs",
-                "echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid && sudo sysctl kernel.perf_event_mlock_kb=2048 && cargo b -q --profile=profiling --bin=sofuzz && samply record ./target/profiling/sofuzz --solutions /run/user/1000/sols --gas=2048 sofuzz/rs/map/map.toml target/profiling/libsofuzz_map.so --no-check-dwarf",
-            ),
-            (
-                "e1",
-                "rm -rf benign solutions ; cargo build -p=eval1-smi-model && cargo run --bin dxezz -- --qcow=targets/eval1-smi/image-debug/snapshots.qcow2 targets/eval1-smi/eval1-smi-debug.toml target/debug/libeval1_smi_model.so --seed=1 --outer-iterations=8 --inner-iterations=1 --no-check-snapshots -v",
-            ),
-            (
-                "lu",
-                "cargo clippy --all-targets --no-default-features --features=usermode --target-dir=target-usermode -- --deny warnings",
-            ),
-            ("rb", "cargo run --bin=bzro --"),
-            (
-                "rbu",
-                "cargo run --bin=bzro --no-default-features --features=usermode --target-dir=target-usermode --",
-            ),
-            ("rd", "cargo run --bin=dxezz --"),
-            ("rs", "cargo run --bin=sofuzz --"),
-            ("t", "cargo test"),
-            (
-                "tu",
-                "cargo test --no-default-features --features=usermode --target-dir=target-usermode",
-            ),
-            ("tb", "cargo test --package=bzro -- --test-threads=1"),
-            (
-                "tbu",
-                "cargo test --package=bzro --no-default-features --features=usermode --target-dir=target-usermode -- --test-threads=1",
-            ),
-            ("td", "cargo test --package=dxezz -- --test-threads=1"),
-            (
-                "ts",
-                "cargo b -q --package=sofuzz-boxcar && cargo b -q --package=sofuzz-map && cargo test --package=sofuzz",
-            ),
-        ],
-    ),
-    (
-        "dots",
-        &[
-            ("f", "./scripts/lint/lint.py --format"),
-            ("l", "./scripts/lint/lint.py"),
-            (
-                "w",
-                "git ls-files --exclude-standard | entr -c -s './scripts/lint/lint.py --format && ./scripts/lint/lint.py'",
-            ),
-        ],
-    ),
-    (
-        "kludge",
-        &[(
-            "l",
-            "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
-        )],
-    ),
-    ("grease", GREASE_CMDS),
-    ("grease-cli", GREASE_CMDS),
-    ("grease-exe", GREASE_CMDS),
-    ("screach", SCREACH_CMDS),
-];
-
-fn expand_basic(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
+fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     let cwd = env::current_dir().ok()?;
-    for (d, expands) in BASIC.iter().copied() {
-        let name = cwd.as_path().file_name().and_then(OsStr::to_str);
-        if name == Some(d) {
-            for (l, r) in expands.iter().copied() {
-                // TODO: Allow non-empty rbufs
-                if lbuf == l && rbuf.is_empty() {
-                    return Some((r.to_owned(), String::new()));
-                }
-            }
+    let name = cwd.as_path().file_name().and_then(OsStr::to_str)?;
+    let project = PROJECTS.iter().find(|p| p.name == name)?;
+    let mut expansions: Vec<(&str, String)> = Vec::new();
+    if let Some((cmd, args)) = project.lint {
+        expansions.push(("l", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.format {
+        expansions.push(("f", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.build {
+        expansions.push(("b", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.test {
+        expansions.push(("t", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.run {
+        expansions.push(("r", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.watch {
+        expansions.push(("w", build_command(cmd, args)));
+    }
+    for (shortcut, command) in project.aliases.iter().copied() {
+        expansions.push((shortcut, command.to_string()));
+    }
+    for (l, r) in expansions {
+        // TODO: Allow non-empty rbufs
+        if lbuf == l && rbuf.is_empty() {
+            return Some((r, String::new()));
         }
     }
     None
@@ -461,7 +382,7 @@ fn expand_advanced(lbuf: &str, rbuf: &str, enter: bool) -> Option<(String, Strin
 }
 
 fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
-    expand_basic(&lbuf, &rbuf)
+    expand_project(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf, enter))
         .or_else(|| expand_build_system(&lbuf).map(|s| (s, String::new())))
         .or_else(|| expand_advanced(&lbuf, &rbuf, enter))
@@ -488,13 +409,36 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     }
     if let Ok(cwd) = env::current_dir() {
         let name = cwd.as_path().file_name().and_then(OsStr::to_str);
-        for (d, expands) in BASIC.iter().copied() {
-            if name == Some(d) {
-                for (l, r) in expands.iter().copied() {
-                    if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-                        let hint = to_hint(r);
-                        results.push((l, hint));
-                    }
+        if let Some(project) = name.and_then(|n| PROJECTS.iter().find(|p| p.name == n)) {
+            let mut expansions: Vec<(&str, String)> = Vec::new();
+
+            if let Some((cmd, args)) = project.lint {
+                expansions.push(("l", build_command(cmd, args)));
+            }
+            if let Some((cmd, args)) = project.format {
+                expansions.push(("f", build_command(cmd, args)));
+            }
+            if let Some((cmd, args)) = project.build {
+                expansions.push(("b", build_command(cmd, args)));
+            }
+            if let Some((cmd, args)) = project.test {
+                expansions.push(("t", build_command(cmd, args)));
+            }
+            if let Some((cmd, args)) = project.run {
+                expansions.push(("r", build_command(cmd, args)));
+            }
+            if let Some((cmd, args)) = project.watch {
+                expansions.push(("w", build_command(cmd, args)));
+            }
+
+            for (shortcut, command) in project.aliases.iter().copied() {
+                expansions.push((shortcut, command.to_string()));
+            }
+
+            for (l, r) in expansions {
+                if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
+                    let hint = to_hint(&r);
+                    results.push((l, hint));
                 }
             }
         }

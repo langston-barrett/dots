@@ -6,6 +6,8 @@ use std::{
 
 use anyhow::{Context as _, bail};
 
+use crate::project;
+
 fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
     let status = cmd
         .status()
@@ -80,6 +82,13 @@ fn hlint() -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+fn cargo_fmt() -> Result<(), anyhow::Error> {
+    let mut cmd = Command::new("cargo");
+    cmd.arg("fmt");
+    exec(cmd)?;
+    Ok(())
+}
+
 fn clippy() -> Result<(), anyhow::Error> {
     let mut cmd = Command::new("cargo");
     cmd.args(["clippy", "--all-targets", "--", "--deny", "warnings"]);
@@ -89,6 +98,15 @@ fn clippy() -> Result<(), anyhow::Error> {
 
 pub(super) fn go() -> anyhow::Result<()> {
     if env::var("KLUDGE_SKIP_PRE_COMMIT").is_ok_and(|v| v != "0") {
+        return Ok(());
+    }
+
+    if let Some(project) = project::project()
+        && let Some((program, args)) = project.lint
+    {
+        let mut cmd = Command::new(program);
+        cmd.args(args);
+        exec(cmd)?;
         return Ok(());
     }
 
@@ -106,8 +124,14 @@ pub(super) fn go() -> anyhow::Result<()> {
     }
 
     if Path::new("Cargo.toml").exists() {
-        // TODO: `cargo fmt`, but just for `langston-barrett` repos
-        clippy()?;
+        let mut cmd = Command::new("gh");
+        cmd.args(["repo", "view", "--json", "owner", "--jq", ".owner.login"]);
+        let out = run(cmd)?;
+        let owner = String::from_utf8_lossy(&out.stdout);
+        if owner.trim() == "langston-barrett" {
+            clippy()?;
+            cargo_fmt()?;
+        }
     }
 
     Ok(())

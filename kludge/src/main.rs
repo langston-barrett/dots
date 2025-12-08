@@ -15,6 +15,7 @@ mod install;
 mod launcher;
 mod precommit;
 mod preview;
+mod project;
 mod prompt;
 mod release;
 mod system;
