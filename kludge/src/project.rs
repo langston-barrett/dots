@@ -1,4 +1,4 @@
-use std::env;
+use std::{path::Path, process::Command};
 
 #[derive(Debug)]
 pub(crate) struct Project {
@@ -73,8 +73,8 @@ const DETECT: Project = Project {
 
 const DOTS: Project = Project {
     name: "dots",
-    lint: Some(("./scripts/lint/lint.py", &[])),
-    format: Some(("./scripts/lint/lint.py", &["--format"])),
+    lint: None,
+    format: None,
     build: None,
     test: None,
     run: None,
@@ -233,10 +233,21 @@ pub(crate) const PROJECTS: &[Project] = &[
     SCREACH,
 ];
 
+pub(crate) fn git_root_name() -> Option<String> {
+    let output = Command::new("git")
+        .args(["rev-parse", "--show-toplevel"])
+        .output()
+        .ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    let root_path = String::from_utf8(output.stdout).ok()?.trim().to_string();
+    Path::new(&root_path)
+        .file_name()
+        .and_then(|n| n.to_str())
+        .map(|s| s.to_string())
+}
+
 pub(crate) fn project() -> Option<&'static Project> {
-    env::current_dir().ok().and_then(|dir| {
-        dir.file_name()
-            .and_then(|n| n.to_str())
-            .and_then(|name| PROJECTS.iter().find(|p| p.name == name))
-    })
+    git_root_name().and_then(|name| PROJECTS.iter().find(|p| p.name == name))
 }

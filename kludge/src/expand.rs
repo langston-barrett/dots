@@ -1,8 +1,8 @@
 // def: kludge-expand
 
-use std::{env, ffi::OsStr, path::Path};
+use std::{env, path::Path};
 
-use crate::project::PROJECTS;
+use crate::project::{self, PROJECTS};
 use crate::system as build;
 
 const CURSOR: char = '•';
@@ -37,6 +37,9 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
         }
     } else if lbuf == "f" {
         let pwd = env::current_dir().ok()?;
+        if Path::new("scripts/lint/lint.py").exists() {
+            return Some(String::from("scripts/lint/lint.py --format "));
+        }
         match build::System::detect(pwd) {
             Some(build::System::Cabal) => Some(String::from(
                 "fourmolu --mode inplace $(git ls-files '*.hs') ",
@@ -55,10 +58,8 @@ fn expand_build_system(lbuf: &str) -> Option<String> {
         }
     } else if lbuf == "l" {
         let pwd = env::current_dir().ok()?;
-        if Path::new("scripts/lint/lint.py").exists()
-            && !Path::new(".git/hooks/pre-commit").exists()
-        {
-            eprintln!("Consider creating a pre-commit hook");
+        if Path::new("scripts/lint/lint.py").exists() {
+            return Some(String::from("scripts/lint/lint.py "));
         }
         match build::System::detect(pwd) {
             Some(build::System::Cargo) => Some(String::from(
@@ -320,11 +321,9 @@ fn build_command(cmd: &str, args: &[&str]) -> String {
     }
 }
 
-fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
-    let cwd = env::current_dir().ok()?;
-    let name = cwd.as_path().file_name().and_then(OsStr::to_str)?;
-    let project = PROJECTS.iter().find(|p| p.name == name)?;
+fn project_expansions(project: &project::Project) -> Vec<(&str, String)> {
     let mut expansions: Vec<(&str, String)> = Vec::new();
+
     if let Some((cmd, args)) = project.lint {
         expansions.push(("l", build_command(cmd, args)));
     }
@@ -346,7 +345,13 @@ fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     for (shortcut, command) in project.aliases.iter().copied() {
         expansions.push((shortcut, command.to_string()));
     }
-    for (l, r) in expansions {
+    expansions
+}
+
+fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
+    let name = project::git_root_name()?;
+    let project = PROJECTS.iter().find(|p| p.name == name)?;
+    for (l, r) in project_expansions(project) {
         // TODO: Allow non-empty rbufs
         if lbuf == l && rbuf.is_empty() {
             return Some((r, String::new()));
@@ -407,39 +412,14 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
             results.push((short, hint));
         }
     }
-    if let Ok(cwd) = env::current_dir() {
-        let name = cwd.as_path().file_name().and_then(OsStr::to_str);
-        if let Some(project) = name.and_then(|n| PROJECTS.iter().find(|p| p.name == n)) {
-            let mut expansions: Vec<(&str, String)> = Vec::new();
-
-            if let Some((cmd, args)) = project.lint {
-                expansions.push(("l", build_command(cmd, args)));
-            }
-            if let Some((cmd, args)) = project.format {
-                expansions.push(("f", build_command(cmd, args)));
-            }
-            if let Some((cmd, args)) = project.build {
-                expansions.push(("b", build_command(cmd, args)));
-            }
-            if let Some((cmd, args)) = project.test {
-                expansions.push(("t", build_command(cmd, args)));
-            }
-            if let Some((cmd, args)) = project.run {
-                expansions.push(("r", build_command(cmd, args)));
-            }
-            if let Some((cmd, args)) = project.watch {
-                expansions.push(("w", build_command(cmd, args)));
-            }
-
-            for (shortcut, command) in project.aliases.iter().copied() {
-                expansions.push((shortcut, command.to_string()));
-            }
-
-            for (l, r) in expansions {
-                if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
-                    let hint = to_hint(&r);
-                    results.push((l, hint));
-                }
+    if let Some(name) = project::git_root_name()
+        && let Some(project) = PROJECTS.iter().find(|p| p.name == name)
+    {
+        let expansions = project_expansions(project);
+        for (l, r) in expansions {
+            if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
+                let hint = to_hint(&r);
+                results.push((l, hint));
             }
         }
     }

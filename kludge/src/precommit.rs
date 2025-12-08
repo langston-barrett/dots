@@ -96,6 +96,17 @@ fn clippy() -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+fn mine(linted: bool) -> Result<(), anyhow::Error> {
+    if !linted && Path::new("Cargo.toml").exists() {
+        clippy()?;
+        cargo_fmt()?;
+    }
+    if !Path::new("LICENSE").exists() {
+        bail!("No LICENSE?");
+    }
+    Ok(())
+}
+
 pub(super) fn go() -> anyhow::Result<()> {
     if env::var("KLUDGE_SKIP_PRE_COMMIT").is_ok_and(|v| v != "0") {
         return Ok(());
@@ -112,6 +123,7 @@ pub(super) fn go() -> anyhow::Result<()> {
 
     if Path::new("scripts/lint/lint.py").exists() {
         lint_py()?;
+        mine(true)?;
         return Ok(());
     }
 
@@ -123,15 +135,12 @@ pub(super) fn go() -> anyhow::Result<()> {
         hlint()?;
     }
 
-    if Path::new("Cargo.toml").exists() {
-        let mut cmd = Command::new("gh");
-        cmd.args(["repo", "view", "--json", "owner", "--jq", ".owner.login"]);
-        let out = run(cmd)?;
-        let owner = String::from_utf8_lossy(&out.stdout);
-        if owner.trim() == "langston-barrett" {
-            clippy()?;
-            cargo_fmt()?;
-        }
+    let mut cmd = Command::new("gh");
+    cmd.args(["repo", "view", "--json", "owner", "--jq", ".owner.login"]);
+    let out = run(cmd)?;
+    let owner = String::from_utf8_lossy(&out.stdout);
+    if owner.trim() == "langston-barrett" {
+        mine(false)?;
     }
 
     Ok(())
