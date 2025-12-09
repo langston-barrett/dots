@@ -1,5 +1,6 @@
 // def: kludge-expand
 
+use std::process;
 use std::{env, path::Path};
 
 use crate::project::{self, PROJECTS};
@@ -273,7 +274,13 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
 ];
 
 fn notify(s: String) {
-    drop(std::process::Command::new("notify").arg(s).spawn());
+    drop(
+        process::Command::new("notify")
+            .arg(s)
+            .stdout(process::Stdio::null())
+            .stderr(process::Stdio::null())
+            .spawn(),
+    );
 }
 
 // duplicated from zbr
