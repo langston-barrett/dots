@@ -3,7 +3,7 @@
 use std::process;
 use std::{env, path::Path};
 
-use crate::project::{self, PROJECTS};
+use crate::project::{self};
 use crate::system as build;
 
 const CURSOR: char = '•';
@@ -271,6 +271,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
         "",
     ),
     ("kl", "kludge launcher", ""),
+    ("kp", "kludge project", ""),
 ];
 
 fn notify(s: String) {
@@ -320,45 +321,8 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
     None
 }
 
-fn build_command(cmd: &str, args: &[&str]) -> String {
-    if args.is_empty() {
-        cmd.to_string()
-    } else {
-        format!("{} {}", cmd, args.join(" "))
-    }
-}
-
-fn project_expansions(project: &project::Project) -> Vec<(&str, String)> {
-    let mut expansions: Vec<(&str, String)> = Vec::new();
-
-    if let Some((cmd, args)) = project.lint {
-        expansions.push(("l", build_command(cmd, args)));
-    }
-    if let Some((cmd, args)) = project.format {
-        expansions.push(("f", build_command(cmd, args)));
-    }
-    if let Some((cmd, args)) = project.build {
-        expansions.push(("b", build_command(cmd, args)));
-    }
-    if let Some((cmd, args)) = project.test {
-        expansions.push(("t", build_command(cmd, args)));
-    }
-    if let Some((cmd, args)) = project.run {
-        expansions.push(("r", build_command(cmd, args)));
-    }
-    if let Some((cmd, args)) = project.watch {
-        expansions.push(("w", build_command(cmd, args)));
-    }
-    for (shortcut, command) in project.aliases.iter().copied() {
-        expansions.push((shortcut, command.to_string()));
-    }
-    expansions
-}
-
 fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
-    let name = project::git_root_name()?;
-    let project = PROJECTS.iter().find(|p| p.name == name)?;
-    for (l, r) in project_expansions(project) {
+    for (l, r) in project::project_expansions(project::project()?) {
         // TODO: Allow non-empty rbufs
         if lbuf == l && rbuf.is_empty() {
             return Some((r, String::new()));
@@ -419,10 +383,8 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
             results.push((short, hint));
         }
     }
-    if let Some(name) = project::git_root_name()
-        && let Some(project) = PROJECTS.iter().find(|p| p.name == name)
-    {
-        let expansions = project_expansions(project);
+    if let Some(project) = project::project() {
+        let expansions = project::project_expansions(project);
         for (l, r) in expansions {
             if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
                 let hint = to_hint(&r);

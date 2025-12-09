@@ -65,6 +65,7 @@ fn go(cli: cli::Cli) -> anyhow::Result<()> {
         Command::Install => install::go(),
         Command::Precommit => precommit::go(),
         Command::Preview(conf) => preview::go(conf),
+        Command::Project => project::go(),
         Command::Release(conf) => release::go(conf),
         Command::Whitespace(conf) => whitespace::go(conf),
         Command::Zsh(zsh) => match zsh.cmd {

@@ -1,4 +1,4 @@
-use std::{path::Path, process::Command};
+use std::{env, path::Path, process::Command};
 
 #[derive(Debug)]
 pub(crate) struct Project {
@@ -133,74 +133,6 @@ const GREASE: Project = Project {
     ],
 };
 
-const GREASE_CLI: Project = Project {
-    name: "grease-cli",
-    lint: Some((
-        "hlint",
-        &[
-            "grease-aarch32/src",
-            "grease-ppc/src",
-            "grease-x86/src",
-            "grease-cli/src",
-            "grease-exe/main",
-            "grease-exe/src",
-            "grease-exe/tests",
-        ],
-    )),
-    format: None,
-    build: None,
-    test: Some(("cabal", &["run", "test:grease-tests", "--"])),
-    run: Some(("cabal", &["run", "exe:grease", "--"])),
-    watch: Some((
-        "ghcid",
-        &[
-            "--command",
-            "cabal repl lib:grease pkg:grease-cli pkg:grease-exe test:grease-tests",
-        ],
-    )),
-    aliases: &[
-        (
-            "to",
-            "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | pick)",
-        ),
-        ("wt", "ghcid --target=test:grease-tests"),
-    ],
-};
-
-const GREASE_EXE: Project = Project {
-    name: "grease-exe",
-    lint: Some((
-        "hlint",
-        &[
-            "grease-aarch32/src",
-            "grease-ppc/src",
-            "grease-x86/src",
-            "grease-cli/src",
-            "grease-exe/main",
-            "grease-exe/src",
-            "grease-exe/tests",
-        ],
-    )),
-    format: None,
-    build: None,
-    test: Some(("cabal", &["run", "test:grease-tests", "--"])),
-    run: Some(("cabal", &["run", "exe:grease", "--"])),
-    watch: Some((
-        "ghcid",
-        &[
-            "--command",
-            "cabal repl lib:grease pkg:grease-cli pkg:grease-exe test:grease-tests",
-        ],
-    )),
-    aliases: &[
-        (
-            "to",
-            "cabal run exe:grease -- --symbol test $(fd --type=x elf tests/ | pick)",
-        ),
-        ("wt", "ghcid --target=test:grease-tests"),
-    ],
-};
-
 const SCREACH: Project = Project {
     name: "screach",
     lint: Some((
@@ -222,16 +154,7 @@ const SCREACH: Project = Project {
     aliases: &[("wt", "ghcid --target=test:screach-test")],
 };
 
-pub(crate) const PROJECTS: &[Project] = &[
-    CRUCIBLE_LLVM_CLI,
-    DETECT,
-    DOTS,
-    KLUDGE,
-    GREASE,
-    GREASE_CLI,
-    GREASE_EXE,
-    SCREACH,
-];
+pub(crate) const PROJECTS: &[Project] = &[CRUCIBLE_LLVM_CLI, DETECT, DOTS, KLUDGE, GREASE, SCREACH];
 
 pub(crate) fn git_root_name() -> Option<String> {
     let output = Command::new("git")
@@ -249,5 +172,56 @@ pub(crate) fn git_root_name() -> Option<String> {
 }
 
 pub(crate) fn project() -> Option<&'static Project> {
-    git_root_name().and_then(|name| PROJECTS.iter().find(|p| p.name == name))
+    let current = env::current_dir().ok()?;
+    let current = current.file_name().and_then(|f| f.to_str())?;
+    PROJECTS
+        .iter()
+        .find(|p| p.name == current)
+        .or_else(|| git_root_name().and_then(|name| PROJECTS.iter().find(|p| p.name == name)))
+}
+
+fn build_command(cmd: &str, args: &[&str]) -> String {
+    if args.is_empty() {
+        cmd.to_string()
+    } else {
+        format!("{} {}", cmd, args.join(" "))
+    }
+}
+
+pub(crate) fn project_expansions(project: &Project) -> Vec<(&str, String)> {
+    let mut expansions: Vec<(&str, String)> = Vec::new();
+
+    if let Some((cmd, args)) = project.lint {
+        expansions.push(("l", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.format {
+        expansions.push(("f", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.build {
+        expansions.push(("b", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.test {
+        expansions.push(("t", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.run {
+        expansions.push(("r", build_command(cmd, args)));
+    }
+    if let Some((cmd, args)) = project.watch {
+        expansions.push(("w", build_command(cmd, args)));
+    }
+    for (shortcut, command) in project.aliases.iter().copied() {
+        expansions.push((shortcut, command.to_string()));
+    }
+    expansions
+}
+
+pub(super) fn go() -> anyhow::Result<()> {
+    let Some(project) = project() else {
+        return Ok(());
+    };
+    for (short, long) in project_expansions(project) {
+        println!("{short} --> {long}");
+    }
+
+    Ok(())
 }
