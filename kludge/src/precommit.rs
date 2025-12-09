@@ -9,6 +9,7 @@ use anyhow::{Context as _, bail};
 use crate::project;
 
 fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
+    eprintln!("{}", project::print_cmd(&cmd));
     let status = cmd
         .status()
         .with_context(|| format!("Failed to run {:?} {:?}", cmd.get_program(), cmd.get_args()))?;
@@ -19,6 +20,7 @@ fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
 }
 
 fn run(mut cmd: Command) -> Result<process::Output, anyhow::Error> {
+    eprintln!("{}", project::print_cmd(&cmd));
     let out = cmd
         .output()
         .with_context(|| format!("Failed to run {:?} {:?}", cmd.get_program(), cmd.get_args()))?;
@@ -46,40 +48,6 @@ fn changed_files_with_ext(ext: &'static str) -> Result<String, anyhow::Error> {
     ]);
     let out = run(cmd)?;
     Ok(String::from_utf8_lossy(out.stdout.as_slice()).into_owned())
-}
-
-fn lint_py() -> Result<(), anyhow::Error> {
-    let changed = changed_files_with_ext("*")?;
-    let mut cmd = Command::new("scripts/lint/lint.py");
-    cmd.arg("--format");
-    exec(cmd)?;
-    let mut cmd = Command::new("git");
-    cmd.arg("add").args(changed.lines());
-    run(cmd)?;
-
-    exec(Command::new("scripts/lint/lint.py"))?;
-    Ok(())
-}
-
-fn fourmolu() -> Result<(), anyhow::Error> {
-    let hs = changed_files_with_ext("*.hs")?;
-    let mut cmd = Command::new("fourmolu");
-    cmd.args(["--mode", "inplace"]);
-    cmd.args(hs.lines());
-    exec(cmd)?;
-
-    let mut cmd = Command::new("git");
-    cmd.arg("add").args(hs.lines());
-    run(cmd)?;
-    Ok(())
-}
-
-fn hlint() -> Result<(), anyhow::Error> {
-    let hs = changed_files_with_ext("*.hs")?;
-    let mut cmd = Command::new("hlint");
-    cmd.args(hs.lines());
-    exec(cmd)?;
-    Ok(())
 }
 
 fn cargo_fmt() -> Result<(), anyhow::Error> {
@@ -112,33 +80,23 @@ pub(super) fn go() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    if let Some(project) = project::project()
-        && let Some(cmd) = &project.lint
-    {
-        exec(cmd.to_command())?;
-        return Ok(());
+    let mut linted = false;
+    let mut project = project::project().cloned().unwrap_or_default();
+    project.infer(project::Confidence::High);
+    if let Some(cmd) = &project.format {
+        let changed = changed_files_with_ext("*")?;
+        exec(cmd.to_command(true))?;
+        let mut cmd = Command::new("git");
+        cmd.arg("add").args(changed.lines());
+        run(cmd)?;
+    }
+    if let Some(cmd) = &project.lint {
+        linted = true;
+        exec(cmd.to_command(true))?;
     }
 
-    if Path::new("scripts/lint/lint.py").exists() {
-        lint_py()?;
-        mine(true)?;
-        return Ok(());
-    }
-
-    if Path::new("fourmolu.yml").exists() || Path::new("fourmolu.yaml").exists() {
-        fourmolu()?;
-    }
-
-    if Path::new(".hlint.yml").exists() || Path::new(".hlint.yaml").exists() {
-        hlint()?;
-    }
-
-    let mut cmd = Command::new("gh");
-    cmd.args(["repo", "view", "--json", "owner", "--jq", ".owner.login"]);
-    let out = run(cmd)?;
-    let owner = String::from_utf8_lossy(&out.stdout);
-    if owner.trim() == "langston-barrett" {
-        mine(false)?;
+    if project::mine() {
+        mine(linted)?;
     }
 
     Ok(())

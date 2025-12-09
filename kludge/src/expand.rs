@@ -267,7 +267,7 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
 
 fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
     let mut project = project::project().cloned().unwrap_or_default();
-    project.infer();
+    project.infer(project::Confidence::Low);
     for (l, r) in project::project_expansions(&project) {
         // TODO: Allow non-empty rbufs
         if lbuf == l && rbuf.is_empty() {
@@ -331,7 +331,7 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
     }
     if let Some(project) = project::project() {
         let mut inferred = project.clone();
-        inferred.infer();
+        inferred.infer(project::Confidence::Low);
         let expansions = project::project_expansions(&inferred);
         for (l, r) in expansions {
             if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
