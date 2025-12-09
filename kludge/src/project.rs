@@ -33,6 +33,7 @@ pub(crate) struct Project {
     pub(crate) name: &'static str,
     pub(crate) lint: Option<Cmd>,
     pub(crate) format: Option<Cmd>,
+    pub(crate) fix: Option<Cmd>,
     pub(crate) build: Option<Cmd>,
     pub(crate) test: Option<Cmd>,
     pub(crate) run: Option<Cmd>,
@@ -91,6 +92,30 @@ impl Project {
                         args: &["fmt"],
                     }),
                     None => None,
+                };
+            }
+        }
+
+        if self.fix.is_none() {
+            if has_lint_py {
+                self.fix = Some(Cmd::Cmd {
+                    bin: "scripts/lint/lint.py",
+                    args: &["--fix"],
+                });
+            } else {
+                self.fix = match build_system {
+                    Some(system::System::Cargo) => Some(Cmd::Cmd {
+                        bin: "cargo",
+                        args: &[
+                            "clippy",
+                            "--allow-dirty",
+                            "--fix",
+                            "--",
+                            "--deny",
+                            "warnings",
+                        ],
+                    }),
+                    _ => None,
                 };
             }
         }
@@ -181,6 +206,7 @@ const CRUCIBLE_LLVM_CLI: Project = Project {
     name: "crucible-llvm-cli",
     lint: None,
     format: None,
+    fix: None,
     build: None,
     test: Some(Cmd::Cmd {
         bin: "cabal",
@@ -204,6 +230,7 @@ const DETECT: Project = Project {
     name: "detect",
     lint: None,
     format: None,
+    fix: None,
     build: None,
     test: None,
     run: None,
@@ -260,7 +287,8 @@ const GREASE: Project = Project {
         ],
     }),
     format: None, // can be guessed from fourmolu.yml
-    build: None,  // can be guessed from `.cabal`
+    fix: None,
+    build: None, // can be guessed from `.cabal`
     test: Some(Cmd::Cmd {
         bin: "cabal",
         args: &["run", "test:grease-tests", "--"],
@@ -296,6 +324,7 @@ const SCREACH: Project = Project {
         ],
     }),
     format: None,
+    fix: None,
     build: None,
     test: Some(Cmd::Cmd {
         bin: "cabal",
@@ -359,6 +388,17 @@ pub(crate) fn project_expansions(project: &Project) -> Vec<(&'static str, String
     }
     if let Some(cmd) = &project.format {
         expansions.push(("f", build_command(cmd)));
+    }
+    if let Some(cmd) = &project.fix {
+        expansions.push(("fix", build_command(cmd)));
+    }
+    if let Some(fix) = &project.fix
+        && let Some(fmt) = &project.format
+    {
+        expansions.push((
+            "ff",
+            format!("{} && {}", build_command(fmt), build_command(fix)),
+        ));
     }
     if let Some(cmd) = &project.build {
         expansions.push(("b", build_command(cmd)));
