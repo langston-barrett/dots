@@ -26,6 +26,19 @@ impl Cmd {
             }
         }
     }
+
+    fn to_command_line(&self) -> String {
+        match self {
+            Cmd::Cmd { bin, args } => {
+                if args.is_empty() {
+                    (*bin).to_owned()
+                } else {
+                    format!("{} {}", bin, args.join(" "))
+                }
+            }
+            Cmd::Shell(script) => script.clone(),
+        }
+    }
 }
 
 #[derive(Clone, Debug, Default)]
@@ -46,10 +59,18 @@ impl Project {
         let Ok(pwd) = env::current_dir() else {
             return;
         };
-
         let build_system = system::System::detect(&pwd);
         let has_lint_py = Path::new("scripts/lint/lint.py").exists();
+        self.infer_lint(build_system, has_lint_py);
+        self.infer_format(build_system, has_lint_py);
+        self.infer_fix(build_system, has_lint_py);
+        self.infer_build(build_system);
+        self.infer_test(build_system);
+        self.infer_run(build_system);
+        self.infer_watch(build_system);
+    }
 
+    fn infer_lint(&mut self, build_system: Option<system::System>, has_lint_py: bool) {
         if self.lint.is_none() {
             if has_lint_py {
                 self.lint = Some(Cmd::Cmd {
@@ -70,7 +91,9 @@ impl Project {
                 };
             }
         }
+    }
 
+    fn infer_format(&mut self, build_system: Option<system::System>, has_lint_py: bool) {
         if self.format.is_none() {
             if has_lint_py {
                 self.format = Some(Cmd::Cmd {
@@ -95,7 +118,9 @@ impl Project {
                 };
             }
         }
+    }
 
+    fn infer_fix(&mut self, build_system: Option<system::System>, has_lint_py: bool) {
         if self.fix.is_none() {
             if has_lint_py {
                 self.fix = Some(Cmd::Cmd {
@@ -119,7 +144,9 @@ impl Project {
                 };
             }
         }
+    }
 
+    fn infer_build(&mut self, build_system: Option<system::System>) {
         if self.build.is_none() {
             self.build = match build_system {
                 Some(system::System::Cabal) => Some(Cmd::Cmd {
@@ -137,7 +164,9 @@ impl Project {
                 None => None,
             };
         }
+    }
 
+    fn infer_test(&mut self, build_system: Option<system::System>) {
         if self.test.is_none() {
             self.test = match build_system {
                 Some(system::System::Cabal) => Some(Cmd::Cmd {
@@ -155,7 +184,9 @@ impl Project {
                 None => None,
             };
         }
+    }
 
+    fn infer_run(&mut self, build_system: Option<system::System>) {
         if self.run.is_none() {
             self.run = match build_system {
                 Some(system::System::Cabal) => Some(Cmd::Cmd {
@@ -169,7 +200,9 @@ impl Project {
                 Some(system::System::Make) | None => None,
             };
         }
+    }
 
+    fn infer_watch(&mut self, build_system: Option<system::System>) {
         if self.watch.is_none() {
             self.watch = match build_system {
                 Some(system::System::Cabal) => Some(Cmd::Cmd {
@@ -178,18 +211,18 @@ impl Project {
                 }),
                 _ => {
                     if let (Some(format_cmd), Some(lint_cmd)) = (&self.format, &self.lint) {
-                        let fmt_str = build_command(format_cmd);
-                        let lint_str = build_command(lint_cmd);
+                        let fmt_str = format_cmd.to_command_line();
+                        let lint_str = lint_cmd.to_command_line();
                         Some(Cmd::Shell(format!(
                             "git ls-files --exclude-standard | entr -c -s '{fmt_str} && {lint_str}'"
                         )))
                     } else if let Some(format_cmd) = &self.format {
-                        let fmt_str = build_command(format_cmd);
+                        let fmt_str = format_cmd.to_command_line();
                         Some(Cmd::Shell(format!(
                             "git ls-files --exclude-standard | entr -c -s '{fmt_str}'"
                         )))
                     } else if let Some(lint_cmd) = &self.lint {
-                        let lint_str = build_command(lint_cmd);
+                        let lint_str = lint_cmd.to_command_line();
                         Some(Cmd::Shell(format!(
                             "git ls-files --exclude-standard | entr -c -s '{lint_str}'"
                         )))
@@ -367,50 +400,37 @@ pub(crate) fn project() -> Option<&'static Project> {
         .or_else(|| git_root_name().and_then(|name| PROJECTS.iter().find(|p| p.name == name)))
 }
 
-fn build_command(cmd: &Cmd) -> String {
-    match cmd {
-        Cmd::Cmd { bin, args } => {
-            if args.is_empty() {
-                (*bin).to_owned()
-            } else {
-                format!("{} {}", bin, args.join(" "))
-            }
-        }
-        Cmd::Shell(script) => script.clone(),
-    }
-}
-
 pub(crate) fn project_expansions(project: &Project) -> Vec<(&'static str, String)> {
     let mut expansions: Vec<(&str, String)> = Vec::new();
 
     if let Some(cmd) = &project.lint {
-        expansions.push(("l", build_command(cmd)));
+        expansions.push(("l", cmd.to_command_line()));
     }
     if let Some(cmd) = &project.format {
-        expansions.push(("f", build_command(cmd)));
+        expansions.push(("f", cmd.to_command_line()));
     }
     if let Some(cmd) = &project.fix {
-        expansions.push(("fix", build_command(cmd)));
+        expansions.push(("fix", cmd.to_command_line()));
     }
     if let Some(fix) = &project.fix
         && let Some(fmt) = &project.format
     {
         expansions.push((
             "ff",
-            format!("{} && {}", build_command(fmt), build_command(fix)),
+            format!("{} && {}", fmt.to_command_line(), fix.to_command_line()),
         ));
     }
     if let Some(cmd) = &project.build {
-        expansions.push(("b", build_command(cmd)));
+        expansions.push(("b", cmd.to_command_line()));
     }
     if let Some(cmd) = &project.test {
-        expansions.push(("t", build_command(cmd)));
+        expansions.push(("t", cmd.to_command_line()));
     }
     if let Some(cmd) = &project.run {
-        expansions.push(("r", build_command(cmd)));
+        expansions.push(("r", cmd.to_command_line()));
     }
     if let Some(cmd) = &project.watch {
-        expansions.push(("w", build_command(cmd)));
+        expansions.push(("w", cmd.to_command_line()));
     }
     for (shortcut, command) in project.aliases.iter().copied() {
         expansions.push((shortcut, command.to_string()));
