@@ -15,30 +15,19 @@ pub(crate) struct Project {
 }
 
 impl Project {
-    pub(crate) fn infer(&self) -> Self {
+    pub(crate) fn infer(&mut self) {
         let Ok(pwd) = env::current_dir() else {
-            return self.clone();
+            return;
         };
 
         let build_system = system::System::detect(&pwd);
         let has_lint_py = Path::new("scripts/lint/lint.py").exists();
 
-        let mut inferred = Project {
-            name: self.name,
-            lint: self.lint,
-            format: self.format,
-            build: self.build,
-            test: self.test,
-            run: self.run,
-            watch: self.watch,
-            aliases: self.aliases,
-        };
-
-        if inferred.lint.is_none() {
+        if self.lint.is_none() {
             if has_lint_py {
-                inferred.lint = Some(("scripts/lint/lint.py", &[]));
+                self.lint = Some(("scripts/lint/lint.py", &[]));
             } else {
-                inferred.lint = match build_system {
+                self.lint = match build_system {
                     Some(system::System::Cargo) => Some((
                         "cargo",
                         &["clippy", "--all-targets", "--", "--deny", "warnings"],
@@ -49,11 +38,11 @@ impl Project {
             }
         }
 
-        if inferred.format.is_none() {
+        if self.format.is_none() {
             if has_lint_py {
-                inferred.format = Some(("scripts/lint/lint.py", &["--format"]));
+                self.format = Some(("scripts/lint/lint.py", &["--format"]));
             } else {
-                inferred.format = match build_system {
+                self.format = match build_system {
                     Some(system::System::Cabal) => {
                         Some(("fourmolu", &["--mode", "inplace", "$(git ls-files '*.hs')"]))
                     }
@@ -64,8 +53,8 @@ impl Project {
             }
         }
 
-        if inferred.build.is_none() {
-            inferred.build = match build_system {
+        if self.build.is_none() {
+            self.build = match build_system {
                 Some(system::System::Cabal) => Some(("cabal", &["build"])),
                 Some(system::System::Cargo) => Some(("cargo", &["build"])),
                 Some(system::System::Make) => Some(("make", &[])),
@@ -73,8 +62,8 @@ impl Project {
             };
         }
 
-        if inferred.test.is_none() {
-            inferred.test = match build_system {
+        if self.test.is_none() {
+            self.test = match build_system {
                 Some(system::System::Cabal) => Some(("cabal", &["test"])),
                 Some(system::System::Cargo) => Some(("cargo", &["test"])),
                 Some(system::System::Make) => Some(("make", &["test"])),
@@ -82,16 +71,16 @@ impl Project {
             };
         }
 
-        if inferred.run.is_none() {
-            inferred.run = match build_system {
+        if self.run.is_none() {
+            self.run = match build_system {
                 Some(system::System::Cabal) => Some(("cabal", &["run"])),
                 Some(system::System::Cargo) => Some(("cargo", &["run"])),
                 Some(system::System::Make) | None => None,
             };
         }
 
-        if inferred.watch.is_none() {
-            inferred.watch = match build_system {
+        if self.watch.is_none() {
+            self.watch = match build_system {
                 Some(system::System::Cabal) => Some(("ghcid", &[])),
                 Some(system::System::Cargo) => Some((
                     "bash",
@@ -104,8 +93,6 @@ impl Project {
                 _ => None,
             };
         }
-
-        inferred
     }
 }
 
