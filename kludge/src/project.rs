@@ -3,14 +3,40 @@ use std::{env, path::Path, process::Command};
 use crate::system;
 
 #[derive(Clone, Debug)]
+pub(crate) enum Cmd {
+    Cmd {
+        bin: &'static str,
+        args: &'static [&'static str],
+    },
+    Shell(String),
+}
+
+impl Cmd {
+    pub(crate) fn to_command(&self) -> Command {
+        match self {
+            Cmd::Cmd { bin, args } => {
+                let mut cmd = Command::new(*bin);
+                cmd.args(*args);
+                cmd
+            }
+            Cmd::Shell(script) => {
+                let mut cmd = Command::new("bash");
+                cmd.args(["-c", script.as_str()]);
+                cmd
+            }
+        }
+    }
+}
+
+#[derive(Clone, Debug, Default)]
 pub(crate) struct Project {
     pub(crate) name: &'static str,
-    pub(crate) lint: Option<(&'static str, &'static [&'static str])>,
-    pub(crate) format: Option<(&'static str, &'static [&'static str])>,
-    pub(crate) build: Option<(&'static str, &'static [&'static str])>,
-    pub(crate) test: Option<(&'static str, &'static [&'static str])>,
-    pub(crate) run: Option<(&'static str, &'static [&'static str])>,
-    pub(crate) watch: Option<(&'static str, &'static [&'static str])>,
+    pub(crate) lint: Option<Cmd>,
+    pub(crate) format: Option<Cmd>,
+    pub(crate) build: Option<Cmd>,
+    pub(crate) test: Option<Cmd>,
+    pub(crate) run: Option<Cmd>,
+    pub(crate) watch: Option<Cmd>,
     pub(crate) aliases: &'static [(&'static str, &'static str)],
 }
 
@@ -25,14 +51,20 @@ impl Project {
 
         if self.lint.is_none() {
             if has_lint_py {
-                self.lint = Some(("scripts/lint/lint.py", &[]));
+                self.lint = Some(Cmd::Cmd {
+                    bin: "scripts/lint/lint.py",
+                    args: &[],
+                });
             } else {
                 self.lint = match build_system {
-                    Some(system::System::Cargo) => Some((
-                        "cargo",
-                        &["clippy", "--all-targets", "--", "--deny", "warnings"],
+                    Some(system::System::Cargo) => Some(Cmd::Shell(
+                        "cargo fmt --check && cargo clippy --all-targets -- --deny warnings"
+                            .to_string(),
                     )),
-                    Some(system::System::Make) => Some(("make", &["lint"])),
+                    Some(system::System::Make) => Some(Cmd::Cmd {
+                        bin: "make",
+                        args: &["lint"],
+                    }),
                     _ => None,
                 };
             }
@@ -40,14 +72,24 @@ impl Project {
 
         if self.format.is_none() {
             if has_lint_py {
-                self.format = Some(("scripts/lint/lint.py", &["--format"]));
+                self.format = Some(Cmd::Cmd {
+                    bin: "scripts/lint/lint.py",
+                    args: &["--format"],
+                });
             } else {
                 self.format = match build_system {
-                    Some(system::System::Cabal) => {
-                        Some(("fourmolu", &["--mode", "inplace", "$(git ls-files '*.hs')"]))
-                    }
-                    Some(system::System::Cargo) => Some(("cargo", &["fmt"])),
-                    Some(system::System::Make) => Some(("make", &["fmt"])),
+                    Some(system::System::Cabal) => Some(Cmd::Shell(
+                        "git ls-files -z --exclude-standard | xargs -0 fourmolu --mode inplace"
+                            .to_string(),
+                    )),
+                    Some(system::System::Cargo) => Some(Cmd::Cmd {
+                        bin: "cargo",
+                        args: &["fmt"],
+                    }),
+                    Some(system::System::Make) => Some(Cmd::Cmd {
+                        bin: "make",
+                        args: &["fmt"],
+                    }),
                     None => None,
                 };
             }
@@ -55,42 +97,81 @@ impl Project {
 
         if self.build.is_none() {
             self.build = match build_system {
-                Some(system::System::Cabal) => Some(("cabal", &["build"])),
-                Some(system::System::Cargo) => Some(("cargo", &["build"])),
-                Some(system::System::Make) => Some(("make", &[])),
+                Some(system::System::Cabal) => Some(Cmd::Cmd {
+                    bin: "cabal",
+                    args: &["build"],
+                }),
+                Some(system::System::Cargo) => Some(Cmd::Cmd {
+                    bin: "cargo",
+                    args: &["build"],
+                }),
+                Some(system::System::Make) => Some(Cmd::Cmd {
+                    bin: "make",
+                    args: &[],
+                }),
                 None => None,
             };
         }
 
         if self.test.is_none() {
             self.test = match build_system {
-                Some(system::System::Cabal) => Some(("cabal", &["test"])),
-                Some(system::System::Cargo) => Some(("cargo", &["test"])),
-                Some(system::System::Make) => Some(("make", &["test"])),
+                Some(system::System::Cabal) => Some(Cmd::Cmd {
+                    bin: "cabal",
+                    args: &["test"],
+                }),
+                Some(system::System::Cargo) => Some(Cmd::Cmd {
+                    bin: "cargo",
+                    args: &["test"],
+                }),
+                Some(system::System::Make) => Some(Cmd::Cmd {
+                    bin: "make",
+                    args: &["test"],
+                }),
                 None => None,
             };
         }
 
         if self.run.is_none() {
             self.run = match build_system {
-                Some(system::System::Cabal) => Some(("cabal", &["run"])),
-                Some(system::System::Cargo) => Some(("cargo", &["run"])),
+                Some(system::System::Cabal) => Some(Cmd::Cmd {
+                    bin: "cabal",
+                    args: &["run"],
+                }),
+                Some(system::System::Cargo) => Some(Cmd::Cmd {
+                    bin: "cargo",
+                    args: &["run"],
+                }),
                 Some(system::System::Make) | None => None,
             };
         }
 
         if self.watch.is_none() {
             self.watch = match build_system {
-                Some(system::System::Cabal) => Some(("ghcid", &[])),
-                Some(system::System::Cargo) => Some((
-                    "bash",
-                    &[
-                        "-c",
-                        "ls ./**/Cargo.toml ./**/*.rs | entr -c -s 'cargo fmt && cargo clippy --all-targets -- --deny warnings'",
-                    ],
-                )),
-                Some(system::System::Make) => Some(("make", &["test"])),
-                _ => None,
+                Some(system::System::Cabal) => Some(Cmd::Cmd {
+                    bin: "ghcid",
+                    args: &[],
+                }),
+                _ => {
+                    if let (Some(format_cmd), Some(lint_cmd)) = (&self.format, &self.lint) {
+                        let fmt_str = build_command(format_cmd);
+                        let lint_str = build_command(lint_cmd);
+                        Some(Cmd::Shell(format!(
+                            "git ls-files --exclude-standard | entr -c -s '{fmt_str} && {lint_str}'"
+                        )))
+                    } else if let Some(format_cmd) = &self.format {
+                        let fmt_str = build_command(format_cmd);
+                        Some(Cmd::Shell(format!(
+                            "git ls-files --exclude-standard | entr -c -s '{fmt_str}'"
+                        )))
+                    } else if let Some(lint_cmd) = &self.lint {
+                        let lint_str = build_command(lint_cmd);
+                        Some(Cmd::Shell(format!(
+                            "git ls-files --exclude-standard | entr -c -s '{lint_str}'"
+                        )))
+                    } else {
+                        None
+                    }
+                }
             };
         }
     }
@@ -101,9 +182,18 @@ const CRUCIBLE_LLVM_CLI: Project = Project {
     lint: None,
     format: None,
     build: None,
-    test: Some(("cabal", &["run", "test:crucible-llvm-cli-tests", "--"])),
-    run: Some(("cabal", &["run", "exe:crucible-llvm", "--"])),
-    watch: Some(("ghcid", &[])),
+    test: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "test:crucible-llvm-cli-tests", "--"],
+    }),
+    run: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "exe:crucible-llvm", "--"],
+    }),
+    watch: Some(Cmd::Cmd {
+        bin: "ghcid",
+        args: &[],
+    }),
     aliases: &[
         ("rs", "cabal run exe:crucible-llvm -- simulate"),
         ("wt", "ghcid --target=test:crucible-llvm-cli-tests"),
@@ -155,25 +245,11 @@ const DETECT: Project = Project {
     ],
 };
 
-const DOTS: Project = Project {
-    name: "dots",
-    lint: None,
-    format: None,
-    build: None,
-    test: None,
-    run: None,
-    watch: None,
-    aliases: &[(
-        "w",
-        "git ls-files --exclude-standard | entr -c -s './scripts/lint/lint.py --format && ./scripts/lint/lint.py'",
-    )],
-};
-
 const GREASE: Project = Project {
     name: "grease",
-    lint: Some((
-        "hlint",
-        &[
+    lint: Some(Cmd::Cmd {
+        bin: "hlint",
+        args: &[
             "grease-aarch32/src",
             "grease-ppc/src",
             "grease-x86/src",
@@ -182,18 +258,24 @@ const GREASE: Project = Project {
             "grease-exe/src",
             "grease-exe/tests",
         ],
-    )),
+    }),
     format: None, // can be guessed from fourmolu.yml
     build: None,  // can be guessed from `.cabal`
-    test: Some(("cabal", &["run", "test:grease-tests", "--"])),
-    run: Some(("cabal", &["run", "exe:grease", "--"])),
-    watch: Some((
-        "ghcid",
-        &[
+    test: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "test:grease-tests", "--"],
+    }),
+    run: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "exe:grease", "--"],
+    }),
+    watch: Some(Cmd::Cmd {
+        bin: "ghcid",
+        args: &[
             "--command",
             "cabal repl lib:grease pkg:grease-cli pkg:grease-exe test:grease-tests",
         ],
-    )),
+    }),
     aliases: &[
         (
             "to",
@@ -205,26 +287,32 @@ const GREASE: Project = Project {
 
 const SCREACH: Project = Project {
     name: "screach",
-    lint: Some((
-        "hlint",
-        &[
+    lint: Some(Cmd::Cmd {
+        bin: "hlint",
+        args: &[
             "--hint=../deps/grease/.hlint.yaml",
             "{app,src,test}",
             "../elf-edit-ecfs/{src,tools}",
         ],
-    )),
+    }),
     format: None,
     build: None,
-    test: Some(("cabal", &["run", "test:screach-test", "--"])),
-    run: Some(("cabal", &["run", "exe:screach", "--"])),
-    watch: Some((
-        "ghcid",
-        &["--command", "cabal repl lib:screach exe:screach"],
-    )),
+    test: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "test:screach-test", "--"],
+    }),
+    run: Some(Cmd::Cmd {
+        bin: "cabal",
+        args: &["run", "exe:screach", "--"],
+    }),
+    watch: Some(Cmd::Cmd {
+        bin: "ghcid",
+        args: &["--command", "cabal repl lib:screach exe:screach"],
+    }),
     aliases: &[("wt", "ghcid --target=test:screach-test")],
 };
 
-pub(crate) const PROJECTS: &[Project] = &[CRUCIBLE_LLVM_CLI, DETECT, DOTS, GREASE, SCREACH];
+pub(crate) const PROJECTS: &[Project] = &[CRUCIBLE_LLVM_CLI, DETECT, GREASE, SCREACH];
 
 pub(crate) fn git_root_name() -> Option<String> {
     let output = Command::new("git")
@@ -250,34 +338,39 @@ pub(crate) fn project() -> Option<&'static Project> {
         .or_else(|| git_root_name().and_then(|name| PROJECTS.iter().find(|p| p.name == name)))
 }
 
-fn build_command(cmd: &str, args: &[&str]) -> String {
-    if args.is_empty() {
-        cmd.to_string()
-    } else {
-        format!("{} {}", cmd, args.join(" "))
+fn build_command(cmd: &Cmd) -> String {
+    match cmd {
+        Cmd::Cmd { bin, args } => {
+            if args.is_empty() {
+                (*bin).to_owned()
+            } else {
+                format!("{} {}", bin, args.join(" "))
+            }
+        }
+        Cmd::Shell(script) => script.clone(),
     }
 }
 
 pub(crate) fn project_expansions(project: &Project) -> Vec<(&'static str, String)> {
     let mut expansions: Vec<(&str, String)> = Vec::new();
 
-    if let Some((cmd, args)) = &project.lint {
-        expansions.push(("l", build_command(cmd, args)));
+    if let Some(cmd) = &project.lint {
+        expansions.push(("l", build_command(cmd)));
     }
-    if let Some((cmd, args)) = &project.format {
-        expansions.push(("f", build_command(cmd, args)));
+    if let Some(cmd) = &project.format {
+        expansions.push(("f", build_command(cmd)));
     }
-    if let Some((cmd, args)) = &project.build {
-        expansions.push(("b", build_command(cmd, args)));
+    if let Some(cmd) = &project.build {
+        expansions.push(("b", build_command(cmd)));
     }
-    if let Some((cmd, args)) = &project.test {
-        expansions.push(("t", build_command(cmd, args)));
+    if let Some(cmd) = &project.test {
+        expansions.push(("t", build_command(cmd)));
     }
-    if let Some((cmd, args)) = &project.run {
-        expansions.push(("r", build_command(cmd, args)));
+    if let Some(cmd) = &project.run {
+        expansions.push(("r", build_command(cmd)));
     }
-    if let Some((cmd, args)) = &project.watch {
-        expansions.push(("w", build_command(cmd, args)));
+    if let Some(cmd) = &project.watch {
+        expansions.push(("w", build_command(cmd)));
     }
     for (shortcut, command) in project.aliases.iter().copied() {
         expansions.push((shortcut, command.to_string()));

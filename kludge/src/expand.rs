@@ -266,7 +266,7 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
 }
 
 fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
-    let mut project = project::project()?.clone();
+    let mut project = project::project().cloned().unwrap_or_default();
     project.infer();
     for (l, r) in project::project_expansions(&project) {
         // TODO: Allow non-empty rbufs
@@ -376,11 +376,24 @@ mod test {
 
     #[test]
     fn expand_l() {
-        test_expand_is("l", "", "cargo clippy --all-targets -- --deny warnings");
+        test_expand_is(
+            "l",
+            "",
+            "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
+        );
     }
 
     #[test]
     fn expand_t() {
         test_expand_is("t", "", "cargo test");
+    }
+
+    #[test]
+    fn expand_w() {
+        test_expand_is(
+            "w",
+            "",
+            "git ls-files --exclude-standard | entr -c -s 'cargo fmt && cargo fmt --check && cargo clippy --all-targets -- --deny warnings'",
+        );
     }
 }
