@@ -38,7 +38,7 @@ fn get_git_root_name() -> Result<String> {
             return dir
                 .file_name()
                 .and_then(|n| n.to_str())
-                .map(|s| s.to_string())
+                .map(ToString::to_string)
                 .with_context(|| format!("failed to get directory name from {}", dir.display()));
         }
     }
@@ -118,7 +118,7 @@ fn collect_fragments(fragments_dir: &Path, name: &str) -> Result<HashMap<String,
             let lines: Vec<String> = content.lines().map(String::from).collect();
             if let Some(first_line) = lines.first() {
                 let first_line = first_line.clone();
-                let extension = path.extension().map(|ext| ext.to_os_string());
+                let extension = path.extension().map(std::ffi::OsStr::to_os_string);
                 fragments.insert(first_line.clone(), Fragment { lines, extension });
                 debug!("recorded fragment with first line: {}", first_line);
             } else {
@@ -174,7 +174,7 @@ fn replace_fragment_matches(
 
                 if line.trim() == first_line.trim() {
                     lines.extend(fragment.lines.iter().cloned());
-                    lines.push("".to_owned());
+                    lines.push(String::new());
                     skip = true;
                     modified = true;
                     debug!("replaced fragment match in {}", path.display());

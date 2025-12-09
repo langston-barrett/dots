@@ -388,7 +388,7 @@ pub(crate) fn git_root_name() -> Option<String> {
     Path::new(&root_path)
         .file_name()
         .and_then(|n| n.to_str())
-        .map(|s| s.to_string())
+        .map(ToString::to_string)
 }
 
 pub(crate) fn project() -> Option<&'static Project> {
