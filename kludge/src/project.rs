@@ -1,6 +1,8 @@
 use std::{env, path::Path, process::Command};
 
-#[derive(Debug)]
+use crate::system;
+
+#[derive(Clone, Debug)]
 pub(crate) struct Project {
     pub(crate) name: &'static str,
     pub(crate) lint: Option<(&'static str, &'static [&'static str])>,
@@ -10,6 +12,101 @@ pub(crate) struct Project {
     pub(crate) run: Option<(&'static str, &'static [&'static str])>,
     pub(crate) watch: Option<(&'static str, &'static [&'static str])>,
     pub(crate) aliases: &'static [(&'static str, &'static str)],
+}
+
+impl Project {
+    pub(crate) fn infer(&self) -> Self {
+        let Ok(pwd) = env::current_dir() else {
+            return self.clone();
+        };
+
+        let build_system = system::System::detect(&pwd);
+        let has_lint_py = Path::new("scripts/lint/lint.py").exists();
+
+        let mut inferred = Project {
+            name: self.name,
+            lint: self.lint,
+            format: self.format,
+            build: self.build,
+            test: self.test,
+            run: self.run,
+            watch: self.watch,
+            aliases: self.aliases,
+        };
+
+        if inferred.lint.is_none() {
+            if has_lint_py {
+                inferred.lint = Some(("scripts/lint/lint.py", &[]));
+            } else {
+                inferred.lint = match build_system {
+                    Some(system::System::Cargo) => Some((
+                        "cargo",
+                        &["clippy", "--all-targets", "--", "--deny", "warnings"],
+                    )),
+                    Some(system::System::Make) => Some(("make", &["lint"])),
+                    _ => None,
+                };
+            }
+        }
+
+        if inferred.format.is_none() {
+            if has_lint_py {
+                inferred.format = Some(("scripts/lint/lint.py", &["--format"]));
+            } else {
+                inferred.format = match build_system {
+                    Some(system::System::Cabal) => {
+                        Some(("fourmolu", &["--mode", "inplace", "$(git ls-files '*.hs')"]))
+                    }
+                    Some(system::System::Cargo) => Some(("cargo", &["fmt"])),
+                    Some(system::System::Make) => Some(("make", &["fmt"])),
+                    None => None,
+                };
+            }
+        }
+
+        if inferred.build.is_none() {
+            inferred.build = match build_system {
+                Some(system::System::Cabal) => Some(("cabal", &["build"])),
+                Some(system::System::Cargo) => Some(("cargo", &["build"])),
+                Some(system::System::Make) => Some(("make", &[])),
+                None => None,
+            };
+        }
+
+        if inferred.test.is_none() {
+            inferred.test = match build_system {
+                Some(system::System::Cabal) => Some(("cabal", &["test"])),
+                Some(system::System::Cargo) => Some(("cargo", &["test"])),
+                Some(system::System::Make) => Some(("make", &["test"])),
+                None => None,
+            };
+        }
+
+        if inferred.run.is_none() {
+            inferred.run = match build_system {
+                Some(system::System::Cabal) => Some(("cabal", &["run"])),
+                Some(system::System::Cargo) => Some(("cargo", &["run"])),
+                Some(system::System::Make) | None => None,
+            };
+        }
+
+        if inferred.watch.is_none() {
+            inferred.watch = match build_system {
+                Some(system::System::Cabal) => Some(("ghcid", &[])),
+                Some(system::System::Cargo) => Some((
+                    "bash",
+                    &[
+                        "-c",
+                        "ls ./**/Cargo.toml ./**/*.rs | entr -c -s 'cargo fmt && cargo clippy --all-targets -- --deny warnings'",
+                    ],
+                )),
+                Some(system::System::Make) => Some(("make", &["test"])),
+                _ => None,
+            };
+        }
+
+        inferred
+    }
 }
 
 const CRUCIBLE_LLVM_CLI: Project = Project {
@@ -85,20 +182,6 @@ const DOTS: Project = Project {
     )],
 };
 
-const KLUDGE: Project = Project {
-    name: "kludge",
-    lint: None,
-    format: None,
-    build: None,
-    test: None,
-    run: None,
-    watch: None,
-    aliases: &[(
-        "l",
-        "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
-    )],
-};
-
 const GREASE: Project = Project {
     name: "grease",
     lint: Some((
@@ -154,7 +237,7 @@ const SCREACH: Project = Project {
     aliases: &[("wt", "ghcid --target=test:screach-test")],
 };
 
-pub(crate) const PROJECTS: &[Project] = &[CRUCIBLE_LLVM_CLI, DETECT, DOTS, KLUDGE, GREASE, SCREACH];
+pub(crate) const PROJECTS: &[Project] = &[CRUCIBLE_LLVM_CLI, DETECT, DOTS, GREASE, SCREACH];
 
 pub(crate) fn git_root_name() -> Option<String> {
     let output = Command::new("git")
@@ -188,25 +271,25 @@ fn build_command(cmd: &str, args: &[&str]) -> String {
     }
 }
 
-pub(crate) fn project_expansions(project: &Project) -> Vec<(&str, String)> {
+pub(crate) fn project_expansions(project: &Project) -> Vec<(&'static str, String)> {
     let mut expansions: Vec<(&str, String)> = Vec::new();
 
-    if let Some((cmd, args)) = project.lint {
+    if let Some((cmd, args)) = &project.lint {
         expansions.push(("l", build_command(cmd, args)));
     }
-    if let Some((cmd, args)) = project.format {
+    if let Some((cmd, args)) = &project.format {
         expansions.push(("f", build_command(cmd, args)));
     }
-    if let Some((cmd, args)) = project.build {
+    if let Some((cmd, args)) = &project.build {
         expansions.push(("b", build_command(cmd, args)));
     }
-    if let Some((cmd, args)) = project.test {
+    if let Some((cmd, args)) = &project.test {
         expansions.push(("t", build_command(cmd, args)));
     }
-    if let Some((cmd, args)) = project.run {
+    if let Some((cmd, args)) = &project.run {
         expansions.push(("r", build_command(cmd, args)));
     }
-    if let Some((cmd, args)) = project.watch {
+    if let Some((cmd, args)) = &project.watch {
         expansions.push(("w", build_command(cmd, args)));
     }
     for (shortcut, command) in project.aliases.iter().copied() {

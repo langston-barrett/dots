@@ -113,10 +113,10 @@ pub(super) fn go() -> anyhow::Result<()> {
     }
 
     if let Some(project) = project::project()
-        && let Some((program, args)) = project.lint
+        && let Some((program, args)) = &project.lint
     {
-        let mut cmd = Command::new(program);
-        cmd.args(args);
+        let mut cmd = Command::new(*program);
+        cmd.args(*args);
         exec(cmd)?;
         return Ok(());
     }

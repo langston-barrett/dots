@@ -1,7 +1,7 @@
 // def: kludge-expand
 
+use std::env;
 use std::process;
-use std::{env, path::Path};
 
 use crate::project::{self};
 use crate::system as build;
@@ -21,78 +21,22 @@ pub(crate) struct Config {
     rbuf: String,
 }
 
-fn expand_build_system(lbuf: &str) -> Option<String> {
-    if lbuf == "b" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from("cabal build ")),
-            Some(build::System::Cargo) => Some(String::from("cargo build ")),
-            Some(build::System::Make) => Some(String::from("make ")),
-            None => None,
-        }
-    } else if lbuf == "d" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
+// TODO: integrate in Project
+fn expand_build_system_special(lbuf: &str) -> Option<String> {
+    let pwd = env::current_dir().ok()?;
+    let build_system = build::System::detect(pwd);
+
+    if lbuf == "d" {
+        match build_system {
             Some(build::System::Cabal) => Some(String::from("cabal haddock ")),
             _ => None,
         }
-    } else if lbuf == "f" {
-        let pwd = env::current_dir().ok()?;
-        if Path::new("scripts/lint/lint.py").exists() {
-            return Some(String::from("scripts/lint/lint.py --format "));
-        }
-        match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from(
-                "fourmolu --mode inplace $(git ls-files '*.hs') ",
-            )),
-            Some(build::System::Cargo) => Some(String::from("cargo fmt ")),
-            Some(build::System::Make) => Some(String::from("make fmt ")),
-            _ => None,
-        }
     } else if lbuf == "i" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
+        match build_system {
             Some(build::System::Cabal) => Some(String::from("cabal install ")),
             Some(build::System::Cargo) => Some(String::from("cargo install ")),
             Some(build::System::Make) => Some(String::from("make install ")),
             _ => None,
-        }
-    } else if lbuf == "l" {
-        let pwd = env::current_dir().ok()?;
-        if Path::new("scripts/lint/lint.py").exists() {
-            return Some(String::from("scripts/lint/lint.py "));
-        }
-        match build::System::detect(pwd) {
-            Some(build::System::Cargo) => Some(String::from(
-                "cargo clippy --all-targets -- --deny warnings ",
-            )),
-            Some(build::System::Make) => Some(String::from("make lint ")),
-            _ => None,
-        }
-    } else if lbuf == "r" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from("cabal run ")),
-            Some(build::System::Cargo) => Some(String::from("cargo run ")),
-            Some(build::System::Make) | None => None,
-        }
-    } else if lbuf == "t" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from("cabal test ")),
-            Some(build::System::Cargo) => Some(String::from("cargo test ")),
-            Some(build::System::Make) => Some(String::from("make test ")),
-            None => None,
-        }
-    } else if lbuf == "w" {
-        let pwd = env::current_dir().ok()?;
-        match build::System::detect(pwd) {
-            Some(build::System::Cabal) => Some(String::from("ghcid")),
-            Some(build::System::Cargo) => Some(String::from(
-                "ls ./**/Cargo.toml ./**/*.rs | entr -c -s 'cargo fmt && cargo clippy --all-targets -- --deny warnings'",
-            )),
-            Some(build::System::Make) => Some(String::from("make test")),
-            None => None,
         }
     } else {
         None
@@ -322,7 +266,8 @@ fn expand_anywhere(lbuf0: &str, rbuf0: &str, enter: bool) -> Option<(String, Str
 }
 
 fn expand_project(lbuf: &str, rbuf: &str) -> Option<(String, String)> {
-    for (l, r) in project::project_expansions(project::project()?) {
+    let project = project::project()?.infer();
+    for (l, r) in project::project_expansions(&project) {
         // TODO: Allow non-empty rbufs
         if lbuf == l && rbuf.is_empty() {
             return Some((r, String::new()));
@@ -360,7 +305,7 @@ fn expand_advanced(lbuf: &str, rbuf: &str, enter: bool) -> Option<(String, Strin
 fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
     expand_project(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf, enter))
-        .or_else(|| expand_build_system(&lbuf).map(|s| (s, String::new())))
+        .or_else(|| expand_build_system_special(&lbuf).map(|s| (s, String::new())))
         .or_else(|| expand_advanced(&lbuf, &rbuf, enter))
 }
 
@@ -384,7 +329,8 @@ fn hint(lbuf0: String, rbuf0: String) -> Vec<(&'static str, String)> {
         }
     }
     if let Some(project) = project::project() {
-        let expansions = project::project_expansions(project);
+        let inferred = project.infer();
+        let expansions = project::project_expansions(&inferred);
         for (l, r) in expansions {
             if l.starts_with(lbuf0.as_str()) && rbuf0.is_empty() {
                 let hint = to_hint(&r);
@@ -428,10 +374,11 @@ mod test {
 
     #[test]
     fn expand_l() {
-        test_expand_is(
-            "l",
-            "",
-            "cargo fmt --check && cargo clippy --all-targets -- --deny warnings",
-        );
+        test_expand_is("l", "", "cargo clippy --all-targets -- --deny warnings");
+    }
+
+    #[test]
+    fn expand_t() {
+        test_expand_is("t", "", "cargo test");
     }
 }
