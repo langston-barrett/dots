@@ -97,6 +97,7 @@ const ANYWHERE_ENTER: &[(&str, &str)] = &[
     ("gclh", "git clone https://github.com/_"),
     ("gclm", "git clone https://github.com/langston-barrett/_"),
     ("mkcd", "mkdir _ && cd _"),
+    ("watch", "printf '%s\\n' _ | entr -c -s \"./_\""),
 ];
 
 const ANYWHERE: &[(&str, &str, &str)] = &[
