@@ -139,7 +139,7 @@ fn get_repo_name(git_root: &Path) -> anyhow::Result<String> {
 }
 
 fn update_changelog(path: &Path, new_version: &Version, repo_name: &str) -> anyhow::Result<()> {
-    assert_eq!(path.extension(), Some(OsStr::new(".md")));
+    assert_eq!(path.extension(), Some(OsStr::new("md")));
     let content = std::fs::read_to_string(path)
         .with_context(|| format!("failed to read changelog: {}", path.display()))?;
     let new_content = update_changelog_str(new_version, repo_name, content)?;

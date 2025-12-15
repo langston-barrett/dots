@@ -151,9 +151,9 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     // see also .gitconfig, zbr
     //
     ("ga.", "git add .", ""),
-    ("gc.", "git commit --message .", ""),
     ("gca", "git commit --amend", ""),
     ("gcb", "git checkout -b", ""),
+    ("gc.", "git commit --message .", ""),
     ("gco-", "git checkout -", ""),
     ("gcom", GIT_CHECKOUT_MAIN, ""),
     (
@@ -178,6 +178,7 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("grbom", GIT_REBASE_ORIGIN_MAIN, ""),
     ("grhom", GIT_RESET_HARD_ORIGIN_MAIN, ""),
     ("grph", "git rev-parse HEAD", ""),
+    ("grs.", "git reset .", ""),
     ("grv", "git remote --verbose", ""),
     ("gsuud", "git submodule update", ""), // TODO: zbr should handle this
     ("gsuudi", "git submodule update --init", ""), // TODO: zbr should handle this

@@ -23,7 +23,7 @@ As a [pre-commit hook]:
 
 [pre-commit hook]: https://git-scm.com/docs/githooks#_pre_commit
 
-```
+```sh
 cat <<'EOF' > .git/hooks/pre-commit
 #!/usr/bin/env bash
 ./scripts/lint/lint.py
