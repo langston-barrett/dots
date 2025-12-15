@@ -19,7 +19,6 @@ mod project;
 mod prompt;
 mod release;
 mod system;
-mod whitespace;
 
 use cli::Command;
 
@@ -67,7 +66,6 @@ fn go(cli: cli::Cli) -> anyhow::Result<()> {
         Command::Preview(conf) => preview::go(conf),
         Command::Project => project::go(),
         Command::Release(conf) => release::go(conf),
-        Command::Whitespace(conf) => whitespace::go(conf),
         Command::Zsh(zsh) => match zsh.cmd {
             ZshCommand::Expand(conf) => expand::go(conf),
             ZshCommand::Hook(conf) => hook::go(conf),

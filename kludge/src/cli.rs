@@ -22,7 +22,6 @@ pub(crate) enum Command {
     Preview(crate::preview::Config),
     Project,
     Release(crate::release::Config),
-    Whitespace(crate::whitespace::Config),
     Zsh(Zsh),
 }
 
