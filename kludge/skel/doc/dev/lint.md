@@ -1,22 +1,16 @@
 # Linting and formatting
 
 We employ a variety of linting and formatting tools. They can be run manually or
-with [Ninja].
+with [Lūn].
 
-[Ninja]: https://ninja-build.org/
+[Lūn]: https://langston-barrett.github.io/lun/
 
-## Ninja script
+## Lūn
 
-To run all the linters:
-
-```sh
-./scripts/lint/lint.py
-```
-
-To run all the formatters:
+To run all the linters and formatters:
 
 ```sh
-./scripts/lint/lint.py --format
+lun run
 ```
 
 As a [pre-commit hook]:
@@ -26,7 +20,7 @@ As a [pre-commit hook]:
 ```sh
 cat <<'EOF' > .git/hooks/pre-commit
 #!/usr/bin/env bash
-./scripts/lint/lint.py
+lun run --check --staged
 EOF
 chmod +x .git/hooks/pre-commit
 ```

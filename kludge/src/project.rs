@@ -165,11 +165,12 @@ impl Project {
             return;
         };
         let build_system = system::System::detect(&pwd);
+        let lun = Path::new("lun.toml").exists();
         let has_lint_py = Path::new("scripts/lint/lint.py").exists();
-        self.infer_lint(build_system, min_confidence, has_lint_py);
-        self.infer_format(build_system, min_confidence, has_lint_py);
+        self.infer_lint(build_system, min_confidence, has_lint_py, lun);
+        self.infer_format(build_system, min_confidence, has_lint_py, lun);
         // TODO: continue integrating `min_confidence`
-        self.infer_fix(build_system, has_lint_py);
+        self.infer_fix(build_system, has_lint_py, lun);
         self.infer_build(build_system);
         self.infer_test(build_system);
         self.infer_run(build_system);
@@ -181,11 +182,18 @@ impl Project {
         build_system: Option<system::System>,
         min_confidence: Confidence,
         has_lint_py: bool,
+        lun: bool,
     ) {
         if self.lint.is_some() {
             return;
         }
-        self.lint = if has_lint_py {
+        self.lint = if lun {
+            Some(Cmd::Cmd {
+                bin: "lun",
+                args: &["run"],
+                glob: None,
+            })
+        } else if has_lint_py {
             Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
                 args: &[],
@@ -218,11 +226,18 @@ impl Project {
         build_system: Option<system::System>,
         min_confidence: Confidence,
         has_lint_py: bool,
+        lun: bool,
     ) {
         if self.format.is_some() {
             return;
         }
-        self.format = if has_lint_py {
+        self.format = if lun {
+            Some(Cmd::Cmd {
+                bin: "lun",
+                args: &["run", "--format"],
+                glob: None,
+            })
+        } else if has_lint_py {
             Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
                 args: &["--format"],
@@ -252,12 +267,18 @@ impl Project {
         }
     }
 
-    fn infer_fix(&mut self, build_system: Option<system::System>, has_lint_py: bool) {
+    fn infer_fix(&mut self, build_system: Option<system::System>, has_lint_py: bool, lun: bool) {
         if self.fix.is_some() {
             return;
         }
 
-        if has_lint_py {
+        if lun {
+            self.fix = Some(Cmd::Cmd {
+                bin: "lun",
+                args: &["run", "--fix"],
+                glob: None,
+            });
+        } else if has_lint_py {
             self.fix = Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
                 args: &["--fix"],
