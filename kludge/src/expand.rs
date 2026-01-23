@@ -43,8 +43,9 @@ fn expand_build_system_special(lbuf: &str) -> Option<String> {
     }
 }
 
-const CLANG_LLVM: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0";
-const CLANG_LLVM_S: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S";
+const CLANG_LLVM: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -c";
+const CLANG_LLVM_S: &str =
+    "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S -c";
 const CURLS: &str = "curl \\
   --fail \\
   --location \\
@@ -135,6 +136,11 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     ("top", "cd $(git rev-parse --show-toplevel)", ""),
     ("tp", "trash put", ""),
     ("upper", "tr '[:lower:]' '[:upper:]'", ""),
+    ("u", "cd ..", ""),
+    ("uu", "cd ../..", ""),
+    ("uuu", "cd ../../..", ""),
+    ("uuuu", "cd ../../../..", ""),
+    ("uuuuu", "cd ../../../../..", ""),
     ("y", "copy", ""),
     //
     // nix
