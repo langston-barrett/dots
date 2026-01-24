@@ -29,7 +29,7 @@ jobs:
     - run: rustup component add clippy
     - uses: langston-barrett/gha/.github/actions/install-linters@348fdc15bbc786f5cbffab25dd100df846607721
     - uses: Swatinem/rust-cache@f13886b937689c021905a6b90929199931d60db1  # 2.8.1
-    - uses: langston-barrett/lun/.github/actions/lun@4ff0bb8913126e9f4660c6fb2a10e868e709c9b7
+    - uses: langston-barrett/lun/.github/actions/lun@99b38d47333cfeffde65821e898277db5dc57868
     - run: cargo test --locked --no-run
     - run: cargo test
     - run: cargo build --release
