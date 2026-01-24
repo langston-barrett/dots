@@ -1,4 +1,5 @@
-log
+**/log
+.claude/
 .envrc
 .clang_complete
 result

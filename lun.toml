@@ -2,9 +2,9 @@
 
 # TODO: rumdl
 
-mtime = true
+# mtime = true
 # refs = ["origin/main"]
-ignore = ["*.jpg", "*.png", "files/qutebrowser/config.py"]
+ignore = ["./files/qutebrowser/config.py"]
 
 # -------------------------------------
 # bash
@@ -22,11 +22,9 @@ files = ["*.bash"]
 # -------------------------------------
 # gha
 
-[[linter]]
+[[tool]]
 name = "zizmor"
-cmd = "zizmor --"
-files = [".github/**/*.yml"]
-fix = "zizmor --fix=safe --"
+configs = []
 
 # -------------------------------------
 # json
@@ -47,16 +45,12 @@ files = ["**/Makefile", "*.mk"]
 # -------------------------------------
 # md
 
-[[linter]]
+[[tool]]
 name = "mdlynx"
-cmd = "mdlynx --"
-files = ["*.md"]
 
-[[linter]]
+[[tool]]
 name = "typos"
-cmd = "typos --"
-files = ["*.md"]
-fix = "typos --color=always --write-changes --"
+configs = []
 
 # -------------------------------------
 # python
@@ -66,42 +60,29 @@ name = "py"
 cmd = "./scripts/lint/py.py --"
 files = ["*.py"]
 
-[[linter]]
+[[tool]]
 name = "ruff check"
-cmd = "ruff check --quiet --"
-files = ["*.py"]
-fix = "ruff check --fix --quiet --"
+configs = []
 
-[[formatter]]
+[[tool]]
 name = "ruff format"
-cmd = "ruff format --quiet --"
-files = ["*.py"]
-check = "ruff format --quiet --check --"
+configs = []
 
-[[linter]]
+[[tool]]
 name = "ty"
-cmd = "ty check --"
-files = ["*.py"]
+configs = []
 
 # -------------------------------------
 # rust
 
-[[linter]]
+[[tool]]
 name = "cargo clippy"
-cmd = "cargo clippy --color=always --all-targets -- --deny warnings"
-files = ["*.rs"]
-granularity = "batch"
 configs = ["kludge/Cargo.toml"]
-fix = "cargo clippy --color=always --allow-dirty --fix"
 cd = "kludge"
 
-[[formatter]]
+[[tool]]
 name = "cargo fmt"
-cmd = "cargo fmt -- --color=always --"
-files = ["*.rs"]
-granularity = "batch"
 configs = ["kludge/Cargo.toml"]
-check = "cargo fmt --check"
 cd = "kludge"
 
 # -------------------------------------
@@ -115,20 +96,14 @@ files = ["*.sh"]
 # -------------------------------------
 # toml
 
-[[formatter]]
+[[tool]]
 name = "taplo"
-cmd = "taplo format --"
-files = ["*.toml"]
-check = "taplo format --check --"
 
 # -------------------------------------
 # txt
 
-[[linter]]
+[[tool]]
 name = "ttlint"
-cmd = "ttlint --"
-files = ["*"]
-fix = "ttlint --fix --"
 
 [[linter]]
 name = "xref"
