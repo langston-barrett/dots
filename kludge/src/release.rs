@@ -355,6 +355,107 @@ fn run_cargo_clippy() -> anyhow::Result<()> {
     Ok(())
 }
 
+fn run_cargo_test() -> anyhow::Result<()> {
+    if !Path::new("Cargo.toml").exists() {
+        debug!("No Cargo.toml, skipping tests");
+        return Ok(());
+    }
+    debug!("Running cargo test");
+    let status = Command::new("cargo")
+        .args(["test"])
+        .status()
+        .context("failed to execute cargo test")?;
+    if !status.success() {
+        anyhow::bail!("cargo test failed");
+    }
+    Ok(())
+}
+
+fn gh(args: &[&str]) -> anyhow::Result<String> {
+    let output = Command::new("gh")
+        .args(args)
+        .output()
+        .with_context(|| format!("failed to execute `gh {args:?}`"))?;
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        anyhow::bail!("gh command failed: `gh {args:?}`: {stderr}");
+    }
+    Ok(String::from_utf8_lossy(&output.stdout).trim().to_string())
+}
+
+fn gh_exec(args: &[&str]) -> anyhow::Result<()> {
+    let status = Command::new("gh")
+        .args(args)
+        .status()
+        .with_context(|| format!("failed to execute `gh {args:?}`"))?;
+    if !status.success() {
+        anyhow::bail!("gh command failed: `gh {args:?}`");
+    }
+    Ok(())
+}
+
+fn create_pr(version: &Version) -> anyhow::Result<String> {
+    let v = format!("v{version}");
+    git_exec(&["push", "-u", "origin", "release"])?;
+    let pr_url = gh(&["pr", "create", "--title", &v, "--body", ""])?;
+    Ok(pr_url)
+}
+
+fn open_pr_in_browser(pr_url: &str) -> anyhow::Result<()> {
+    info!("Opening PR in browser: {pr_url}");
+    // Try xdg-open on Linux, open on macOS, start on Windows
+    let result = Command::new("xdg-open")
+        .arg(pr_url)
+        .status()
+        .or_else(|_| Command::new("open").arg(pr_url).status())
+        .or_else(|_| Command::new("start").arg(pr_url).status());
+    match result {
+        Ok(status) if status.success() => Ok(()),
+        _ => {
+            warn!("Could not open browser automatically");
+            Ok(())
+        }
+    }
+}
+
+fn extract_pr_number(pr_url: &str) -> anyhow::Result<String> {
+    pr_url
+        .trim_end_matches('/')
+        .rsplit('/')
+        .next()
+        .map(ToString::to_string)
+        .context("could not extract PR number from URL")
+}
+
+fn wait_for_ci(pr_url: &str) -> anyhow::Result<()> {
+    let pr_number = extract_pr_number(pr_url)?;
+    info!("Waiting for CI on PR #{pr_number}...");
+    gh_exec(&["pr", "checks", &pr_number, "--watch"])?;
+    Ok(())
+}
+
+fn merge_pr(pr_url: &str) -> anyhow::Result<()> {
+    let pr_number = extract_pr_number(pr_url)?;
+    info!("Merging PR #{pr_number}...");
+    gh_exec(&["pr", "merge", &pr_number, "--merge", "--delete-branch"])?;
+    Ok(())
+}
+
+fn wait_for_tag_ci(version: &Version) -> anyhow::Result<()> {
+    let tag = format!("v{version}");
+    info!("Waiting for CI on tag {tag}...");
+    gh_exec(&["run", "watch", "--exit-status"])?;
+    Ok(())
+}
+
+fn publish_draft_release(version: &Version) -> anyhow::Result<()> {
+    let tag = format!("v{version}");
+    info!("Publishing draft release {tag}...");
+    gh_exec(&["release", "edit", &tag, "--draft=false"])?;
+    info!("Release v{version} published!");
+    Ok(())
+}
+
 fn bump_changelog(new_version: Version, git_root: &Path) -> Result<(), anyhow::Error> {
     debug!("Updating CHANGELOG.md");
     let repo_name = get_repo_name(git_root)?;
@@ -406,21 +507,23 @@ pub(super) fn go(conf: Config) -> anyhow::Result<()> {
 
     update_cargo_tomls(current_version, new_version, git_root)?;
     run_cargo_clippy()?;
+    run_cargo_test()?;
     let v = format!("v{new_version}");
     git_exec(&["commit", "-m", &v])?;
-    git_exec(&["push"])?;
 
-    info!("Now merge the PR...");
-    io::stderr().flush().context("failed to flush stderr")?;
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .context("failed to read from stdin")?;
+    let pr_url = create_pr(&new_version)?;
+    info!("PR created: {pr_url}");
+    open_pr_in_browser(&pr_url)?;
+    wait_for_ci(&pr_url)?;
+    merge_pr(&pr_url)?;
 
     git_exec(&["checkout", "main"])?;
     git_exec(&["pull", "origin", "main"])?;
     git_exec(&["tag", "-a", &v, "-m", &v])?;
-    git_exec(&["push", "--tags"])?;
+    git_exec(&["push", "origin", &v])?;
+
+    wait_for_tag_ci(&new_version)?;
+    publish_draft_release(&new_version)?;
 
     Ok(())
 }
