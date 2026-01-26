@@ -9,9 +9,8 @@ ignore = ["./files/qutebrowser/config.py"]
 # -------------------------------------
 # bash
 
-[[linter]]
-name = "bash"
-cmd = "bash -n --"
+[[tool]]
+name = "bash -n"
 files = ["*.bash"]
 
 [[linter]]
@@ -29,10 +28,8 @@ configs = []
 # -------------------------------------
 # json
 
-[[linter]]
-name = "jq"
-cmd = "jq null --"
-files = ["*.json"]
+[[tool]]
+name = "jq null"
 
 # -------------------------------------
 # make
@@ -71,6 +68,7 @@ configs = []
 [[tool]]
 name = "ty"
 configs = []
+granularity = "individual"
 
 # -------------------------------------
 # rust
