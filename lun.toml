@@ -68,7 +68,7 @@ configs = []
 [[tool]]
 name = "ty"
 configs = []
-granularity = "individual"
+args = "one"
 
 # -------------------------------------
 # rust
@@ -107,7 +107,7 @@ name = "ttlint"
 name = "xref"
 cmd = "./scripts/lint/xref.py  --"
 files = ["*"]
-granularity = "batch"
+args = "all"
 
 # -------------------------------------
 # zsh
