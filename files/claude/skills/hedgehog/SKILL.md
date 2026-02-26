@@ -71,3 +71,22 @@ following properties:
   - `mzero >>= f == mzero`
   - `m >> mzero == mzero`
 
+## Property quick reference
+
+<!-- From https://github.com/trailofbits/skills/tree/52314112b97ff0cf0364ae9875ad6f69023b5e2d/plugins/property-based-testing -->
+
+| Property | Formula | When to Use |
+|----------|---------|-------------|
+| **Roundtrip** | `decode(encode(x)) == x` | Serialization, conversion pairs |
+| **Idempotence** | `f(f(x)) == f(x)` | Normalization, formatting, sorting |
+| **Invariant** | Property holds before/after | Any transformation |
+| **Commutativity** | `f(a, b) == f(b, a)` | Binary/set operations |
+| **Associativity** | `f(f(a,b), c) == f(a, f(b,c))` | Combining operations |
+| **Identity** | `f(x, identity) == x` | Operations with neutral element |
+| **Inverse** | `f(g(x)) == x` | encrypt/decrypt, compress/decompress |
+| **Oracle** | `new_impl(x) == reference(x)` | Optimization, refactoring |
+| **Easy to Verify** | `is_sorted(sort(x))` | Complex algorithms |
+| **No Exception** | No crash on valid input | Baseline property |
+
+**Strength hierarchy** (weakest to strongest):
+No Exception → Type Preservation → Invariant → Idempotence → Roundtrip
