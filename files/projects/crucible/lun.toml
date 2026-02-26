@@ -1,0 +1,14 @@
+ignore = ["./dependencies/**", "./crux-mir/Concurrency.md"]
+
+[[tool]]
+name = "bash -n"
+
+[[tool]]
+name = "hlint"
+configs = []
+
+[[tool]]
+name = "jq null"
+
+[[tool]]
+name = "mdlynx"
