@@ -183,8 +183,13 @@ impl Project {
             lun,
             lun_config.as_deref(),
         );
-        // TODO: continue integrating `min_confidence`
-        self.infer_fix(build_system, has_lint_py, lun, lun_config.as_deref());
+        self.infer_fix(
+            build_system,
+            min_confidence,
+            has_lint_py,
+            lun,
+            lun_config.as_deref(),
+        );
         self.infer_build(build_system);
         self.infer_test(build_system);
         self.infer_run(build_system);
@@ -300,6 +305,7 @@ impl Project {
     fn infer_fix(
         &mut self,
         build_system: Option<system::System>,
+        min_confidence: Confidence,
         has_lint_py: bool,
         lun: bool,
         lun_config: Option<&Path>,
@@ -329,18 +335,20 @@ impl Project {
             });
         } else {
             self.fix = match build_system {
-                Some(system::System::Cargo) => Some(Cmd::Cmd {
-                    bin: "cargo",
-                    args: &[
-                        "clippy",
-                        "--allow-dirty",
-                        "--fix",
-                        "--",
-                        "--deny",
-                        "warnings",
-                    ],
-                    glob: None,
-                }),
+                Some(system::System::Cargo) if min_confidence <= Confidence::High => {
+                    Some(Cmd::Cmd {
+                        bin: "cargo",
+                        args: &[
+                            "clippy",
+                            "--allow-dirty",
+                            "--fix",
+                            "--",
+                            "--deny",
+                            "warnings",
+                        ],
+                        glob: None,
+                    })
+                }
                 _ => None,
             };
         }
