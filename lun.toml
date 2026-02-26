@@ -47,7 +47,7 @@ name = "mdlynx"
 
 [[tool]]
 name = "typos"
-configs = []
+configs = ["_typos.toml"]
 
 # -------------------------------------
 # python

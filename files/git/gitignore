@@ -1,4 +1,5 @@
 **/log
+**/.claude/settings.local.json
 .claude/
 .envrc
 .clang_complete
@@ -19,7 +20,6 @@ project/
 **/target/
 
 # Compiled source #
-# *.com # Breaks on golang's github.com paths
 *.class
 *.dll
 *.exe

@@ -1,6 +1,9 @@
 #![warn(clippy::expect_used)]
 #![warn(clippy::panic)]
 #![warn(clippy::unwrap_used)]
+#![cfg_attr(test, allow(clippy::expect_used))]
+#![cfg_attr(test, allow(clippy::panic))]
+#![cfg_attr(test, allow(clippy::unwrap_used))]
 
 use clap::Parser as _;
 use tracing::{Level, trace};
