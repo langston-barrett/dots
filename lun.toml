@@ -108,6 +108,7 @@ name = "xref"
 cmd = "./scripts/lint/xref.py  --"
 files = ["*"]
 args = "all"
+include_unchanged = true
 
 # -------------------------------------
 # zsh

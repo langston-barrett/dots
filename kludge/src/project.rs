@@ -113,6 +113,8 @@ pub(crate) struct Project {
     pub(crate) build: Option<Cmd>,
     pub(crate) test: Option<Cmd>,
     pub(crate) run: Option<Cmd>,
+    pub(crate) doc: Option<Cmd>,
+    pub(crate) install: Option<Cmd>,
     pub(crate) watch: Option<Cmd>,
     pub(crate) aliases: &'static [(&'static str, &'static str)],
 }
@@ -193,6 +195,8 @@ impl Project {
         self.infer_build(build_system);
         self.infer_test(build_system);
         self.infer_run(build_system);
+        self.infer_doc(build_system);
+        self.infer_install(build_system);
         self.infer_watch(build_system);
     }
 
@@ -421,6 +425,60 @@ impl Project {
         };
     }
 
+    fn infer_doc(&mut self, build_system: Option<system::System>) {
+        if self.doc.is_some() {
+            return;
+        }
+
+        // Check for mdbook
+        if Path::new("book.toml").exists() {
+            self.doc = Some(Cmd::Cmd {
+                bin: "mdbook",
+                args: &["build"],
+                glob: None,
+            });
+            return;
+        }
+
+        self.doc = match build_system {
+            Some(system::System::Cabal) => Some(Cmd::Cmd {
+                bin: "cabal",
+                args: &["haddock"],
+                glob: None,
+            }),
+            Some(system::System::Cargo) => Some(Cmd::Cmd {
+                bin: "cargo",
+                args: &["doc"],
+                glob: None,
+            }),
+            Some(system::System::Make) | None => None,
+        };
+    }
+
+    fn infer_install(&mut self, build_system: Option<system::System>) {
+        if self.install.is_some() {
+            return;
+        }
+        self.install = match build_system {
+            Some(system::System::Cabal) => Some(Cmd::Cmd {
+                bin: "cabal",
+                args: &["install"],
+                glob: None,
+            }),
+            Some(system::System::Cargo) => Some(Cmd::Cmd {
+                bin: "cargo",
+                args: &["install"],
+                glob: None,
+            }),
+            Some(system::System::Make) => Some(Cmd::Cmd {
+                bin: "make",
+                args: &["install"],
+                glob: None,
+            }),
+            None => None,
+        };
+    }
+
     fn infer_watch(&mut self, build_system: Option<system::System>) {
         if self.watch.is_some() {
             return;
@@ -472,6 +530,8 @@ const CRUCIBLE_LLVM_CLI: Project = Project {
         args: &["run", "exe:crucible-llvm", "--"],
         glob: None,
     }),
+    doc: None,
+    install: None,
     watch: Some(Cmd::Cmd {
         bin: "ghcid",
         args: &[],
@@ -491,6 +551,8 @@ const DETECT: Project = Project {
     build: None,
     test: None,
     run: None,
+    doc: None,
+    install: None,
     watch: None,
     aliases: &[
         (
@@ -564,6 +626,8 @@ const GREASE: Project = Project {
         args: &["run", "exe:grease", "--"],
         glob: None,
     }),
+    doc: None,
+    install: None,
     watch: Some(Cmd::Cmd {
         bin: "ghcid",
         args: &[
@@ -605,6 +669,8 @@ const SCREACH: Project = Project {
         args: &["run", "exe:screach", "--"],
         glob: None,
     }),
+    doc: None,
+    install: None,
     watch: Some(Cmd::Cmd {
         bin: "ghcid",
         args: &["--command", "cabal repl lib:screach exe:screach"],
@@ -686,6 +752,12 @@ pub(crate) fn project_expansions(project: &Project) -> Vec<(&'static str, String
     }
     if let Some(cmd) = &project.run {
         expansions.push(("r", cmd.to_command_line(false)));
+    }
+    if let Some(cmd) = &project.doc {
+        expansions.push(("d", cmd.to_command_line(false)));
+    }
+    if let Some(cmd) = &project.install {
+        expansions.push(("i", cmd.to_command_line(false)));
     }
     if let Some(cmd) = &project.watch {
         expansions.push(("w", cmd.to_command_line(false)));

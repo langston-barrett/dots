@@ -1,10 +1,8 @@
 // def: kludge-expand
 
-use std::env;
 use std::process;
 
 use crate::project::{self};
-use crate::system as build;
 
 const CURSOR: char = '•';
 
@@ -19,28 +17,6 @@ pub(crate) struct Config {
     enter: bool,
     lbuf: String,
     rbuf: String,
-}
-
-// TODO: integrate in Project
-fn expand_build_system_special(lbuf: &str) -> Option<String> {
-    let pwd = env::current_dir().ok()?;
-    let build_system = build::System::detect(pwd);
-
-    if lbuf == "d" {
-        match build_system {
-            Some(build::System::Cabal) => Some(String::from("cabal haddock ")),
-            _ => None,
-        }
-    } else if lbuf == "i" {
-        match build_system {
-            Some(build::System::Cabal) => Some(String::from("cabal install ")),
-            Some(build::System::Cargo) => Some(String::from("cargo install ")),
-            Some(build::System::Make) => Some(String::from("make install ")),
-            _ => None,
-        }
-    } else {
-        None
-    }
 }
 
 const CLANG_LLVM: &str = "clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -c";
@@ -314,7 +290,6 @@ fn expand_advanced(lbuf: &str, rbuf: &str, enter: bool) -> Option<(String, Strin
 fn expand(lbuf: String, rbuf: String, enter: bool) -> Option<(String, String)> {
     expand_project(&lbuf, &rbuf)
         .or_else(|| expand_anywhere(&lbuf, &rbuf, enter))
-        .or_else(|| expand_build_system_special(&lbuf).map(|s| (s, String::new())))
         .or_else(|| expand_advanced(&lbuf, &rbuf, enter))
 }
 
@@ -380,6 +355,16 @@ mod test {
 
     fn test_expand_is(l: &str, r: &str, result: &str) {
         assert_eq!(test_expand(l, r), Some((result.to_owned(), String::new())));
+    }
+
+    #[test]
+    fn expand_d() {
+        test_expand_is("d", "", "cargo doc");
+    }
+
+    #[test]
+    fn expand_i() {
+        test_expand_is("i", "", "cargo install");
     }
 
     #[test]
