@@ -165,12 +165,26 @@ impl Project {
             return;
         };
         let build_system = system::System::detect(&pwd);
-        let lun = Path::new("lun.toml").exists();
+        let local_lun = Path::new("lun.toml").exists();
+        let lun_config = find_lun_config();
+        let lun = local_lun || lun_config.is_some();
         let has_lint_py = Path::new("scripts/lint/lint.py").exists();
-        self.infer_lint(build_system, min_confidence, has_lint_py, lun);
-        self.infer_format(build_system, min_confidence, has_lint_py, lun);
+        self.infer_lint(
+            build_system,
+            min_confidence,
+            has_lint_py,
+            lun,
+            lun_config.as_deref(),
+        );
+        self.infer_format(
+            build_system,
+            min_confidence,
+            has_lint_py,
+            lun,
+            lun_config.as_deref(),
+        );
         // TODO: continue integrating `min_confidence`
-        self.infer_fix(build_system, has_lint_py, lun);
+        self.infer_fix(build_system, has_lint_py, lun, lun_config.as_deref());
         self.infer_build(build_system);
         self.infer_test(build_system);
         self.infer_run(build_system);
@@ -183,16 +197,24 @@ impl Project {
         min_confidence: Confidence,
         has_lint_py: bool,
         lun: bool,
+        lun_config: Option<&Path>,
     ) {
         if self.lint.is_some() {
             return;
         }
         self.lint = if lun {
-            Some(Cmd::Cmd {
-                bin: "lun",
-                args: &["run"],
-                glob: None,
-            })
+            if let Some(config_path) = lun_config {
+                Some(Cmd::Shell(format!(
+                    "lun --config={} run",
+                    config_path.display()
+                )))
+            } else {
+                Some(Cmd::Cmd {
+                    bin: "lun",
+                    args: &["run"],
+                    glob: None,
+                })
+            }
         } else if has_lint_py {
             Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
@@ -227,16 +249,24 @@ impl Project {
         min_confidence: Confidence,
         has_lint_py: bool,
         lun: bool,
+        lun_config: Option<&Path>,
     ) {
         if self.format.is_some() {
             return;
         }
         self.format = if lun {
-            Some(Cmd::Cmd {
-                bin: "lun",
-                args: &["run", "--format"],
-                glob: None,
-            })
+            if let Some(config_path) = lun_config {
+                Some(Cmd::Shell(format!(
+                    "lun --config={} run --format",
+                    config_path.display()
+                )))
+            } else {
+                Some(Cmd::Cmd {
+                    bin: "lun",
+                    args: &["run", "--format"],
+                    glob: None,
+                })
+            }
         } else if has_lint_py {
             Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
@@ -267,17 +297,30 @@ impl Project {
         }
     }
 
-    fn infer_fix(&mut self, build_system: Option<system::System>, has_lint_py: bool, lun: bool) {
+    fn infer_fix(
+        &mut self,
+        build_system: Option<system::System>,
+        has_lint_py: bool,
+        lun: bool,
+        lun_config: Option<&Path>,
+    ) {
         if self.fix.is_some() {
             return;
         }
 
         if lun {
-            self.fix = Some(Cmd::Cmd {
-                bin: "lun",
-                args: &["run", "--fix"],
-                glob: None,
-            });
+            self.fix = if let Some(config_path) = lun_config {
+                Some(Cmd::Shell(format!(
+                    "lun --config={} run --fix",
+                    config_path.display()
+                )))
+            } else {
+                Some(Cmd::Cmd {
+                    bin: "lun",
+                    args: &["run", "--fix"],
+                    glob: None,
+                })
+            };
         } else if has_lint_py {
             self.fix = Some(Cmd::Cmd {
                 bin: "scripts/lint/lint.py",
@@ -577,6 +620,21 @@ pub(crate) fn git_root_name() -> Option<String> {
         .file_name()
         .and_then(|n| n.to_str())
         .map(ToString::to_string)
+}
+
+/// Find lun.toml in ~/code/dots/files/projects/`<GIT_ROOT_PARENT_DIR_NAME>`/lun.toml
+fn find_lun_config() -> Option<std::path::PathBuf> {
+    let git_root_name = git_root_name()?;
+    let home = env::var("HOME").ok()?;
+    let config_path = Path::new(&home)
+        .join("code/dots/files/projects")
+        .join(&git_root_name)
+        .join("lun.toml");
+    if config_path.exists() {
+        Some(config_path)
+    } else {
+        None
+    }
 }
 
 pub(crate) fn project() -> Option<&'static Project> {
