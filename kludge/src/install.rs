@@ -110,6 +110,7 @@ mod tests {
         excluded.insert("xres".to_string());
         // nix subdirectories are imported/included by other nix configs
         excluded.insert("nix".to_string());
+        excluded.insert("projects".to_string());
 
         excluded
     }
