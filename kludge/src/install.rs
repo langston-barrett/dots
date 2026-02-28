@@ -1,4 +1,4 @@
-use anyhow::Context as _;
+use anyhow::{Context as _, bail};
 use std::{
     env, fs,
     os::unix::fs::symlink,
@@ -75,6 +75,9 @@ pub(super) fn go() -> anyhow::Result<()> {
             .with_context(|| format!("failed to create parent directory for {}", dst.display()))?;
 
         let expected_target = here.join("files").join(src);
+        if !expected_target.exists() {
+            bail!("run from dots root");
+        }
 
         if dst.is_symlink() {
             if let Ok(current_target) = fs::read_link(&dst)
