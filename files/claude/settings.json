@@ -2,9 +2,34 @@
   "permissions": {
     "allow": [
       "Bash(cabal build:*)",
-      "Bash(ls:*)",
+      "Bash(cabal run:*)",
+      "Bash(cabal test:*)",
+      "Bash(cargo build:*)",
+      "Bash(cargo run:*)",
+      "Bash(cargo test:*)",
+      "Bash(cat:*)",
+      "Bash(cut:*)",
+      "Bash(date:*)",
+      "Bash(df:*)",
+      "Bash(diff:*)",
+      "Bash(du:*)",
+      "Bash(echo:*)",
+      "Bash(file:*)",
+      "Bash(find:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
       "Bash(grep:*)",
-      "Bash(wc:*)"
+      "Bash(head:*)",
+      "Bash(ls:*)",
+      "Bash(pwd:*)",
+      "Bash(sort:*)",
+      "Bash(tail:*)",
+      "Bash(tree:*)",
+      "Bash(uniq:*)",
+      "Bash(wc:*)",
+      "Bash(which:*)",
+      "Bash(whoami:*)"
     ]
   },
   "hooks": {
