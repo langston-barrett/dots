@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   dnsutils \
   aggregate \
   jq \
-  nano \
+  racket \
   vim \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -66,26 +66,6 @@ RUN case ${TARGETPLATFORM} in \
     rm solvers.zip && \
     chmod +x *
 
-ENV PATH=/root/ghcup-download/bin:/root/.ghcup/bin:$PATH
-RUN case ${TARGETPLATFORM} in \
-      "linux/amd64") \
-        GHCUP_ARCH=x86_64 ;; \
-      "linux/arm64" | "linux/arm64/v8") \
-        GHCUP_ARCH=aarch64 ;; \
-      *) \
-        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2 \
-        exit 1 ;; \
-    esac && \
-    mkdir -p /root/ghcup-download/bin && \
-    curl -L "https://downloads.haskell.org/~ghcup/${GHCUP_VER}/${GHCUP_ARCH}-linux-ghcup-${GHCUP_VER}" -o /root/ghcup-download/bin/ghcup && \
-    chmod +x /root/ghcup-download/bin/ghcup
-RUN mkdir -p /root/.ghcup && \
-    ghcup --version && \
-    ghcup install cabal ${CABAL_VER} && \
-    ghcup install ghc ${GHC_VER} && \
-    ghcup set ghc ${GHC_VER}
-RUN cabal v2-update
-
 # Support Unicode via UTF-8
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
     locale-gen
@@ -100,6 +80,27 @@ RUN mkdir -p /usr/local/share/npm-global && \
   chown -R node:node /usr/local/share
 
 ARG USERNAME=node
+
+ENV HOME=/home/node
+ENV PATH=/home/node/ghcup-download/bin:/home/node/.ghcup/bin:$PATH
+RUN case ${TARGETPLATFORM} in \
+      "linux/amd64") \
+        GHCUP_ARCH=x86_64 ;; \
+      "linux/arm64" | "linux/arm64/v8") \
+        GHCUP_ARCH=aarch64 ;; \
+      *) \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2 \
+        exit 1 ;; \
+    esac && \
+    mkdir -p /home/node/ghcup-download/bin && \
+    curl -L "https://downloads.haskell.org/~ghcup/${GHCUP_VER}/${GHCUP_ARCH}-linux-ghcup-${GHCUP_VER}" -o /home/node/ghcup-download/bin/ghcup && \
+    chmod +x /home/node/ghcup-download/bin/ghcup && \
+    mkdir -p /home/node/.ghcup && \
+    ghcup --version && \
+    ghcup install cabal ${CABAL_VER} && \
+    ghcup install ghc ${GHC_VER} && \
+    ghcup set ghc ${GHC_VER}
+RUN cabal v2-update
 
 # Persist bash history.
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \

@@ -77,6 +77,8 @@ for domain in \
     "haskell.org" \
     "hackage.haskell.org" \
     "hackage-content.haskell.org" \
+    "racket-lang.org" \
+    "docs.racket-lang.org" \
     "libs.rs"; do
     echo "Resolving $domain..."
     ips=$(dig +noall +answer A "$domain" | awk '$4 == "A" {print $5}')
