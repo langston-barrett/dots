@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:25-trixie
 
 ARG TZ
 ENV TZ="$TZ"
@@ -7,25 +7,29 @@ ARG CLAUDE_CODE_VERSION=latest
 
 # Install basic development tools and iptables/ipset
 RUN apt-get update && apt-get install -y --no-install-recommends \
-  curl \
-  less \
-  git \
-  procps \
-  sudo \
-  fzf \
-  zsh \
-  man-db \
-  unzip \
-  gnupg2 \
-  gh \
-  iptables \
-  ipset \
-  iproute2 \
-  dnsutils \
   aggregate \
+  clang \
+  curl \
+  dnsutils \
+  fzf \
+  gh \
+  git \
+  gnupg2 \
+  iproute2 \
+  ipset \
+  iptables \
   jq \
+  just \
+  less \
+  linux-perf \
+  man-db \
+  procps \
   racket \
+  sudo \
+  unzip \
+  valgrind \
   vim \
+  zsh \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ghc
@@ -100,7 +104,7 @@ RUN case ${TARGETPLATFORM} in \
     ghcup install cabal ${CABAL_VER} && \
     ghcup install ghc ${GHC_VER} && \
     ghcup set ghc ${GHC_VER}
-RUN cabal v2-update
+RUN cabal v2-update && chown -R node:node /home/node
 
 # Persist bash history.
 RUN SNIPPET="export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
