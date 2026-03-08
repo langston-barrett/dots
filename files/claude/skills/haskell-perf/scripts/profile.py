@@ -145,7 +145,6 @@ def extract_rts_stats(stats_file: Path) -> Dict[str, str]:
         "bytes_alloc": r"([\d,]+)\s+bytes allocated in the heap",
         "bytes_copied": r"([\d,]+)\s+bytes copied during GC",
         "max_residency": r"([\d,]+)\s+bytes maximum residency",
-        "total_time": r"Total\s+time\s+([\d.]+)s",
     }
 
     for key, pattern in patterns.items():
@@ -468,7 +467,6 @@ def main():
     print(f"  Bytes allocated:  {rts_stats.get('bytes_alloc', 'N/A')}")
     print(f"  Bytes copied (GC): {rts_stats.get('bytes_copied', 'N/A')}")
     print(f"  Max residency:    {rts_stats.get('max_residency', 'N/A')} bytes")
-    print(f"  Total time:       {rts_stats.get('total_time', 'N/A')}s")
     print()
 
     if perf_stats.supported:

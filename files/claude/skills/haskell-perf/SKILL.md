@@ -32,13 +32,13 @@ This takes a long time (30+ minutes) for a fresh build with profiling. Run in ba
 
 ### Detailed profiling
 
-Profile a specific test case or executable:
+Profile a specific test case:
 
 ```bash
 # Profile with RTS stats, perf counters, heap profile, cost centers
 .agents/skills/perf/scripts/profile.py <executable> <args>
 
-# Optional: include valgrind instruction counting (slow)
+# Include valgrind instruction counting if perf is not working/available
 .agents/skills/perf/scripts/profile.py --with-valgrind <executable> <args>
 
 # Output: profile-results-<timestamp>/ directory with:
@@ -48,50 +48,33 @@ Profile a specific test case or executable:
 #   - Summary printed to stdout
 ```
 
-### Test suite timing
+## Commentary
 
-Record timing for each test in the test suite:
-
-```bash
-# Run test suite and record per-test timings
-.agents/skills/perf/scripts/test-timings.py <executable>
-
-# Output:
-#   - Prints summary to stdout (slowest tests, pass/fail counts)
-#   - Saves detailed results to test-timings-<timestamp>.txt
-#   - Handles duplicate test names correctly
-```
-
-Use this to establish baseline performance and identify slow tests.
+While quick fixes line pragmas (`INLINE`, `SPECIALIZE`) or strictness
+annotations can be helpful, it is often most impactful to make changes to the
+overall algorithm or structure of the computation. Instead of just looking
+locally at the cost centers, think broadly about the context. Why is this
+function a hot spot? What could be done to restructure the computation more
+broadly? Don't be afraid to make big changes.
 
 ## Workflow
 
-For each improvement identified, make a TODO list with the following steps:
+For each improvement identified, follow these steps:
 
 - If possible, identify an existing test or create a new test that decisively demonstrates the particular slowdown
-- Before making the improvement, establish baseline metrics:
-
-  - Run `.agents/skills/perf/scripts/test-timings.py` to capture per-test timings
-  - Save the output file (test-timings-<timestamp>.txt) for comparison
-  - On a particular test, run `.agents/skills/perf/scripts/profile.py` to get detailed metrics
-
+- Before making the improvement, establish baseline metrics using `profile.py`
 - If the change is in a submodule, make a new `perf` branch on that submodule before making changes
 - Make the change
-- Re-run both measurement scripts and compare:
-
-  - Compare detailed metrics
-  - Check if target tests got faster
-  - Compare total test suite time
-
-- Note that wall clock timings are noisy, so focus more on the detailed `profile.py` output
+- Re-run `profiile.py` and compare the metrics
 - If the change resulted in the expected improvement, commit the change
-- The commit message should include a brief overview of the improved stats
+- The commit message should the impact on instruction count and bytes allocated.
 
 ## Important notes
 
 **CRUCIAL!**
 
-You *must* collect before/after measurements using `profile.py` for each change.
+You MUST collect before/after measurements using `profile.py` for each change.
 Make only one change at a time.
 
-Wall clock time is noisy, don't depend on it.
+Wall clock time is noisy, it's not even worth measuring. DO NOT USE wall-clock
+time.
