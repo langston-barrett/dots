@@ -8,7 +8,9 @@ ARG CLAUDE_CODE_VERSION=latest
 # Install basic development tools and iptables/ipset
 RUN apt-get update && apt-get install -y --no-install-recommends \
   aggregate \
+  build-essential \
   clang \
+  cmake \
   curl \
   dnsutils \
   fzf \
@@ -21,9 +23,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   just \
   less \
+  libclang-dev \
+  libglib2.0-dev \
+  libpixman-1-dev \
+  libslirp-dev \
   linux-perf \
   man-db \
+  ninja-build \
+  pkg-config \
   procps \
+  python3-venv \
   racket \
   sudo \
   unzip \
@@ -47,6 +56,18 @@ RUN apt update && \
       pkg-config zlib1g-dev \
       # Miscellaneous \
       git locales unzip wget && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG LLVM=21
+ARG CLANG=19
+RUN echo "deb http://apt.llvm.org/trixie/ llvm-toolchain-trixie-${LLVM} main" > /etc/apt/sources.list.d/apt.llvm.org.list && \
+    wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc && \
+    apt-get update && \
+    apt-get install -y \
+      clang-${CLANG} \
+      libclang-${CLANG}-dev \
+      llvm-${LLVM}-dev \
+      llvm-${LLVM}-tools && \
     rm -rf /var/lib/apt/lists/*
 
 ARG TARGETPLATFORM
