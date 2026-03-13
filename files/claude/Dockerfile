@@ -62,7 +62,7 @@ RUN case ${TARGETPLATFORM} in \
       "linux/arm64" | "linux/arm64/v8") \
         WHAT4_SOLVERS_ARCH=ARM64 ;; \
       *) \
-        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2 \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
         exit 1 ;; \
     esac && \
     curl -o solvers.zip -sL "https://github.com/GaloisInc/what4-solvers/releases/download/${WHAT4_SOLVERS_VER}/ubuntu-24.04-${WHAT4_SOLVERS_ARCH}-bin.zip" && \
@@ -76,8 +76,6 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && \
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
-
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
 # Ensure default node user has access to /usr/local/share
 RUN mkdir -p /usr/local/share/npm-global && \
@@ -93,7 +91,7 @@ RUN case ${TARGETPLATFORM} in \
       "linux/arm64" | "linux/arm64/v8") \
         GHCUP_ARCH=aarch64 ;; \
       *) \
-        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2 \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
         exit 1 ;; \
     esac && \
     mkdir -p /home/node/ghcup-download/bin && \
@@ -161,4 +159,16 @@ USER root
 RUN chmod +x /usr/local/bin/init-firewall.sh && \
   echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
   chmod 0440 /etc/sudoers.d/node-firewall
+
 USER node
+
+# Install rustup and cargo as node user
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN . ~/.cargo/env && \
+    git clone https://github.com/langston-barrett/lun && \
+    cd lun && \
+    cargo install --path=. && \
+    cd .. && \
+    rm -rf lun && \
+    lun --version
