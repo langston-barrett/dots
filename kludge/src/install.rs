@@ -29,7 +29,7 @@ fn get_mappings(
         ("scripts", home.join("scripts")),
         ("sh.d", config_home.join("sh.d")),
         ("ssh", home.join(".ssh/config")),
-        ("taskrc", config_home.join("task/taskrc")),
+        ("taskrc", home.join("task/taskrc")),
         ("tmux", config_home.join("tmux")),
         ("tmux/tmux.conf", home.join(".tmux.conf")),
         ("unsplash", local_share.join("wallpapers/unsplash")),

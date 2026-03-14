@@ -86,12 +86,17 @@ pub(super) fn go() -> anyhow::Result<()> {
     #[cfg(target_os = "linux")]
     let p = "/home/langston/.launcher";
 
+    #[cfg(target_os = "linux")]
+    let become_bind = "--bind=enter:become(setsid -f {2})";
+    #[cfg(target_os = "macos")]
+    let become_bind = "--bind=enter:become({2})";
+
     if let Ok(stdin) = fs::File::open(p) {
         Err(process::Command::new("pick")
             .stdin(stdin)
             .arg(format!("--delimiter={DELIM}"))
             .arg("--with-nth={1}")
-            .arg("--bind=enter:become({2})")
+            .arg(become_bind)
             .arg("--preview-window=hidden")
             .exec())
         .context("failed to execute pick command")?;
@@ -125,7 +130,7 @@ pub(super) fn go() -> anyhow::Result<()> {
         .stdin(stdin)
         .arg(format!("--delimiter={DELIM}"))
         .arg("--with-nth={1}")
-        .arg("--bind=enter:become(run {2})")
+        .arg(become_bind)
         .arg("--preview-window=hidden")
         .exec())
     .context("failed to execute pick command")?
