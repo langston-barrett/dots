@@ -75,6 +75,21 @@ fn mine(linted: bool) -> Result<(), anyhow::Error> {
     Ok(())
 }
 
+fn check_claude_metadata() -> Result<(), anyhow::Error> {
+    // Check .git/config for Claude-related metadata
+    let git_config_path = Path::new(".git/config");
+    if git_config_path.exists() {
+        let config_content =
+            std::fs::read_to_string(git_config_path).context("Failed to read .git/config")?;
+
+        if config_content.contains("claude") || config_content.contains("Claude") {
+            bail!("Claude metadata found in .git/config - please remove before committing");
+        }
+    }
+
+    Ok(())
+}
+
 pub(super) fn go() -> anyhow::Result<()> {
     if env::var("KLUDGE_SKIP_PRE_COMMIT").is_ok_and(|v| v != "0") {
         return Ok(());
@@ -97,6 +112,7 @@ pub(super) fn go() -> anyhow::Result<()> {
 
     if project::mine() {
         mine(linted)?;
+        check_claude_metadata()?;
     }
 
     Ok(())
