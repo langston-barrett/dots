@@ -593,27 +593,8 @@ const DETECT: Project = Project {
 
 const GREASE: Project = Project {
     name: "grease",
-    lint: Some(Cmd::Cmd {
-        bin: "make",
-        args: &[
-            "-j8",
-            "-f",
-            "scripts/lint/Makefile",
-            "hs",
-            "make",
-            "md",
-            "py",
-            "sh",
-            "merge",
-            "whitespace",
-        ],
-        glob: None,
-    }),
-    format: Some(Cmd::Cmd {
-        bin: "make",
-        args: &["-j8", "-f", "scripts/lint/Makefile", "fmt"],
-        glob: None,
-    }),
+    lint: None,
+    format: None,
     fix: None,
     build: None, // can be guessed from `.cabal`
     test: Some(Cmd::Cmd {

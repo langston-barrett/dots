@@ -171,4 +171,29 @@ RUN . ~/.cargo/env && \
     cargo install --path=. && \
     cd .. && \
     rm -rf lun && \
-    lun --version
+    cargo install mdlynx && \
+    cargo install ttlint
+
+# Install coursier and spotless for Scala
+RUN mkdir -p /home/node/.local/bin && \
+    case ${TARGETPLATFORM} in \
+      "linux/amd64") \
+        CS_ARCH=x86_64 ;; \
+      "linux/arm64" | "linux/arm64/v8") \
+        CS_ARCH=aarch64 ;; \
+      *) \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
+        exit 1 ;; \
+    esac && \
+    curl -fL "https://github.com/coursier/launchers/raw/master/cs-${CS_ARCH}-pc-linux.gz" | gzip -d > /home/node/.local/bin/cs && \
+    chmod +x /home/node/.local/bin/cs && \
+    /home/node/.local/bin/cs install scalafmt && \
+    /home/node/.local/bin/cs install scala-cli
+
+# Install Gradle
+ARG GRADLE_VERSION=8.13
+RUN wget "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -P /tmp && \
+    unzip -d /home/node/.local/share /tmp/gradle-${GRADLE_VERSION}-bin.zip && \
+    rm /tmp/gradle-${GRADLE_VERSION}-bin.zip
+
+ENV PATH=/home/node/.local/share/coursier/bin:/home/node/.local/share/gradle-${GRADLE_VERSION}/bin:$PATH
