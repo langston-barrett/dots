@@ -28,15 +28,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   sudo \
   unzip \
   valgrind \
+  wget \
   vim \
   zsh \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+RUN wget https://musl.cc/arm-linux-musleabi-cross.tgz
+RUN tar xzf arm-linux-musleabi-cross.tgz
+RUN ln -s /opt/arm-linux-musleabi-cross/bin/arm-linux-musleabi-gcc /usr/local/bin/armv7l-linux-musleabi-gcc
+RUN ln -s /opt/arm-linux-musleabi-cross/bin/arm-linux-musleabi-strip /usr/local/bin/armv7l-linux-musleabi-strip
+ENV PATH="/opt/arm-linux-musleabi-cross/bin:$PATH"
+RUN wget https://musl.cc/powerpc-linux-musl-cross.tgz
+RUN tar xzf powerpc-linux-musl-cross.tgz
+ENV PATH="/opt/powerpc-linux-musl-cross/bin:$PATH"
 
 # ghc
 RUN apt update && \
     apt install -y \
       # ghcup requirements \
-      build-essential curl libffi-dev libffi8 libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 \
+      build-essential libffi-dev libffi8 libgmp-dev libgmp10 libncurses-dev libncurses6 libtinfo6 \
       # Although ghcup's version of GHC shouldn't require libnuma, the aarch64 \
       # version does impose this requirement for unknown reasons. \
       # (See https://gitlab.haskell.org/ghc/ghc/-/issues/20876#note_399802) \
@@ -102,6 +113,9 @@ RUN case ${TARGETPLATFORM} in \
     ghcup install cabal ${CABAL_VER} && \
     ghcup install ghc ${GHC_VER} && \
     ghcup set ghc ${GHC_VER}
+RUN cabal update && \
+    cabal install happy --install-method=copy --installdir=/usr/local/bin && \
+    cabal install alex-3.2.7.4 --install-method=copy --installdir=/usr/local/bin
 RUN cabal v2-update && chown -R node:node /home/node
 
 # Persist bash history.

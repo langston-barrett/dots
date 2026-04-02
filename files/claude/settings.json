@@ -40,7 +40,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "notify \"Claude needs help\""
+            "command": "notify \"AI needs help\""
+          },
+          {
+            "type": "command",
+            "command": "mkdir -p ~/.config/kludge/sentinels; T=$(date +%s); P=$(basename \"$PWD\"); H=$(hostname); F=$(echo \"$PWD\" | tr '/' '-'); printf '{\"type\":\"ai_feedback\",\"description\":\"AI in %s needs feedback\",\"created_at\":%s,\"metadata\":{\"project\":\"%s\",\"project_path\":\"%s\",\"hostname\":\"%s\",\"sessions_dir\":\"%s\"}}\\n' \"$P\" \"$T\" \"$P\" \"$PWD\" \"$H\" \"$HOME/.claude/projects\" > ~/.config/kludge/sentinels/ai-${F}.json"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "rm -f ~/.config/kludge/sentinels/ai-*.json ~/.config/kludge/sentinels/claude-*.json"
           }
         ]
       }
@@ -50,5 +65,6 @@
     "rust-analyzer-lsp@claude-plugins-official": true,
     "clangd-lsp@claude-plugins-official": true,
     "skill-creator@claude-plugins-official": true
-  }
+  },
+  "skipDangerousModePermissionPrompt": true
 }
