@@ -6,7 +6,7 @@ use crate::project::{self, Confidence};
 
 #[derive(Debug, clap::Parser)]
 pub(crate) struct Config {
-    #[arg(default_value = "")]
+    #[arg(num_args = 0..)]
     pub(crate) files: Vec<PathBuf>,
 }
 

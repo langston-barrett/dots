@@ -49,9 +49,6 @@ fn remove_claude_metadata() -> Result<(), anyhow::Error> {
 fn run_checks() -> Result<(), anyhow::Error> {
     let mut project = project::project().cloned().unwrap_or_default();
     project.infer(project::Confidence::High);
-    if let Some(cmd) = &project.format {
-        exec(cmd.to_command(true))?;
-    }
     if let Some(cmd) = &project.lint {
         exec(cmd.to_command(true))?;
     }
