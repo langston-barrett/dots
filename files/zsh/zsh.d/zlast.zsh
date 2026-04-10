@@ -17,7 +17,7 @@ if ! installed zbr; then
 fi
 
 kludge-space() {
-  out=$(env RUST_BACKTRACE=1 kludge zsh expand -- "${LBUFFER}" "${RBUFFER}")
+  out=$(env RUST_BACKTRACE=1 kludge zsh expand -- "${LBUFFER}" "${RBUFFER}" </dev/null)
   if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
     BUFFER=${out/•/}
     CURSOR=${out[(Ie)•]}
@@ -29,7 +29,7 @@ kludge-space() {
 zle -N kludge-space
 
 kludge-ret() {
-  out=$(env RUST_BACKTRACE=1 kludge zsh expand --enter -- "${LBUFFER}" "${RBUFFER}")
+  out=$(env RUST_BACKTRACE=1 kludge zsh expand --enter -- "${BUFFER}" "" </dev/null)
   if [ "${?}" -eq 0 ] && [ -n "${out}" ]; then
     BUFFER=${out/•/}
   fi
@@ -38,7 +38,7 @@ zle -N kludge-ret
 
 kludge-hint() {
   if [[ -n ${BUFFER% } ]]; then
-    out=$(env RUST_BACKTRACE=1 kludge zsh expand --hint -- "${LBUFFER}" "${RBUFFER}")
+    out=$(env RUST_BACKTRACE=1 kludge zsh expand --hint -- "${LBUFFER}" "${RBUFFER}" </dev/null)
     if [[ -n $out ]]; then
       newline=$'\n'
       zle -M "$(printf "%s%s" "${newline}" "${out}")"
