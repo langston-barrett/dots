@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   unzip \
   valgrind \
   wget \
+  shellcheck \
   vim \
   zsh \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -203,17 +204,59 @@ RUN mkdir -p /home/node/.local/bin && \
 # Install rustup and cargo as node user
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
+ARG RUFF_VERSION=0.15.10
+ARG TY_VERSION=0.0.29
+ARG TAPLO_VERSION=0.10.0
+ARG TTLINT_VERSION=0.1.0
+ARG ZIZMOR_VERSION=1.23.1
+ARG TYPOS_VERSION=1.45.0
+ARG MDLYNX_VERSION=0.3.0
+ARG LUN_VERSION=0.13.0
+ARG FOURMOLU_VERSION=0.19.0.1
+RUN case ${TARGETPLATFORM} in \
+      "linux/amd64") ARCH=x86_64 ;; \
+      "linux/arm64" | "linux/arm64/v8") ARCH=aarch64 ;; \
+      *) printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; exit 1 ;; \
+    esac && \
+    curl -fsSL "https://github.com/astral-sh/ruff/releases/download/${RUFF_VERSION}/ruff-${ARCH}-unknown-linux-musl.tar.gz" \
+      | tar -xzf - --strip-components=1 -C /home/node/.cargo/bin && \
+    curl -fsSL "https://github.com/astral-sh/ty/releases/download/${TY_VERSION}/ty-${ARCH}-unknown-linux-musl.tar.gz" \
+      | tar -xzf - --strip-components=1 -C /home/node/.cargo/bin && \
+    curl -fsSL "https://github.com/tamasfe/taplo/releases/download/${TAPLO_VERSION}/taplo-linux-${ARCH}.gz" \
+      | gunzip > /home/node/.cargo/bin/taplo && \
+    chmod +x /home/node/.cargo/bin/taplo && \
+    curl -fsSL "https://github.com/woodruffw/zizmor/releases/download/v${ZIZMOR_VERSION}/zizmor-${ARCH}-unknown-linux-gnu.tar.gz" \
+      | tar -xzf - -C /home/node/.cargo/bin ./zizmor && \
+    curl -fsSL "https://github.com/crate-ci/typos/releases/download/v${TYPOS_VERSION}/typos-v${TYPOS_VERSION}-${ARCH}-unknown-linux-musl.tar.gz" \
+      | tar -xzf - -C /home/node/.cargo/bin ./typos && \
+    if [ "${ARCH}" = "x86_64" ]; then \
+        curl -fsSL "https://github.com/langston-barrett/ttlint/releases/download/v${TTLINT_VERSION}/ttlint-${ARCH}-unknown-linux-musl.gz" \
+          | gunzip > /home/node/.cargo/bin/ttlint && \
+        chmod +x /home/node/.cargo/bin/ttlint && \
+        curl -fsSL "https://github.com/langston-barrett/mdlynx/releases/download/v${MDLYNX_VERSION}/mdlynx-${ARCH}-unknown-linux-musl" \
+          -o /home/node/.cargo/bin/mdlynx && \
+        chmod +x /home/node/.cargo/bin/mdlynx && \
+        curl -fsSL "https://github.com/langston-barrett/lun/releases/download/v${LUN_VERSION}/lun-${ARCH}-unknown-linux-gnu.gz" \
+          | gunzip > /home/node/.cargo/bin/lun && \
+        chmod +x /home/node/.cargo/bin/lun && \
+        curl -fsSL "https://github.com/fourmolu/fourmolu/releases/download/v${FOURMOLU_VERSION}/fourmolu-${FOURMOLU_VERSION}-linux-x86_64" \
+          -o /home/node/.cargo/bin/fourmolu && \
+        chmod +x /home/node/.cargo/bin/fourmolu; \
+    fi
+
+RUN case ${TARGETPLATFORM} in \
+      "linux/arm64" | "linux/arm64/v8") \
+        . ~/.cargo/env && \
+        cargo install ttlint && \
+        cargo install mdlynx && \
+        git clone https://github.com/langston-barrett/lun && \
+        cd lun && cargo install --path=. && cd .. && rm -rf lun ;; \
+    esac
+
 COPY --chown=node:node kludge/src /tmp/kludge/src
 COPY --chown=node:node kludge/Cargo.toml kludge/Cargo.lock* /tmp/kludge/
 
 RUN . ~/.cargo/env && \
-    git clone https://github.com/langston-barrett/lun && \
-    cd lun && \
-    cargo install --path=. && \
-    cd .. && \
-    rm -rf lun && \
-    cargo install mdlynx && \
-    cargo install ttlint && \
     cd /tmp/kludge && \
     cargo install --path=. && \
     rm -rf /tmp/kludge

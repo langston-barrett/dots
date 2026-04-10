@@ -127,6 +127,16 @@ pub(crate) enum Confidence {
     High,
 }
 
+fn lun_skip_args() -> String {
+    env::var("KLUDGE_LUN_SKIP_TOOLS")
+        .unwrap_or_default()
+        .split(',')
+        .map(str::trim)
+        .filter(|s| !s.is_empty())
+        .map(|t| format!(" --skip-tool={t}"))
+        .collect()
+}
+
 pub(crate) fn mine() -> bool {
     if let Ok(f) = fs::File::open("LICENSE") {
         let reader = io::BufReader::new(f);
@@ -212,17 +222,20 @@ impl Project {
             return;
         }
         self.lint = if lun {
+            let skip = lun_skip_args();
             if let Some(config_path) = lun_config {
                 Some(Cmd::Shell(format!(
-                    "lun --config={} run",
+                    "lun --config={} run{skip}",
                     config_path.display()
                 )))
-            } else {
+            } else if skip.is_empty() {
                 Some(Cmd::Cmd {
                     bin: "lun",
                     args: &["run"],
                     glob: None,
                 })
+            } else {
+                Some(Cmd::Shell(format!("lun run{skip}")))
             }
         } else if has_lint_py {
             Some(Cmd::Cmd {
@@ -264,17 +277,20 @@ impl Project {
             return;
         }
         self.format = if lun {
+            let skip = lun_skip_args();
             if let Some(config_path) = lun_config {
                 Some(Cmd::Shell(format!(
-                    "lun --config={} run --format",
+                    "lun --config={} run --format{skip}",
                     config_path.display()
                 )))
-            } else {
+            } else if skip.is_empty() {
                 Some(Cmd::Cmd {
                     bin: "lun",
                     args: &["run", "--format"],
                     glob: None,
                 })
+            } else {
+                Some(Cmd::Shell(format!("lun run --format{skip}")))
             }
         } else if has_lint_py {
             Some(Cmd::Cmd {
@@ -319,17 +335,20 @@ impl Project {
         }
 
         if lun {
+            let skip = lun_skip_args();
             self.fix = if let Some(config_path) = lun_config {
                 Some(Cmd::Shell(format!(
-                    "lun --config={} run --fix",
+                    "lun --config={} run --fix{skip}",
                     config_path.display()
                 )))
-            } else {
+            } else if skip.is_empty() {
                 Some(Cmd::Cmd {
                     bin: "lun",
                     args: &["run", "--fix"],
                     glob: None,
                 })
+            } else {
+                Some(Cmd::Shell(format!("lun run --fix{skip}")))
             };
         } else if has_lint_py {
             self.fix = Some(Cmd::Cmd {

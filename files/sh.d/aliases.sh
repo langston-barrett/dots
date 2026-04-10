@@ -95,21 +95,11 @@ if [[ ${OSTYPE} != darwin* ]]; then
 fi
 
 ai() {
-  local platform=""
-  local image="claude"
-
-  if [[ "$1" == "x86" ]]; then
-    platform="--platform linux/amd64"
-    image="claude-x86"
-    shift
-  fi
-
   docker run \
     --privileged \
     --rm \
     --interactive \
     --tty \
-    $platform \
     -v "$PWD:/work" \
     --workdir /work \
     -e CLAUDE_CODE_USE_BEDROCK \
@@ -123,14 +113,13 @@ ai() {
     --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitconfig,dst=/home/node/.gitconfig \
     --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitignore,dst=/home/node/.config/git/gitignore \
     --entrypoint claude \
-    "$image" \
-    "${@}"
+    "${@:-claude}"
   # --mount type=bind,src=$HOME/.bash_history,dst=/home/node/.bash_history \
   # --mount type=bind,readonly=true,src=$HOME/.config/bash,dst=/home/node/.config/bash \
   # --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/home/node/.bashrc \
   # --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/home/node/.config/sh.d \
 }
-alias aix86='ai x86'
+alias aix86='ai --platform linuux/amd64 claude-x86'
 
 # kludge expand --aliases "" ""
 
