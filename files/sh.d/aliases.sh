@@ -94,6 +94,40 @@ if [[ ${OSTYPE} != darwin* ]]; then
   open() { xdg-open "${1}" & disown; }
 fi
 
+ai() {
+  local platform=""
+  local image="claude"
+
+  if [[ "$1" == "x86" ]]; then
+    platform="--platform linux/amd64"
+    image="claude-x86"
+  fi
+
+  docker run \
+    --privileged \
+    --rm \
+    --interactive \
+    --tty \
+    $platform \
+    -v "$PWD:/work" \
+    --workdir /work \
+    -e CLAUDE_CODE_USE_BEDROCK \
+    -e AWS_REGION \
+    -e AWS_BEARER_TOKEN_BEDROCK \
+    -v "$(realpath ~/.claude/settings.json):/home/node/.claude/settings.json:ro" \
+    -v "$HOME/.claude/home/cargo:/home/node/.cargo" \
+    -v "$HOME/.claude/home/cabal:/home/node/.cabal" \
+    --mount type=bind,src=$HOME/.bash_history,dst=/home/node/.bash_history \
+    --mount type=bind,readonly=true,src=$HOME/.config/bash,dst=/home/node/.config/bash \
+    --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/home/node/.bashrc \
+    --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/home/node/.config/sh.d \
+    --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitconfig,dst=/home/node/.gitconfig \
+    --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitignore,dst=/home/node/.config/git/gitignore \
+    --entrypoint claude \
+    "$image"
+}
+alias aix86='ai x86'
+
 # kludge expand --aliases "" ""
 
 alias ba='cabal build all'
