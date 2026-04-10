@@ -18,6 +18,7 @@ mod hook;
 mod install;
 mod launcher;
 mod lint;
+mod postcommit;
 mod precommit;
 mod preview;
 mod project;
@@ -69,6 +70,7 @@ fn go(cli: cli::Cli) -> anyhow::Result<()> {
         Command::Launcher => launcher::go(),
         Command::Install => install::go(),
         Command::Lint(conf) => lint::go(conf),
+        Command::Postcommit => postcommit::go(),
         Command::Precommit => precommit::go(),
         Command::Preview(conf) => preview::go(conf),
         Command::Project => project::go(),

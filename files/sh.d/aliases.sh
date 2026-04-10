@@ -115,6 +115,7 @@ ai() {
     -e AWS_REGION \
     -e AWS_BEARER_TOKEN_BEDROCK \
     -v "$(realpath ~/.claude/settings.json):/home/node/.claude/settings.json:ro" \
+    -v "$HOME/code/dots/files/claude/skills:/home/node/.claude/skills:ro" \
     -v "$HOME/.claude/home/cargo:/home/node/.cargo" \
     -v "$HOME/.claude/home/cabal:/home/node/.cabal" \
     --mount type=bind,src=$HOME/.bash_history,dst=/home/node/.bash_history \

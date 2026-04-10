@@ -58,6 +58,15 @@
             "command": "kludge format"
           }
         ]
+      },
+      {
+        "matcher": "Bash.*git commit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "kludge postcommit"
+          }
+        ]
       }
     ],
     "SessionEnd": [
@@ -78,28 +87,6 @@
           {
             "type": "prompt",
             "prompt": "Run `kludge lint` and fix any newly-introduced lints."
-          }
-        ]
-      }
-    ],
-    "PreCommit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "kludge precommit"
-          }
-        ]
-      }
-    ],
-    "PostCommit": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "git log -1 --pretty=%B | sed '/^Co-Authored-By: Claude.*<noreply@anthropic.com>/d' | git commit --amend --reset-author -F -"
           }
         ]
       }

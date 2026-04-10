@@ -20,6 +20,7 @@ pub(crate) enum Command {
     Install,
     Launcher,
     Lint(crate::lint::Config),
+    Postcommit,
     Precommit,
     Preview(crate::preview::Config),
     Project,
