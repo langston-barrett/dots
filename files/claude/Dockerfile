@@ -262,3 +262,4 @@ RUN . ~/.cargo/env && \
     rm -rf /tmp/kludge
 
 ENV PATH=/home/node/.cargo/bin:/home/node/.local/share/coursier/bin:/home/node/.local/share/gradle-${GRADLE_VERSION}/bin:$PATH
+ENV KLUDGE_LUN_SKIP_TOOLS=stale-todo.py

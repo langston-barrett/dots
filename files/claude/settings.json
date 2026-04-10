@@ -86,7 +86,7 @@
         "hooks": [
           {
             "type": "prompt",
-            "prompt": "Run `kludge lint` and fix any newly-introduced lints."
+            "prompt": "Run `kludge lint` and fix newly-introduced lints. Be silent."
           }
         ]
       }
