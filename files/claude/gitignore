@@ -1,0 +1,19 @@
+# Build artifacts
+*.o
+*.so
+*.a
+*.lib
+*.exe
+*.dll
+*.dylib
+build/
+target/
+.stack-work/
+_build/
+node_modules/
+
+# Temp
+*.tmp
+*.log
+*.pid
+.cache/

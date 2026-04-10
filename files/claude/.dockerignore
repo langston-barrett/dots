@@ -1,2 +1,6 @@
 *
-!init-firewall.sh
+!files/claude/init-firewall.sh
+!kludge/src/
+!kludge/src/**
+!kludge/Cargo.toml
+!kludge/Cargo.lock

@@ -15,9 +15,11 @@ pub(crate) struct Cli {
 #[derive(Debug, clap::Subcommand)]
 pub(crate) enum Command {
     Edit(crate::edit::Config),
+    Format(crate::format::Config),
     Fragments(crate::fragments::Config),
     Install,
     Launcher,
+    Lint(crate::lint::Config),
     Precommit,
     Preview(crate::preview::Config),
     Project,

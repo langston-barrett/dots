@@ -193,12 +193,13 @@ const ANYWHERE: &[(&str, &str, &str)] = &[
     //
     ("k", "kludge", ""),
     ("ka", "hx ~/code/dots/kludge/src/expand.rs", ""),
+    ("kf", "kludge format", ""),
     (
         "ki",
         "cd ~/code/dots/kludge; cargo install --path=.; cd -",
         "",
     ),
-    ("kl", "kludge launcher", ""),
+    ("kl", "kludge lint", ""),
     ("kp", "kludge project", ""),
 ];
 

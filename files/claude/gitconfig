@@ -1,0 +1,29 @@
+[user]
+    name = Langston Barrett
+    email = langston.barrett@gmail.com
+
+[core]
+    autocrlf = input
+    excludesfile = ~/.config/git/gitignore
+
+[grep]
+    extendedRegexp = true
+
+[color]
+    ui = auto
+
+[push]
+    default = simple
+    autoSetupRemote = true
+
+[pull]
+    ff = only
+
+[init]
+    defaultBranch = main
+
+[credential "https://github.com"]
+    username = langston-barrett
+
+[credential "https://gitlab.com"]
+    username = langston-barrett

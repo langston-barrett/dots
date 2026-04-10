@@ -12,10 +12,12 @@ use tracing_subscriber::fmt::format::FmtSpan;
 mod cli;
 mod edit;
 mod expand;
+mod format;
 mod fragments;
 mod hook;
 mod install;
 mod launcher;
+mod lint;
 mod precommit;
 mod preview;
 mod project;
@@ -62,9 +64,11 @@ fn main() -> anyhow::Result<()> {
 fn go(cli: cli::Cli) -> anyhow::Result<()> {
     match cli.cmd {
         Command::Edit(conf) => edit::go(conf),
+        Command::Format(conf) => format::go(conf),
         Command::Fragments(conf) => fragments::go(conf),
         Command::Launcher => launcher::go(),
         Command::Install => install::go(),
+        Command::Lint(conf) => lint::go(conf),
         Command::Precommit => precommit::go(),
         Command::Preview(conf) => preview::go(conf),
         Command::Project => project::go(),

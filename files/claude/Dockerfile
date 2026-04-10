@@ -168,7 +168,9 @@ RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 
 # Copy and set up firewall script
-COPY init-firewall.sh /usr/local/bin/
+# NOTE: build context must be the dots repo root:
+#   docker build -f files/claude/Dockerfile -t claude .
+COPY files/claude/init-firewall.sh /usr/local/bin/
 USER root
 RUN chmod +x /usr/local/bin/init-firewall.sh && \
   echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
@@ -179,6 +181,9 @@ USER node
 # Install rustup and cargo as node user
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
+COPY --chown=node:node kludge/src /tmp/kludge/src
+COPY --chown=node:node kludge/Cargo.toml kludge/Cargo.lock* /tmp/kludge/
+
 RUN . ~/.cargo/env && \
     git clone https://github.com/langston-barrett/lun && \
     cd lun && \
@@ -186,7 +191,10 @@ RUN . ~/.cargo/env && \
     cd .. && \
     rm -rf lun && \
     cargo install mdlynx && \
-    cargo install ttlint
+    cargo install ttlint && \
+    cd /tmp/kludge && \
+    cargo install --path=. && \
+    rm -rf /tmp/kludge
 
 # Install coursier and spotless for Scala
 RUN mkdir -p /home/node/.local/bin && \
@@ -210,4 +218,4 @@ RUN wget "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin
     unzip -d /home/node/.local/share /tmp/gradle-${GRADLE_VERSION}-bin.zip && \
     rm /tmp/gradle-${GRADLE_VERSION}-bin.zip
 
-ENV PATH=/home/node/.local/share/coursier/bin:/home/node/.local/share/gradle-${GRADLE_VERSION}/bin:$PATH
+ENV PATH=/home/node/.cargo/bin:/home/node/.local/share/coursier/bin:/home/node/.local/share/gradle-${GRADLE_VERSION}/bin:$PATH
