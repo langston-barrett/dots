@@ -109,7 +109,8 @@ ai() {
     -v "$HOME/code/dots/files/claude/skills:/home/node/.claude/skills:ro" \
     -v "$HOME/.claude/home/cargo/registry:/home/node/.cargo/registry" \
     -v "$HOME/.claude/home/cargo/git:/home/node/.cargo/git" \
-    -v "$HOME/.claude/home/cabal:/home/node/.cabal" \
+    -v "$HOME/.claude/home/cabal:/home/node/.local/state/cabal/store/" \
+    -v "$HOME/.claude/home/cabal-packages:/home/node/.cache/cabal/packages" \
     --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitconfig,dst=/home/node/.gitconfig \
     --mount type=bind,readonly=true,src=$HOME/code/dots/files/claude/gitignore,dst=/home/node/.config/git/gitignore \
     --entrypoint claude \
