@@ -79,17 +79,6 @@
           }
         ]
       }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "prompt",
-            "prompt": "Run `kludge lint` and fix newly-introduced lints. Be silent."
-          }
-        ]
-      }
     ]
   },
   "enabledPlugins": {
