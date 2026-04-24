@@ -179,6 +179,8 @@ RUN chmod +x /usr/local/bin/init-firewall.sh && \
 
 USER node
 
+RUN curl -LsSf https://astral.sh/uv/0.11.7/install.sh | sh
+
 # Install Gradle
 ARG GRADLE_VERSION=8.13
 RUN wget "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" -P /tmp && \
