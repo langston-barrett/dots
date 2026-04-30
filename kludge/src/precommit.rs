@@ -6,7 +6,7 @@ use std::{
 
 use anyhow::{Context as _, bail};
 
-use crate::project;
+use crate::{project, typos_advisory};
 
 fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
     eprintln!("{}", project::print_cmd(&cmd));
@@ -114,6 +114,8 @@ pub(super) fn go() -> anyhow::Result<()> {
         mine(linted)?;
         check_claude_metadata()?;
     }
+
+    typos_advisory::run(true);
 
     Ok(())
 }

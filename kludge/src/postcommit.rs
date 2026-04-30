@@ -2,7 +2,7 @@ use std::process::Command;
 
 use anyhow::{Context as _, bail};
 
-use crate::project;
+use crate::{project, typos_advisory};
 
 fn exec(mut cmd: Command) -> Result<(), anyhow::Error> {
     eprintln!("{}", project::print_cmd(&cmd));
@@ -58,5 +58,6 @@ fn run_checks() -> Result<(), anyhow::Error> {
 pub(super) fn go() -> anyhow::Result<()> {
     remove_claude_metadata()?;
     run_checks()?;
+    typos_advisory::run(false);
     Ok(())
 }

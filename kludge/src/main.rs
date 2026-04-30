@@ -25,6 +25,7 @@ mod project;
 mod prompt;
 mod release;
 mod system;
+mod typos_advisory;
 
 use cli::Command;
 
