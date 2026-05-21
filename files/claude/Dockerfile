@@ -263,5 +263,20 @@ RUN . ~/.cargo/env && \
     cargo install --path=. && \
     rm -rf /tmp/kludge
 
+# Install Cryptol (X64 only - ARM64 binaries not available for Ubuntu 24.04)
+ARG CRYPTOL_VERSION=3.5.0
+RUN case ${TARGETPLATFORM} in \
+      "linux/amd64") \
+        curl -fsSL "https://github.com/GaloisInc/cryptol/releases/download/${CRYPTOL_VERSION}/cryptol-${CRYPTOL_VERSION}-ubuntu-24.04-X64.tar.gz" \
+          | tar -xzf - -C /tmp && \
+        cp /tmp/cryptol-${CRYPTOL_VERSION}-ubuntu-24.04-X64/bin/cryptol /home/node/.cargo/bin/ && \
+        rm -rf /tmp/cryptol-${CRYPTOL_VERSION}-ubuntu-24.04-X64 ;; \
+      "linux/arm64" | "linux/arm64/v8") \
+        printf "Cryptol binary not available for ARM64, skipping installation\n" ;; \
+      *) \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
+        exit 1 ;; \
+    esac
+
 ENV PATH=/home/node/.cargo/bin:/home/node/.local/share/coursier/bin:/home/node/.local/share/gradle-${GRADLE_VERSION}/bin:$PATH
 ENV KLUDGE_LUN_SKIP_TOOLS=stale-todo.py

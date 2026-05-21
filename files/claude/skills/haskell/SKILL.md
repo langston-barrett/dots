@@ -3,6 +3,7 @@ name: haskell
 description: Guides for Haskell code. Use when writing Haskell code.
 ---
 
+- Annotate `fromIntegral` with both `TypeApplications`
 - Avoid defining functions by cases on their last argument, use `LambdaCase`
 - Avoid list indexing (`!!`)
 - Avoid partial functions (`head`, `undefined`) except in tests
