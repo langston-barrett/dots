@@ -346,9 +346,64 @@ pub(super) fn go(conf: Config) -> anyhow::Result<()> {
     Ok(())
 }
 
+/// Emit zsh code populating associative arrays of static expansions.
+///
+/// The widget code in `zlast.zsh` does an in-shell lookup against these
+/// tables on every space/enter, avoiding a `kludge` fork on the hot path.
+/// Only project-specific and "advanced" expansions (which depend on PWD)
+/// still require a subprocess.
+#[allow(clippy::unnecessary_wraps)]
+pub(super) fn init() -> anyhow::Result<()> {
+    print!("{}", render_init());
+    Ok(())
+}
+
+fn render_init() -> String {
+    use std::fmt::Write as _;
+    let mut s = String::new();
+    // ANYWHERE: short -> "lbuf<CURSOR>rbuf"
+    s.push_str("typeset -gA KLUDGE_ANYWHERE\n");
+    s.push_str("KLUDGE_ANYWHERE=(\n");
+    for (short, lbuf, rbuf) in ANYWHERE.iter().copied() {
+        let _ = writeln!(
+            s,
+            "  {} {}",
+            zsh_quote(short),
+            zsh_quote(&format!("{lbuf}{CURSOR}{rbuf}"))
+        );
+    }
+    s.push_str(")\n");
+
+    // ANYWHERE_ENTER: short -> long (with `_` placeholder for the rest)
+    s.push_str("typeset -gA KLUDGE_ANYWHERE_ENTER\n");
+    s.push_str("KLUDGE_ANYWHERE_ENTER=(\n");
+    for (short, long) in ANYWHERE_ENTER.iter().copied() {
+        let _ = writeln!(s, "  {} {}", zsh_quote(short), zsh_quote(long));
+    }
+    s.push_str(")\n");
+    s
+}
+
+/// Quote a string for safe use as a zsh associative-array element. Uses
+/// single quotes and escapes any embedded single quotes.
+fn zsh_quote(s: &str) -> String {
+    let mut out = String::with_capacity(s.len() + 2);
+    out.push('\'');
+    for c in s.chars() {
+        if c == '\'' {
+            out.push_str("'\\''");
+        } else {
+            out.push(c);
+        }
+    }
+    out.push('\'');
+    out
+}
+
 #[cfg(test)]
 mod test {
-    use super::expand;
+    use super::{expand, render_init, zsh_quote};
+    use expect_test::expect;
 
     fn test_expand(l: &str, r: &str) -> Option<(String, String)> {
         expand(l.to_owned(), r.to_owned(), false)
@@ -389,5 +444,163 @@ mod test {
             "",
             "git ls-files --exclude-standard | entr -c -s 'cargo fmt && cargo fmt --check && cargo clippy --all-targets -- --deny warnings'",
         );
+    }
+
+    #[test]
+    fn zsh_quote_plain() {
+        expect![[r#"'hello'"#]].assert_eq(&zsh_quote("hello"));
+    }
+
+    #[test]
+    fn zsh_quote_with_apostrophe() {
+        // Single quotes are escaped via end-quote, escaped quote, re-open.
+        expect![[r#"'it'\''s'"#]].assert_eq(&zsh_quote("it's"));
+    }
+
+    #[test]
+    fn zsh_quote_empty() {
+        expect![[r#"''"#]].assert_eq(&zsh_quote(""));
+    }
+
+    #[test]
+    fn zsh_quote_with_newline_and_special() {
+        // Backslashes, dollar signs, and newlines pass through inside single
+        // quotes — zsh does no expansion on '...' content.
+        expect![[r#"'a\b$c
+d'"#]]
+        .assert_eq(&zsh_quote("a\\b$c\nd"));
+    }
+
+    /// Snapshot the full `kludge zsh init` output. If you intentionally add
+    /// or change a static expansion, run `cargo test` with
+    /// `UPDATE_EXPECT=1` to regenerate.
+    #[test]
+    fn render_init_snapshot() {
+        let actual = render_init();
+        expect![[r#"
+            typeset -gA KLUDGE_ANYWHERE
+            KLUDGE_ANYWHERE=(
+              'ba' 'cabal build all•'
+              'bc' 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -c•'
+              'cb' 'cabal•'
+              'chx' 'chmod +x•'
+              'cg' 'cargo•'
+              'cgi.' 'cargo install --path=.•'
+              'cpwd' 'pwd | copy•'
+              'curls' 'curl \
+              --fail \
+              --location \
+              --proto '\''=https'\'' \
+              --show-error \
+              --silent \
+              --tlsv1.2 \•'
+              'dk' 'docker•'
+              'dk-clang' '
+            docker run \
+              --platform linux/amd64 \
+              --rm \
+              --mount "type=bind,src=${PWD},dst=/work" \
+              --workdir /work \
+              ubuntu:24.04 \
+              sh -c '\''apt-get update && apt-get install -y clang && clang•'\'''
+              'dk-dev' '
+            docker run \
+              --platform linux/amd64 \
+              --rm \
+              --interactive \
+              --tty \
+              --mount "type=bind,src=${PWD},dst=/work" \
+              --workdir /work \
+              --env "PROMPT_EXTRA=${1} : " \
+              --mount type=bind,src=$HOME/.bash_history,dst=/root/.bash_history \
+              --mount type=bind,readonly=true,src=$HOME/.config/bash,dst=/root/.config/bash \
+              --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/root/.bashrc \
+              --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/root/.config/sh.d \
+              ubuntu-dev
+            •'\'''
+              'e' 'kludge edit•'
+              'hex' 'python3 -c '\''print(hex(•))'\'''
+              'last' 'printf '\''%s\n'\'' "$history[$((HISTCMD-1))]"•'
+              'll' 'clang -fno-discard-value-names -emit-llvm -grecord-gcc-switches -O0 -S -c•'
+              'lower' 'tr '\''[:upper:]'\'' '\''[:lower:]'\''•'
+              'm' 'make•'
+              'od' 'objdump•'
+              'pr' 'gh pr create --assignee langston-barrett --web•'
+              'py3' 'python3•'
+              'pye' 'python3 -c '\''print(•)'\'''
+              'qr' 'qrencode -t utf8•'
+              'recent-branches' 'git branch --sort=-committerdate | head -n 10•'
+              'rgall' 'rg --hidden --no-ignore•'
+              'rmrf' '\rm -rf•'
+              'sky' 'ssh sky•'
+              'todo' 'hx ~/todo.md•'
+              'top' 'cd $(git rev-parse --show-toplevel)•'
+              'tp' 'trash put•'
+              'upper' 'tr '\''[:lower:]'\'' '\''[:upper:]'\''•'
+              'u' 'cd ..•'
+              'uu' 'cd ../..•'
+              'uuu' 'cd ../../..•'
+              'uuuu' 'cd ../../../..•'
+              'uuuuu' 'cd ../../../../..•'
+              'y' 'copy•'
+              'nb' 'nix-build•'
+              'nc' 'nix-channel•'
+              'nba' 'nix-build -A•'
+              'ns' 'nix-shell•'
+              'nsr' 'nix-shell --run•'
+              'nsrzsh' 'nix-shell --run '\''exec zsh'\''•'
+              'ga.' 'git add .•'
+              'gca' 'git commit --amend•'
+              'gcb' 'git checkout -b•'
+              'gc.' 'git commit --message .•'
+              'gco-' 'git checkout -•'
+              'gcom' 'git checkout $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'gcor' 'git checkout $(git branch --sort=-committerdate --format='\''%(refname:short)'\'' | head -n 8 | pick)•'
+              'gdm' 'git diff $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'gds' 'git diff --cached•'
+              'gfo' 'git fetch origin•'
+              'gfu' 'git fetch upstream•'
+              'gmom' 'git merge origin/$(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'gmum' 'git merge upstream/$(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'gplm' 'git pull mine•'
+              'gplo' 'git pull origin•'
+              'gplom' 'git pull origin $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'gplu' 'git pull upstream•'
+              'gplum' 'git pull upstream $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grbim' 'git rebase --interactive $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grbiom' 'git rebase --interactive origin/$(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grbm' 'git rebase $(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grbom' 'git rebase origin/$(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grhom' 'git reset --hard origin/$(git branch | grep -Eo '\''(main|master)$'\'')•'
+              'grph' 'git rev-parse HEAD•'
+              'grs.' 'git reset .•'
+              'grv' 'git remote --verbose•'
+              'gsuud' 'git submodule update•'
+              'gsuudi' 'git submodule update --init•'
+              'docker' 'sudo -g docker docker•'
+              'trailing' 'sed -i '\''s/[ 	]*$//•'
+              'sys' 'sudo systemctl•'
+              'syss' 'sudo systemctl status•'
+              'sysr' 'sudo systemctl restart•'
+              'sysu' 'systemctl --user•'
+              'sysus' 'systemctl --user status•'
+              'sysur' 'systemctl --user restart•'
+              'k' 'kludge•'
+              'ka' 'hx ~/code/dots/kludge/src/expand.rs•'
+              'kf' 'kludge format•'
+              'ki' 'cd ~/code/dots/kludge; cargo install --path=.; cd -•'
+              'kl' 'kludge lint•'
+              'kp' 'kludge project•'
+            )
+            typeset -gA KLUDGE_ANYWHERE_ENTER
+            KLUDGE_ANYWHERE_ENTER=(
+              'gclg' 'git clone https://github.com/GaloisInc/_'
+              'gclh' 'git clone https://github.com/_'
+              'gclm' 'git clone https://github.com/langston-barrett/_'
+              'mkcd' 'mkdir _ && cd _'
+              'watch' 'printf '\''%s\n'\'' _ | entr -c -s "./_"'
+            )
+        "#]]
+        .assert_eq(&actual);
     }
 }

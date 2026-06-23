@@ -39,6 +39,8 @@ pub(crate) struct Zsh {
 pub(crate) enum ZshCommand {
     Expand(crate::expand::Config),
     Hook(crate::hook::Config),
+    /// Print zsh code defining the static expansion tables
+    Init,
     /// Print information for ZSH prompt
     Prompt,
 }

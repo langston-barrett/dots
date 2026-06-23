@@ -79,6 +79,7 @@ fn go(cli: cli::Cli) -> anyhow::Result<()> {
         Command::Zsh(zsh) => match zsh.cmd {
             ZshCommand::Expand(conf) => expand::go(conf),
             ZshCommand::Hook(conf) => hook::go(conf),
+            ZshCommand::Init => expand::init(),
             ZshCommand::Prompt => prompt::go(),
         },
     }
