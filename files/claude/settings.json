@@ -32,7 +32,7 @@
       "Bash(whoami:*)"
     ]
   },
-  "model": "us.anthropic.claude-sonnet-4-6",
+  "model": "sonnet",
   "hooks": {
     "Notification": [
       {

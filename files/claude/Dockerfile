@@ -93,6 +93,10 @@ ENV LC_ALL=en_US.UTF-8
 RUN mkdir -p /usr/local/share/npm-global && \
   chown -R node:node /usr/local/share
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  llvm-19-dev llvm-19-tools cmake ninja-build python3-matplotlib \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 ARG USERNAME=node
 
 ENV HOME=/home/node
@@ -164,12 +168,13 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
-# Install Claude
+# Install Claude/Codex
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Install Pi coding agent
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
+RUN curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
 
 # Copy and set up firewall script
 # NOTE: build context must be the dots repo root:
@@ -183,6 +188,45 @@ RUN chmod +x /usr/local/bin/init-firewall.sh && \
 USER node
 
 RUN curl -LsSf https://astral.sh/uv/0.11.7/install.sh | sh
+
+# Install Nix
+USER root
+RUN mkdir -m 0755 /nix && chown node /nix
+USER node
+RUN mkdir -p /home/node/.config/nix && \
+    echo "sandbox = false" > /home/node/.config/nix/nix.conf && \
+    echo "filter-syscalls = false" >> /home/node/.config/nix/nix.conf && \
+    curl -L https://nixos.org/nix/install | sh -s -- --no-daemon --no-channel-add && \
+    echo 'if [ -e /home/node/.nix-profile/etc/profile.d/nix.sh ]; then . /home/node/.nix-profile/etc/profile.d/nix.sh; fi' >> ~/.zshrc && \
+    . /home/node/.nix-profile/etc/profile.d/nix.sh && \
+    nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && \
+    nix-channel --update
+
+ENV PATH=/home/node/.nix-profile/bin:$PATH
+
+# Install Java (required for Gradle)
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  openjdk-21-jdk \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set JAVA_HOME based on architecture
+RUN case ${TARGETPLATFORM} in \
+      "linux/amd64") \
+        echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64' >> /home/node/.zshrc && \
+        echo 'export PATH=$JAVA_HOME/bin:$PATH' >> /home/node/.zshrc ;; \
+      "linux/arm64" | "linux/arm64/v8") \
+        echo 'export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-arm64' >> /home/node/.zshrc && \
+        echo 'export PATH=$JAVA_HOME/bin:$PATH' >> /home/node/.zshrc ;; \
+      *) \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
+        exit 1 ;; \
+    esac
+
+USER node
+
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
 # Install Gradle
 ARG GRADLE_VERSION=8.13
