@@ -167,6 +167,9 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 # Install Claude
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
+# Install Pi coding agent
+RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+
 
 # Copy and set up firewall script
 # NOTE: build context must be the dots repo root:

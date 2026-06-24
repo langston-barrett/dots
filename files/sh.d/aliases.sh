@@ -121,6 +121,7 @@ ai() {
   # --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/home/node/.config/sh.d \
 }
 alias aix86='ai --platform linuux/amd64 claude-x86'
+alias pi='sudo -g docker docker run --rm -it -e OPENROUTER_API_KEY=${OPENROUTER_API_KEY} -v $PWD:/work -w /work --name pi --entrypoint pi claude'
 
 # kludge expand --aliases "" ""
 
