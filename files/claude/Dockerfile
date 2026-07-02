@@ -171,6 +171,13 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 # Install Claude/Codex
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
+# Install Nix (single-user mode for the node user)
+USER root
+RUN mkdir -m 0755 /nix && chown node:node /nix
+USER node
+RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
+ENV PATH=/home/node/.nix-profile/bin:$PATH
+
 # Install Pi coding agent
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
@@ -320,6 +327,21 @@ RUN case ${TARGETPLATFORM} in \
         rm -rf /tmp/cryptol-${CRYPTOL_VERSION}-ubuntu-24.04-X64 ;; \
       "linux/arm64" | "linux/arm64/v8") \
         printf "Cryptol binary not available for ARM64, skipping installation\n" ;; \
+      *) \
+        printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
+        exit 1 ;; \
+    esac
+
+# Install SAW (X64 only - ARM64 Linux binaries not available)
+ARG SAW_VERSION=1.5.1
+RUN case ${TARGETPLATFORM} in \
+      "linux/amd64") \
+        curl -fsSL "https://github.com/GaloisInc/saw-script/releases/download/v${SAW_VERSION}/saw-${SAW_VERSION}-ubuntu-24.04-X64.tar.gz" \
+          | tar -xzf - -C /tmp && \
+        cp /tmp/saw-${SAW_VERSION}-ubuntu-24.04-X64/bin/saw /home/node/.cargo/bin/ && \
+        rm -rf /tmp/saw-${SAW_VERSION}-ubuntu-24.04-X64 ;; \
+      "linux/arm64" | "linux/arm64/v8") \
+        printf "SAW binary not available for ARM64, skipping installation\n" ;; \
       *) \
         printf "Unsupported architecture: %s\n" "${TARGETPLATFORM}" >&2; \
         exit 1 ;; \
