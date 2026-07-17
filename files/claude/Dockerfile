@@ -172,16 +172,17 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
 RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
 
 # Install Nix (single-user mode for the node user)
-USER root
-RUN mkdir -m 0755 /nix && chown node:node /nix
-USER node
-RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
-ENV PATH=/home/node/.nix-profile/bin:$PATH
+# USER root
+# RUN mkdir -m 0755 /nix && chown node:node /nix
+# USER node
+# RUN curl -L https://nixos.org/nix/install | sh -s -- --no-daemon
+# ENV PATH=/home/node/.nix-profile/bin:$PATH
 
 # Install Pi coding agent
 RUN npm install -g --ignore-scripts @earendil-works/pi-coding-agent
 
 RUN curl -fsSL https://chatgpt.com/codex/install.sh | CODEX_NON_INTERACTIVE=1 sh
+RUN echo 'model_provider = "amazon-bedrock"' >> ~/.codex/config.toml
 
 # Copy and set up firewall script
 # NOTE: build context must be the dots repo root:
@@ -206,6 +207,7 @@ RUN mkdir -p /home/node/.config/nix && \
     curl -L https://nixos.org/nix/install | sh -s -- --no-daemon --no-channel-add && \
     echo 'if [ -e /home/node/.nix-profile/etc/profile.d/nix.sh ]; then . /home/node/.nix-profile/etc/profile.d/nix.sh; fi' >> ~/.zshrc && \
     . /home/node/.nix-profile/etc/profile.d/nix.sh && \
+    export PATH=/home/node/.nix-profile/bin:$PATH && \
     nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs && \
     nix-channel --update
 
