@@ -21,6 +21,7 @@ export KEYTIMEOUT=20
 bindkey -rpM viins '^[^['
 
 bindkey -v  # vi mode
+bindkey -M viins '^I' fzf-tab-complete
 
 bindkey -M viins '^A' history-incremental-search-backward
 bindkey -M viins '^R' history-incremental-search-backward
