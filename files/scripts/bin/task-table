@@ -3,7 +3,11 @@
 set -euo pipefail
 
 tmp=$(mktemp)
-# Note that spaces are the character "⠀", not regular space
+# Empty-field placeholders use a middle dot (·): a visible, single-cell glyph
+# present in essentially every monospace font, so empty cells hold their column
+# width regardless of the terminal font. (A blank glyph like U+00A0 NBSP is
+# prettier but font-dependent — full blank cell in some fonts, collapsed to
+# nothing in others, which misaligns the table.)
 bat > "${tmp}" <<'EOF'
 def pad_left($len; $chr):
     (tostring | length) as $l
@@ -16,10 +20,10 @@ def pad_left($len):
 .[]
 | [ .uuid
   , .description
-  , (.depends[0] | length | if . == 0 then "⠀" else "B" end)
-  , (.priority | .[0:1] // "⠀")
+  , (.depends[0] | length | if . == 0 then "·" else "B" end)
+  , (.priority | .[0:1] // "·")
   , (.id | pad_left(2))
-  , (.project // "⠀" | .[0:3] | pad_left(3))
+  , (.project // "·" | .[0:3] | pad_left(3))
   , (.urgency | tostring | .[0:3] | pad_left(3))
   ]
 | join ("\t")

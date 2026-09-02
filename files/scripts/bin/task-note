@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# Edit a task's free-form note in the editor.
+#
+# Taskwarrior has no dedicated "note" field, so the note lives in the task's
+# annotations. This loads any existing annotations into a buffer, opens hx,
+# and on save replaces the task's annotations with the edited text. Saving an
+# empty buffer clears the note; quitting without changes leaves it untouched.
+
+set -euo pipefail
+
+id="${1:?usage: task-note <task-id>}"
+
+tmp="$(mktemp --suffix=.md)"
+trap 'rm -f "$tmp"' EXIT
+
+# Pre-fill the buffer with the current annotations, one per line.
+task "$id" export 2>/dev/null \
+  | jq -r '(.[0].annotations // []) | map(.description) | join("\n")' \
+  > "$tmp"
+
+before="$(cat "$tmp")"
+hx "$tmp"
+after="$(cat "$tmp")"
+
+# Nothing changed: don't touch the task.
+[ "$after" = "$before" ] && exit 0
+
+# Rewrite the task with its annotations replaced by the edited text (a single
+# annotation, or none if the buffer was cleared), leaving all other fields as-is.
+task "$id" export 2>/dev/null \
+  | jq --rawfile note "$tmp" '
+      ($note | gsub("\n+$"; "")) as $text
+      | [ .[0]
+          | .annotations = (
+              if ($text | length) > 0
+              then [{ entry: (now | gmtime | strftime("%Y%m%dT%H%M%SZ")),
+                      description: $text }]
+              else []
+              end
+            )
+        ]
+    ' \
+  | task import - >/dev/null

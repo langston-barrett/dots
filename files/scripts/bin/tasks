@@ -13,6 +13,7 @@ F: Filter
 H: High priority
 L: Low priority
 M: Medium priority
+N: Note (annotate)
 P: Project
 R: Reload
 S: Start
@@ -43,6 +44,7 @@ task-table | \
     --bind="H:execute(task {1} modify priority:high)+reload(task-table)" \
     --bind="L:execute(task {1} modify priority:low)+reload(task-table)" \
     --bind="M:execute(task {1} modify priority:med)+reload(task-table)" \
+    --bind='N:execute(task-note {1})+clear-query+reload(task-table)' \
     --bind='P:execute(task {1} modify project:$(printf "bracelet\ndots\ndetect\ngrease" | pick))+clear-query+reload(task-table)' \
     --bind="R:reload(task-table)" \
     --bind="S:execute(task {1} start)+clear-query+reload(task-table)" \
