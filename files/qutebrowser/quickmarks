@@ -1,7 +1,5 @@
 1password https://galois-team.1password.com/app#/everything/AllItems
 401k https://wfg.retirement.schwabrt.com/participant/
-bracelet-google-drive https://drive.google.com/drive/u/0/folders/0AF-8-vWhF12yUk9PVA
-bracelet-mrs https://gitlab-ext.galois.com/bracelet/bracelet/-/merge_requests
 cabal.project https://cabal.readthedocs.io/en/stable/cabal-project-description-file.html
 cal https://calendar.google.com/calendar/u/0/r
 cal-personal https://calendar.google.com/calendar/u/1/r
@@ -12,11 +10,6 @@ crucible-issues https://github.com/GaloisInc/crucible/issues
 crucible-llvm-docs https://hackage.haskell.org/package/crucible-llvm
 crucible-prs https://github.com/GaloisInc/crucible/pulls
 crucible-symio-docs-hackage https://hackage.haskell.org/package/crucible-symio
-detect-explainer https://gitlab-ext.galois.com/detect/DETECT-LoopInvGen
-detect-google-drive https://drive.google.com/drive/u/0/folders/0AO1vooaNX3oNUk9PVA
-detect-issues https://gitlab-ext.galois.com/detect/detect/-/issues
-detect-mrs https://gitlab-ext.galois.com/detect/detect/-/merge_requests
-detect-wiki https://gitlab-ext.galois.com/detect/detect/-/wikis/home
 drive-u-1 https://drive.google.com/drive/u/1/my-drive
 gemini https://gemini.google.com/u/1/app
 ghc-base-version https://gitlab.haskell.org/ghc/ghc/-/wikis/commentary/libraries/version-history
@@ -24,9 +17,6 @@ ghcs https://gitlab.haskell.org/ghc/ghc/-/wikis/GHC%20Status
 gmail https://mail.google.com/mail/u/0/#inbox
 gmail-compose https://mail.google.com/mail/u/0/?ui=2&fs=1&tf=cm&shva=1
 gmail-u-1 https://mail.google.com/mail/u/1/#inbox
-grease-docs https://galoisinc.github.io/grease/
-grease-issues https://github.com/GaloisInc/grease/issues
-grease-prs https://github.com/GaloisInc/grease/pulls
 home https://clockie.app/?theme=dark&hours=24
 hoogle https://hoogle.haskell.org
 instapaper https://www.instapaper.com/u
@@ -35,10 +25,8 @@ libafl-bolts-docs https://docs.rs/libafl_bolts/0.13.2/libafl_bolts/
 libafl-docs https://docs.rs/libafl/0.13.2/libafl/
 libafl-qemu-docs https://docs.rs/libafl_qemu/0.13.2/libafl_qemu/
 maps https://www.google.com/maps
-mate-home https://galoisinc.github.io/MATE
-mate-issues https://github.com/GaloisInc/MATE/issues
-mate-prs https://github.com/GaloisInc/MATE/pulls
 mattermost https://mattermost.galois.com/
+mayfly-drive https://drive.google.com/drive/u/0/folders/0ANj3-e-GkiKHUk9PVA
 nixos-manual-appendix-a https://nixos.org/nixos/manual/options.html
 nts-internet-radio https://www.nts.live/
 parameterized-utils-docs-hackage https://hackage.haskell.org/package/parameterized-utils

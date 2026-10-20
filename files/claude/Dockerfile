@@ -34,16 +34,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   zsh \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /opt
-RUN wget https://musl.cc/arm-linux-musleabi-cross.tgz
-RUN tar xzf arm-linux-musleabi-cross.tgz
-RUN ln -s /opt/arm-linux-musleabi-cross/bin/arm-linux-musleabi-gcc /usr/local/bin/armv7l-linux-musleabi-gcc
-RUN ln -s /opt/arm-linux-musleabi-cross/bin/arm-linux-musleabi-strip /usr/local/bin/armv7l-linux-musleabi-strip
-ENV PATH="/opt/arm-linux-musleabi-cross/bin:$PATH"
-RUN wget https://musl.cc/powerpc-linux-musl-cross.tgz
-RUN tar xzf powerpc-linux-musl-cross.tgz
-ENV PATH="/opt/powerpc-linux-musl-cross/bin:$PATH"
-
 # ghc
 RUN apt update && \
     apt install -y \
@@ -335,7 +325,7 @@ RUN case ${TARGETPLATFORM} in \
     esac
 
 # Install SAW (X64 only - ARM64 Linux binaries not available)
-ARG SAW_VERSION=1.5.1
+ARG SAW_VERSION=1.6
 RUN case ${TARGETPLATFORM} in \
       "linux/amd64") \
         curl -fsSL "https://github.com/GaloisInc/saw-script/releases/download/v${SAW_VERSION}/saw-${SAW_VERSION}-ubuntu-24.04-X64.tar.gz" \

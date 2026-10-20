@@ -5,6 +5,7 @@
 # shellcheck disable=all
 
 export PATH=$PATH:${HOME}/code/dots/files/scripts/bin/
+export PATH="/opt/kry10/bin:$PATH"
 
 export EDITOR=hx
 ee() {
@@ -102,10 +103,12 @@ ai() {
     --tty \
     -v "$PWD:/work" \
     --workdir /work \
+    -e CLAUDE_CODE_OAUTH_TOKEN \
     -e CLAUDE_CODE_USE_BEDROCK \
     -e AWS_REGION \
     -e AWS_BEARER_TOKEN_BEDROCK \
     -v "$(realpath ~/.claude/settings.json):/home/node/.claude/settings.json:ro" \
+    -v "$HOME/code/dots/files/claude/claude.json:/home/node/.claude.json" \
     -v "$HOME/code/dots/files/claude/skills:/home/node/.claude/skills:ro" \
     -v "$HOME/.claude/home/cargo/registry:/home/node/.cargo/registry" \
     -v "$HOME/.claude/home/cargo/git:/home/node/.cargo/git" \
@@ -122,7 +125,7 @@ ai() {
   # --mount type=bind,readonly=true,src=$HOME/code/dots/files/bashrc,dst=/home/node/.bashrc \
   # --mount type=bind,readonly=true,src=$HOME/.config/sh.d,dst=/home/node/.config/sh.d \
 }
-alias aix86='ai --platform linuux/amd64 claude-x86'
+alias aix86='ai --platform linux/amd64 claude-x86'
 alias pi='sudo -g docker docker run --rm -it -e OPENROUTER_API_KEY=${OPENROUTER_API_KEY} -v $PWD:/work -w /work --name pi --entrypoint pi claude'
 
 # kludge expand --aliases "" ""
